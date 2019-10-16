@@ -1,0 +1,70 @@
+{
+  "@graph" : [ {
+    "@id" : "_:b0",
+    "@type" : "http://uri.etsi.org/ngsi-ld/GeoProperty",
+    "hasValue" : "{ \"type\":\"Point\", \"coordinates\":[ -8.5, 41.2 ] }"
+  }, {
+    "@id" : "_:b1",
+    "@type" : "http://uri.etsi.org/ngsi-ld/Property",
+    "hasValue" : 80
+  }, {
+    "@id" : "_:b2",
+    "@type" : "http://uri.etsi.org/ngsi-ld/Relationship",
+    "hasObject" : "urn:ngsi-ld:Person:Bob"
+  }, {
+    "@id" : "_:b3",
+    "@type" : "http://uri.etsi.org/ngsi-ld/Property",
+    "hasValue" : "Mercedes"
+  }, {
+    "@id" : "_:b4",
+    "@type" : "http://uri.etsi.org/ngsi-ld/Relationship",
+    "providedBy" : "_:b2",
+    "hasObject" : "urn:ngsi-ld:OffStreetParking:Downtown1",
+    "observedAt" : "2017-07-29T12:00:04"
+  }, {
+    "@id" : "urn:ngsi-ld:Vehicle:A188",
+    "@type" : "http://example.org/vehicle/Vehicle",
+    "isParked" : "_:b4",
+    "brandName" : "_:b3",
+    "speed" : "_:b1",
+    "createdAt" : "2017-07-29T12:00:04",
+    "location" : "_:b0"
+  } ],
+  "@context" : {
+    "hasValue" : {
+      "@id" : "http://uri.etsi.org/ngsi-ld/hasValue"
+    },
+    "hasObject" : {
+      "@id" : "http://uri.etsi.org/ngsi-ld/hasObject",
+      "@type" : "@id"
+    },
+    "location" : {
+      "@id" : "http://uri.etsi.org/ngsi-ld/location",
+      "@type" : "@id"
+    },
+    "createdAt" : {
+      "@id" : "http://uri.etsi.org/ngsi-ld/createdAt",
+      "@type" : "http://uri.etsi.org/ngsi-ld/DateTime"
+    },
+    "speed" : {
+      "@id" : "http://example.org/vehicle/speed",
+      "@type" : "@id"
+    },
+    "brandName" : {
+      "@id" : "http://example.org/vehicle/brandName",
+      "@type" : "@id"
+    },
+    "isParked" : {
+      "@id" : "http://example.org/common/isParked",
+      "@type" : "@id"
+    },
+    "observedAt" : {
+      "@id" : "http://uri.etsi.org/ngsi-ld/observedAt",
+      "@type" : "http://uri.etsi.org/ngsi-ld/DateTime"
+    },
+    "providedBy" : {
+      "@id" : "http://example.org/common/providedBy",
+      "@type" : "@id"
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "@id": "http://purl.org/iot/ontology/iot-stream#Stream_FIBARO%2520Wall%2520plug%2520living%2520room_CurrentEnergyUse",
+  "@type": "http://purl.org/iot/ontology/iot-stream#IoTStream",
+  "label" : "Z-Wave Node 003: FGWP102 Meter Living Space",
+  "hasAttribute": [
+    "http://www.agtinternational.com/iotcrawler/ontologies/iotc#target_value",
+    "http://www.agtinternational.com/iotcrawler/ontologies/iotc#id",
+    "http://www.agtinternational.com/iotcrawler/ontologies/iotc#instance",
+    "http://www.agtinternational.com/iotcrawler/ontologies/iotc#current_value",
+    "http://www.agtinternational.com/iotcrawler/ontologies/iotc#editable",
+    "http://www.agtinternational.com/iotcrawler/ontologies/iotc#last_value",
+    "http://www.agtinternational.com/iotcrawler/ontologies/iotc#step_value",
+    "http://www.agtinternational.com/iotcrawler/ontologies/iotc#changed_by_id",
+    "http://www.agtinternational.com/iotcrawler/ontologies/iotc#type",
+    "http://www.agtinternational.com/iotcrawler/ontologies/iotc#node_id",
+    "http://www.agtinternational.com/iotcrawler/ontologies/iotc#last_changed",
+    "http://www.agtinternational.com/iotcrawler/ontologies/iotc#maximum",
+    "http://www.agtinternational.com/iotcrawler/ontologies/iotc#based_on",
+    "http://www.agtinternational.com/iotcrawler/ontologies/iotc#minimum",
+    "http://www.agtinternational.com/iotcrawler/ontologies/iotc#state",
+    "http://www.agtinternational.com/iotcrawler/ontologies/iotc#unit",
+    "http://www.agtinternational.com/iotcrawler/ontologies/iotc#changed_by"
+  ],
+  "madeBySensor": "http://www.w3.org/ns/sosa/gateway_00055110D732_device_8_sensor_64",
+  "@context": {
+    "madeBySensor": {
+      "@id": "http://www.w3.org/ns/sosa/madeBySensor",
+      "@type": "@id"
+    },
+    "hasAttribute": {
+      "@id": "http://purl.org/iot/ontology/iot-stream#hasAttribute",
+      "@type": "@id"
+    },
+    "label" : {
+      "@id" : "rdf-schema:label",
+      "@type" : "@id"
+    }
+  }
+}

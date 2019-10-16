@@ -1,0 +1,234 @@
+{
+  "id": "http://purl.org/iot/ontology/iot-stream#Stream_3",
+  "type": "IoTStream",
+  "http://purl.org/iot/ontology/iot-stream#hasAttribute": [
+    {
+      "type": "Relationship",
+      "object": "http://www.agtinternational.com/iotcrawler/ontologies/iotc#target_value"
+    },
+    {
+      "type": "Relationship",
+      "object": "http://www.agtinternational.com/iotcrawler/ontologies/iotc#id"
+    },
+    {
+      "type": "Relationship",
+      "object": "http://www.agtinternational.com/iotcrawler/ontologies/iotc#instance"
+    },
+    {
+      "type": "Relationship",
+      "object": "http://www.agtinternational.com/iotcrawler/ontologies/iotc#current_value"
+    },
+    {
+      "type": "Relationship",
+      "object": "http://www.agtinternational.com/iotcrawler/ontologies/iotc#editable"
+    },
+    {
+      "type": "Relationship",
+      "object": "http://www.agtinternational.com/iotcrawler/ontologies/iotc#last_value"
+    },
+    {
+      "type": "Relationship",
+      "object": "http://www.agtinternational.com/iotcrawler/ontologies/iotc#step_value"
+    },
+    {
+      "type": "Relationship",
+      "object": "http://www.agtinternational.com/iotcrawler/ontologies/iotc#changed_by_id"
+    },
+    {
+      "type": "Relationship",
+      "object": "http://www.agtinternational.com/iotcrawler/ontologies/iotc#type"
+    },
+    {
+      "type": "Relationship",
+      "object": "http://www.agtinternational.com/iotcrawler/ontologies/iotc#node_id"
+    },
+    {
+      "type": "Relationship",
+      "object": "http://www.agtinternational.com/iotcrawler/ontologies/iotc#last_changed"
+    },
+    {
+      "type": "Relationship",
+      "object": "http://www.agtinternational.com/iotcrawler/ontologies/iotc#maximum"
+    },
+    {
+      "type": "Relationship",
+      "object": "http://www.agtinternational.com/iotcrawler/ontologies/iotc#based_on"
+    },
+    {
+      "type": "Relationship",
+      "object": "http://www.agtinternational.com/iotcrawler/ontologies/iotc#minimum"
+    },
+    {
+      "type": "Relationship",
+      "object": "http://www.agtinternational.com/iotcrawler/ontologies/iotc#state"
+    },
+    {
+      "type": "Relationship",
+      "object": "http://www.agtinternational.com/iotcrawler/ontologies/iotc#unit"
+    },
+    {
+      "type": "Relationship",
+      "object": "http://www.agtinternational.com/iotcrawler/ontologies/iotc#changed_by"
+    }
+  ],
+  "http://www.w3.org/ns/sosa/madeBySensor": {
+    "type": "Relationship",
+    "object": "http://www.w3.org/ns/sosa/gateway_00055110D732_device_8_sensor_64"
+  },
+  "@context": {
+    "observationInterval": "http://uri.etsi.org/ngsi-ld/observationInterval",
+    "reason": "http://uri.etsi.org/ngsi-ld/reason",
+    "ngsi-ld": "http://uri.etsi.org/ngsi-ld/",
+    "timerel": "http://uri.etsi.org/ngsi-ld/timerel",
+    "data": "http://uri.etsi.org/ngsi-ld/data",
+    "modifiedAt": {
+      "@id": "http://uri.etsi.org/ngsi-ld/modifiedAt",
+      "@type": "DateTime"
+    },
+    "objects": {
+      "@id": "http://uri.etsi.org/ngsi-ld/hasObjects",
+      "@type": "@id",
+      "@container": "@list"
+    },
+    "type": "@type",
+    "isActive": "http://uri.etsi.org/ngsi-ld/isActive",
+    "DateTime": "http://uri.etsi.org/ngsi-ld/DateTime",
+    "lastSuccess": {
+      "@id": "http://uri.etsi.org/ngsi-ld/lastSuccess",
+      "@type": "DateTime"
+    },
+    "geoQ": "http://uri.etsi.org/ngsi-ld/geoQ",
+    "createdAt": {
+      "@id": "http://uri.etsi.org/ngsi-ld/createdAt",
+      "@type": "DateTime"
+    },
+    "relationships": {
+      "@id": "http://uri.etsi.org/ngsi-ld/relationships",
+      "@type": "@vocab"
+    },
+    "notification": "http://uri.etsi.org/ngsi-ld/notification",
+    "unitCode": "http://uri.etsi.org/ngsi-ld/unitCode",
+    "id": "@id",
+    "Subscription": "http://uri.etsi.org/ngsi-ld/Subscription",
+    "GeoProperty": "http://uri.etsi.org/ngsi-ld/GeoProperty",
+    "lastFailure": {
+      "@id": "http://uri.etsi.org/ngsi-ld/lastFailure ",
+      "@type": "DateTime"
+    },
+    "observedAt": {
+      "@id": "http://uri.etsi.org/ngsi-ld/observedAt",
+      "@type": "DateTime"
+    },
+    "ContextSourceNotification": "http://uri.etsi.org/ngsi-ld/ContextSourceNotification",
+    "format": "http://uri.etsi.org/ngsi-ld/format",
+    "managementInterval": "http://uri.etsi.org/ngsi-ld/managementInterval",
+    "observationSpace": "http://uri.etsi.org/ngsi-ld/observationSpace",
+    "georel": "http://uri.etsi.org/ngsi-ld/georel",
+    "accept": "http://uri.etsi.org/ngsi-ld/accept",
+    "operationSpace": "http://uri.etsi.org/ngsi-ld/operationSpace",
+    "success": {
+      "@id": "http://uri.etsi.org/ngsi-ld/success",
+      "@type": "@id"
+    },
+    "watchedAttributes": {
+      "@id": "http://uri.etsi.org/ngsi-ld/watchedAttributes",
+      "@type": "@vocab"
+    },
+    "name": "http://uri.etsi.org/ngsi-ld/name",
+    "detail": "http://uri.etsi.org/ngsi-ld/detail",
+    "subscriptionId": {
+      "@id": "http://uri.etsi.org/ngsi-ld/subscriptionId",
+      "@type": "@id"
+    },
+    "updated": "http://uri.etsi.org/ngsi-ld/updated",
+    "errors": "http://uri.etsi.org/ngsi-ld/errors",
+    "object": {
+      "@id": "http://uri.etsi.org/ngsi-ld/hasObject",
+      "@type": "@id"
+    },
+    "status": "http://uri.etsi.org/ngsi-ld/status",
+    "temporalQ": "http://uri.etsi.org/ngsi-ld/temporalQ",
+    "expires": {
+      "@id": "http://uri.etsi.org/ngsi-ld/expires",
+      "@type": "DateTime"
+    },
+    "@vocab": "http://example.org/ngsi-ld/default/",
+    "timesSent": "http://uri.etsi.org/ngsi-ld/timesSent",
+    "values": {
+      "@id": "http://uri.etsi.org/ngsi-ld/hasValues",
+      "@container": "@list"
+    },
+    "description": "http://uri.etsi.org/ngsi-ld/description",
+    "Time": "http://uri.etsi.org/ngsi-ld/Time",
+    "title": "http://uri.etsi.org/ngsi-ld/title",
+    "error": "http://uri.etsi.org/ngsi-ld/error",
+    "Notification": "http://uri.etsi.org/ngsi-ld/Notification",
+    "geoproperty": "http://uri.etsi.org/ngsi-ld/geoproperty",
+    "endpoint": "http://uri.etsi.org/ngsi-ld/endpoint",
+    "throttling": "http://uri.etsi.org/ngsi-ld/throttling",
+    "lastNotification": {
+      "@id": "http://uri.etsi.org/ngsi-ld/lastNotification",
+      "@type": "DateTime"
+    },
+    "instanceId": {
+      "@id": "http://uri.etsi.org/ngsi-ld/instanceId",
+      "@type": "@id"
+    },
+    "datasetId": {
+      "@id": "http://uri.etsi.org/ngsi-ld/datasetId",
+      "@type": "@id"
+    },
+    "timeInterval": "http://uri.etsi.org/ngsi-ld/timeInterval",
+    "end": {
+      "@id": "http://uri.etsi.org/ngsi-ld/end",
+      "@type": "DateTime"
+    },
+    "attributeName": "http://uri.etsi.org/ngsi-ld/attributeName",
+    "value": "http://uri.etsi.org/ngsi-ld/hasValue",
+    "Property": "http://uri.etsi.org/ngsi-ld/Property",
+    "notifiedAt": {
+      "@id": "http://uri.etsi.org/ngsi-ld/notifiedAt",
+      "@type": "DateTime"
+    },
+    "TemporalProperty": "http://uri.etsi.org/ngsi-ld/TemporalProperty",
+    "ContextSourceRegistration": "http://uri.etsi.org/ngsi-ld/ContextSourceRegistration",
+    "start": {
+      "@id": "http://uri.etsi.org/ngsi-ld/start",
+      "@type": "DateTime"
+    },
+    "coordinates": "http://uri.etsi.org/ngsi-ld/coordinates",
+    "unchanged": "http://uri.etsi.org/ngsi-ld/unchanged",
+    "entityId": {
+      "@id": "http://uri.etsi.org/ngsi-ld/entityId",
+      "@type": "@id"
+    },
+    "idPattern": "http://uri.etsi.org/ngsi-ld/idPattern",
+    "uri": "http://uri.etsi.org/ngsi-ld/uri",
+    "Date": "http://uri.etsi.org/ngsi-ld/Date",
+    "q": "http://uri.etsi.org/ngsi-ld/q",
+    "entities": "http://uri.etsi.org/ngsi-ld/entities",
+    "Relationship": "http://uri.etsi.org/ngsi-ld/Relationship",
+    "csf": "http://uri.etsi.org/ngsi-ld/csf",
+    "triggerReason": "http://uri.etsi.org/ngsi-ld/triggerReason",
+    "location": "http://uri.etsi.org/ngsi-ld/location",
+    "information": "http://uri.etsi.org/ngsi-ld/information",
+    "geometry": "http://uri.etsi.org/ngsi-ld/geometry",
+    "attributes": {
+      "@id": "http://uri.etsi.org/ngsi-ld/attributes",
+      "@type": "@vocab"
+    },
+    "time": {
+      "@id": "http://uri.etsi.org/ngsi-ld/time",
+      "@type": "DateTime"
+    },
+    "endTime": {
+      "@id": "http://uri.etsi.org/ngsi-ld/endTime",
+      "@type": "DateTime"
+    },
+    "timeproperty": "http://uri.etsi.org/ngsi-ld/timeproperty",
+    "properties": {
+      "@id": "http://uri.etsi.org/ngsi-ld/properties",
+      "@type": "@vocab"
+    }
+  }
+}

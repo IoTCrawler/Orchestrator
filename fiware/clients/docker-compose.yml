@@ -1,0 +1,34 @@
+version: "3.1"
+services:
+  mongo-db:
+    image: mongo:3.6
+    hostname: mongo-db
+    container_name: db-mongo
+    ports:
+      - "27017:27017"
+    networks:
+      - default
+    command: --bind_ip_all --smallfiles
+    volumes:
+      - mongo-db:/data
+
+  orion:
+    image: fiware/orion:2.0.0
+    hostname: orion
+    container_name: fiware-orion
+    depends_on:
+      - mongo-db
+    networks:
+      - default
+    ports:
+      - "1026:1026"
+    command: -dbhost mongo-db -logLevel DEBUG
+
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 172.22.1.0/24
+
+volumes:
+  mongo-db:

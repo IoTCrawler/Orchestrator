@@ -1,0 +1,176 @@
+{
+  "id" : "urn:ngsi-ld:TemperatureSensor:335547902",
+  "type" : "http://example.org/pleyades/TemperatureSensor",
+  "http://example.org/pleyades/Description" : {
+    "type" : "http://uri.etsi.org/ngsi-ld/Property",
+    "http://uri.etsi.org/ngsi-ld/hasValue" : "B1.1.017 / Sonda temperatura (F0:AC / EA1-PT100)"
+  },
+  "http://example.org/pleyades/Value" : {
+    "type" : "http://uri.etsi.org/ngsi-ld/Property",
+    "http://uri.etsi.org/ngsi-ld/hasValue" : "0",
+    "http://uri.etsi.org/ngsi-ld/observedAt" : {
+      "type" : "http://uri.etsi.org/ngsi-ld/DateTime",
+      "@value" : 1469789131
+    }
+  },
+  "http://uri.etsi.org/ngsi-ld/location" : {
+    "type" : "http://uri.etsi.org/ngsi-ld/GeoProperty",
+    "http://uri.etsi.org/ngsi-ld/hasValue" : "{\"type\": \"Point\", \"coordinates\": [-1.173032, 38.024519]}"
+  },
+  "@context" : {
+    "observationInterval" : "https://uri.etsi.org/ngsi-ld/observationInterval",
+    "reason" : "https://uri.etsi.org/ngsi-ld/reason",
+    "ngsi-ld" : "https://uri.etsi.org/ngsi-ld/",
+    "timerel" : "https://uri.etsi.org/ngsi-ld/timerel",
+    "data" : "https://uri.etsi.org/ngsi-ld/data",
+    "modifiedAt" : {
+      "@id" : "https://uri.etsi.org/ngsi-ld/modifiedAt",
+      "@type" : "DateTime"
+    },
+    "objects" : {
+      "@id" : "https://uri.etsi.org/ngsi-ld/hasObjects",
+      "@type" : "@id",
+      "@container" : "@list"
+    },
+    "type" : "@type",
+    "isActive" : "https://uri.etsi.org/ngsi-ld/isActive",
+    "DateTime" : "https://uri.etsi.org/ngsi-ld/DateTime",
+    "lastSuccess" : {
+      "@id" : "https://uri.etsi.org/ngsi-ld/lastSuccess",
+      "@type" : "DateTime"
+    },
+    "geoQ" : "https://uri.etsi.org/ngsi-ld/geoQ",
+    "createdAt" : {
+      "@id" : "https://uri.etsi.org/ngsi-ld/createdAt",
+      "@type" : "DateTime"
+    },
+    "relationships" : {
+      "@id" : "https://uri.etsi.org/ngsi-ld/relationships",
+      "@type" : "@vocab"
+    },
+    "notification" : "https://uri.etsi.org/ngsi-ld/notification",
+    "unitCode" : "https://uri.etsi.org/ngsi-ld/unitCode",
+    "id" : "@id",
+    "Subscription" : "https://uri.etsi.org/ngsi-ld/Subscription",
+    "GeoProperty" : "https://uri.etsi.org/ngsi-ld/GeoProperty",
+    "lastFailure" : {
+      "@id" : "https://uri.etsi.org/ngsi-ld/lastFailure ",
+      "@type" : "DateTime"
+    },
+    "observedAt" : {
+      "@id" : "https://uri.etsi.org/ngsi-ld/observedAt",
+      "@type" : "DateTime"
+    },
+    "ContextSourceNotification" : "https://uri.etsi.org/ngsi-ld/ContextSourceNotification",
+    "format" : "https://uri.etsi.org/ngsi-ld/format",
+    "managementInterval" : "https://uri.etsi.org/ngsi-ld/managementInterval",
+    "observationSpace" : "https://uri.etsi.org/ngsi-ld/observationSpace",
+    "georel" : "https://uri.etsi.org/ngsi-ld/georel",
+    "accept" : "https://uri.etsi.org/ngsi-ld/accept",
+    "operationSpace" : "https://uri.etsi.org/ngsi-ld/operationSpace",
+    "success" : {
+      "@id" : "https://uri.etsi.org/ngsi-ld/success",
+      "@type" : "@id"
+    },
+    "watchedAttributes" : {
+      "@id" : "https://uri.etsi.org/ngsi-ld/watchedAttributes",
+      "@type" : "@vocab"
+    },
+    "name" : "https://uri.etsi.org/ngsi-ld/name",
+    "detail" : "https://uri.etsi.org/ngsi-ld/detail",
+    "subscriptionId" : {
+      "@id" : "https://uri.etsi.org/ngsi-ld/subscriptionId",
+      "@type" : "@id"
+    },
+    "updated" : "https://uri.etsi.org/ngsi-ld/updated",
+    "errors" : "https://uri.etsi.org/ngsi-ld/errors",
+    "object" : {
+      "@id" : "https://uri.etsi.org/ngsi-ld/hasObject",
+      "@type" : "@id"
+    },
+    "status" : "https://uri.etsi.org/ngsi-ld/status",
+    "temporalQ" : "https://uri.etsi.org/ngsi-ld/temporalQ",
+    "expires" : {
+      "@id" : "https://uri.etsi.org/ngsi-ld/expires",
+      "@type" : "DateTime"
+    },
+    "@vocab" : "http://example.org/ngsi-ld/default/",
+    "timesSent" : "https://uri.etsi.org/ngsi-ld/timesSent",
+    "values" : {
+      "@id" : "https://uri.etsi.org/ngsi-ld/hasValues",
+      "@container" : "@list"
+    },
+    "description" : "https://uri.etsi.org/ngsi-ld/description",
+    "Time" : "https://uri.etsi.org/ngsi-ld/Time",
+    "title" : "https://uri.etsi.org/ngsi-ld/title",
+    "error" : "https://uri.etsi.org/ngsi-ld/error",
+    "Notification" : "https://uri.etsi.org/ngsi-ld/Notification",
+    "geoproperty" : "https://uri.etsi.org/ngsi-ld/geoproperty",
+    "endpoint" : "https://uri.etsi.org/ngsi-ld/endpoint",
+    "throttling" : "https://uri.etsi.org/ngsi-ld/throttling",
+    "lastNotification" : {
+      "@id" : "https://uri.etsi.org/ngsi-ld/lastNotification",
+      "@type" : "DateTime"
+    },
+    "instanceId" : {
+      "@id" : "https://uri.etsi.org/ngsi-ld/instanceId",
+      "@type" : "@id"
+    },
+    "datasetId" : {
+      "@id" : "https://uri.etsi.org/ngsi-ld/datasetId",
+      "@type" : "@id"
+    },
+    "timeInterval" : "https://uri.etsi.org/ngsi-ld/timeInterval",
+    "end" : {
+      "@id" : "https://uri.etsi.org/ngsi-ld/end",
+      "@type" : "DateTime"
+    },
+    "attributeName" : "https://uri.etsi.org/ngsi-ld/attributeName",
+    "value" : "https://uri.etsi.org/ngsi-ld/hasValue",
+    "Property" : "https://uri.etsi.org/ngsi-ld/Property",
+    "notifiedAt" : {
+      "@id" : "https://uri.etsi.org/ngsi-ld/notifiedAt",
+      "@type" : "DateTime"
+    },
+    "TemporalProperty" : "https://uri.etsi.org/ngsi-ld/TemporalProperty",
+    "ContextSourceRegistration" : "https://uri.etsi.org/ngsi-ld/ContextSourceRegistration",
+    "start" : {
+      "@id" : "https://uri.etsi.org/ngsi-ld/start",
+      "@type" : "DateTime"
+    },
+    "coordinates" : "https://uri.etsi.org/ngsi-ld/coordinates",
+    "unchanged" : "https://uri.etsi.org/ngsi-ld/unchanged",
+    "entityId" : {
+      "@id" : "https://uri.etsi.org/ngsi-ld/entityId",
+      "@type" : "@id"
+    },
+    "idPattern" : "https://uri.etsi.org/ngsi-ld/idPattern",
+    "uri" : "https://uri.etsi.org/ngsi-ld/uri",
+    "Date" : "https://uri.etsi.org/ngsi-ld/Date",
+    "q" : "https://uri.etsi.org/ngsi-ld/q",
+    "entities" : "https://uri.etsi.org/ngsi-ld/entities",
+    "Relationship" : "https://uri.etsi.org/ngsi-ld/Relationship",
+    "csf" : "https://uri.etsi.org/ngsi-ld/csf",
+    "triggerReason" : "https://uri.etsi.org/ngsi-ld/triggerReason",
+    "location" : "https://uri.etsi.org/ngsi-ld/location",
+    "information" : "https://uri.etsi.org/ngsi-ld/information",
+    "geometry" : "https://uri.etsi.org/ngsi-ld/geometry",
+    "attributes" : {
+      "@id" : "https://uri.etsi.org/ngsi-ld/attributes",
+      "@type" : "@vocab"
+    },
+    "time" : {
+      "@id" : "https://uri.etsi.org/ngsi-ld/time",
+      "@type" : "DateTime"
+    },
+    "endTime" : {
+      "@id" : "https://uri.etsi.org/ngsi-ld/endTime",
+      "@type" : "DateTime"
+    },
+    "timeproperty" : "https://uri.etsi.org/ngsi-ld/timeproperty",
+    "properties" : {
+      "@id" : "https://uri.etsi.org/ngsi-ld/properties",
+      "@type" : "@vocab"
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "@id": "http://purl.org/iot/ontology/iot-stream/Stream_Z-Wave+Node+003%3A+FGWP102+Meter+Living+Space_Electric+meter+%28watts%29",
+  "@type": "http://purl.org/iot/ontology/iot-stream/StreamObservation",
+  "http://www.agtinternational.com/iotcrawler/ontologies/iotc/state": 1566400942015,
+  "@context": {
+    "state": {
+      "@id": "http://www.agtinternational.com/iotcrawler/ontologies/iotc/state",
+      "@type": "@id"
+    }
+  }
+}

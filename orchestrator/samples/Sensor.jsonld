@@ -1,0 +1,32 @@
+{
+    "id" : "iotc:Sensor_Z-Wave+Node+003%3A+FGWP102+Meter+Living+Space_Sensor+%28power%29",
+    "type" : "sosa:Sensor",
+    "@context" : {
+        "observes" : {
+            "@id" : "http://www.w3.org/ns/sosa/observes",
+            "@type" : "@id"
+        },
+        "iotc" : "http://purl.org/iot/ontology/iot-stream#",
+        "label" : {
+            "@id" : "http://www.w3.org/2000/01/rdf-schema#label"
+        },
+        "rdf-schema" : "http://www.w3.org/2000/01/rdf-schema#",
+        "isHostedBy" : {
+            "@id" : "http://www.w3.org/ns/sosa/isHostedBy",
+            "@type" : "@id"
+        },
+        "sosa" : "http://www.w3.org/ns/sosa/"
+    },
+    "sosa:isHostedBy" : {
+        "type" : "Relationship",
+        "object" : "iotc:Device_Z-Wave+Node+003%3A+FGWP102+Meter+Living+Space"
+    },
+    "sosa:observes" : {
+        "type" : "Relationship",
+        "object" : "iotc:Property_Z-Wave+Node+003%3A+FGWP102+Meter+Living+Space_Sensor+%28power%29"
+    },
+    "rdf-schema:label" : {
+        "type" : "Property",
+        "value" : "Z-Wave Node 003: FGWP102 Meter Living Space"
+    }
+}

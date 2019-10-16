@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.agtinternational.iotcrawler</groupId>
+    <artifactId>fiware-clients</artifactId>
+    <version>1.0.8</version>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <slf4j.version>1.7.15</slf4j.version>
+        <junit.version>4.11</junit.version>
+        <ngsi2.client.version>0.1.2-SNAPSHOT</ngsi2.client.version>
+        <ngsi.api.version>7.1-SNAPSHOT</ngsi.api.version>
+        <iotbroker.commons.version>7.1-SNAPSHOT</iotbroker.commons.version>
+        <iotbroker.client.version>7.2-SNAPSHOT</iotbroker.client.version>
+        <fiware.models.version>1.0.0</fiware.models.version>
+    </properties>
+
+
+    <dependencies>
+
+        <dependency>
+            <groupId>com.orange.fiware</groupId>
+            <artifactId>ngsi2-client</artifactId>
+            <version>${ngsi2.client.version}</version>
+            <!--<scope>compile</scope>-->
+        </dependency>
+
+        <dependency>
+            <groupId>com.agtinternational.iotcrawler</groupId>
+            <artifactId>fiware-models</artifactId>
+            <version>${fiware.models.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>eu.neclab.iotplatform</groupId>
+                    <artifactId>iotbroker.commons</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.9</version>
+        </dependency>
+
+
+        <!--<dependency>-->
+            <!--<groupId>eu.neclab.iotplatform</groupId>-->
+            <!--<artifactId>iotbroker.commons</artifactId>-->
+            <!--<version>${iotbroker.version}</version>-->
+            <!--&lt;!&ndash;<scope>compile</scope>&ndash;&gt;-->
+        <!--</dependency>-->
+
+        <!--<dependency>-->
+            <!--<groupId>eu.neclab.iotplatform</groupId>-->
+            <!--<artifactId>iotbroker.client</artifactId>-->
+            <!--<version>${iotbroker.version}</version>-->
+            <!--&lt;!&ndash;<scope></scope>&ndash;&gt;-->
+        <!--</dependency>-->
+
+        <!--&lt;!&ndash; https://mvnrepository.com/artifact/org.springframework/spring-web &ndash;&gt;-->
+        <!--<dependency>-->
+            <!--<groupId>org.springframework</groupId>-->
+            <!--<artifactId>spring-web</artifactId>-->
+            <!--<version>4.1.6.RELEASE</version>-->
+        <!--</dependency>-->
+
+
+        <!--&lt;!&ndash; https://mvnrepository.com/artifact/org.codehaus.jackson/jackson-core-asl &ndash;&gt;-->
+        <!--<dependency>-->
+            <!--<groupId>org.codehaus.jackson</groupId>-->
+            <!--<artifactId>jackson-core-asl</artifactId>-->
+            <!--<version>1.9.13</version>-->
+        <!--</dependency>-->
+
+        <!--&lt;!&ndash; https://mvnrepository.com/artifact/org.codehaus.jackson/jackson-mapper-asl &ndash;&gt;-->
+        <!--<dependency>-->
+            <!--<groupId>org.codehaus.jackson</groupId>-->
+            <!--<artifactId>jackson-mapper-asl</artifactId>-->
+            <!--<version>1.9.13</version>-->
+        <!--</dependency>-->
+
+
+        <!--<dependency>-->
+            <!--<groupId>com.orange.fiware</groupId>-->
+            <!--<artifactId>ngsi-client</artifactId>-->
+            <!--<version>0.1.3</version>-->
+            <!--<scope>test</scope>-->
+        <!--</dependency>-->
+
+        <!--<dependency>-->
+            <!--<groupId>com.orange.fiware</groupId>-->
+            <!--<artifactId>ngsi-client</artifactId>-->
+            <!--<version>0.1.3</version>-->
+            <!--<scope>compile</scope>-->
+        <!--</dependency>-->
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>4.1.6.RELEASE</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.7</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpasyncclient</artifactId>
+            <version>4.1.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.jsonld-java</groupId>
+            <artifactId>jsonld-java</artifactId>
+            <version>0.12.3</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-databind</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.9.8</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>2.9.8</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.9.8</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>eu.neclab.iotplatform</groupId>
+            <artifactId>iotbroker.commons</artifactId>
+            <version>${iotbroker.commons.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-web</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>eu.neclab.iotplatform</groupId>
+            <artifactId>ngsi.api</artifactId>
+            <version>${ngsi.api.version}</version>
+            <!--<scope>provided</scope>-->
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.5</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.5.1</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>hack-binary</id>
+                        <phase>validate</phase>
+                        <configuration>
+                            <file>${basedir}/libs/IoTbrokerParent-${ngsi.api.version}.pom</file>
+                            <pomFile>${basedir}/libs/IoTbrokerParent-${ngsi.api.version}.pom</pomFile>
+                            <repositoryLayout>default</repositoryLayout>
+                            <groupId>eu.neclab.iotplatform</groupId>
+                            <artifactId>IoTbrokerParent</artifactId>
+                            <version>${ngsi.api.version}</version>
+                            <packaging>pom</packaging>
+                            <generatePom>false</generatePom>
+                        </configuration>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>hack-binary2</id>
+                        <phase>validate</phase>
+                        <configuration>
+                            <file>${basedir}/libs/iotbroker.commons-${iotbroker.commons.version}.jar</file>
+                            <pomFile>${basedir}/libs/iotbroker.commons-${iotbroker.commons.version}.pom</pomFile>
+                            <repositoryLayout>default</repositoryLayout>
+                            <groupId>eu.neclab.iotplatform</groupId>
+                            <artifactId>iotbroker.commons</artifactId>
+                            <version>${iotbroker.commons.version}</version>
+                            <packaging>jar</packaging>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>hack-binary3</id>
+                        <phase>validate</phase>
+                        <configuration>
+                            <file>${basedir}/libs/iotbroker.client-${iotbroker.client.version}.jar</file>
+                            <pomFile>${basedir}/libs/iotbroker.client-${iotbroker.client.version}.pom</pomFile>
+                            <repositoryLayout>default</repositoryLayout>
+                            <groupId>eu.neclab.iotplatform</groupId>
+                            <artifactId>iotbroker.client</artifactId>
+                            <version>${iotbroker.client.version}</version>
+                            <packaging>jar</packaging>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>hack-binary4</id>
+                        <phase>validate</phase>
+                        <configuration>
+                            <file>${basedir}/libs/ngsi.api-${ngsi.api.version}.jar</file>
+                            <pomFile>${basedir}/libs/ngsi.api-${ngsi.api.version}.pom</pomFile>
+                            <repositoryLayout>default</repositoryLayout>
+                            <groupId>eu.neclab.iotplatform</groupId>
+                            <artifactId>ngsi.api</artifactId>
+                            <version>${ngsi.api.version}</version>
+                            <packaging>jar</packaging>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                    </execution>
+
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

@@ -1,0 +1,3 @@
+job_fiware:
+  script:
+    - cd fiware && make install

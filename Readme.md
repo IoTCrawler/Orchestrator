@@ -2,19 +2,19 @@
 
 IoTCrawler Orchestrator component. Uses the following services:
 
-RabbitMQ - to communicate with remote apps behind firewalls
-Redis - for persistently storing state information (active subscriptions)
-NGSI-LD broker - emulation of MDR
+* RabbitMQ - to communicate with remote apps behind firewalls
+* Redis - for persistently storing state information (active subscriptions)
+* NGSI-LD broker - emulation of MDR
+
 
 ## Build
 
 Build orchestrator and all supplementatry libraries
 
-```shell
+```
 make install
 ```
 
----
 
 ## Run
 

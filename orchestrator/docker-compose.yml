@@ -1,30 +1,18 @@
 version: '3.3'
 services:
-#  orchestrator:
-#    image: iotcrawler/orchestrator
-#    environment:
-#      - IOTCRAWLER_RABBIT_HOST=rabbit
-#      - IOTCRAWLER_REDIS_HOST=redis
-#      - NGSILD_BROKER_URI=http://172.24.0.1:3000/ngsi-ld/
-#      - IOT_BROKER_URI=http://172.24.0.1:8060/ngsi10
-#      - HTTP_SERVER_HOST=orchestrator
-#      - HTTP_SERVER_PORT=3001
-#    ports:
-#      - "3001:3001"
-#    networks:
-#      - iotcrawler
-  # smartConnect:
-    # image: iotcrawler/smartConnect
-    # networks:
-      # - iotcrawler
-    # ports:
-      # - "3005:3005"
-    # environment:
-      # - IOTCRAWLER_RABBIT_HOST=rabbit
-      # - KB_URI=redis
-      # - KB_USER=test
-      # - KB_PASS=xyzzy
-      # - NGSILD_BROKER_URI=http://172.24.0.1:3000/ngsi-ld/
+  orchestrator:
+    image: localhost:5000/orchestrator:1.0.7
+    environment:
+      - IOTCRAWLER_RABBIT_HOST=rabbit
+      - IOTCRAWLER_REDIS_HOST=redis
+      - NGSILD_BROKER_URI=http://172.24.0.1:3000/ngsi-ld/
+      - IOT_BROKER_URI=http://172.24.0.1:8060/ngsi10
+      - HTTP_SERVER_HOST=orchestrator
+      - HTTP_SERVER_PORT=3001
+    ports:
+      - "3001:3001"
+    networks:
+      - iotcrawler
   ngsild-broker:
     image: iotcrawler/djane:1.0.0
     networks:

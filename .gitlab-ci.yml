@@ -15,5 +15,7 @@ build-image:
     - cd orchestrator && make build-image   
     
 tests: 
-    make start
-    make test-orchestrator
+  stage: tests
+  script:
+    - make start
+    - make test-orchestrator

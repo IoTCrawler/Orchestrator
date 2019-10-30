@@ -8,8 +8,10 @@ install-reqs:
 	cd orchestrator && make install-reqs
 start:
 	cd orchestrator && docker-compose up &
-	cd orchestrator && sh iotbroker.sh &
-	cd orchestrator && make start &
+	sleep 5
+	cd orchestrator && docker-compose up orchestrator
+	#cd orchestrator && sh iotbroker.sh &
+	#cd orchestrator && make start &
 	
 test-orchestrator:
 	cd orchestrator && make test

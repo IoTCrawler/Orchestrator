@@ -10,9 +10,14 @@ build-codes:
     - make install
     
 build-image:
+  
+  before_script:
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+
   stage: build-image
   script:
     - cd orchestrator && make build-image   
+    - docker push $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:${CI_COMMIT_TAG:-latest}
     
 tests: 
   stage: tests

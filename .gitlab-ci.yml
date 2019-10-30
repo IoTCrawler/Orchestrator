@@ -1,3 +1,15 @@
-build:
+stages:
+  - build-codes
+  - build-image
+  - tests
+
+
+build-codes:
+  stage: build-codes
   script:
     - make install
+    
+build-image:
+  stage: build-image
+  script:
+    - cd orchestrator && make build-image   

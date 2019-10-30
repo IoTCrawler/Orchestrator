@@ -18,7 +18,7 @@ build-image:
   script:
     - cd orchestrator && make build-image  
     - echo $CI_REGISTRY_USER
-    - docker push $CI_REGISTRY_IMAGE:latest
+    - docker push $CI_REGISTRY_IMAGE:1.0.8
     
 tests: 
   stage: tests

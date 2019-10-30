@@ -13,3 +13,7 @@ build-image:
   stage: build-image
   script:
     - cd orchestrator && make build-image   
+    
+tests: 
+    make start
+    make test-orchestrator

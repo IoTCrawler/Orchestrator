@@ -2,9 +2,7 @@ package:
 	mvn package -DskipTests=true
 	
 build-image:
-	#make package
 	mvn compile jib:dockerBuild
-	#docker build -t gitlab.iotcrawler.net:4567/orchestrator/orchestrator .
 
 export-image:
 	docker save iotcrawler/orchestrator > orchestator.tar

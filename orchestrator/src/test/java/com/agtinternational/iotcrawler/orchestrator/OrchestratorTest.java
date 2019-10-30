@@ -42,6 +42,7 @@ public class OrchestratorTest extends EnvVariablesSetter {
         }
     }
 
+    @Ignore
     @Test
     public void orchestratorTest() throws Exception {
         orchestrator.run();
@@ -74,7 +75,7 @@ public class OrchestratorTest extends EnvVariablesSetter {
         Assert.isTrue(true);
     }
 
-    @Ignore
+    //@Ignore
     @Test
     public void getAllStreamsTest() throws Exception {
 
@@ -84,7 +85,7 @@ public class OrchestratorTest extends EnvVariablesSetter {
         System.out.println(streams.size()+" streams returned");
     }
 
-    @Ignore
+    //@Ignore
     @Test
     public void getEntitiesTest() throws Exception {
 
@@ -97,7 +98,7 @@ public class OrchestratorTest extends EnvVariablesSetter {
 
 
 
-    @Ignore
+    //@Ignore
     @Test
     public void getStreamByIdTest() throws Exception {
 
@@ -115,7 +116,7 @@ public class OrchestratorTest extends EnvVariablesSetter {
         System.out.println(streams.size()+" streams returned");
     }
 
-    @Ignore
+    //@Ignore
     @Test
     public void getAllSensorsTest() throws Exception {
 
@@ -124,7 +125,7 @@ public class OrchestratorTest extends EnvVariablesSetter {
         System.out.println(sensors.size()+" sensors returned");
     }
 
-    @Ignore
+    //@Ignore
     @Test
     public void getAllPlatformsTest() throws Exception {
 
@@ -133,7 +134,7 @@ public class OrchestratorTest extends EnvVariablesSetter {
         System.out.println(platforms.size()+" platforms returned");
     }
 
-    @Ignore
+    //@Ignore
     @Test
     public void getAllObservablePropertiesTest() throws Exception {
 
@@ -142,14 +143,14 @@ public class OrchestratorTest extends EnvVariablesSetter {
         System.out.println(items.size()+" ObservableProperties returned");
     }
 
-    @Ignore
+    //@Ignore
     @Test
     public void getStreamByCustomQueryTest() {
         List<IoTStream> streams = orchestrator.getStreams("SELECT ?s ?p ?o WHERE { ?s ?p ?o . FILTER(?p=<http://www.w3.org/ns/sosa/madeBySensor> && ?o=<http://purl.org/iot/ontology/iot-stream#Sensor_FIBARO+Wall+plug+living+room_CurrentEnergyUse>) }");
         String abc="213";
     }
 
-    @Ignore
+    //@Ignore
     @Test
     public void getCustomEntityTest() throws Exception {
         List<EntityLD> models = orchestrator.getEntities("http://www.agtinternational.com/ontologies/SmartHome#IoTDevice", 0);
@@ -159,7 +160,7 @@ public class OrchestratorTest extends EnvVariablesSetter {
 
 
 
-    @Ignore
+    //@Ignore
     @Test
     public void subscribeTest() throws Exception {
         byte[] iotStreamModelJson = Files.readAllBytes(Paths.get("samples/IoTStream.json"));
@@ -185,7 +186,7 @@ public class OrchestratorTest extends EnvVariablesSetter {
 
 
 
-    @Ignore
+    //@Ignore
     @Test
     public void subscribeMultipleTest() throws Exception {
 
@@ -234,7 +235,7 @@ public class OrchestratorTest extends EnvVariablesSetter {
 //    }
 
 
-    @Ignore
+    //@Ignore
     @Test
     public void pushObservationsTest() throws Exception {
         byte[] model = Files.readAllBytes(Paths.get("samples/Observation.json"));
@@ -244,7 +245,7 @@ public class OrchestratorTest extends EnvVariablesSetter {
         String abc = "abc";
     }
 
-    @Ignore
+    //@Ignore
     @Test
     public void getObservationsTest() throws Exception {
         List<StreamObservation> list = orchestrator.getObservations("iotc:Stream_Z-Wave+Node+002%3A+FGWP102+Metered+Wall+Plug+Switch_Alarm+%28power%29",1);

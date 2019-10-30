@@ -16,7 +16,7 @@
 //    public void init(Boolean useCachedImage) throws Exception {
 //
 //        orchestatorDockerizerBuilder = new BuildBasedDockersBuilder("iotc-dockerizer")
-//                                    .dockerfilePath("Dockerfile")
+//                                    .dockerfilePath("Dockerfile_notUsed")
 //                                    .imageName("iotcrawler/orchestrator")
 //                                    .useCachedImage(useCachedImage);
 //

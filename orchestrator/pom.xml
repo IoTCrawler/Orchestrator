@@ -254,10 +254,11 @@
                         <image>java</image>
                     </from>
                     <to>
-                        <image>localhost:5000/${project.name}:${project.version}</image>
+                        <!--<image>localhost:5000/${project.name}:${project.version}</image>-->
+                        <image>gitlab.iotcrawler.net:4567/${project.name}/${project.name}:${project.version}</image>
                         <auth>
-                            <username></username>
-                            <username></username>
+                            <!--<username></username>-->
+                            <!--<password></password>-->
                         </auth>
                         <!-- optional: create a tag based on the git commit id (via the git-commit-id plugin): -->
                         <!--<tags>-->

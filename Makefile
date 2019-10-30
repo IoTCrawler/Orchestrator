@@ -15,3 +15,6 @@ start:
 	
 test-orchestrator:
 	cd orchestrator && make test
+
+test-fiware-clients:
+	cd fiware/clients && make test

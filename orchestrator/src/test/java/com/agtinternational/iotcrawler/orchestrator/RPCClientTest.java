@@ -34,7 +34,7 @@ public class RPCClientTest extends EnvVariablesSetter {
     @Before
     public void init(){
         super.init();
-        orchestrator = new Orchestrator();
+        //orchestrator = new Orchestrator();
         rpcClient = new OrchestratorRPCClient();
         try {
             if(orchestrator!=null)
@@ -94,7 +94,6 @@ public class RPCClientTest extends EnvVariablesSetter {
         System.out.println(streams.size()+" streams returned");
     }
 
-    @Ignore
     @Test
     public void getStreamByIdTest() throws Exception {
 
@@ -112,7 +111,6 @@ public class RPCClientTest extends EnvVariablesSetter {
         System.out.println(streams.size()+" streams returned");
     }
 
-    @Ignore
     @Test
     public void getAllSensorsTest() throws Exception {
 
@@ -121,7 +119,7 @@ public class RPCClientTest extends EnvVariablesSetter {
         System.out.println(sensors.size()+" sensors returned");
     }
 
-    @Ignore
+
     @Test
     public void getAllPlatformsTest() throws Exception {
 
@@ -130,7 +128,6 @@ public class RPCClientTest extends EnvVariablesSetter {
         System.out.println(platforms.size()+" platforms returned");
     }
 
-    @Ignore
     @Test
     public void getAllObservablePropertiesTest() throws Exception {
 
@@ -139,7 +136,7 @@ public class RPCClientTest extends EnvVariablesSetter {
         System.out.println(items.size()+" ObservableProperties returned");
     }
 
-    @Ignore
+
     @Test
     public void getStreamByCustomQueryTest() throws Exception {
         List<IoTStream> streams = rpcClient.getStreams("SELECT ?s ?p ?o WHERE { ?s ?p ?o . FILTER(?p=<http://www.w3.org/ns/sosa/madeBySensor> && ?o=<http://purl.org/iot/ontology/iot-stream#Sensor_FIBARO+Wall+plug+living+room_CurrentEnergyUse>) }");
@@ -147,7 +144,6 @@ public class RPCClientTest extends EnvVariablesSetter {
     }
 
 
-    @Ignore
     @Test
     public void subscribeTest() throws Exception {
         byte[] iotStreamModelJson = Files.readAllBytes(Paths.get("samples/IoTStream.json"));
@@ -235,7 +231,7 @@ public class RPCClientTest extends EnvVariablesSetter {
         String abc = "abc";
     }
 
-    @Ignore
+
     @Test
     public void getObservationsTest() throws Exception {
         List<StreamObservation> list = rpcClient.getObservations("streamId",1);

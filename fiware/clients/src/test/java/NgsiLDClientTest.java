@@ -1,25 +1,17 @@
-import com.agtinternational.iotcrawler.fiware.clients.NgsiLDRestTemplate;
 import com.agtinternational.iotcrawler.fiware.clients.NGSILD;
 import com.agtinternational.iotcrawler.fiware.clients.NgsiLDClient;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import com.agtinternational.iotcrawler.fiware.models.NGSILD.Property;
 import com.agtinternational.iotcrawler.fiware.models.NGSILD.Relationship;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.orange.ngsi2.model.*;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.client.HttpComponentsAsyncClientHttpRequestFactory;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
-import org.springframework.web.client.AsyncRestTemplate;
 
-import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -31,19 +23,20 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 
+
 /**
  * Tests for Ngsi2Client
  */
 @RunWith(Parameterized.class)
 public class NgsiLDClientTest {
 
+    public static String NGSILD_BROKER_URL = "NGSILD_BROKER_URL";
     //private final static String serverUrl = "http://10.67.1.41:1026/";
     //String serverUrl = "http://155.54.95.248:9090/ngsi-ld/";
     String serverUrl = "http://localhost:3000/ngsi-ld/";
 
     private NgsiLDClient ngsiLdClient;
     private EntityLD entity;
-
 
 
     @Rule
@@ -56,8 +49,8 @@ public class NgsiLDClientTest {
     public static Collection parameters() throws Exception {
         return Arrays.asList(new Object[][]{
                 //new Object[]{ createEntity() },
-                //new Object[]{ readEntity("samples/Vehicle.json") },
-                new Object[]{ readEntity("samples/IoTStream.json") },
+                new Object[]{ readEntity("samples/Vehicle.json") },
+                //new Object[]{ readEntity("samples/IoTStream.json") },
                 //new Object[]{ readEntity("samples/TemperatureSensor.json") }
                 //new Object[]{ readEntity("samples/ObservableProperty.json") }
         });
@@ -69,6 +62,9 @@ public class NgsiLDClientTest {
 
     @Before
     public void init() throws Exception {
+
+        if (System.getenv().containsKey(NGSILD_BROKER_URL))
+            serverUrl = System.getenv(NGSILD_BROKER_URL);
 
         ngsiLdClient = new NgsiLDClient(serverUrl);
         //ngsiLdClient = new NgsiLDClient(new CustomAsyncRestTemplate(new HttpComponentsAsyncClientHttpRequestFactory()), new NgsiLDRestTemplate(), serverUrl);
@@ -199,7 +195,7 @@ public class NgsiLDClientTest {
     }
 
 
-    @Order(6)
+    @Order(5)
     @Test
     public void getEntitityByQueryTest() throws ExecutionException, InterruptedException {
         Collection<String> types = Arrays.asList(new String[]{ entity.getType() });
@@ -210,7 +206,7 @@ public class NgsiLDClientTest {
         String test="123";
     }
 
-    @Order(7)
+    @Order(6)
     @Test
     public void getEntitityByGeoQueryTest() throws ExecutionException, InterruptedException {
         Collection<String> types = Arrays.asList(new String[]{ "http://example.org/pleyades/WeatherbitSensor" });
@@ -224,8 +220,7 @@ public class NgsiLDClientTest {
         String test="123";
     }
 
-    @Ignore
-    @Order(5)
+    @Order(7)
     @Test
     public void deleteEntityTest() throws ExecutionException, InterruptedException {
         Semaphore reqFinished = new Semaphore(0);

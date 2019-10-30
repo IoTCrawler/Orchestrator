@@ -18,5 +18,11 @@ start:
 	#export HTTP_SERVER_HOST=192.168.56.101 && java -cp target/orchestrator-1.0.7.jar com.agtinternational.iotcrawler.orchestrator.Orchestrator
 	export HTTP_SERVER_HOST=10.59.0.101 && export NGSILD_BROKER_URI=http://localhost:3000/ngsi-ld/ && export IOT_BROKER_URI=http://localhost:8060/ngsi10  && java -jar target/orchestrator-1.0.7.jar
 	
-test:
+test-orchestrator:
+	mvn -Dtest=OrchestratorTest#orchrestratorTest surefire:test
+
+test-rpc-client:
+	mvn -Dtest=RPCClientTest surefire:test
+
+test-remote:
 	mvn -Dtest=OrchestratorTest#orchrestratorTest surefire:test

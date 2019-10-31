@@ -23,8 +23,9 @@ if [ "$1" = "test-iot-broker-client" ]; then
 fi
 
 if [ "$1" = "test-ngsi-ld-client" ]; then
+    sh make.sh prepare-djane
     docker network create djanenet &
-    cd ~/djane && docker-compose up -d
+    #cd ~/djane && docker-compose up -d
     echo "Sleeping 15s before starting tests" && sleep 15
 	cd $__dir && mvn -Dtest=NgsiLDClientTest surefire:test
 	#mvn -Dtest=NgsiLDClientTest#addEntityTest surefire:test

@@ -22,7 +22,7 @@ build-image:
 configure-docker:
   stage: configure-docker
   script:
-    - cd orchestrator && make install-reqs
+    - make install-reqs
     
 tests: 
   stage: tests

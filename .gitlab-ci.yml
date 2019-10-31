@@ -29,5 +29,5 @@ tests:
   before_script:
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
-    - make test-fiware-clients
+    - sh make.sh test-fiware-clients
     #- make test-orchestrator

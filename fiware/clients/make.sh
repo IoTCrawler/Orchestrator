@@ -28,7 +28,7 @@ if [ "$1" = "test-ngsi-ld-client" ]; then
     sh make.sh prepare-djane
     docker network create djanenet &
     docker rm $(docker ps | awk '{print $1}') --force
-    docker-compose -f ~/djane/docker-compose.yml up
+    docker-compose -f ~/djane/docker-compose.yml up -d
     echo "Sleeping 15s before starting tests" && sleep 15
 	mvn -Dtest=NgsiLDClientTest test
 	#mvn -Dtest=NgsiLDClientTest#addEntityTest surefire:test

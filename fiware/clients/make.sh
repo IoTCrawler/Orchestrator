@@ -1,9 +1,12 @@
+__dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 if [ "$1" = "prepare-djane" ]; then
 	rm -rf ~/djane
 	cd ~ && git clone https://github.com/sensinov/djane.git
 	sed -i "s~if (attributename == '@context')~if (attributename == '@context11')~g" ~/djane/models/entityModel.js
 	sed -i "s~let authentication=true;~let authentication=false;~g" ~/djane/config/config.js
-	cd ~/djane && docker build . -t gitlab.iotcrawler.net:4567/core/djane:1.0.0
+	cd ~/djane && docker-compose build
+	#cd ~/djane && docker build . -t gitlab.iotcrawler.net:4567/core/djane:1.0.0
 fi
 
 if [ "$1" = "install" ]; then
@@ -17,13 +20,14 @@ if [ "$1" = "test-iot-broker-client" ]; then
 fi
 
 if [ "$1" = "test-ngsi-ld-client" ]; then
-    CID=$(docker run -d -p 3000:3000 gitlab.iotcrawler.net:4567/core/djane:1.0.0)
-	MID=$(docker run -d -p 27017:27017 -d mongo)
-    echo "Sleeping 15s" && sleep 15
-	mvn -Dtest=NgsiLDClientTest surefire:test
+    docker network create djanenet &
+    cd ~/djane && docker-compose up -d
+    echo "Sleeping 15s before starting tests" && sleep 15
+	cd $__dir && mvn -Dtest=NgsiLDClientTest surefire:test
 	#mvn -Dtest=NgsiLDClientTest#addEntityTest surefire:test
 	#mvn -Dtest=NgsiLDClientTest#updateEntityTest surefire:test
 	#mvn -Dtest=NgsiLDClientTest#getEntitiesTest surefire:test
-    #echo "Stopping djane $CID" && docker stop $CID &
+    cd ~/djane && docker-compose down
+	#echo "Stopping djane $CID" && docker stop $CID &
     #echo "Stopping mongo $MID" && docker stop $MID &
 fi 

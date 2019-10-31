@@ -1,6 +1,7 @@
 __dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 if [ "$1" = "prepare-djane" ]; then
 	sudo rm -rf ~/djane && sleep 2
+	ls ~/djane
 	git clone https://github.com/sensinov/djane.git ~/djane && sleep 2
 	cat ~/djane/docker-compose.yml
 	#sed -i "s~if (attributename == '@context')~if (attributename == '@context11')~g" ~/djane/models/entityModel.js

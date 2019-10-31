@@ -22,10 +22,11 @@ fi
 if [ "$1" = "test-ngsi-ld-client" ]; then
     #sh make.sh prepare-djane
     docker network create djanenet &
-    echo "Removing all running containers"
-    docker rm $(docker ps | awk '{print $1}') --force
     echo "Pulling needed images"
     docker-compose -f docker-compose.yml pull
+    echo "Removing all running containers"
+    docker rm $(docker ps | awk '{print $1}') --force
+    echo "Starting docker-compose"
     docker-compose -f docker-compose.yml up -d
     echo "Sleeping 15s before starting tests" && sleep 15
 	mvn -Dtest=NgsiLDClientTest test

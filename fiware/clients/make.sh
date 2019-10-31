@@ -1,8 +1,10 @@
 __dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 if [ "$1" = "prepare-djane" ]; then
-	rm -rf ~/djane && sleep 2
-	ls ~/djane
-	git clone https://github.com/sensinov/djane.git ~/djane
+	#rm -rf ~/djane && sleep 2
+	#ls ~/djane
+	#git clone https://github.com/sensinov/djane.git ~/djane
+	mkdir -p ~/djane
+	wget https://github.com/sensinov/djane/blob/master/docker-compose.yml -O ~/djane
 	sed -i "s~if (attributename == '@context')~if (attributename == '@context11')~g" ~/djane/models/entityModel.js
 	sed -i "s~let authentication=true;~let authentication=false;~g" ~/djane/config/config.js
 	sed -i "s~build: .~image: gitlab.iotcrawler.net:4567/core/djane:1.0.0~g" ~/djane/docker-compose.yml

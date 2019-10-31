@@ -3,7 +3,9 @@ import com.agtinternational.iotcrawler.fiware.clients.PatchedSouthBound;
 import eu.neclab.iotplatform.ngsi.api.datamodel.*;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.springframework.core.annotation.Order;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -74,6 +76,7 @@ public class IoTBrokerClientTest {
         return ret;
     }
 
+    @Order(1)
     @Test
     public void updateContextElement() throws Exception {
 
@@ -94,7 +97,7 @@ public class IoTBrokerClientTest {
         //queryContextElement(sensor.getEntityId());
     }
 
-
+    @Order(2)
     @Test
     public void queryContextElementTest(){
         QueryContextResponse response = queryContextElement(sensor.getEntityId());
@@ -115,6 +118,7 @@ public class IoTBrokerClientTest {
         return response;
     }
 
+    @Order(3)
     @Test
     public void queryAllContextElements(){
 
@@ -129,6 +133,7 @@ public class IoTBrokerClientTest {
     }
 
     //works, but no effect
+    @Order(4)
     @Test
     public void deleteContextElement() throws Exception {
 
@@ -155,6 +160,7 @@ public class IoTBrokerClientTest {
         queryContextElement(sensor.getEntityId());
     }
 
+    @Ignore
     @Test
     public void subscribeContextTest() throws DatatypeConfigurationException {
 
@@ -184,7 +190,7 @@ public class IoTBrokerClientTest {
         String abc="123";
     }
 
-
+    @Ignore
     @Test
     public void updateSubscribeContextTest() throws DatatypeConfigurationException {
 

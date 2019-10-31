@@ -15,7 +15,7 @@ services:
     networks:
       - iotcrawler
   ngsild-broker:
-    image: iotcrawler/djane:1.0.0
+    image: gitlab.iotcrawler.net:4567/orchestrator/djane:1.0.0
     networks:
       - iotcrawler
     ports:

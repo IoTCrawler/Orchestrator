@@ -4,7 +4,7 @@ if [ "$1" = "prepare-djane" ]; then
 	#ls ~/djane
 	#git clone https://github.com/sensinov/djane.git ~/djane
 	mkdir -p ~/djane
-	wget https://github.com/sensinov/djane/blob/master/docker-compose.yml -O ~/djane/docker-compose.yml
+	wget https://raw.githubusercontent.com/sensinov/djane/master/docker-compose.yml -O ~/djane/docker-compose.yml
 	#sed -i "s~if (attributename == '@context')~if (attributename == '@context11')~g" ~/djane/models/entityModel.js
 	#sed -i "s~let authentication=true;~let authentication=false;~g" ~/djane/config/config.js
 	sed -i "s~build: .~image: gitlab.iotcrawler.net:4567/core/djane:1.0.0~g" ~/djane/docker-compose.yml

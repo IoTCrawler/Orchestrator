@@ -1,6 +1,7 @@
 stages:
   - build-codes
   - build-image
+  - configure-docker
   - tests
 
 
@@ -16,6 +17,12 @@ build-image:
   script:
     - cd orchestrator && make build-image  
     - docker push $CI_REGISTRY_IMAGE:1.0.8
+    
+    
+configure-docker:
+  stage: configure-docker
+  script:
+    - cd orchestrator && make install-reqs
     
 tests: 
   stage: tests

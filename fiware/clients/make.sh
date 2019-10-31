@@ -13,13 +13,7 @@ if [ "$1" = "install" ]; then
 	mvn validate && mvn install -DskipTests=true
 fi
 
-if [ "$1" = "test-iot-broker-client" ]; then
-	docker run -d -t -p 8065:8065 -p 8060:8060 fiware/iotbroker:standalone-dev -p iotbroker_historicalagent="enabled"
-	mvn test IoTBrokerClientTest#updateContextElement
-	mvn test IoTBrokerClientTest#queryContextElementTest
-fi
-
-if [ "$1" = "test-ngsi-ld-client" ]; then
+if [ "$1" = "compose-up" ]; then
     #sh make.sh prepare-djane
     docker network create djanenet &
     echo "Pulling needed images"
@@ -28,14 +22,17 @@ if [ "$1" = "test-ngsi-ld-client" ]; then
     docker rm $(docker ps | awk '{print $1}') --force
     echo "Starting docker-compose"
     docker-compose -f docker-compose.yml up -d
-    echo "Sleeping 15s before starting tests" && sleep 15
-	mvn -Dtest=NgsiLDClientTest test
-	mvn -Dtest=IoTBrokerClientTest test
-	#mvn -Dtest=NgsiLDClientTest#addEntityTest surefire:test
-	#mvn -Dtest=NgsiLDClientTest#updateEntityTest surefire:test
-	#mvn -Dtest=NgsiLDClientTest#getEntitiesTest surefire:test
-    docker-compose -f docker-compose.yml down
-	#echo "Stopping djane $CID" && docker stop $CID &
-    #echo "Stopping mongo $MID" && docker stop $MID &
+    echo "Sleeping 15s to start services" && sleep 15
 fi 
 
+if [ "$1" = "test-ngsi-ld-client" ]; then
+	mvn -Dtest=NgsiLDClientTest test
+fi 
+
+if [ "$1" = "test-iot-broker-client" ]; then
+	mvn -Dtest=IoTBrokerClientTest test
+fi 
+
+if [ "$1" = "compose-down" ]; then
+    docker-compose -f docker-compose.yml down
+fi 

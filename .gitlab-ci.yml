@@ -21,13 +21,25 @@ stages:
     
 configure-docker:
   stage: configure-docker
-  script:
-    - make install-reqs
-    
-tests: 
-  stage: tests
   before_script:
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
-    - sh make.sh test-fiware-clients
-    #- make test-orchestrator
+    - make install-reqs
+    
+test-ngsi-ld-client: 
+  stage: tests
+  before_script:
+    - cd fiware/clients && sh make.sh compose-up
+  script:
+    - cd fiware/clients && sh make.sh test-fiware-clients
+  after_script:
+    - cd fiware/clients && sh make.sh compose-down
+    
+test-iot-broker-client: 
+  stage: tests
+  before_script:
+    - cd fiware/clients && sh make.sh compose-up
+  script:
+    - cd fiware/clients && sh make.sh iot-broker-client
+  after_script:
+    - cd fiware/clients && sh make.sh compose-down    

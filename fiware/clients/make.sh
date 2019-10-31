@@ -1,6 +1,6 @@
 __dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 if [ "$1" = "prepare-djane" ]; then
-	#sudo rm -rf ~/djane && sleep 2
+	sudo rm -rf ~/djane && sleep 3
 	ls ~/djane
 	git clone https://github.com/sensinov/djane.git ~/djane
 	sed -i "s~if (attributename == '@context')~if (attributename == '@context11')~g" ~/djane/models/entityModel.js

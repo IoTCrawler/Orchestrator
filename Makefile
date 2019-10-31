@@ -4,7 +4,6 @@ install:
 	#cd orchestrator && make package
 
 install-reqs:
-	cd fiware/clients && make prepare-djane
 	cd orchestrator && make install-reqs
 start:
 	cd orchestrator && docker-compose up &

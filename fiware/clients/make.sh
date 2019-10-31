@@ -31,6 +31,7 @@ if [ "$1" = "test-ngsi-ld-client" ]; then
     docker-compose -f ~/djane/docker-compose.yml up -d
     echo "Sleeping 15s before starting tests" && sleep 15
 	mvn -Dtest=NgsiLDClientTest test
+	mvn -Dtest=IoTBrokerClientTest test
 	#mvn -Dtest=NgsiLDClientTest#addEntityTest surefire:test
 	#mvn -Dtest=NgsiLDClientTest#updateEntityTest surefire:test
 	#mvn -Dtest=NgsiLDClientTest#getEntitiesTest surefire:test

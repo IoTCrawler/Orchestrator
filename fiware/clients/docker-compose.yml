@@ -1,34 +1,37 @@
-version: "3.1"
+version: '3'
+
 services:
-  mongo-db:
-    image: mongo:3.6
-    hostname: mongo-db
-    container_name: db-mongo
-    ports:
+  mongo:
+    image: mongo:4.0.9-xenial
+    restart: always
+    volumes:
+      - ./data/db:/data/db
+    ports: 
       - "27017:27017"
     networks:
-      - default
-    command: --bind_ip_all --smallfiles
-    volumes:
-      - mongo-db:/data
+      - djanenetwork
 
-  orion:
-    image: fiware/orion:2.0.0
-    hostname: orion
-    container_name: fiware-orion
-    depends_on:
-      - mongo-db
+  djane: 
+    image: gitlab.iotcrawler.net:4567/core/djane:1.0.0
+    depends_on: 
+      - mongo
+    environment:
+      DB_HOST: mongo
+    ports: 
+      - "3000:3000"
+    command: bash -c "./wait-for-it.sh mongo:27017 -t 30 -- npm run migrate && npm start"
+    networks: 
+      - djanenetwork
+
+  iotbroker:
+    image: fiware/iotbroker:standalone-dev
+    restart: always
+    command: "./iotbroker_dockerentrypoint.sh -p iotbroker_historicalagent='enabled'"
+    ports: 
+      - "8060:8060"
+      - "8065:8065"
     networks:
-      - default
-    ports:
-      - "1026:1026"
-    command: -dbhost mongo-db -logLevel DEBUG
+      - djanenetwork
 
 networks:
-  default:
-    ipam:
-      config:
-        - subnet: 172.22.1.0/24
-
-volumes:
-  mongo-db:
+  djanenetwork: 

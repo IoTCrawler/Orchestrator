@@ -1,0 +1,10 @@
+node{
+    stage("Determine build file") {
+      String jenkinsFile = "orchestrator/Jenkinsfile"
+        withEnv(["BASE_WORKSPACE=${env.WORKSPACE}"]) {
+            sh 'rm -rf orchestrator'
+            sh 'cp -R /mnt/share/orchestrator orchestrator'
+            load jenkinsFile
+        }
+    }
+}

@@ -13,6 +13,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.util.Assert;
 
 import java.io.IOException;
@@ -24,7 +27,7 @@ import java.util.function.Function;
 
 import static com.agtinternational.iotcrawler.core.Constants.iotcNS;
 
-
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class RPCClientTest extends EnvVariablesSetter {
 
     OrchestratorRPCClient rpcClient;
@@ -65,6 +68,7 @@ public class RPCClientTest extends EnvVariablesSetter {
             orchestrator.close();
     }
 
+    @Order(1)
     @Test
     public void registerStreamTest() throws Exception {
         byte[] iotStreamModelJson = Files.readAllBytes(Paths.get("samples/IoTStream.json"));
@@ -74,6 +78,7 @@ public class RPCClientTest extends EnvVariablesSetter {
         Assert.isTrue(result);
     }
 
+    @Order(2)
     @Test
     public void registerEntityTest() throws Exception {
         byte[] iotStreamModelJson = Files.readAllBytes(Paths.get("samples/Platform.json"));
@@ -84,7 +89,7 @@ public class RPCClientTest extends EnvVariablesSetter {
         Assert.isTrue(result);
     }
 
-    @Ignore
+    @Order(3)
     @Test
     public void getAllStreamsTest() throws Exception {
 
@@ -94,6 +99,7 @@ public class RPCClientTest extends EnvVariablesSetter {
         System.out.println(streams.size()+" streams returned");
     }
 
+    @Order(4)
     @Test
     public void getStreamByIdTest() throws Exception {
 
@@ -111,6 +117,7 @@ public class RPCClientTest extends EnvVariablesSetter {
         System.out.println(streams.size()+" streams returned");
     }
 
+    @Order(5)
     @Test
     public void getAllSensorsTest() throws Exception {
 
@@ -119,7 +126,7 @@ public class RPCClientTest extends EnvVariablesSetter {
         System.out.println(sensors.size()+" sensors returned");
     }
 
-
+    @Order(6)
     @Test
     public void getAllPlatformsTest() throws Exception {
 
@@ -128,6 +135,7 @@ public class RPCClientTest extends EnvVariablesSetter {
         System.out.println(platforms.size()+" platforms returned");
     }
 
+    @Order(7)
     @Test
     public void getAllObservablePropertiesTest() throws Exception {
 
@@ -136,14 +144,14 @@ public class RPCClientTest extends EnvVariablesSetter {
         System.out.println(items.size()+" ObservableProperties returned");
     }
 
-
+    @Ignore
     @Test
     public void getStreamByCustomQueryTest() throws Exception {
         List<IoTStream> streams = rpcClient.getStreams("SELECT ?s ?p ?o WHERE { ?s ?p ?o . FILTER(?p=<http://www.w3.org/ns/sosa/madeBySensor> && ?o=<http://purl.org/iot/ontology/iot-stream#Sensor_FIBARO+Wall+plug+living+room_CurrentEnergyUse>) }");
         String abc="213";
     }
 
-
+    @Ignore
     @Test
     public void subscribeTest() throws Exception {
         byte[] iotStreamModelJson = Files.readAllBytes(Paths.get("samples/IoTStream.json"));
@@ -231,7 +239,7 @@ public class RPCClientTest extends EnvVariablesSetter {
         String abc = "abc";
     }
 
-
+    @Ignore
     @Test
     public void getObservationsTest() throws Exception {
         List<StreamObservation> list = rpcClient.getObservations("streamId",1);

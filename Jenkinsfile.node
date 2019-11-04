@@ -1,9 +1,9 @@
 node{
-    stage("Determine build file") {
+    stage("Copying") {
       String jenkinsFile = "orchestrator/Jenkinsfile"
         withEnv(["BASE_WORKSPACE=${env.WORKSPACE}"]) {
-            sh 'rm -rf orchestrator'
-            sh 'cp -R /mnt/share/orchestrator orchestrator'
+            sh 'mkdir -p orchestrator'
+            sh 'cp -R /mnt/share/orchestrator/Jenkinsfile orchestrator/Jenkinsfile'
             load jenkinsFile
         }
     }

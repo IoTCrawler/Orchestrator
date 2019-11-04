@@ -12,7 +12,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
         <slf4j.version>1.7.15</slf4j.version>
-        <junit.version>4.11</junit.version>
+        <junit.version>5</junit.version>
         <ngsi2.client.version>0.1.2-SNAPSHOT</ngsi2.client.version>
         <ngsi.api.version>7.1-SNAPSHOT</ngsi.api.version>
         <iotbroker.commons.version>7.1-SNAPSHOT</iotbroker.commons.version>
@@ -28,6 +28,12 @@
             <artifactId>system-rules</artifactId>
             <version>1.16.0</version>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -203,12 +209,27 @@
             <artifactId>slf4j-log4j12</artifactId>
             <version>${slf4j.version}</version>
         </dependency>
+
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.4.2</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.4.2</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!--<dependency>-->
+            <!--<groupId>junit</groupId>-->
+            <!--<artifactId>junit</artifactId>-->
+            <!--<version>${junit.version}</version>-->
+            <!--<scope>test</scope>-->
+        <!--</dependency>-->
 
     </dependencies>
 

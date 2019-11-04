@@ -528,7 +528,7 @@ public class RDFModel {
                          List list = new ArrayList();
                          list.add(value);
                          list.add(attribute);
-                         throw new NotImplementedException("List insertion not implemented for attributes");
+                         LOGGER.warn("List insertion not implemented for attributes. Skipping {}", attrName);
                          //attributes.put(attrName, list);
                      }
                 }else

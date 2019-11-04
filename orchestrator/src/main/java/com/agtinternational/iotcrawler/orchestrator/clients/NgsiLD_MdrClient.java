@@ -17,6 +17,7 @@ import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 import org.springframework.web.client.HttpClientErrorException;
 
+import javax.management.InstanceAlreadyExistsException;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
@@ -208,13 +209,11 @@ public class NgsiLD_MdrClient extends AbstractMetadataClient {
                 @Override
                 public void onFailure(Throwable throwable) {
                     if(throwable instanceof HttpClientErrorException && ((HttpClientErrorException) throwable).getStatusCode().value()==409) {
-                        Exception exception1 = new AlreadyExistsException("Entity "+entity.getId()+" already exists");
-                        LOGGER.debug(exception1.getLocalizedMessage());
-                        exception.add(exception1);
+                        Exception exception1 = new InstanceAlreadyExistsException();
+                        LOGGER.debug("Entity {} already exists", entity.getId());
                     }else{
-                        LOGGER.error("Failed to add entity {}: {}", entity.getId(), throwable.getLocalizedMessage());
-                        exception.add(new Exception(throwable));
-                        throwable.printStackTrace();
+                        Exception e = new Exception("Failed to add entity "+ entity.getId()+": "+ throwable.getLocalizedMessage());
+                        exception.add(e);
                     }
                     ret.add(false);
                     reqFinished.release();
@@ -222,13 +221,16 @@ public class NgsiLD_MdrClient extends AbstractMetadataClient {
 
             });
             reqFinished.acquire();
-        }catch (Exception e){
+        }catch (InstanceAlreadyExistsException e){
+            LOGGER.warn(e.getLocalizedMessage());
+        }
+        catch (Exception e){
             LOGGER.error("Failed to register entity: {}", e.getLocalizedMessage());
             e.printStackTrace();
             throw e;
         }
-        if(exception.size()>0)
-            throw exception.get(0);
+//        if(exception.size()>0)
+//            throw exception.get(0);
         return ret.get(0);
     }
 

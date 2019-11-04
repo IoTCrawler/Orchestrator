@@ -8,15 +8,23 @@ prepare-djane:
 install:
 	mvn validate && mvn install -DskipTests=true
 
-test-iot-broker-client:
-	docker run -d -t -p 8065:8065 -p 8060:8060 fiware/iotbroker:standalone-dev -p iotbroker_historicalagent="enabled"
-	mvn test IoTBrokerClientTest#updateContextElement
-	mvn test IoTBrokerClientTest#queryContextElementTest
+start-containers:
+	make stop-containers
+	docker network create djanenet &
+	echo "Pulling needed images"
+	docker-compose pull
+	echo "Starting docker-compose"
+	docker-compose -f docker-compose.yml up -d
 
-test-ngsi-ld-client:
-	docker run -d --network host -p 3000:3000 iotcrawler/djane:1.0.0
-	mvn -Dtest=NgsiLDClientTest surefire:test
+ngsi-ld-client-test:
+	mvn -Dtest=NgsiLDClientTest test
 	#mvn -Dtest=NgsiLDClientTest#addEntityTest surefire:test
 	#mvn -Dtest=NgsiLDClientTest#updateEntityTest surefire:test
 	#mvn -Dtest=NgsiLDClientTest#getEntitiesTest surefire:test
-	CID=$(docker ps | grep djane | awk '{print $1}') && echo "Stopping $CID" && docker stop $CID
+
+iot-broker-client-test:
+	mvn -Dtest=IoTBrokerClientTest test
+
+stop-containers:
+	echo "Stopping running containers"	
+	docker-compose down

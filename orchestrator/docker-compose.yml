@@ -14,46 +14,48 @@ services:
       - "3001:3001"
     networks:
       - iotcrawler
-  ngsild-broker:
+  djane:
     image: gitlab.iotcrawler.net:4567/core/djane:1.0.0
-    networks:
-      - iotcrawler
     ports:
       - "3000:3000"
+    networks:
+      - iotcrawler
   mongo:
     image: mongo
     volumes:
       - $PWD/data=/data/db
-    networks:
-      - iotcrawler
     ports:
       - "27017:27017"
+    networks:
+      - iotcrawler
   iotbroker:
     image: fiware/iotbroker:standalone-dev
     environment:
       - iotbroker_historicalagent=enabled
-    networks:
-      - iotcrawler
     ports:
       - "8060:8060"
       - "8065:8065"
-  rabbit:
-    image: rabbitmq:management
     networks:
       - iotcrawler
+
+  rabbit:
+    image: rabbitmq:management
     ports:
       - "15672:15672"
       - "5672:5672"
+    networks:
+      - iotcrawler
 
   redis:
     image: redis:4.0.7
     volumes:
       - ./config/redis-db:/data
     command: ["redis-server", "/data/redis.conf"]
-    networks:
-      - iotcrawler
     ports:
       - "6379:6379"
+    networks:
+      - iotcrawler
+
 networks:
   iotcrawler:
     external:

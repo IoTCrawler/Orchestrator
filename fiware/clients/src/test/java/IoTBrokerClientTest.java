@@ -5,6 +5,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -19,8 +23,10 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class IoTBrokerClientTest {
 
+    private Logger LOGGER = LoggerFactory.getLogger(this.getClass());
     //private final static String serverUrl = "http://localhost:8060/ngsi9";
     //private final static String serverUrl = "http://localhost:8065";
     private final static String serverUrl = "http://localhost:8060/ngsi10";
@@ -76,10 +82,10 @@ public class IoTBrokerClientTest {
         return ret;
     }
 
-    @Order(1)
     @Test
-    public void updateContextElement() throws Exception {
-
+    @Order(1)
+    public void updateContextElementTest() throws Exception {
+        LOGGER.info("updateContextElementTest");
         //ContextElement sensor = initSensor();
 
         //ContextElement sensor = initLightSensor();
@@ -97,9 +103,11 @@ public class IoTBrokerClientTest {
         //queryContextElement(sensor.getEntityId());
     }
 
-    @Order(2)
+
     @Test
+    @Order(2)
     public void queryContextElementTest(){
+        LOGGER.info("queryContextElementTest");
         QueryContextResponse response = queryContextElement(sensor.getEntityId());
         if(response.getErrorCode()!=null)
             Assert.fail(response.getErrorCode().toJsonString());
@@ -118,10 +126,11 @@ public class IoTBrokerClientTest {
         return response;
     }
 
-    @Order(3)
-    @Test
-    public void queryAllContextElements(){
 
+    @Test
+    @Order(3)
+    public void queryAllContextElementsTest(){
+        LOGGER.info("queryAllContextElementsTest");
         QueryContextRequest request = new QueryContextRequest();
         request.setEntityIdList(Arrays.asList(new EntityId[]{ new EntityId(){{  setId(".*"); setIsPattern(true); }} }));
 
@@ -133,10 +142,10 @@ public class IoTBrokerClientTest {
     }
 
     //works, but no effect
-    @Order(4)
     @Test
-    public void deleteContextElement() throws Exception {
-
+    @Order(4)
+    public void deleteContextElementTest() throws Exception {
+        LOGGER.info("deleteContextElementTest");
         //ContextElement sensor = initLightSensor();
         ContextElement sensor = initSensor();
 
@@ -163,7 +172,7 @@ public class IoTBrokerClientTest {
     @Ignore
     @Test
     public void subscribeContextTest() throws DatatypeConfigurationException {
-
+        LOGGER.info("subscribeContextTest");
         //ContextElement sensor = initSensor();
 
         CustomSubscribeContextRequest request = new CustomSubscribeContextRequest();
@@ -193,7 +202,7 @@ public class IoTBrokerClientTest {
     @Ignore
     @Test
     public void updateSubscribeContextTest() throws DatatypeConfigurationException {
-
+        LOGGER.info("updateSubscribeContextTest");
         String subscriptionId = "f072c-c4a26-6AcC6-c1419-4020b-80b22d917f72407296c";
         //ContextElement sensor = initSensor();
         UpdateContextSubscriptionRequest request = new UpdateContextSubscriptionRequest();

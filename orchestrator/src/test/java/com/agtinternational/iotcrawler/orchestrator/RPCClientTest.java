@@ -16,6 +16,8 @@ import org.junit.Test;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
 import java.io.IOException;
@@ -29,6 +31,8 @@ import static com.agtinternational.iotcrawler.core.Constants.iotcNS;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class RPCClientTest extends EnvVariablesSetter {
+
+    private Logger LOGGER = LoggerFactory.getLogger(OrchestratorTest.class);
 
     OrchestratorRPCClient rpcClient;
     Orchestrator orchestrator;
@@ -62,15 +66,12 @@ public class RPCClientTest extends EnvVariablesSetter {
 
     }
 
-    @After
-    public void close() throws IOException {
-        if(orchestrator!=null)
-            orchestrator.close();
-    }
+
 
     @Order(1)
     @Test
     public void registerStreamTest() throws Exception {
+        LOGGER.debug("registerStreamTest()");
         byte[] iotStreamModelJson = Files.readAllBytes(Paths.get("samples/IoTStream.json"));
         IoTStream ioTStream = IoTStream.fromJson(iotStreamModelJson);
         //ioTStream.addProperty(RDFS.label, "label1");
@@ -81,6 +82,7 @@ public class RPCClientTest extends EnvVariablesSetter {
     @Order(2)
     @Test
     public void registerEntityTest() throws Exception {
+        LOGGER.debug("registerEntityTest()");
         byte[] iotStreamModelJson = Files.readAllBytes(Paths.get("samples/Platform.json"));
         //byte[] iotStreamModelJson = Files.readAllBytes(Paths.get("samples/IoTStream.json"));
         RDFModel entity = RDFModel.fromJson(iotStreamModelJson);
@@ -92,7 +94,7 @@ public class RPCClientTest extends EnvVariablesSetter {
     @Order(3)
     @Test
     public void getAllStreamsTest() throws Exception {
-
+        LOGGER.debug("getAllStreamsTest()");
         List<IoTStream> streams = rpcClient.getStreams(0);
         //streams.get(0).getSensorUri();
         Assert.notNull(streams);
@@ -102,7 +104,7 @@ public class RPCClientTest extends EnvVariablesSetter {
     @Order(4)
     @Test
     public void getStreamByIdTest() throws Exception {
-
+        LOGGER.debug("getStreamByIdTest()");
 //        FilteringSelector selector=new FilteringSelector.Builder()
 //        //.subject("http://purl.org/iot/ontology/iot-stream#gateway_00055110D732_device_8_sensor_64_stream")
 //        //.subject("iotc:gateway_00055110D732_device_8_sensor_64_stream")
@@ -120,7 +122,7 @@ public class RPCClientTest extends EnvVariablesSetter {
     @Order(5)
     @Test
     public void getAllSensorsTest() throws Exception {
-
+        LOGGER.debug("getAllSensorsTest()");
         List<Sensor> sensors = rpcClient.getSensors(0);
         Assert.notNull(sensors);
         System.out.println(sensors.size()+" sensors returned");
@@ -129,7 +131,7 @@ public class RPCClientTest extends EnvVariablesSetter {
     @Order(6)
     @Test
     public void getAllPlatformsTest() throws Exception {
-
+        LOGGER.debug("getAllPlatformsTest()");
         List<IoTPlatform> platforms = rpcClient.getPlatforms(0);
         Assert.notNull(platforms);
         System.out.println(platforms.size()+" platforms returned");
@@ -138,7 +140,7 @@ public class RPCClientTest extends EnvVariablesSetter {
     @Order(7)
     @Test
     public void getAllObservablePropertiesTest() throws Exception {
-
+        LOGGER.debug("getAllObservablePropertiesTest()");
         List<ObservableProperty> items = rpcClient.getObservableProperties(0);
         Assert.notNull(items);
         System.out.println(items.size()+" ObservableProperties returned");
@@ -147,13 +149,15 @@ public class RPCClientTest extends EnvVariablesSetter {
     @Ignore
     @Test
     public void getStreamByCustomQueryTest() throws Exception {
+        LOGGER.debug("getStreamByCustomQueryTest()");
         List<IoTStream> streams = rpcClient.getStreams("SELECT ?s ?p ?o WHERE { ?s ?p ?o . FILTER(?p=<http://www.w3.org/ns/sosa/madeBySensor> && ?o=<http://purl.org/iot/ontology/iot-stream#Sensor_FIBARO+Wall+plug+living+room_CurrentEnergyUse>) }");
         String abc="213";
     }
 
-    @Ignore
+    @Order(8)
     @Test
     public void subscribeTest() throws Exception {
+        LOGGER.debug("subscribeTest()");
         byte[] iotStreamModelJson = Files.readAllBytes(Paths.get("samples/IoTStream.json"));
         IoTStream ioTStream = IoTStream.fromJson(iotStreamModelJson);
         //IoTStream iotObservationModel = IoTStream.fromJson(iotStreamModel);
@@ -163,7 +167,7 @@ public class RPCClientTest extends EnvVariablesSetter {
         String attributeUri = "http://www.agtinternational.com/iotcrawler/ontologies/iotc#current_value";
         String[] attributes = new String[]{ attributeUri };
         NotifyCondition notifyCondition = new NotifyCondition(NotifyConditionEnum.ONCHANGE, Arrays.asList(attributes), null);
-        rpcClient.subscribeTo(entityUri, attributes, Arrays.asList(new NotifyCondition[]{ notifyCondition }), new Restriction(),
+        String subcriptionId = rpcClient.subscribeTo(entityUri, attributes, Arrays.asList(new NotifyCondition[]{ notifyCondition }), new Restriction(),
                 new Function<StreamObservation, Void>() {
                     @Override
                     public Void apply(StreamObservation streamObservation){
@@ -171,9 +175,11 @@ public class RPCClientTest extends EnvVariablesSetter {
                         return null;
                     }
                 });
-        long until = System.currentTimeMillis()+60000;
-        while(System.currentTimeMillis()<until)
-            Thread.sleep(1000);
+
+//        long until = System.currentTimeMillis()+60000;
+//        while(System.currentTimeMillis()<until)
+//            Thread.sleep(1000);
+        Assert.notNull(subcriptionId);
     }
 
     @Ignore
@@ -223,10 +229,10 @@ public class RPCClientTest extends EnvVariablesSetter {
 //
 //    }
 
-
-    @Ignore
+    @Order(9)
     @Test
     public void pushObservationsTest() throws Exception {
+        LOGGER.debug("pushObservationsTest()");
         byte[] model = new byte[0];
         try {
             model = Files.readAllBytes(Paths.get("samples/Observation.json"));
@@ -239,11 +245,12 @@ public class RPCClientTest extends EnvVariablesSetter {
         String abc = "abc";
     }
 
-    @Ignore
+    @Order(10)
     @Test
     public void getObservationsTest() throws Exception {
+        LOGGER.debug("pushObservationsTest()");
         List<StreamObservation> list = rpcClient.getObservations("streamId",1);
-        list.get(0).getModel();
+        //list.get(0).getModel();
         String abc = "abc";
     }
 
@@ -257,4 +264,9 @@ public class RPCClientTest extends EnvVariablesSetter {
 //        rpcClient.pushObservationsToIoTBroker(list);
 //    }
 
+    @After
+    public void close() throws IOException {
+        if(orchestrator!=null)
+            orchestrator.close();
+    }
 }

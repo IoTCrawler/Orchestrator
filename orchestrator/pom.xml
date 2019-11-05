@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.agtinternational.iotcrawler</groupId>
     <artifactId>orchestrator</artifactId>
-    <version>1.0.8</version>
+    <version>1.0.9</version>
     <packaging>jar</packaging>
     <organization>
         <name>AGT International</name>
@@ -175,11 +175,11 @@
             <!--<version>7.1-SNAPSHOT</version>-->
         <!--</dependency>-->
 
-        <dependency>
-            <groupId>eu.neclab.iotplatform</groupId>
-            <artifactId>ngsi.api</artifactId>
-            <version>7.1-SNAPSHOT</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>eu.neclab.iotplatform</groupId>-->
+            <!--<artifactId>ngsi.api</artifactId>-->
+            <!--<version>7.1-SNAPSHOT</version>-->
+        <!--</dependency>-->
 
         <dependency>
             <groupId>com.google.code.gson</groupId>

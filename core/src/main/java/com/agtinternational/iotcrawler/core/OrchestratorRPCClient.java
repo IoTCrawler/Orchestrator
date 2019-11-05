@@ -12,23 +12,19 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.rabbitmq.client.*;
 import eu.neclab.iotplatform.ngsi.api.datamodel.*;
-import org.apache.jena.atlas.iterator.Action;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Semaphore;
 import java.util.function.Function;
 
-import static com.agtinternational.iotcrawler.core.Constants.COMMANDS_EXCHANGE_NAME;
+import static com.agtinternational.iotcrawler.core.Constants.IOTCRAWLER_COMMANDS_EXCHANGE;
 import static com.agtinternational.iotcrawler.core.Constants.*;
 
 
@@ -57,29 +53,73 @@ public class OrchestratorRPCClient implements AbstractIotCrawlerClient, AutoClos
 
         parser = new JsonParser();
 
-        connection = factory.newConnection();
-        channel = connection.createChannel();
-
-        String queueName = channel.queueDeclare().getQueue();
-        //channel.exchangeDeclare(COMMANDS_EXCHANGE_NAME, "fanout", false, true, null);
-        channel.queueBind(queueName, COMMANDS_EXCHANGE_NAME, "");
-
-        rabbitRpcClient = RabbitRpcClient.create(connection, COMMANDS_EXCHANGE_NAME);
-
-        consumer = new DefaultConsumer(channel) {
-            @Override
-            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
-                try {
-                    handleCmd(body, properties.getReplyTo());
-                } catch (Exception e) {
-                    LOGGER.error("Exception while trying to handle incoming command.", e);
-                }
+        int attempt = 0;
+        while (connection==null && attempt<12){
+            LOGGER.debug("Trying connect to Rabbit");
+            attempt++;
+            try {
+                connection = factory.newConnection();
+            } catch (Exception e) {
+                LOGGER.error("Failed to init rabbit connection. Trying another attempt ({} or {})", attempt, 12);
+                e.printStackTrace();
             }
-        };
+            if(connection==null)
+                Thread.sleep(5000);
+        }
+
+        if(connection==null)
+            throw new Exception("No connection to Rabbit established in "+attempt+" attempts");
 
 
-        channel.basicConsume(queueName, true, consumer);
+        String queueName=null;
 
+        attempt=0;
+        while(rabbitRpcClient==null && attempt<2) {
+
+            channel = connection.createChannel();
+            queueName = channel.queueDeclare().getQueue();
+
+            try {
+                if(attempt>0) {
+                    LOGGER.debug("Trying to create exchange {}", IOTCRAWLER_COMMANDS_EXCHANGE);
+                    channel.exchangeDeclare(IOTCRAWLER_COMMANDS_EXCHANGE, "fanout", false, true, null);
+                }
+
+                LOGGER.debug("Trying to bind the queue {} to exchange {}", queueName, IOTCRAWLER_COMMANDS_EXCHANGE);
+                channel.queueBind(queueName, IOTCRAWLER_COMMANDS_EXCHANGE, "");
+                LOGGER.debug("Initing RabbitRpcClient");
+                rabbitRpcClient = RabbitRpcClient.create(connection, IOTCRAWLER_COMMANDS_EXCHANGE);
+                rabbitRpcClient.setMaxWaitingTime(3000);
+            } catch (IOException e) {
+
+            } catch (Exception e) {
+                LOGGER.debug("Failed to bind to queue, will create it and try again");
+                e.printStackTrace();
+                break;
+            }
+            attempt++;
+
+        }
+
+        try {
+            LOGGER.debug("Initing queue consumer");
+            consumer = new DefaultConsumer(channel) {
+                @Override
+                public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
+                    try {
+                        handleCmd(body, properties.getReplyTo());
+                    } catch (Exception e) {
+                        LOGGER.error("Exception while trying to handle incoming command.", e);
+                    }
+                }
+            };
+
+            channel.basicConsume(queueName, true, consumer);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            LOGGER.error("Failed to init consumer");
+        }
 
         //callFinishedMutex = new Semaphore(0);
     }
@@ -336,8 +376,8 @@ public class OrchestratorRPCClient implements AbstractIotCrawlerClient, AutoClos
                     result2 = response.take();
                     channel.basicCancel(ctag);
                 } catch (Exception e) {
-                    LOGGER.error("Failed to consume/cancel response: {}", e.getLocalizedMessage());
                     e.printStackTrace();
+                    LOGGER.error("Failed to consume/cancel response: {}", e.getLocalizedMessage());
                 }
             }
         }).start();
@@ -357,7 +397,8 @@ public class OrchestratorRPCClient implements AbstractIotCrawlerClient, AutoClos
             e.printStackTrace();
         }
         LOGGER.debug("Waiting response from orchestrator");
-        byte[] response = rabbitRpcClient.request(COMMANDS_EXCHANGE_NAME, json.getBytes());
+
+        byte[] response = rabbitRpcClient.request(IOTCRAWLER_COMMANDS_EXCHANGE, json.getBytes());
         if(response==null)
             throw new Exception("Null response received");
         JsonArray result = (JsonArray) parseResponse(new String(response));
@@ -379,7 +420,7 @@ public class OrchestratorRPCClient implements AbstractIotCrawlerClient, AutoClos
 
         List<Exception> exceptions = new ArrayList<>();
         LOGGER.debug("Waiting response from orchestrator");
-        byte[] response = rabbitRpcClient.request(COMMANDS_EXCHANGE_NAME, command.toJson().getBytes());
+        byte[] response = rabbitRpcClient.request(IOTCRAWLER_COMMANDS_EXCHANGE, command.toJson().getBytes());
         if(response==null)
             throw new Exception("Null response received");
         parseResponse(new String(response));
@@ -390,7 +431,7 @@ public class OrchestratorRPCClient implements AbstractIotCrawlerClient, AutoClos
         List<String> ret = new ArrayList<>();
         List<Exception> exceptions = new ArrayList<>();
         LOGGER.debug("Waiting response from orchestrator");
-        byte[] response = rabbitRpcClient.request(COMMANDS_EXCHANGE_NAME, command.toJson().getBytes());
+        byte[] response = rabbitRpcClient.request(IOTCRAWLER_COMMANDS_EXCHANGE, command.toJson().getBytes());
 
         if(response==null)
             throw new Exception("Null response received");
@@ -404,7 +445,7 @@ public class OrchestratorRPCClient implements AbstractIotCrawlerClient, AutoClos
     private Boolean execute(PushObservationsCommand command) throws Exception{
         List<Exception> exceptions = new ArrayList<>();
         LOGGER.debug("Waiting response from orchestrator");
-        byte[] response = rabbitRpcClient.request(COMMANDS_EXCHANGE_NAME, command.toJson().getBytes());
+        byte[] response = rabbitRpcClient.request(IOTCRAWLER_COMMANDS_EXCHANGE, command.toJson().getBytes());
         if(response==null)
             throw new Exception("Null response received");
         parseResponse(new String(response));
@@ -422,7 +463,7 @@ public class OrchestratorRPCClient implements AbstractIotCrawlerClient, AutoClos
             e.printStackTrace();
         }
         LOGGER.debug("Waiting response from orchestrator");
-        byte[] response = rabbitRpcClient.request(COMMANDS_EXCHANGE_NAME, json.getBytes());
+        byte[] response = rabbitRpcClient.request(IOTCRAWLER_COMMANDS_EXCHANGE, json.getBytes());
         if(response==null)
             throw new Exception("Null response received");
 

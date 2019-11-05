@@ -77,12 +77,12 @@
             <!--&lt;!&ndash;<scope></scope>&ndash;&gt;-->
         <!--</dependency>-->
 
-        <!--&lt;!&ndash; https://mvnrepository.com/artifact/org.springframework/spring-web &ndash;&gt;-->
-        <!--<dependency>-->
-            <!--<groupId>org.springframework</groupId>-->
-            <!--<artifactId>spring-web</artifactId>-->
-            <!--<version>4.1.6.RELEASE</version>-->
-        <!--</dependency>-->
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-web -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>4.1.6.RELEASE</version>
+        </dependency>
 
 
         <!--&lt;!&ndash; https://mvnrepository.com/artifact/org.codehaus.jackson/jackson-core-asl &ndash;&gt;-->
@@ -174,7 +174,7 @@
             <exclusions>
                 <exclusion>
                     <groupId>org.springframework</groupId>
-                    <artifactId>spring-web</artifactId>
+                    <artifactId>org.springframework.web</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -183,6 +183,12 @@
             <groupId>eu.neclab.iotplatform</groupId>
             <artifactId>ngsi.api</artifactId>
             <version>${ngsi.api.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>org.springframework.web</artifactId>
+                </exclusion>
+            </exclusions>
             <!--<scope>provided</scope>-->
         </dependency>
 

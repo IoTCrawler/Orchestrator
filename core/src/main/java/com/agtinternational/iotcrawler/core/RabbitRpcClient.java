@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.io.IOUtils;
 import org.hobbit.core.data.RabbitQueue;
@@ -57,6 +58,10 @@ public class RabbitRpcClient implements Closeable {
      * for a response = {@value #DEFAULT_MAX_WAITING_TIME}ms.
      */
     private static final long DEFAULT_MAX_WAITING_TIME = 600000;
+
+    private static final int DEFAULT_MAX_WAITING_ATTEMPTS = 10;
+
+
 
     /**
      * Creates a StorageServiceClient using the given RabbitMQ
@@ -111,6 +116,8 @@ public class RabbitRpcClient implements Closeable {
      */
     private long maxWaitingTime = DEFAULT_MAX_WAITING_TIME;
 
+    private int maxWaitingAttempts = DEFAULT_MAX_WAITING_ATTEMPTS;
+
     /**
      * Initializes the client by declaring a request queue using the given
      * connection and queue name as well as a second queue and a consumer for
@@ -149,23 +156,39 @@ public class RabbitRpcClient implements Closeable {
 
     public byte[] request(String exchangeName, byte[] data) {
         byte[] response = null;
-        try {
-            String corrId = java.util.UUID.randomUUID().toString();
+        RabbitRpcClient.RabbitRpcRequest request = new RabbitRpcClient.RabbitRpcRequest();
 
-            BasicProperties props = new BasicProperties.Builder().correlationId(corrId).deliveryMode(2).replyTo(responseQueue.name).build();
-            RabbitRpcClient.RabbitRpcRequest request = new RabbitRpcClient.RabbitRpcRequest();
-            requestMapMutex.acquire();
-            currentRequests.put(corrId, request);
-            requestMapMutex.release();
 
-            if(exchangeName!=null)
-                requestQueue.channel.basicPublish(exchangeName, "", props, data);
-            else
-                requestQueue.channel.basicPublish("", requestQueue.name, props, data);
+        int attempt=0;
+        while (response==null && attempt<maxWaitingAttempts){
 
-            response = request.get(maxWaitingTime, TimeUnit.MILLISECONDS);
-        } catch (Exception e) {
-            LOGGER.error("Exception while sending query. Returning null.", e);
+            try {
+                String corrId = java.util.UUID.randomUUID().toString();
+
+                BasicProperties props = new BasicProperties.Builder().correlationId(corrId).deliveryMode(2).replyTo(responseQueue.name).build();
+                requestMapMutex.acquire();
+                currentRequests.put(corrId, request);
+                requestMapMutex.release();
+
+                if(exchangeName!=null)
+                    requestQueue.channel.basicPublish(exchangeName, "", props, data);
+                else
+                    requestQueue.channel.basicPublish("", requestQueue.name, props, data);
+            } catch (Exception e) {
+                LOGGER.error("Failed to publish query to queue.", e);
+            }
+
+            try {
+                response = request.get(maxWaitingTime, TimeUnit.MILLISECONDS);
+            }catch (TimeoutException e) {
+                attempt++;
+                LOGGER.debug("Waiting timeout expired. Trying another attempt ({} of {})", attempt, 10);
+            }
+            catch (Exception e) {
+                LOGGER.error("Exception while sending query", e);
+                e.printStackTrace();
+                break;
+            }
         }
         return response;
     }

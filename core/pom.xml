@@ -92,6 +92,12 @@
             <artifactId>ngsi.api</artifactId>
             <version>7.1-SNAPSHOT</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>com.springsource.com.fasterxml.jackson.core.jackson-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>

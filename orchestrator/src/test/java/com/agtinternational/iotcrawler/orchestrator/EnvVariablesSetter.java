@@ -22,8 +22,8 @@ public class EnvVariablesSetter {
 //        environmentVariables.set(Constants.TRIPLE_STORE_USER, "test");
 //        environmentVariables.set(Constants.TRIPLE_STORE_PASS, "xyzzy");
 
-        environmentVariables.set(Constants.NGSILD_BROKER_URI, "http://djane:3000/ngsi-ld/");
-        //environmentVariables.set(Constants.NGSILD_BROKER_URI, "http://155.54.95.248:9090/ngsi-ld/");
+        //environmentVariables.set(Constants.NGSILD_BROKER_URI, "http://djane:3000/ngsi-ld/");
+        environmentVariables.set(Constants.NGSILD_BROKER_URI, "http://155.54.95.248:9090/ngsi-ld/");
         //environmentVariables.set(Constants.IOT_BROKER_URI, "http://10.67.1.107:8060/ngsi10");
         environmentVariables.set(Constants.IOT_BROKER_URI, "http://iotbroker:8060/ngsi10");
 

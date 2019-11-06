@@ -150,7 +150,7 @@ public class NgsiLDClientTest extends EnvVariablesSetter{
     @Test
     public void getEntitityByIdTest() throws ExecutionException, InterruptedException {
         Collection<String> ids = Arrays.asList(new String[]{ entity.getId()  });
-        Collection<String> types = null;// Arrays.asList(new String[]{ entity.getType() });
+        Collection<String> types = Arrays.asList(new String[]{ entity.getType() });  //Scorpio requires type!
         Paginated<EntityLD> entities = ngsiLdClient.getEntities(ids, null, types, null, 0, 0, false).get();
         Assert.assertNotNull(entities.getItems());
         Assert.assertTrue(entities.getItems().get(0).toJsonObject().equals(entity.toJsonObject()));

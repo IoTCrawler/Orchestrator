@@ -75,14 +75,15 @@ public class NgsiLDConverter extends AbstractHttpMessageConverter<Object> implem
             }
         }else if(parsedObject instanceof List){
             for(Object object: (List)parsedObject)
-            try{
-                EntityLD entity = EntityLD.fromMapObject((Map)object);
-                ret.add(entity);
-            }
-            catch (Exception e){
-                LOGGER.error("Failed to convert object to EntityLD: {}", ((JsonElement)object).toString());
-                e.printStackTrace();
-            }
+                if(!((Map)object).isEmpty())
+                    try{
+                        EntityLD entity = EntityLD.fromMapObject((Map)object);
+                        ret.add(entity);
+                    }
+                    catch (Exception e){
+                        LOGGER.error("Failed to convert object to EntityLD: {}", ((JsonElement)object).toString());
+                        e.printStackTrace();
+                    }
         }else
             throw new NotImplementedException("Not implemented");
 

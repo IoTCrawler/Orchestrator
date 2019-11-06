@@ -1,6 +1,7 @@
 package com.agtinternational.iotcrawler.core;
 
 import com.agtinternational.iotcrawler.core.models.IoTStream;
+import com.agtinternational.iotcrawler.core.models.SosaPlatform;
 import com.agtinternational.iotcrawler.core.models.StreamObservation;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import com.agtinternational.iotcrawler.fiware.models.Utils;
@@ -46,17 +47,15 @@ public class ModelTests {
         IoTStream ioTStream = IoTStream.fromJson(iotStreamJson);
 
         EntityLD entityLD = ioTStream.toEntityLD();
-        String abc = "1233";
-//        String iotStreamJson2 = ioTStream.toJsonLDString();
-//        Files.write(Paths.get("target","IoTStream2.json"), iotStreamJson2.getBytes());
-//
-//        IoTStream ioTStream2 = IoTStream.fromJson(iotStreamJson);
-//
-//        String iotStreamJson3 = ioTStream2.toJsonLDString();
-//        Files.write(Paths.get("target","IoTStream3.json"), iotStreamJson3.getBytes());
+        String iotStreamJson2 = ioTStream.toJsonLDString();
+        Files.write(Paths.get("target","IoTStream2.json"), iotStreamJson2.getBytes());
 
-        //org.junit.Assert.assertEquals(iotStreamJson2, iotStreamJson3);
+        IoTStream ioTStream2 = IoTStream.fromJson(iotStreamJson);
 
+        String iotStreamJson3 = ioTStream2.toJsonLDString();
+        Files.write(Paths.get("target","IoTStream3.json"), iotStreamJson3.getBytes());
+
+        org.junit.Assert.assertEquals(iotStreamJson2, iotStreamJson3);
     }
 
 
@@ -129,17 +128,22 @@ public class ModelTests {
 
     }
 
-        @Test
+    @Test
     @Ignore
     public void test1() throws Exception {
         byte[] iotStreamJson = Files.readAllBytes(Paths.get("samples/IoTStream.json"));
         IoTStream ioTStream = IoTStream.fromJson(iotStreamJson);
+
+        byte[] json = Files.readAllBytes(Paths.get("samples/Platform.json"));
+        SosaPlatform sosaPlatform = SosaPlatform.fromJson(json);
+
         String label = ioTStream.getLabel();
         RDFNode rdfNode = ioTStream.getProperty("sosa:madeBySensor");
         RDFNode rdfNode2 = ioTStream.getProperty("madeBySensor");
         //String sensorsUri = ioTStream.getSensorUri();//getSensor();
         String abc = "123";
     }
+
 
 
 

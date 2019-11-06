@@ -216,18 +216,18 @@ public class OrchestratorRPCClient implements AbstractIotCrawlerClient, AutoClos
     }
 
     @Override
-    public List<IoTPlatform> getPlatforms(int limit) throws Exception {
-        List<IoTPlatform> ret = new ArrayList<>();
+    public List<SosaPlatform> getPlatforms(int limit) throws Exception {
+        List<SosaPlatform> ret = new ArrayList<>();
 
-        GetEntityCommand command = new GetEntityCommand(IoTPlatform.getTypeUri(), limit);
+        GetEntityCommand command = new GetEntityCommand(SosaPlatform.getTypeUri(), limit);
         List<EntityLD> entities = execute(command);
 
         for(EntityLD entityLD: entities) {
             try {
-                IoTPlatform ioTStream = IoTPlatform.fromEntity(entityLD);
+                SosaPlatform ioTStream = SosaPlatform.fromEntity(entityLD);
                 ret.add(ioTStream);
             } catch (Exception e){
-                LOGGER.error("Failed to create IoTPlatform from entity: {}", e.getLocalizedMessage());
+                LOGGER.error("Failed to create SosaPlatform from entity: {}", e.getLocalizedMessage());
                 e.printStackTrace();
             }
 
@@ -236,18 +236,18 @@ public class OrchestratorRPCClient implements AbstractIotCrawlerClient, AutoClos
     }
 
     @Override
-    public List<IoTPlatform> getPlatforms(String query) throws Exception {
-        List<IoTPlatform> ret = new ArrayList<>();
+    public List<SosaPlatform> getPlatforms(String query) throws Exception {
+        List<SosaPlatform> ret = new ArrayList<>();
 
-        GetEntityCommand command = new GetEntityCommand(IoTPlatform.getTypeUri(), query);
+        GetEntityCommand command = new GetEntityCommand(SosaPlatform.getTypeUri(), query);
         List<EntityLD> entities = execute(command);
 
         for(EntityLD entityLD: entities) {
             try {
-                IoTPlatform ioTStream = IoTPlatform.fromEntity(entityLD);
+                SosaPlatform ioTStream = SosaPlatform.fromEntity(entityLD);
                 ret.add(ioTStream);
             } catch (Exception e){
-                LOGGER.error("Failed to create IoTPlatform from entity: {}", e.getLocalizedMessage());
+                LOGGER.error("Failed to create SosaPlatform from entity: {}", e.getLocalizedMessage());
                 e.printStackTrace();
             }
         }

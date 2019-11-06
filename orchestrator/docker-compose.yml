@@ -18,12 +18,15 @@ services:
     image: gitlab.iotcrawler.net:4567/core/djane:1.0.0
     ports:
       - "3000:3000"
+    depends_on:
+      - mongo
     networks:
       - iotcrawler
+
   mongo:
     image: mongo
-    volumes:
-      - $PWD/data=/data/db
+    #volumes:
+    #  - $PWD/data=/data/db
     ports:
       - "27017:27017"
     networks:

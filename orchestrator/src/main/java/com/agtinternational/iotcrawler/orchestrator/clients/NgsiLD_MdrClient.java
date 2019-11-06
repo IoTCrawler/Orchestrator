@@ -125,8 +125,8 @@ public class NgsiLD_MdrClient extends AbstractMetadataClient {
             type = IoTStream.getTypeUri();
         else if(targetClass.equals(Sensor.class))
             type = Sensor.getTypeUri();
-        else if(targetClass.equals(IoTPlatform.class))
-            type = IoTPlatform.getTypeUri();
+        else if(targetClass.equals(SosaPlatform.class))
+            type = SosaPlatform.getTypeUri();
 
         else if(targetClass.equals(ObservableProperty.class))
             type = ObservableProperty.getTypeUri();
@@ -146,8 +146,8 @@ public class NgsiLD_MdrClient extends AbstractMetadataClient {
                     if(targetClass.equals(Sensor.class))
                         toAdd = (T)Sensor.fromEntity(entity);
 
-                    if(targetClass.equals(IoTPlatform.class))
-                        toAdd = (T)IoTPlatform.fromEntity(entity);
+                    if(targetClass.equals(SosaPlatform.class))
+                        toAdd = (T)SosaPlatform.fromEntity(entity);
 
                     if(targetClass.equals(ObservableProperty.class))
                         toAdd = (T)ObservableProperty.fromEntity(entity);

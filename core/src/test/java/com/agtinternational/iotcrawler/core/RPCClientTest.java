@@ -5,7 +5,6 @@ import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import eu.neclab.iotplatform.ngsi.api.datamodel.NotifyCondition;
 import eu.neclab.iotplatform.ngsi.api.datamodel.NotifyConditionEnum;
 import eu.neclab.iotplatform.ngsi.api.datamodel.Restriction;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.vocabulary.RDF;
 import org.junit.Before;
@@ -110,7 +109,7 @@ public class RPCClientTest extends EnvVariablesSetter {
     @Test
     public void getAllPlatformsTest() throws Exception {
 
-        List<IoTPlatform> platforms = rpcClient.getPlatforms(0);
+        List<SosaPlatform> platforms = rpcClient.getPlatforms(0);
         Assert.notNull(platforms);
         System.out.println(platforms.size()+" platforms returned");
     }

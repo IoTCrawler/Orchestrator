@@ -52,7 +52,6 @@ public class RDFModel {
     public RDFModel(String uri, String typeURI){
         this(uri);
         setType(typeURI);
-        //model.add(resource, RDF.type, model.createResource(typeURI));
     }
 
     public RDFModel(String uri, Model model){
@@ -60,12 +59,24 @@ public class RDFModel {
         this.model = model;
     }
 
+    public RDFModel(String uri, String typeURI, Model model){
+        this(uri);
+        this.model = model;
+        setType(typeURI);
+    }
+
+
+
     public void setModel(Model model) {
         this.model = model;
     }
 
-    public void setType(String typeUri) {
-        this.resource.addProperty(RDF.type, this.model.createResource(typeUri));
+    public void setType(String typeUri){
+        RDFNode typeNode = getProperty(RDF.type.getURI());
+        if(typeNode!=null)
+            this.model.remove(resource, RDF.type, typeNode);
+
+        addProperty(RDF.type, this.model.createResource(typeUri));
     }
 
     public String getURI() {
@@ -159,7 +170,7 @@ public class RDFModel {
 
     public void addProperty(Property property, Object value){
         if (value instanceof RDFModel){
-            resource.addProperty(property, ((RDFModel) value).resource);
+            //resource.addProperty(property, ((RDFModel) value).resource);
             model.add(((RDFModel) value).getModel());
         }else if (value instanceof Resource) {
             model.add(resource, property, (Resource)value);

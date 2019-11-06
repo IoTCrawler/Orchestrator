@@ -71,18 +71,19 @@ public class RPCClientTest extends EnvVariablesSetter {
     @Order(1)
     @Test
     public void registerStreamTest() throws Exception {
-        LOGGER.debug("registerStreamTest()");
+        LOGGER.info("registerStreamTest()");
         byte[] iotStreamModelJson = Files.readAllBytes(Paths.get("samples/IoTStream.json"));
         IoTStream ioTStream = IoTStream.fromJson(iotStreamModelJson);
         //ioTStream.addProperty(RDFS.label, "label1");
         Boolean result = rpcClient.registerEntity(ioTStream);
+        LOGGER.info("Stream registered");
         Assert.isTrue(result);
     }
 
     @Order(2)
     @Test
     public void registerEntityTest() throws Exception {
-        LOGGER.debug("registerEntityTest()");
+        LOGGER.info("registerEntityTest()");
         byte[] iotStreamModelJson = Files.readAllBytes(Paths.get("samples/Platform.json"));
         //byte[] iotStreamModelJson = Files.readAllBytes(Paths.get("samples/IoTStream.json"));
         RDFModel entity = RDFModel.fromJson(iotStreamModelJson);
@@ -94,17 +95,18 @@ public class RPCClientTest extends EnvVariablesSetter {
     @Order(3)
     @Test
     public void getAllStreamsTest() throws Exception {
-        LOGGER.debug("getAllStreamsTest()");
+        LOGGER.info("getAllStreamsTest()");
         List<IoTStream> streams = rpcClient.getStreams(0);
         //streams.get(0).getSensorUri();
+        LOGGER.info(streams.size()+" streams returned");
         Assert.notNull(streams);
-        System.out.println(streams.size()+" streams returned");
+
     }
 
     @Order(4)
     @Test
     public void getStreamByIdTest() throws Exception {
-        LOGGER.debug("getStreamByIdTest()");
+        LOGGER.info("getStreamByIdTest()");
 //        FilteringSelector selector=new FilteringSelector.Builder()
 //        //.subject("http://purl.org/iot/ontology/iot-stream#gateway_00055110D732_device_8_sensor_64_stream")
 //        //.subject("iotc:gateway_00055110D732_device_8_sensor_64_stream")
@@ -115,41 +117,41 @@ public class RPCClientTest extends EnvVariablesSetter {
         IoTStream ioTStream = IoTStream.fromJson(iotStreamModelJson);
 
         List<IoTStream> streams = rpcClient.getStreams("SELECT ?s ?p ?o WHERE { ?s ?p ?o . FILTER (?s=<"+ioTStream.getURI()+">) . } ");
+        LOGGER.info(streams.size()+" streams returned");
         Assert.notNull(streams);
-        System.out.println(streams.size()+" streams returned");
     }
 
     @Order(5)
     @Test
     public void getAllSensorsTest() throws Exception {
-        LOGGER.debug("getAllSensorsTest()");
+        LOGGER.info("getAllSensorsTest()");
         List<Sensor> sensors = rpcClient.getSensors(0);
         Assert.notNull(sensors);
-        System.out.println(sensors.size()+" sensors returned");
+        LOGGER.info(sensors.size()+" sensors returned");
     }
 
     @Order(6)
     @Test
     public void getAllPlatformsTest() throws Exception {
-        LOGGER.debug("getAllPlatformsTest()");
+        LOGGER.info("getAllPlatformsTest()");
         List<IoTPlatform> platforms = rpcClient.getPlatforms(0);
         Assert.notNull(platforms);
-        System.out.println(platforms.size()+" platforms returned");
+        LOGGER.info(platforms.size()+" platforms returned");
     }
 
     @Order(7)
     @Test
     public void getAllObservablePropertiesTest() throws Exception {
-        LOGGER.debug("getAllObservablePropertiesTest()");
+        LOGGER.info("getAllObservablePropertiesTest()");
         List<ObservableProperty> items = rpcClient.getObservableProperties(0);
         Assert.notNull(items);
-        System.out.println(items.size()+" ObservableProperties returned");
+        LOGGER.info(items.size()+" ObservableProperties returned");
     }
 
     @Ignore
     @Test
     public void getStreamByCustomQueryTest() throws Exception {
-        LOGGER.debug("getStreamByCustomQueryTest()");
+        LOGGER.info("getStreamByCustomQueryTest()");
         List<IoTStream> streams = rpcClient.getStreams("SELECT ?s ?p ?o WHERE { ?s ?p ?o . FILTER(?p=<http://www.w3.org/ns/sosa/madeBySensor> && ?o=<http://purl.org/iot/ontology/iot-stream#Sensor_FIBARO+Wall+plug+living+room_CurrentEnergyUse>) }");
         String abc="213";
     }
@@ -157,7 +159,7 @@ public class RPCClientTest extends EnvVariablesSetter {
     @Order(8)
     @Test
     public void subscribeTest() throws Exception {
-        LOGGER.debug("subscribeTest()");
+        LOGGER.info("subscribeTest()");
         byte[] iotStreamModelJson = Files.readAllBytes(Paths.get("samples/IoTStream.json"));
         IoTStream ioTStream = IoTStream.fromJson(iotStreamModelJson);
         //IoTStream iotObservationModel = IoTStream.fromJson(iotStreamModel);
@@ -171,7 +173,7 @@ public class RPCClientTest extends EnvVariablesSetter {
                 new Function<StreamObservation, Void>() {
                     @Override
                     public Void apply(StreamObservation streamObservation){
-                        System.out.println(Utils.getFragment(attributeUri)+"="+streamObservation.getAttribute(attributeUri));
+                        LOGGER.info(Utils.getFragment(attributeUri)+"="+streamObservation.getAttribute(attributeUri));
                         return null;
                     }
                 });
@@ -232,7 +234,7 @@ public class RPCClientTest extends EnvVariablesSetter {
     @Order(9)
     @Test
     public void pushObservationsTest() throws Exception {
-        LOGGER.debug("pushObservationsTest()");
+        LOGGER.info("pushObservationsTest()");
         byte[] model = new byte[0];
         try {
             model = Files.readAllBytes(Paths.get("samples/Observation.json"));
@@ -248,7 +250,7 @@ public class RPCClientTest extends EnvVariablesSetter {
     @Order(10)
     @Test
     public void getObservationsTest() throws Exception {
-        LOGGER.debug("pushObservationsTest()");
+        LOGGER.info("pushObservationsTest()");
         List<StreamObservation> list = rpcClient.getObservations("streamId",1);
         //list.get(0).getModel();
         String abc = "abc";

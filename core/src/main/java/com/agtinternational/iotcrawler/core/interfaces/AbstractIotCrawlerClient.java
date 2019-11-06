@@ -17,8 +17,8 @@ public interface AbstractIotCrawlerClient extends Component {
     public List<Sensor> getSensors(int limit) throws Exception;
     public List<Sensor> getSensors(String query) throws Exception;
 
-    public List<IoTPlatform> getPlatforms(int limit) throws Exception;
-    public List<IoTPlatform> getPlatforms(String query) throws Exception;
+    public List<SosaPlatform> getPlatforms(int limit) throws Exception;
+    public List<SosaPlatform> getPlatforms(String query) throws Exception;
 
     public List<ObservableProperty> getObservableProperties(int limit) throws Exception;
     public List<ObservableProperty> getObservableProperties(String query) throws Exception;

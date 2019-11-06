@@ -55,12 +55,12 @@ public abstract class AbstractIoTCrawlerApp implements AbstractIotCrawlerClient,
     }
 
     @Override
-    public List<IoTPlatform> getPlatforms(int limit) throws Exception {
+    public List<SosaPlatform> getPlatforms(int limit) throws Exception {
         return iotCrawlerClient.getPlatforms(limit);
     }
 
     @Override
-    public List<IoTPlatform> getPlatforms(String query) throws Exception {
+    public List<SosaPlatform> getPlatforms(String query) throws Exception {
         return iotCrawlerClient.getPlatforms(query);
     }
 

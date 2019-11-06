@@ -4,10 +4,10 @@ services:
   mongo:
     image: mongo:4.0.9-xenial
     restart: always
-    volumes:
-      - /tmp/mongo/data/db:/data/db
-    ports: 
+    ports:
       - "27017:27017"
+    #volumes:
+    #  - /tmp/mongo/data/db:/data/db
     networks:
       - djanenetwork
 

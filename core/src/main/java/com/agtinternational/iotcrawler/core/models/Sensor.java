@@ -41,7 +41,7 @@ public class Sensor extends RDFModel {
 
 //    public static Sensor fromJsonObject(JsonObject jsonObject) {
 //        String uri = agtSmartHome+"#Device_"+jsonObject.get("Hostname").hashCode();
-//        IoTPlatform ret = new IoTPlatform(uri, jsonObject.get("Hostname").getAsString());
+//        SosaPlatform ret = new SosaPlatform(uri, jsonObject.get("Hostname").getAsString());
 //        return ret;
 //    }
 

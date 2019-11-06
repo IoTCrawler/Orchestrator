@@ -36,7 +36,7 @@ public class IoTStream extends RDFModel {
 
 
     public IoTStream(String uri, Model model){
-        super(uri, model);
+        super(uri, IoTStream.getTypeUri(), model);
     }
 
     public static String getTypeUri(){
@@ -50,13 +50,14 @@ public class IoTStream extends RDFModel {
         return new IoTStream(rdfModel.getURI(), rdfModel.getModel());
     }
 
-    public static IoTStream fromJson(String jsonString){
-        RDFModel rdfModel = RDFModel.fromJson(jsonString);
-        return new IoTStream(rdfModel.getURI(), rdfModel.getModel());
-    }
 
     public static IoTStream fromJson(byte[] json){
         return fromJson(new String(json));
+    }
+
+    public static IoTStream fromJson(String jsonString){
+        RDFModel rdfModel = RDFModel.fromJson(jsonString);
+        return new IoTStream(rdfModel.getURI(), rdfModel.getModel());
     }
 
 //    public ObservableProperty getObservableProperty(){

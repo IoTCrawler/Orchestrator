@@ -595,13 +595,13 @@ public class Orchestrator implements AbstractIotCrawlerClient {
     }
 
     @Override
-    public List<IoTPlatform> getPlatforms(int limit) throws Exception {
-        return metadataClient.getEntitiesAsType(IoTPlatform.class, limit);
+    public List<SosaPlatform> getPlatforms(int limit) throws Exception {
+        return metadataClient.getEntitiesAsType(SosaPlatform.class, limit);
     }
 
     @Override
-    public List<IoTPlatform> getPlatforms(String query) {
-        return metadataClient.getEntitiesAsType(IoTPlatform.class, query);
+    public List<SosaPlatform> getPlatforms(String query) {
+        return metadataClient.getEntitiesAsType(SosaPlatform.class, query);
     }
 
     @Override

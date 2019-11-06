@@ -3,6 +3,8 @@ package:
 	
 build-image:
 	mvn compile jib:dockerBuild
+
+push-image:
 	docker push gitlab.iotcrawler.net:4567/orchestrator/orchestrator:1.0.9
 
 export-image:

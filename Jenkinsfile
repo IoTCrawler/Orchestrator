@@ -28,7 +28,8 @@ pipeline {
              //sh 'cd /root/orchestrator/core && mvn install -DskipTests=true'
              withCredentials([usernamePassword(credentialsId: 'b3a56de1-d06e-45c8-9ce4-5cc1ddb0cbb8', usernameVariable: 'CI_REGISTRY_USER', passwordVariable: 'CI_REGISTRY_PASSWORD')])     {
                sh 'docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD gitlab.iotcrawler.net:4567'
-               //sh 'cd $HOME/orchestrator/orchestrator && make build-image'
+               sh 'cd $HOME/orchestrator/orchestrator && make build-image'
+               sh 'cd $HOME/orchestrator/orchestrator && make push-image'                
             }                 
           }
       }

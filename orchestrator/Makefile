@@ -13,11 +13,11 @@ export-image:
 import-image:
 	docker load < orchestrator.tar
 
-install-reqs:
-	docker network create iotcrawler &	
+create-network:
+	docker network create iotcrawler > /dev/null 2>&1 &
 
 start-containers:
-	make install-reqs
+	make create-network
 	echo "Pulling needed images"
 	docker-compose pull
 	echo "Stopping any already running containers"

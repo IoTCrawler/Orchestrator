@@ -10,7 +10,6 @@ import com.google.gson.JsonObject;
 import com.orange.ngsi2.model.Attribute;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.NotImplementedException;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;

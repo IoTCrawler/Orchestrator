@@ -19,6 +19,7 @@ import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Semaphore;
 
+import static com.agtinternational.iotcrawler.fiware.clients.Constants.NGSILD_BROKER_URL;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -28,11 +29,8 @@ import static org.junit.Assert.assertNotNull;
  * Tests for Ngsi2Client
  */
 @RunWith(Parameterized.class)
-public class NgsiLDClientTest {
+public class NgsiLDClientTest extends EnvVariablesSetter{
 
-    public static String NGSILD_BROKER_URL = "NGSILD_BROKER_URL";
-    //private final static String serverUrl = "http://10.67.1.41:1026/";
-    //String serverUrl = "http://155.54.95.248:9090/ngsi-ld/";
     String serverUrl = "http://localhost:3000/ngsi-ld/";
 
     private NgsiLDClient ngsiLdClient;
@@ -61,8 +59,9 @@ public class NgsiLDClientTest {
     }
 
     @Before
-    public void init() throws Exception {
-
+    public void init(){
+        super.init();
+        
         if (System.getenv().containsKey(NGSILD_BROKER_URL))
             serverUrl = System.getenv(NGSILD_BROKER_URL);
 
@@ -75,8 +74,13 @@ public class NgsiLDClientTest {
         //asyncRestTemplate.setMessageConverters(Collections.singletonList(new MappingJackson2HttpMessageConverter(Utils.objectMapper)));
 
         //entity = createEntity();
-        if(entity==null)
-            entity = readEntity("samples/Vehicle.json");
+        if(entity==null) {
+            try {
+                entity = readEntity("samples/Vehicle.json");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         //accomulatorServerUrl = new URL(accumulatorServerUrl);
     }
 
@@ -146,19 +150,29 @@ public class NgsiLDClientTest {
     @Test
     public void getEntitityByIdTest() throws ExecutionException, InterruptedException {
         Collection<String> ids = Arrays.asList(new String[]{ entity.getId()  });
-        Collection<String> types = Arrays.asList(new String[]{ entity.getType() });
+        Collection<String> types = null;// Arrays.asList(new String[]{ entity.getType() });
         Paginated<EntityLD> entities = ngsiLdClient.getEntities(ids, null, types, null, 0, 0, false).get();
         Assert.assertNotNull(entities.getItems());
         Assert.assertTrue(entities.getItems().get(0).toJsonObject().equals(entity.toJsonObject()));
         String test="123";
     }
 
-    @Order(3)
+    @Order(2)
     @Test
-    public void getEntititiesByTypeTest() throws ExecutionException, InterruptedException {
+    public void getEntitiesByTypeTest() throws ExecutionException, InterruptedException {
         Collection<String> types = Arrays.asList(new String[]{ entity.getType() });
         //Collection<String> types = Arrays.asList(new String[]{ ".*" });
         Paginated<EntityLD> entities = ngsiLdClient.getEntities(null, null, types, null, 0, 0, false).get();
+        Assert.assertNotNull(entities.getItems());
+        Assert.assertTrue(entities.getItems().get(0).toJsonObject().equals(entity.toJsonObject()));
+    }
+
+    @Order(2)
+    @Test
+    public void getEntitiesByAttributeTest() throws ExecutionException, InterruptedException {
+        Collection<String> types = Arrays.asList(new String[]{ entity.getType() });
+        Collection<String> attributes = Arrays.asList(new String[]{ "brandName=Mercedes" });
+        Paginated<EntityLD> entities = ngsiLdClient.getEntities(null, null, types, attributes, 0, 0, false).get();
         Assert.assertNotNull(entities.getItems());
         Assert.assertTrue(entities.getItems().get(0).toJsonObject().equals(entity.toJsonObject()));
     }

@@ -134,7 +134,7 @@ public class RPCClientTest extends EnvVariablesSetter {
     @Test
     public void getAllPlatformsTest() throws Exception {
         LOGGER.info("getAllPlatformsTest()");
-        List<IoTPlatform> platforms = rpcClient.getPlatforms(0);
+        List<SosaPlatform> platforms = rpcClient.getPlatforms(0);
         Assert.notNull(platforms);
         LOGGER.info(platforms.size()+" platforms returned");
     }

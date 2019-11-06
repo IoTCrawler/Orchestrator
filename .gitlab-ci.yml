@@ -5,7 +5,7 @@ stages:
 
 
 build:
-  stage: build-codes
+  stage: build
   script:
     - make install
     

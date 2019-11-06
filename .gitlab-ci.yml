@@ -1,45 +1,30 @@
 stages:
-  - build-codes
+  - build
   - build-image
-  - configure-docker
   - tests
 
 
-#build-codes:
-#  stage: build-codes
-#  script:
-#    - make install
+build:
+  stage: build-codes
+  script:
+    - make install
     
-#build-image:
-#  stage: build-image
-#  before_script:
-#  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-#  script:
-#    - cd orchestrator && make build-image  
-#    - docker push $CI_REGISTRY_IMAGE:1.0.8
-    
-    
-configure-docker:
-  stage: configure-docker
+build-image:
+  stage: build-image
   before_script:
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
-    - make install-reqs
-    
-test-ngsi-ld-client: 
+    - cd orchestrator && make build-image  
+    - cd orchestrator && make push-image  
+
+tests: 
   stage: tests
   before_script:
-    - cd fiware/clients && sh make.sh compose-up
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - cd orchestrator && make start-containers
+    - cd orchestrator && docker-compose ps
   script:
-    - cd fiware/clients && sh make.sh test-fiware-clients
+    - cd orchestrator && make rpc-client-test
   after_script:
     - cd fiware/clients && sh make.sh compose-down
-    
-test-iot-broker-client: 
-  stage: tests
-  before_script:
-    - cd fiware/clients && sh make.sh compose-up
-  script:
-    - cd fiware/clients && sh make.sh iot-broker-client
-  after_script:
-    - cd fiware/clients && sh make.sh compose-down    
+  

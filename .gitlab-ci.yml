@@ -15,17 +15,17 @@ build-image:
   before_script:
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
-    - cd orchestrator && make build-image  
-    - cd orchestrator && make push-image  
+    - cd ~/orchestrator && make build-image  
+    - cd ~/orchestrator && make push-image  
 
 tests: 
   stage: tests
   before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - cd orchestrator && make start-containers
-    - cd orchestrator && docker-compose ps
+    - cd ~/orchestrator && make start-containers
+    - cd ~/orchestrator && docker-compose ps
   script:
-    - cd orchestrator && make rpc-client-test
+    - cd ~/orchestrator && make rpc-client-test
   after_script:
-    - cd fiware/clients && sh make.sh compose-down
+    - cd ~/fiware/clients && sh make.sh compose-down
   

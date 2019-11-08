@@ -176,6 +176,10 @@
                     <groupId>org.springframework</groupId>
                     <artifactId>org.springframework.web</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>org.springframework.jms</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
@@ -187,6 +191,10 @@
                 <exclusion>
                     <groupId>org.springframework</groupId>
                     <artifactId>org.springframework.web</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>org.springframework.jms</artifactId>
                 </exclusion>
             </exclusions>
             <!--<scope>provided</scope>-->

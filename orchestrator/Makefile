@@ -21,8 +21,8 @@ start-containers:
 	echo "Pulling needed images"
 	docker-compose pull
 	echo "Stopping any already running containers"
-	docker ps | grep "core/djane" | cut -c1-12 | xargs docker rm --force &
-	docker ps | grep "fiware/iotbroker" | cut -c1-12 | xargs docker rm --force &
+	docker ps | grep djane | cut -c1-12 | xargs docker rm --force &
+	docker ps | grep iotbroker | cut -c1-12 | xargs docker rm --force &
 	docker ps | grep mongo | cut -c1-12 | xargs docker rm --force &
 	docker ps | grep orchestrator | cut -c1-12 | xargs docker rm --force &
 	sleep 5

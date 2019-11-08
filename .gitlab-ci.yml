@@ -26,10 +26,9 @@ tests:
   before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker ps
-    - cd orchestrator && make start-containers
-    - cd orchestrator && docker-compose ps
+    - cd orchestrator && make start-containers && cd ..
   script:
-    - cd orchestrator && make rpc-client-test
+    - cd orchestrator && make rpc-client-test  && cd ..
   after_script:
     - cd orchestrator && make stop-containers
   

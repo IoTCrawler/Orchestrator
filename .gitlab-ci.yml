@@ -17,6 +17,7 @@ build-image:
   #- docker image prune
   script:
     - export CGO_ENABLED=1
+    - systemctl status docker | grep Tasks
     - cd orchestrator && make build-image && cd ..
     - cd orchestrator && make push-image && cd ..  
 

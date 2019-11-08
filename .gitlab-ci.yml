@@ -31,5 +31,5 @@ tests:
   script:
     - cd orchestrator && make rpc-client-test
   after_script:
-    - cd fiware/clients && make compose-down
+    - cd orchestrator && make compose-down
   

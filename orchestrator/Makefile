@@ -36,11 +36,12 @@ start:
 	export HTTP_SERVER_HOST=10.59.0.101 && export IOTCRAWLER_RABBIT_HOST=rabbit && export IOTCRAWLER_REDIS_HOST=redis && export NGSILD_BROKER_URI=http://djane:3000/ngsi-ld/ && export IOT_BROKER_URI=http://iotbroker:8060/ngsi10  && java -jar target/orchestrator-1.0.8.jar
 	
 orchestrator-test:
-	mvn -Dtest=OrchestratorTest -Xss256k test
+	mvn -Dtest=OrchestratorTest test
 	#mvn -Dtest=OrchestratorTest surefire:test
 
 rpc-client-test:
-	mvn -Dtest=RPCClientTest -Xss256k test
+	export JAVA_TOOL_OPTIONS="-Xmx12m -Xms12m"
+	mvn -Dtest=RPCClientTest test
 	#mvn -Dtest=RPCClientTest surefire:test
 
 stop-containers:

@@ -40,7 +40,7 @@ orchestrator-test:
 	#mvn -Dtest=OrchestratorTest surefire:test
 
 rpc-client-test:
-	export JAVA_TOOL_OPTIONS="-Xmx12m -Xms12m"
+	export JAVA_TOOL_OPTIONS="-Xmx256m -Xms256m"
 	mvn test
 	#mvn -Dtest=RPCClientTest surefire:test
 

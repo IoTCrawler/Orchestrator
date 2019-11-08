@@ -31,15 +31,15 @@ services:
       - "27017:27017"
     networks:
       - iotcrawler
-  iotbroker:
-    image: fiware/iotbroker:standalone-dev
-    environment:
-      - iotbroker_historicalagent=enabled
-    ports:
-      - "8060:8060"
-      - "8065:8065"
-    networks:
-      - iotcrawler
+#  iotbroker:
+#    image: fiware/iotbroker:standalone-dev
+#    environment:
+#      - iotbroker_historicalagent=enabled
+#    ports:
+#      - "8060:8060"
+#      - "8065:8065"
+#    networks:
+#      - iotcrawler
 
   rabbit:
     image: rabbitmq:management

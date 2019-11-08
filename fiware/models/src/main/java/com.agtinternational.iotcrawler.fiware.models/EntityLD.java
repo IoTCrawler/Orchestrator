@@ -1,10 +1,7 @@
 package com.agtinternational.iotcrawler.fiware.models;
 
 import com.agtinternational.iotcrawler.fiware.models.NGSILD.Property;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import com.orange.ngsi2.model.Attribute;
 import org.apache.commons.lang3.NotImplementedException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -78,7 +75,9 @@ public class EntityLD /*extends Entity*/ {
         jsonObject.addProperty("type", getType());
         if(context!=null){
             JsonElement contextJson=null;
-            if(context instanceof List) {
+            if(context instanceof String) {
+                contextJson = new JsonPrimitive((String)context);
+            }else if(context instanceof List) {
                 contextJson = listToJson((List)context);
             }else if (context instanceof Map){
                 contextJson = Utils.mapToJson((Map)context);
@@ -144,22 +143,25 @@ public class EntityLD /*extends Entity*/ {
         String typeStr = objectMap.get((objectMap.containsKey("@type")?"@type":"type")).toString();
         Object contextObj = objectMap.get((objectMap.containsKey("@context")?"@context":"context"));
 
-        objectMap.remove((objectMap.containsKey("@id")?"@id":"id"));
-        objectMap.remove((objectMap.containsKey("@type")?"@type":"type"));
-        objectMap.remove((objectMap.containsKey("@context")?"@context":"context"));
 
         Object context = null;
         if(contextObj!=null) {
             if (contextObj instanceof JsonObject)
                 contextObj = new Gson().fromJson(contextObj.toString(), HashMap.class);
 
-            if (contextObj instanceof Map)
+            if (contextObj instanceof String)
+                context = (String) contextObj;
+            else if (contextObj instanceof Map)
                 context = (Map<String, Object>) contextObj;
             else if (contextObj instanceof List){
                 context = (List)contextObj;
             }else
                 throw new NotImplementedException(contextObj.getClass().getName()+" not implemented ");
         }
+
+        objectMap.remove((objectMap.containsKey("@id")?"@id":"id"));
+        objectMap.remove((objectMap.containsKey("@type")?"@type":"type"));
+        objectMap.remove((objectMap.containsKey("@context")?"@context":"context"));
 
         Map<String, Attribute> attributes = Utils.extractAllProperties(objectMap);
         EntityLD entity = new EntityLD(nameStr, typeStr, attributes, context);

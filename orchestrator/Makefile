@@ -41,7 +41,7 @@ orchestrator-test:
 
 rpc-client-test:
 	export JAVA_TOOL_OPTIONS="-Xmx12m -Xms12m"
-	mvn -Dtest=RPCClientTest -DIOTCRAWLER_RABBIT_HOST=localhost -DIOTCRAWLER_REDIS_HOST=localhost -DNGSILD_BROKER_URI=http://localhost:3000/ngsi-ld/ -DIOT_BROKER_URI=http://localhost:8060/ngsi10 test
+	mvn test
 	#mvn -Dtest=RPCClientTest surefire:test
 
 stop-containers:

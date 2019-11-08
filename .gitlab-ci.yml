@@ -30,6 +30,7 @@ tests:
   script:
     - export IOTCRAWLER_RABBIT_HOST=localhost && export IOTCRAWLER_REDIS_HOST=localhost && export=NGSILD_BROKER_URI=http://localhost:3000/ngsi-ld/ && IOT_BROKER_URI=http://localhost:8060/ngsi10
     - less /proc/meminfo
+    - echo $IOTCRAWLER_RABBIT_HOST
     - cd orchestrator && make rpc-client-test  && cd ..
   after_script:
     #- cd orchestrator && make stop-containers

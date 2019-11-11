@@ -25,6 +25,13 @@
         "type" : "Relationship",
         "object" : "iotc:Property_Z-Wave+Node+003%3A+FGWP102+Meter+Living+Space_Sensor+%28power%29"
     },
+    "location" : {
+        "type" : "GeoProperty",
+        "value" : {
+            "type" : "Point",
+            "coordinates" : [ 8.0001, 40.001 ]
+        }
+    },
     "rdf-schema:label" : {
         "type" : "Property",
         "value" : "Z-Wave Node 003: FGWP102 Meter Living Space"

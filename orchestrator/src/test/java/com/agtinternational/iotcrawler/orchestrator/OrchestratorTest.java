@@ -118,7 +118,7 @@ public class OrchestratorTest extends EnvVariablesSetter {
 
 
 
-    @Ignore
+    //@Ignore
     @Test
     @Order(5)
     public void getStreamByIdTest() throws Exception {
@@ -132,9 +132,30 @@ public class OrchestratorTest extends EnvVariablesSetter {
         byte[] iotStreamModelJson = Files.readAllBytes(Paths.get("samples/IoTStream.json"));
         IoTStream ioTStream = IoTStream.fromJson(iotStreamModelJson);
 
-        List<IoTStream> streams = orchestrator.getStreams("SELECT ?s ?p ?o WHERE { ?s ?p ?o . FILTER (?s=<"+ioTStream.getURI()+">) . } ");
+        List<IoTStream> streams = orchestrator.getStreams(new String[]{ioTStream.getURI()});
+        //List<IoTStream> streams = orchestrator.getStreams("SELECT ?s ?p ?o WHERE { ?s ?p ?o . FILTER (?s=<"+ioTStream.getURI()+">) . } ");
         Assert.notNull(streams);
         LOGGER.info(streams.size()+" streams returned");
+    }
+
+    @Ignore
+    @Test
+    @Order(5)
+    public void getEntityByIdTest() throws Exception {
+        LOGGER.info("getEntityByIdTest()");
+//        FilteringSelector selector=new FilteringSelector.Builder()
+//        //.subject("http://purl.org/iot/ontology/iot-stream#gateway_00055110D732_device_8_sensor_64_stream")
+//        //.subject("iotc:gateway_00055110D732_device_8_sensor_64_stream")
+//        .subject("urn:ngsi-ld:Vehicle:A188")
+//        .build();
+
+        String[] ids = new String[]{"iotc:Sensor_FIBARO+System+FGWPE%2FF+Wall+Plug+Gen5_CurrentEnergyUse"};
+
+        List<EntityLD> entities = orchestrator.getEntities(ids, Sensor.getTypeUri());
+        List<Sensor> sensors = orchestrator.getEntities(ids, Sensor.class);
+
+        Assert.notNull(entities );
+        LOGGER.info(entities.size()+" entities returned");
     }
 
     //@Ignore
@@ -169,7 +190,7 @@ public class OrchestratorTest extends EnvVariablesSetter {
     @Ignore
     @Test
     @Order(7)
-    public void getStreamByCustomQueryTest() {
+    public void getStreamByCustomQueryTest() throws Exception {
         LOGGER.info("getStreamByCustomQueryTest()");
         List<IoTStream> streams = orchestrator.getStreams("SELECT ?s ?p ?o WHERE { ?s ?p ?o . FILTER(?p=<http://www.w3.org/ns/sosa/madeBySensor> && ?o=<http://purl.org/iot/ontology/iot-stream#Sensor_FIBARO+Wall+plug+living+room_CurrentEnergyUse>) }");
         String abc="213";

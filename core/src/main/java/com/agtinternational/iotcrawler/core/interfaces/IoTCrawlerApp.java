@@ -12,11 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-public abstract class AbstractIoTCrawlerApp implements AbstractIotCrawlerClient, Component {
+public abstract class IoTCrawlerApp extends IotCrawlerClient implements Component {
 
-    protected AbstractIotCrawlerClient iotCrawlerClient;
+    protected IotCrawlerClient iotCrawlerClient;
 
-    public AbstractIoTCrawlerApp(){
+    public IoTCrawlerApp(){
         iotCrawlerClient = new OrchestratorRPCClient();
     }
 
@@ -75,10 +75,10 @@ public abstract class AbstractIoTCrawlerApp implements AbstractIotCrawlerClient,
     }
 
 
-    @Override
-    public List<EntityLD> getEntities(String entityType, int limit) throws Exception {
-        return iotCrawlerClient.getEntities(entityType, limit);
-    }
+//    @Override
+//    public List<EntityLD> getEntities(String entityType, int limit) throws Exception {
+//        return iotCrawlerClient.getEntities(entityType, limit);
+//    }
 
     @Override
     public List<String> getEntityURIs(String query) throws Exception {

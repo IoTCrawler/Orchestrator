@@ -1,6 +1,7 @@
 package com.agtinternational.iotcrawler.orchestrator;
 
-import com.agtinternational.iotcrawler.core.interfaces.AbstractIotCrawlerClient;
+import com.agtinternational.iotcrawler.core.Utils;
+import com.agtinternational.iotcrawler.core.interfaces.IotCrawlerClient;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import com.agtinternational.iotcrawler.orchestrator.clients.AbstractDataClient;
 import com.agtinternational.iotcrawler.orchestrator.clients.AbstractMetadataClient;
@@ -9,7 +10,6 @@ import com.agtinternational.iotcrawler.orchestrator.clients.NgsiLD_MdrClient;
 import com.agtinternational.iotcrawler.core.commands.*;
 import com.agtinternational.iotcrawler.core.models.*;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.lambdaworks.redis.RedisClient;
@@ -37,13 +37,14 @@ import java.util.function.Function;
 import static com.agtinternational.iotcrawler.core.Constants.*;
 
 
-public class Orchestrator implements AbstractIotCrawlerClient {
+public class Orchestrator extends IotCrawlerClient {
     private Logger LOGGER = LoggerFactory.getLogger(Orchestrator.class);
 
     String rabbitHost = "localhost";
     String redisHost = "localhost";
     String endpoint = "/notify";
 
+    //AbstractMetadataClient metadataClient;
     AbstractMetadataClient metadataClient;
     AbstractDataClient dataBrokerClient;
     HttpServer httpServer;
@@ -123,26 +124,32 @@ public class Orchestrator implements AbstractIotCrawlerClient {
         JsonObject messageObj = (JsonObject)parser.parse(message);
         String reply = null;
 
-        String command = messageObj.get("command").getAsString();
+        String command0 = messageObj.get("command").getAsString();
 
         Exception exception = null;
         //LOGGER.debug("receiveCommand "+command);
 
-        if(command.equals(GetEntityCommand.class.getSimpleName())){
-            GetEntityCommand getEntityCommand = null;
+        if(command0.equals(GetEntitiesCommand.class.getSimpleName())){
+            GetEntitiesCommand command = null;
             try {
-                getEntityCommand = GetEntityCommand.fromJson(message);
+                command = GetEntitiesCommand.fromJson(message);
             }
             catch (Exception e){
                 exception = new Exception("Failed to parse command from "+messageObj+": "+e.getLocalizedMessage(), e);
             }
 
-            int limit = getEntityCommand.getLimit();
+            int limit = command.getLimit();
 
             List<EntityLD> entities = null;
-            if(getEntityCommand!=null)
+            if(command!=null)
             try {
-                entities = metadataClient.getEntities(getEntityCommand.getEntityType(), limit);
+                if(command.getIds()!=null) {
+                    //Class targetClass = Utils.getTargetClass(command.getTypeURI());
+                    entities = metadataClient.getEntities(command.getIds(), command.getTypeURI());
+                }else {
+                    entities = metadataClient.getEntities(command.getTypeURI(), limit);
+                    JsonArray jsonArray = EntitiesToJson(entities);
+                }
             }
             catch (Exception e){
                 exception = new Exception("Failed to get entities: "+e.getLocalizedMessage(), e);
@@ -153,7 +160,7 @@ public class Orchestrator implements AbstractIotCrawlerClient {
                 reply = jsonArray.toString();
             }
 
-        }else if(command.equals(RegisterEntityCommand.class.getSimpleName())){
+        }else if(command0.equals(RegisterEntityCommand.class.getSimpleName())){
 			LOGGER.debug(message);
             RegisterEntityCommand registerEntityCommand=null;
             try {
@@ -171,7 +178,7 @@ public class Orchestrator implements AbstractIotCrawlerClient {
                 exception = new Exception("Failed to register entity: "+e.getLocalizedMessage(), e.getCause());
 
             }
-        }else if(command.equals(GetObservationsCommand.class.getSimpleName())){
+        }else if(command0.equals(GetObservationsCommand.class.getSimpleName())){
 
             GetObservationsCommand command1 = null;
             try {
@@ -188,7 +195,7 @@ public class Orchestrator implements AbstractIotCrawlerClient {
                 catch (Exception e){
                     exception = new Exception("Failed to get observations: "+e.getLocalizedMessage(), e);
                 }
-        }else if(command.equals(PushObservationsCommand.class.getSimpleName())){
+        }else if(command0.equals(PushObservationsCommand.class.getSimpleName())){
 
             PushObservationsCommand command1 = null;
             try {
@@ -205,7 +212,7 @@ public class Orchestrator implements AbstractIotCrawlerClient {
                 catch (Exception e){
                     exception = new Exception("Failed to push observations: "+e.getLocalizedMessage(), e);
                 }
-        }else if(command.equals(SubscribeToEntityCommand.class.getSimpleName())){
+        }else if(command0.equals(SubscribeToEntityCommand.class.getSimpleName())){
             String arguments = messageObj.get("args").toString();
             if(redisSyncCommands!=null && redisSyncCommands.hget("rpcSubscriptionRequests", arguments)!=null) {
                 String subcriptionId = redisSyncCommands.hget("rpcSubscriptionRequests", arguments);
@@ -262,7 +269,7 @@ public class Orchestrator implements AbstractIotCrawlerClient {
                 }
             }
         }else
-            exception = new Exception("No handler for the command: \""+command+"\"");
+            exception = new Exception("No handler for the command: \""+command0+"\"");
 
         if(exception!=null) {
             exception.printStackTrace();
@@ -558,7 +565,10 @@ public class Orchestrator implements AbstractIotCrawlerClient {
        return metadataClient.registerEntity(model);
     }
 
-
+    @Override
+    public List<EntityLD> getEntities(String[] ids, String targetClass) throws Exception {
+        return metadataClient.getEntities(ids, targetClass);
+    }
 
     @Override
     public List<EntityLD> getEntities(String entityType, int limit) throws Exception {
@@ -566,53 +576,71 @@ public class Orchestrator implements AbstractIotCrawlerClient {
     }
 
     @Override
+    public List<EntityLD> getEntities(String entityType, String query) throws Exception {
+        return metadataClient.getEntities(entityType, query);
+    }
+
+    @Override
     public List<String> getEntityURIs(String query) {
         return metadataClient.getEntityURIs(query);
     }
+
+    //@Override
+//    public <T> List<T> getEntities(Class<T> targetClass, int limit) throws Exception {
+//        return metadataClient.getEntities(targetClass, limit);
+//    }
+//
+//    @Override
+//    public <T> List<T> getEntities(Class<T> targetClass, String query) {
+//        return metadataClient.getEntities(targetClass, query);
+//    }
 
 //    @Override
 //    public List<RDFModel> getEntities(FilteringSelector selector, int limit) {
 //        return metadataClient.getEntities(selector, limit);
 //    }
 
-    public List<IoTStream> getStreams(int limit) throws Exception {
-        return metadataClient.getEntitiesAsType(IoTStream.class, limit);
-    }
+//    public List<IoTStream> getStreams(int limit) throws Exception {
+//        return metadataClient.getEntities(IoTStream.class, limit);
+//    }
 
 
-    public List<IoTStream> getStreams(String query){
-        return metadataClient.getEntitiesAsType(IoTStream.class, query);
-    }
-
-
-    public List<Sensor> getSensors(int limit) throws Exception {
-        return metadataClient.getEntitiesAsType(Sensor.class, limit);
-    }
-
-    @Override
-    public List<Sensor> getSensors(String query){
-        return metadataClient.getEntitiesAsType(Sensor.class, query);
-    }
-
-    @Override
-    public List<SosaPlatform> getPlatforms(int limit) throws Exception {
-        return metadataClient.getEntitiesAsType(SosaPlatform.class, limit);
-    }
-
-    @Override
-    public List<SosaPlatform> getPlatforms(String query) {
-        return metadataClient.getEntitiesAsType(SosaPlatform.class, query);
-    }
-
-    @Override
-    public List<ObservableProperty> getObservableProperties(int limit) throws Exception {
-        return metadataClient.getEntitiesAsType(ObservableProperty.class, limit);
-    }
-
-    @Override
-    public List<ObservableProperty> getObservableProperties(String query) {
-        return metadataClient.getEntitiesAsType(ObservableProperty.class, query);
-    }
+//    public List<IoTStream> getStreams(String query){
+//        return metadataClient.getEntities(IoTStream.class, query);
+//    }
+//
+//    public List<IoTStream> getStreams(String[] ids) throws Exception {
+//        return metadataClient.getEntities(ids, IoTStream.class);
+//    }
+//
+//    public List<Sensor> getSensors(int limit) throws Exception {
+//        return metadataClient.getEntities(Sensor.class, limit);
+//    }
+//
+//    @Override
+//    public List<Sensor> getSensors(String query){
+//        return metadataClient.getEntities(Sensor.class, query);
+//    }
+//
+//    @Override
+//    public List<SosaPlatform> getPlatforms(int limit) throws Exception {
+//        return metadataClient.getEntities(SosaPlatform.class, limit);
+//    }
+//
+//    @Override
+//    public List<SosaPlatform> getPlatforms(String query) {
+//        return metadataClient.getEntities(SosaPlatform.class, query);
+//    }
+//
+//    @Override
+//    public List<ObservableProperty> getObservableProperties(int limit) throws Exception {
+//        return metadataClient.getEntities(ObservableProperty.class, limit);
+//    }
+//
+//    @Override
+//    public List<ObservableProperty> getObservableProperties(String query) {
+//        return metadataClient.getEntities(ObservableProperty.class, query);
+//    }
 
 
 

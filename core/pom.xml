@@ -91,7 +91,7 @@
             <groupId>eu.neclab.iotplatform</groupId>
             <artifactId>ngsi.api</artifactId>
             <version>7.1-SNAPSHOT</version>
-            <scope>provided</scope>
+<!--            <scope>provided</scope>-->
             <exclusions>
                 <exclusion>
                     <groupId>com.fasterxml.jackson.core</groupId>

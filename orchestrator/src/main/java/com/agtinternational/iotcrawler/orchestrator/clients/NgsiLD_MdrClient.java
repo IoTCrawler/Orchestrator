@@ -5,12 +5,9 @@ import com.agtinternational.iotcrawler.core.models.*;
 import com.agtinternational.iotcrawler.fiware.clients.NgsiLDClient;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 
-import com.orange.ngsi2.model.Attribute;
-import com.orange.ngsi2.model.Entity;
 import com.orange.ngsi2.model.Paginated;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.shared.AlreadyExistsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.concurrent.ListenableFuture;
@@ -21,6 +18,8 @@ import javax.management.InstanceAlreadyExistsException;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
+import static com.agtinternational.iotcrawler.core.Utils.convertEntitiesToType;
+import static com.agtinternational.iotcrawler.core.Utils.getTypeURI;
 import static com.agtinternational.iotcrawler.orchestrator.Constants.NGSILD_BROKER_URI;
 
 public class NgsiLD_MdrClient extends AbstractMetadataClient {
@@ -37,56 +36,56 @@ public class NgsiLD_MdrClient extends AbstractMetadataClient {
     }
 
 
-    public List<IoTStream> getStreams(String query) {
+//    public List<IoTStream> getStreams(String query){
+////
+//        throw new NotImplementedException();
 //
-        throw new NotImplementedException();
-
-        //List<IoTStream>  ret = new ArrayList<>();
-
-//        List<String> ids = null;
-//        List<String> types = null;
-//        List<String> props = null;
+//        //List<IoTStream>  ret = new ArrayList<>();
 //
-//        int limit = 0;
-
-//        if(selector.getSubject()!=null) {
-//            ids = Arrays.asList(new String[]{selector.getSubject()});
-////            try {
-////                Entity entity = ngsiLDClient.getEntitiesAsType(selector.getSubject(), null, null).get();
+////        List<String> ids = null;
+////        List<String> types = null;
+////        List<String> props = null;
+////
+////        int limit = 0;
+//
+////        if(selector.getSubject()!=null) {
+////            ids = Arrays.asList(new String[]{selector.getSubject()});
+//////            try {
+//////                Entity entity = ngsiLDClient.getEntitiesAsType(selector.getSubject(), null, null).get();
+//////                IoTStream ioTStream = IoTStream.fromEntity(entity);
+//////                ret.add(ioTStream);
+//////            } catch (InterruptedException e) {
+//////                e.printStackTrace();
+//////            } catch (ExecutionException e) {
+//////                e.printStackTrace();
+//////            }
+////
+////        }else if(selector.getPredicate()!=null){
+////            if(selector.getPredicate().trim().equals("a") || selector.getPredicate().equals(RDF.type.getURI()))
+////                types = Arrays.asList(new String[]{ selector.getObject() });
+////            else {
+////                props = Arrays.asList(new String[]{URI.create(selector.getPredicate()).getFragment() +"="+ selector.getObject()});
+////            }
+////        }else{
+////            //Arrays.asList(new String[]{ "http://example.org/common/isParked" })
+////
+////        }
+//
+////        try {
+////            //entities = ngsiLDClient.getEntitiesAsType(String entityId, String type, Collection<String> attrs);
+////            Paginated<Entity> entities = ngsiLDClient.getEntities(ids, null, types, props, 0, limit, false).get();
+////            for(Entity entity: entities.getItems()) {
 ////                IoTStream ioTStream = IoTStream.fromEntity(entity);
 ////                ret.add(ioTStream);
-////            } catch (InterruptedException e) {
-////                e.printStackTrace();
-////            } catch (ExecutionException e) {
-////                e.printStackTrace();
 ////            }
-//
-//        }else if(selector.getPredicate()!=null){
-//            if(selector.getPredicate().trim().equals("a") || selector.getPredicate().equals(RDF.type.getURI()))
-//                types = Arrays.asList(new String[]{ selector.getObject() });
-//            else {
-//                props = Arrays.asList(new String[]{URI.create(selector.getPredicate()).getFragment() +"="+ selector.getObject()});
-//            }
-//        }else{
-//            //Arrays.asList(new String[]{ "http://example.org/common/isParked" })
-//
-//        }
-
-//        try {
-//            //entities = ngsiLDClient.getEntitiesAsType(String entityId, String type, Collection<String> attrs);
-//            Paginated<Entity> entities = ngsiLDClient.getEntities(ids, null, types, props, 0, limit, false).get();
-//            for(Entity entity: entities.getItems()) {
-//                IoTStream ioTStream = IoTStream.fromEntity(entity);
-//                ret.add(ioTStream);
-//            }
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        } catch (ExecutionException e) {
-//            e.printStackTrace();
-//        }
-//
-//        return ret;
-    }
+////        } catch (InterruptedException e) {
+////            e.printStackTrace();
+////        } catch (ExecutionException e) {
+////            e.printStackTrace();
+////        }
+////
+////        return ret;
+//    }
 
     @Override
     public List<String> getEntityURIs(String query) {
@@ -104,72 +103,54 @@ public class NgsiLD_MdrClient extends AbstractMetadataClient {
     }
 
     @Override
-    public List<EntityLD> getEntities(String type, int limit) throws Exception {
-        String[] types = new String[]{ type };
-        Paginated<EntityLD> entities = null;
-//        try {
-            entities = ngsiLDClient.getEntities(null, null, Arrays.asList(types), null, 0, limit, false).get();
-            return (List<EntityLD>)entities.getItems();
-//        } catch (Exception e) {
-//            LOGGER.error("Failed to query entities: {}", e.getLocalizedMessage());
-//        }
-//        return null;
+    public List<EntityLD> getEntities(String[] ids) throws Exception {
+        Paginated<EntityLD> paginated = null;
+        paginated = ngsiLDClient.getEntities(Arrays.asList(ids), null, null, null, 0, 0, false).get();
+        return (List<EntityLD>)paginated.getItems();
     }
 
     @Override
-    public <T> List<T> getEntitiesAsType(Class<T> targetClass, int limit) throws Exception {
-        List<T> ret = new ArrayList<>();
+    public List<EntityLD> getEntities(String[] ids, String typeURI) throws Exception {
+        String[] types = new String[]{typeURI};
+        Paginated<EntityLD> paginated = null;
+        paginated = ngsiLDClient.getEntities(Arrays.asList(ids), null, Arrays.asList(types), null, 0, 0, false).get();
+        return (List<EntityLD>)paginated.getItems();
+    }
 
-        String type = null;
-        if(targetClass.equals(IoTStream.class))
-            type = IoTStream.getTypeUri();
-        else if(targetClass.equals(Sensor.class))
-            type = Sensor.getTypeUri();
-        else if(targetClass.equals(SosaPlatform.class))
-            type = SosaPlatform.getTypeUri();
+    @Override
+    public List<EntityLD> getEntities(String typeURI, int limit) throws Exception {
+        String[] types = new String[]{typeURI};
+        Paginated<EntityLD> paginated = null;
+        paginated = ngsiLDClient.getEntities(null, null, Arrays.asList(types), null, 0, limit, false).get();
+        return (List<EntityLD>)paginated.getItems();
+    }
 
-        else if(targetClass.equals(ObservableProperty.class))
-            type = ObservableProperty.getTypeUri();
-        else {
-            LOGGER.error("No suitable type for entity " + targetClass.getSimpleName());
-            return ret;
-        }
+//    @Override
+//    public <T> List<T> getEntities(Class<T> targetClass, int limit) throws Exception {
+//
+//        String type = getTypeURI(targetClass);
+//        List<EntityLD> entities =  getEntities(type, limit);
+//        List<T> ret = convertEntitiesToType(entities, targetClass);
+//
+//        return ret;
+//    }
 
-        List<EntityLD> entities =  getEntities(type, limit);
-        if(entities!=null)
-            for(EntityLD entity: entities){
-                T toAdd=null;
-                try {
-                    if(targetClass.equals(IoTStream.class))
-                        toAdd = (T)IoTStream.fromEntity(entity);
+    @Override
+    public <T> List<T> getEntities(String[] ids, Class<T> targetClass) throws Exception {
+        Paginated<EntityLD> entities = null;
+        String type = getTypeURI(targetClass);
+        entities = ngsiLDClient.getEntities(Arrays.asList(ids), null, Arrays.asList(type), null, 0, 0, false).get();
 
-                    if(targetClass.equals(Sensor.class))
-                        toAdd = (T)Sensor.fromEntity(entity);
-
-                    if(targetClass.equals(SosaPlatform.class))
-                        toAdd = (T)SosaPlatform.fromEntity(entity);
-
-                    if(targetClass.equals(ObservableProperty.class))
-                        toAdd = (T)ObservableProperty.fromEntity(entity);
-
-                    if(toAdd!=null)
-                        ret.add(toAdd);
-                    else
-                        throw new Exception("No suitable type for entity " + targetClass.getSimpleName());
-
-                } catch (Exception e) {
-                    LOGGER.error("Failed to create "+targetClass.getSimpleName()+" from {}: {}", entity.getId(), e.getLocalizedMessage());
-                }
-
-            }
-
+        List<T> ret = convertEntitiesToType(entities.getItems(), targetClass);
         return ret;
     }
 
-    @Override
-    public <T> List<T> getEntitiesAsType(Class<T> type, String query) {
-        throw new NotImplementedException();
-    }
+
+
+//    @Override
+//    public <T> List<T> getEntities(Class<T> type, String query) {
+//        throw new NotImplementedException();
+//    }
 
     @Override
     public Boolean registerEntity(RDFModel entityAsModel) throws Exception{

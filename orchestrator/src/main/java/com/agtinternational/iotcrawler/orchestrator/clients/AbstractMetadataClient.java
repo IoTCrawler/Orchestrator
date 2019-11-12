@@ -16,24 +16,13 @@ public abstract class AbstractMetadataClient {
     public abstract List<EntityLD> getEntities(String query);
 
     public abstract List<EntityLD> getEntities(String type, String query);
-    public abstract List<EntityLD> getEntities(String type, int limit) throws Exception;
 
-    public abstract <T> List<T> getEntitiesAsType(Class<T> type, int limit) throws Exception;
-    public abstract <T> List<T> getEntitiesAsType(Class<T> type, String query);
+    public abstract List<EntityLD> getEntities(String[] ids) throws Exception;
+    public abstract List<EntityLD> getEntities(String[] ids, String typeURI) throws Exception;
+    public abstract List<EntityLD> getEntities(String typeURI, int limit) throws Exception;
 
-//    public abstract List<IoTStream> getStreams(int limit);
-//    public abstract List<IoTStream> getStreams(String query);
-//
-//    public abstract List<Sensor> getSensors(int limit);
-//    public abstract List<Sensor> getSensors(String query);
-//
-//    public abstract List<IoTPlatform> getPlatforms(int limit);
-//    public abstract List<IoTPlatform> getPlatforms(String query);
-//
-//    public abstract List<ObservableProperty> getObservableProperties(int limit);
-//    public abstract List<ObservableProperty> getObservableProperties(String query);
-
-//    public abstract List<StreamObservation> getObservations();
-//    public abstract List<StreamObservation> getObservations(int limit);
+    public abstract <T> List<T> getEntities(String[] ids, Class<T> targetClass) throws Exception;
+//    public abstract <T> List<T> getEntities(Class<T> type, int limit) throws Exception;
+//    public abstract <T> List<T> getEntities(Class<T> type, String query);
 
 }

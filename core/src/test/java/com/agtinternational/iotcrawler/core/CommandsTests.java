@@ -3,19 +3,12 @@ package com.agtinternational.iotcrawler.core;
 import com.agtinternational.iotcrawler.core.commands.*;
 import com.agtinternational.iotcrawler.core.models.IoTStream;
 import com.agtinternational.iotcrawler.core.models.StreamObservation;
-import com.agtinternational.iotcrawler.fiware.models.EntityLD;
-import com.agtinternational.iotcrawler.fiware.models.Utils;
-import com.google.gson.JsonObject;
 import eu.neclab.iotplatform.ngsi.api.datamodel.NotifyCondition;
 import eu.neclab.iotplatform.ngsi.api.datamodel.NotifyConditionEnum;
 import eu.neclab.iotplatform.ngsi.api.datamodel.Restriction;
-import org.apache.jena.rdf.model.RDFNode;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -37,9 +30,9 @@ public class CommandsTests {
     @Test
     public void GetEntityCommandTest() throws Exception {
 
-        GetEntityCommand command = new GetEntityCommand(ioTStream.getURI(), 0);
+        GetEntitiesCommand command = new GetEntitiesCommand(ioTStream.getURI(), 0);
         String jsonString = command.toJson();
-        GetEntityCommand command2 = GetEntityCommand.fromJson(jsonString);
+        GetEntitiesCommand command2 = GetEntitiesCommand.fromJson(jsonString);
 
         org.junit.Assert.assertEquals(jsonString, command2.toJson());
     }

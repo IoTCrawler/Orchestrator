@@ -95,12 +95,7 @@ public class RDFModel {
     }
 
     public String getLabel() {
-        RDFNode node = getProperty("rdf-schema:label");
-        if(node instanceof Resource)
-            return node.asResource().toString();
-        if(node instanceof Literal)
-            return node.asLiteral().getString();
-        return null;
+        return getAttribute(RDFS.label.getURI());
     }
 
     public String getTypeURI(){
@@ -219,15 +214,6 @@ public class RDFModel {
     }
 
     public RDFNode getProperty(String uri){
-        return getAttribute(uri);
-    }
-
-    public Map<String, List<Object>> getProperties(){
-        return getProperties(null);
-    }
-
-    public RDFNode getAttribute(String uri){
-
         String[] keySplitted = uri.split(":");
         //if uri in in shorten format
 
@@ -243,6 +229,19 @@ public class RDFModel {
             if (statement.getSubject().equals(resource) && statement.getPredicate().getURI().equals(uri))
                 return statement.getObject();
         }
+        return null;
+    }
+
+    public Map<String, List<Object>> getProperties(){
+        return getProperties(null);
+    }
+
+    public String getAttribute(String uri){
+        RDFNode node = getProperty(uri);
+        if(node instanceof Resource)
+            return node.asResource().toString();
+        if(node instanceof Literal)
+            return node.asLiteral().getString();
         return null;
     }
 

@@ -7,35 +7,49 @@ import com.google.gson.JsonParser;
 
 import java.lang.reflect.Type;
 
-public class GetEntityCommand extends RPCCommand {
+public class GetEntitiesCommand extends RPCCommand {
 
     int limit = 0;
+    String[] ids;
     String query;
-    String entityType;
+    String typeURI;
 
-    public GetEntityCommand(String entityType, String query){
-        this.entityType = entityType;
+    public GetEntitiesCommand(String[] ids){
+        this.ids = ids;
+    }
+
+    public GetEntitiesCommand(String[] ids, String typeURI){
+        this(ids);
+        this.typeURI = typeURI;
+    }
+
+    public GetEntitiesCommand(String typeURI, String query){
+        this.typeURI = typeURI;
         this.query = query;
     }
 
-    public GetEntityCommand(String entityType, int limit){
-        this.entityType = entityType;
+    public GetEntitiesCommand(String typeURI, int limit){
+        this.typeURI = typeURI;
         this.limit = limit;
+    }
+
+    public String[] getIds() {
+        return ids;
     }
 
     public String getQuery() {
         return query;
     }
 
-    public String getEntityType() {
-        return entityType;
+    public String getTypeURI() {
+        return typeURI;
     }
 
     public int getLimit() {
         return limit;
     }
 
-    public static GetEntityCommand fromJson(String json) {
+    public static GetEntitiesCommand fromJson(String json) {
 
         JsonParser parser = new JsonParser();
         JsonObject messageObj = (JsonObject)parser.parse(new String(json));
@@ -44,7 +58,7 @@ public class GetEntityCommand extends RPCCommand {
         Gson gson = new GsonBuilder()
                 .setPrettyPrinting()
                 .create();
-        GetEntityCommand command = gson.fromJson(args.toString(), (Type) GetEntityCommand.class);
+        GetEntitiesCommand command = gson.fromJson(args.toString(), (Type) GetEntitiesCommand.class);
         return command;
     }
 }

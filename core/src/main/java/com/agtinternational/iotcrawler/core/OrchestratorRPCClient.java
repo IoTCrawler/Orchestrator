@@ -2,7 +2,7 @@ package com.agtinternational.iotcrawler.core;
 
 //import com.agtinternational.iotcrawler.core.models.NGSI_LD.EntityLD;
 import com.agtinternational.iotcrawler.core.commands.*;
-import com.agtinternational.iotcrawler.core.interfaces.AbstractIotCrawlerClient;
+import com.agtinternational.iotcrawler.core.interfaces.IotCrawlerClient;
 import com.agtinternational.iotcrawler.core.models.*;
 
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
@@ -13,9 +13,9 @@ import com.google.gson.JsonParser;
 import com.rabbitmq.client.*;
 import eu.neclab.iotplatform.ngsi.api.datamodel.*;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ import static com.agtinternational.iotcrawler.core.Constants.*;
 
 //ToDo: timeout for requests
 
-public class OrchestratorRPCClient implements AbstractIotCrawlerClient, AutoCloseable {
+public class OrchestratorRPCClient extends IotCrawlerClient implements AutoCloseable {
     private Logger LOGGER = LoggerFactory.getLogger(OrchestratorRPCClient.class);
 
     //Semaphore callFinishedMutex;
@@ -138,7 +138,7 @@ public class OrchestratorRPCClient implements AbstractIotCrawlerClient, AutoClos
     public List<IoTStream> getStreams(int limit) throws Exception {
         final List<IoTStream> ret = new ArrayList<>();
 
-        GetEntityCommand command = new GetEntityCommand(IoTStream.getTypeUri(), limit);
+        GetEntitiesCommand command = new GetEntitiesCommand(IoTStream.getTypeUri(), limit);
 
         final List<EntityLD> entities = execute(command);
         for(EntityLD entityLD: entities) {
@@ -158,7 +158,7 @@ public class OrchestratorRPCClient implements AbstractIotCrawlerClient, AutoClos
     public List<IoTStream> getStreams(String query) throws Exception {
         List<IoTStream> ret = new ArrayList<>();
 
-        GetEntityCommand command = new GetEntityCommand(IoTStream.getTypeUri(), query);
+        GetEntitiesCommand command = new GetEntitiesCommand(IoTStream.getTypeUri(), query);
         List<EntityLD> entities = execute(command);
 
         for(EntityLD entityLD: entities) {
@@ -178,7 +178,7 @@ public class OrchestratorRPCClient implements AbstractIotCrawlerClient, AutoClos
     public List<Sensor> getSensors(int limit) throws Exception {
         List<Sensor> ret = new ArrayList<>();
 
-        GetEntityCommand command = new GetEntityCommand(Sensor.getTypeUri(), limit);
+        GetEntitiesCommand command = new GetEntitiesCommand(Sensor.getTypeUri(), limit);
         List<EntityLD> entities = execute(command);
 
         for(EntityLD entityLD: entities) {
@@ -199,7 +199,7 @@ public class OrchestratorRPCClient implements AbstractIotCrawlerClient, AutoClos
     public List<Sensor> getSensors(String query) throws Exception {
         List<Sensor> ret = new ArrayList<>();
 
-        GetEntityCommand command = new GetEntityCommand(Sensor.getTypeUri(), query);
+        GetEntitiesCommand command = new GetEntitiesCommand(Sensor.getTypeUri(), query);
         List<EntityLD> entities = execute(command);
 
         for(EntityLD entityLD: entities) {
@@ -219,7 +219,7 @@ public class OrchestratorRPCClient implements AbstractIotCrawlerClient, AutoClos
     public List<SosaPlatform> getPlatforms(int limit) throws Exception {
         List<SosaPlatform> ret = new ArrayList<>();
 
-        GetEntityCommand command = new GetEntityCommand(SosaPlatform.getTypeUri(), limit);
+        GetEntitiesCommand command = new GetEntitiesCommand(SosaPlatform.getTypeUri(), limit);
         List<EntityLD> entities = execute(command);
 
         for(EntityLD entityLD: entities) {
@@ -239,7 +239,7 @@ public class OrchestratorRPCClient implements AbstractIotCrawlerClient, AutoClos
     public List<SosaPlatform> getPlatforms(String query) throws Exception {
         List<SosaPlatform> ret = new ArrayList<>();
 
-        GetEntityCommand command = new GetEntityCommand(SosaPlatform.getTypeUri(), query);
+        GetEntitiesCommand command = new GetEntitiesCommand(SosaPlatform.getTypeUri(), query);
         List<EntityLD> entities = execute(command);
 
         for(EntityLD entityLD: entities) {
@@ -259,7 +259,7 @@ public class OrchestratorRPCClient implements AbstractIotCrawlerClient, AutoClos
     public List<ObservableProperty> getObservableProperties(int limit) throws Exception {
         List<ObservableProperty> ret = new ArrayList<>();
 
-        GetEntityCommand command = new GetEntityCommand(ObservableProperty.getTypeUri(), limit);
+        GetEntitiesCommand command = new GetEntitiesCommand(ObservableProperty.getTypeUri(), limit);
         List<EntityLD> entities = execute(command);
 
         for(EntityLD entityLD: entities) {
@@ -281,7 +281,7 @@ public class OrchestratorRPCClient implements AbstractIotCrawlerClient, AutoClos
     public List<ObservableProperty> getObservableProperties(String query) throws Exception {
         List<ObservableProperty> ret = new ArrayList<>();
 
-        GetEntityCommand command = new GetEntityCommand(ObservableProperty.getTypeUri(), query);
+        GetEntitiesCommand command = new GetEntitiesCommand(ObservableProperty.getTypeUri(), query);
         List<EntityLD> entities = execute(command);
 
         for(EntityLD entityLD: entities) {
@@ -299,12 +299,51 @@ public class OrchestratorRPCClient implements AbstractIotCrawlerClient, AutoClos
 
     @Override
     public List<String> getEntityURIs(String query) {
-        throw new NotImplementedException();
+        throw new NotImplementedException("Not implemented");
+    }
+
+//    @Override
+//    public <T> List<T> getEntities(String[] ids, Class<T> targetClass) throws Exception {
+//        String typeURI = Utils.getTypeURI(targetClass);
+//        GetEntitiesCommand command = new GetEntitiesCommand(ids, typeURI);
+//        List<EntityLD> entities = execute(command);
+//        List<T> ret = Utils.convertEntitiesToType(entities, targetClass);
+//        return ret;
+//    }
+//
+//    @Override
+//    public <T> List<T> getEntities(Class<T> targetClass, int limit) throws Exception {
+//        String typeURI = Utils.getTypeURI(targetClass);
+//        GetEntitiesCommand command = new GetEntitiesCommand(typeURI, limit);
+//        List<EntityLD> entities = execute(command);
+//        List<T> ret = Utils.convertEntitiesToType(entities, targetClass);
+//        return ret;
+//    }
+
+//    @Override
+//    public List<EntityLD> getEntities(String[] ids) throws Exception {
+//        GetEntitiesCommand command = new GetEntitiesCommand(ids);
+//        List<EntityLD> entities = execute(command);
+//        return entities;
+//    }
+
+    @Override
+    public List<EntityLD> getEntities(String[] ids, String entityType) throws Exception {
+        GetEntitiesCommand command = new GetEntitiesCommand(ids, entityType);
+        List<EntityLD> entities = execute(command);
+        return entities;
     }
 
     @Override
     public List<EntityLD> getEntities(String entityType, int limit) throws Exception {
-        GetEntityCommand command = new GetEntityCommand(entityType, limit);
+        GetEntitiesCommand command = new GetEntitiesCommand(entityType, limit);
+        List<EntityLD> entities = execute(command);
+        return entities;
+    }
+
+    @Override
+    public List<EntityLD> getEntities(String entityType, String query) throws Exception {
+        GetEntitiesCommand command = new GetEntitiesCommand(entityType, query);
         List<EntityLD> entities = execute(command);
         return entities;
     }
@@ -386,7 +425,7 @@ public class OrchestratorRPCClient implements AbstractIotCrawlerClient, AutoClos
     }
 
 
-    private List<EntityLD> execute(GetEntityCommand command) throws Exception {
+    private List<EntityLD> execute(GetEntitiesCommand command) throws Exception {
         List<EntityLD> ret = new ArrayList<>();
         String json = null;
         try {

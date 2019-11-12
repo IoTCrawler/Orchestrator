@@ -2,7 +2,10 @@ package com.agtinternational.iotcrawler.core.models;
 
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import com.orange.ngsi2.model.Entity;
+import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.vocabulary.RDFS;
 import com.agtinternational.iotcrawler.core.Constants;
 
@@ -25,12 +28,28 @@ public class Sensor extends RDFModel {
         addProperty(RDFS.label, label);
     }
 
+    public void observes(Object value){
+        addProperty(sosaNS + "observes", value);
+    }
+
+    public String getObserves(){
+        String ret = getAttribute(sosaNS + "observes");
+        return ret;
+    }
+
+    public void isHostedBy(Object value){
+        addProperty(sosaNS + "isHostedBy", value);
+    }
+
+    public String getIsHostedBy(){
+        String ret = getAttribute(sosaNS + "isHostedBy");
+        return ret;
+    }
 
     public static String getTypeUri(){
         return sosaPrefix+":"+"Sensor";
         //return Sensor.class.getSimpleName();
         //return "sosa:Sensor";
-
     }
 
     public static Sensor fromEntity(EntityLD entity) throws Exception {

@@ -16,6 +16,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import javax.management.InstanceAlreadyExistsException;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Semaphore;
 
 import static com.agtinternational.iotcrawler.core.Utils.convertEntitiesToType;
@@ -98,8 +99,11 @@ public class NgsiLD_MdrClient extends AbstractMetadataClient {
     }
 
     @Override
-    public List<EntityLD> getEntities(String type, String query) {
-        throw new NotImplementedException();
+    public List<EntityLD> getEntities(String type, String query) throws Exception {
+        String[] types = new String[]{type};
+        Paginated<EntityLD> paginated = null;
+        paginated = ngsiLDClient.getEntities(null, null, Arrays.asList(types), null,query,null, null, 0, 0, false).get();
+        return (List<EntityLD>)paginated.getItems();
     }
 
     @Override

@@ -147,12 +147,14 @@ public class NgsiLDClient {
             builder.path("v1/entities");
 //        else
 //            builder.path("v1/entities/"+ids.toArray()[0]);
-
+        builder.query(query);
         addParam(builder, "id", ids);
         addParam(builder, "idPattern", idPattern);
         addParam(builder, "type", types);
         addParam(builder, "attrs", attrs);
-        addParam(builder, "q", query);
+        //addParam(builder, "", query);  //see below
+
+        addParam(builder, "attrs", attrs);
         addGeoQueryParams(builder, geoQuery);
         addParam(builder, "orderBy", orderBy);
         addPaginationParams(builder, offset, limit);

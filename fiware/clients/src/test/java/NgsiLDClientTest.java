@@ -188,9 +188,10 @@ public class NgsiLDClientTest extends EnvVariablesSetter{
 
     @Order(3)
     @Test
-    public void queryTest() throws ExecutionException, InterruptedException {
+    public void getByAttributeValueTest() throws ExecutionException, InterruptedException {
         Collection<String> types = Arrays.asList(new String[]{ entity.getType() });
-        String query = "http://example.org/vehicle/brandName==\"Mercedes\"";
+        //String query = "q=brandName==\"Mercedes\"";  //Scorpio
+        String query = "brandName.value=Mercedes";   //djane
         Paginated<EntityLD> entities = ngsiLdClient.getEntities(null, null, types, null,query,null, null, 0, 0, false).get();
         Assert.assertNotNull(entities.getItems());
         Assert.assertNotNull(entities.getItems().size()>0);

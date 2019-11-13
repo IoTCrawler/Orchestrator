@@ -1,5 +1,5 @@
 {
-  "@id": "urn:ngsi-ld:Vehicle:A4568",
+  "@id": "urn:ngsi-ld:Vehicle:A4569",
   "@type": "Vehicle",
   "brandName": {
     "type": "Property",

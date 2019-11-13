@@ -190,9 +190,10 @@ public class OrchestratorTest extends EnvVariablesSetter {
     @Ignore
     @Test
     @Order(7)
-    public void getStreamByCustomQueryTest() throws Exception {
+    public void getQueryTest() throws Exception {
         LOGGER.info("getStreamByCustomQueryTest()");
-        List<IoTStream> streams = orchestrator.getStreams("SELECT ?s ?p ?o WHERE { ?s ?p ?o . FILTER(?p=<http://www.w3.org/ns/sosa/madeBySensor> && ?o=<http://purl.org/iot/ontology/iot-stream#Sensor_FIBARO+Wall+plug+living+room_CurrentEnergyUse>) }");
+        //List<EntityLD> streams = orchestrator.getEntities("Vehicle", "brandName.value=Mercedes");
+        List<IoTStream> streams = orchestrator.getStreams("sosa:madeBySensor.object=iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_MotionAlarmCancelationDelay");
         String abc="213";
     }
 

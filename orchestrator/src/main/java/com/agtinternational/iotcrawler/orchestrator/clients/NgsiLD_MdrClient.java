@@ -99,10 +99,10 @@ public class NgsiLD_MdrClient extends AbstractMetadataClient {
     }
 
     @Override
-    public List<EntityLD> getEntities(String type, String query) throws Exception {
+    public List<EntityLD> getEntities(String type, String query, int offset, int limit) throws Exception {
         String[] types = new String[]{type};
         Paginated<EntityLD> paginated = null;
-        paginated = ngsiLDClient.getEntities(null, null, Arrays.asList(types), null,query,null, null, 0, 0, false).get();
+        paginated = ngsiLDClient.getEntities(null, null, Arrays.asList(types), null,query,null, null, offset, limit, false).get();
         return (List<EntityLD>)paginated.getItems();
     }
 
@@ -122,10 +122,10 @@ public class NgsiLD_MdrClient extends AbstractMetadataClient {
     }
 
     @Override
-    public List<EntityLD> getEntities(String typeURI, int limit) throws Exception {
+    public List<EntityLD> getEntities(String typeURI, int offset, int limit) throws Exception {
         String[] types = new String[]{typeURI};
         Paginated<EntityLD> paginated = null;
-        paginated = ngsiLDClient.getEntities(null, null, Arrays.asList(types), null, 0, limit, false).get();
+        paginated = ngsiLDClient.getEntities(null, null, Arrays.asList(types), null, offset, limit, false).get();
         return (List<EntityLD>)paginated.getItems();
     }
 

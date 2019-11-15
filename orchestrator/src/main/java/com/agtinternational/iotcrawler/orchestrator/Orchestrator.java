@@ -139,6 +139,7 @@ public class Orchestrator extends IotCrawlerClient {
             }
 
             int limit = command.getLimit();
+            int offset = command.getOffset();
 
             List<EntityLD> entities = null;
             if(command!=null)
@@ -147,7 +148,7 @@ public class Orchestrator extends IotCrawlerClient {
                     //Class targetClass = Utils.getTargetClass(command.getTypeURI());
                     entities = metadataClient.getEntities(command.getIds(), command.getTypeURI());
                 }else {
-                    entities = metadataClient.getEntities(command.getTypeURI(), limit);
+                    entities = metadataClient.getEntities(command.getTypeURI(), offset, limit);
                     JsonArray jsonArray = EntitiesToJson(entities);
                 }
             }
@@ -571,13 +572,13 @@ public class Orchestrator extends IotCrawlerClient {
     }
 
     @Override
-    public List<EntityLD> getEntities(String entityType, int limit) throws Exception {
-        return metadataClient.getEntities(entityType, limit);
+    public List<EntityLD> getEntities(String entityType, int offset, int limit) throws Exception {
+        return metadataClient.getEntities(entityType, offset, limit);
     }
 
     @Override
-    public List<EntityLD> getEntities(String entityType, String query) throws Exception {
-        return metadataClient.getEntities(entityType, query);
+    public List<EntityLD> getEntities(String entityType, String query, int offset, int limit) throws Exception {
+        return metadataClient.getEntities(entityType, query, offset, limit);
     }
 
     @Override

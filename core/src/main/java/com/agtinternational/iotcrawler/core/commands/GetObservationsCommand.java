@@ -11,12 +11,18 @@ import java.util.List;
 public class GetObservationsCommand {
 
     String streamId;
-    int limit;
+    int offset = 0;
+    int limit = 0;
 
-    public GetObservationsCommand(String streamId, int limit){
+    public GetObservationsCommand(String streamId, int offset, int limit){
         this.streamId = streamId;
+        this.offset = offset;
         this.limit = limit;
 
+    }
+
+    public int getOffset() {
+        return offset;
     }
 
     public int getLimit() {
@@ -34,8 +40,9 @@ public class GetObservationsCommand {
         JsonObject jsonObject = (JsonObject) messageObj.get("args");
 
         String streamId = jsonObject.get("streamId").getAsString();
+        int offset = jsonObject.get("offset").getAsInt();
         int limit = jsonObject.get("limit").getAsInt();
-        GetObservationsCommand command = new GetObservationsCommand(streamId, limit);
+        GetObservationsCommand command = new GetObservationsCommand(streamId, offset, limit);
         return command;
     }
 

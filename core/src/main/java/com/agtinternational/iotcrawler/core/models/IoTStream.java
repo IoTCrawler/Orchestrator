@@ -30,10 +30,9 @@ public class IoTStream extends RDFModel {
 //        return new Sensor("sosa:sensor1");
 //    }
 
-    public Sensor getSensor(){
-        return new Sensor(getSensorURI());
-    }
-
+//    public Sensor getSensor(){
+//        return new Sensor(getMadeBySensor());
+//    }
 
     public IoTStream(String uri, Model model){
         super(uri, IoTStream.getTypeUri(), model);
@@ -64,15 +63,8 @@ public class IoTStream extends RDFModel {
 //        return new ObservableProperty("http://Uri");
 //    }
 
-    public String getSensorURI(){
-        RDFNode rdfNode = getProperty("sosa:madeBySensor");
-        if(rdfNode!=null)
-            return rdfNode.asResource().getURI();
-//        Property property = model.createProperty(Constants.madeBySensor);
-//        if(!model.listObjectsOfProperty(property).hasNext())
-//            return null;
-//        String ret = model.listObjectsOfProperty(property).next().asResource().getURI();
-        return null;
+    public String getMadeBySensor(){
+        return getAttribute("sosa:madeBySensor");
     }
 
 

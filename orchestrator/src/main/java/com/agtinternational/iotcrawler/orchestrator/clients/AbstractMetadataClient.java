@@ -20,8 +20,8 @@ public abstract class AbstractMetadataClient {
 
     public abstract List<EntityLD> getEntities(String[] ids) throws Exception;
     public abstract List<EntityLD> getEntities(String[] ids, String typeURI) throws Exception;
-    public abstract List<EntityLD> getEntities(String typeURI, int limit) throws Exception;
-    public abstract List<EntityLD> getEntities(String type, String query) throws Exception;
+    public abstract List<EntityLD> getEntities(String typeURI, int offset, int limit) throws Exception;
+    public abstract List<EntityLD> getEntities(String type, String query, int offset, int limit) throws Exception;
 
     public abstract <T> List<T> getEntities(String[] ids, Class<T> targetClass) throws Exception;
 //    public abstract <T> List<T> getEntities(Class<T> type, int limit) throws Exception;

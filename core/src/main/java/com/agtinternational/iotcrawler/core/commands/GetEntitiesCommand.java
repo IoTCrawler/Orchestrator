@@ -9,27 +9,34 @@ import java.lang.reflect.Type;
 
 public class GetEntitiesCommand extends RPCCommand {
 
+    int offset = 0;
     int limit = 0;
     String[] ids;
     String query;
     String typeURI;
 
-    public GetEntitiesCommand(String[] ids){
+    public GetEntitiesCommand(String[] ids, int offset, int limit){
         this.ids = ids;
+        this.offset = offset;
+        this.limit = limit;
     }
 
-    public GetEntitiesCommand(String[] ids, String typeURI){
-        this(ids);
+    public GetEntitiesCommand(String[] ids, String typeURI, int offset, int limit){
+        this(ids, offset, limit);
         this.typeURI = typeURI;
     }
 
-    public GetEntitiesCommand(String typeURI, String query){
+    public GetEntitiesCommand(String typeURI, String query, int offset, int limit){
         this.typeURI = typeURI;
         this.query = query;
+        this.offset = offset;
+        this.limit = limit;
     }
 
-    public GetEntitiesCommand(String typeURI, int limit){
+    public GetEntitiesCommand(String typeURI, int offset, int limit){
         this.typeURI = typeURI;
+        this.limit = limit;
+        this.offset = offset;
         this.limit = limit;
     }
 
@@ -44,6 +51,8 @@ public class GetEntitiesCommand extends RPCCommand {
     public String getTypeURI() {
         return typeURI;
     }
+
+    public int getOffset() { return offset; }
 
     public int getLimit() {
         return limit;

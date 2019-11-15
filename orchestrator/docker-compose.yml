@@ -31,7 +31,20 @@ services:
       - "27017:27017"
     networks:
       - iotcrawler
-#  iotbroker:
+  ranking:
+    #docker run --memory "300M" --memory-swap "1G" --name "ranking" --init --detach --env INDEXER_URL=http://localhost:3002 --publish-all gitlab.iotcrawler.net:4567/ranking/ranking
+    image: gitlab.iotcrawler.net:4567/ranking/ranking
+    environment:
+     #- INDEXER_URL=http://djane
+     - INDEXER_URL=http://djane:3000
+    ports:
+      - "3003:3003"
+    depends_on:
+      - djane
+    networks:
+      - iotcrawler
+
+  #  iotbroker:
 #    image: fiware/iotbroker:standalone-dev
 #    environment:
 #      - iotbroker_historicalagent=enabled

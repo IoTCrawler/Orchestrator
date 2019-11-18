@@ -1,6 +1,5 @@
 package com.agtinternational.iotcrawler.orchestrator;
 
-import com.agtinternational.iotcrawler.core.Utils;
 import com.agtinternational.iotcrawler.core.interfaces.IotCrawlerClient;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import com.agtinternational.iotcrawler.orchestrator.clients.AbstractDataClient;
@@ -138,6 +137,8 @@ public class Orchestrator extends IotCrawlerClient {
                 exception = new Exception("Failed to parse command from "+messageObj+": "+e.getLocalizedMessage(), e);
             }
 
+
+            JsonObject queryJson = command.getJsonQuery();
             int limit = command.getLimit();
             int offset = command.getOffset();
 
@@ -146,9 +147,9 @@ public class Orchestrator extends IotCrawlerClient {
             try {
                 if(command.getIds()!=null) {
                     //Class targetClass = Utils.getTargetClass(command.getTypeURI());
-                    entities = metadataClient.getEntities(command.getIds(), command.getTypeURI());
+                    entities = metadataClient.getEntitiesById(command.getIds(), command.getTypeURI());
                 }else {
-                    entities = metadataClient.getEntities(command.getTypeURI(), offset, limit);
+                    entities = metadataClient.getEntities(command.getTypeURI(), queryJson, offset, limit);
                     JsonArray jsonArray = EntitiesToJson(entities);
                 }
             }
@@ -567,24 +568,24 @@ public class Orchestrator extends IotCrawlerClient {
     }
 
     @Override
-    public List<EntityLD> getEntities(String[] ids, String targetClass) throws Exception {
-        return metadataClient.getEntities(ids, targetClass);
+    public List<EntityLD> getEntitiesById(String[] ids, String targetClass) throws Exception {
+        return metadataClient.getEntitiesById(ids, targetClass);
     }
 
-    @Override
-    public List<EntityLD> getEntities(String entityType, int offset, int limit) throws Exception {
-        return metadataClient.getEntities(entityType, offset, limit);
-    }
+
+
 
     @Override
-    public List<EntityLD> getEntities(String entityType, String query, int offset, int limit) throws Exception {
+    public List<EntityLD> getEntities(String entityType, JsonObject query, int offset, int limit) throws Exception {
         return metadataClient.getEntities(entityType, query, offset, limit);
     }
 
     @Override
-    public List<String> getEntityURIs(String query) {
+    public List<String> getEntityURIs(String query, int offset, int limit) {
         return metadataClient.getEntityURIs(query);
     }
+
+
 
     //@Override
 //    public <T> List<T> getEntities(Class<T> targetClass, int limit) throws Exception {

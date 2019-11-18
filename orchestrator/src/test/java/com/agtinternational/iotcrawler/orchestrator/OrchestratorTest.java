@@ -4,6 +4,7 @@ import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import com.agtinternational.iotcrawler.orchestrator.clients.NgsiLD_MdrClient;
 //import com.agtinternational.iotcrawler.orchestrator.clients.TripleStoreMDRClient;
 import com.agtinternational.iotcrawler.core.models.*;
+import com.google.gson.JsonObject;
 import org.apache.commons.lang3.tuple.Pair;
 import com.agtinternational.iotcrawler.orchestrator.clients.AbstractMetadataClient;
 import eu.neclab.iotplatform.ngsi.api.datamodel.NotifyCondition;
@@ -83,7 +84,7 @@ public class OrchestratorTest extends EnvVariablesSetter {
     @Order(2)
     public void getAllStreamsTest() throws Exception {
         LOGGER.info("getAllStreamsTest()");
-        List<IoTStream> streams = orchestrator.getStreams(0,0);
+        List<IoTStream> streams = orchestrator.getStreams(null,0,0);
         Assert.notNull(streams);
 
         LOGGER.info(streams.size()+" streams returned");
@@ -93,7 +94,7 @@ public class OrchestratorTest extends EnvVariablesSetter {
     @Order(3)
     public void registerEntitiesTest() throws Exception {
         LOGGER.info("registerEntityTest()");
-        String[] entityTypes = new String[]{ "Platform", "Sensor" };
+        String[] entityTypes = new String[]{ "IoTStream", "Sensor", "Platform" };
         for(String type: entityTypes) {
             byte[] iotStreamModelJson = Files.readAllBytes(Paths.get("samples/"+type+".json"));
             RDFModel entity = RDFModel.fromJson(iotStreamModelJson);
@@ -111,7 +112,7 @@ public class OrchestratorTest extends EnvVariablesSetter {
     public void getEntitiesTest() throws Exception {
         LOGGER.info("getEntitiesTest()");
         //List<EntityLD>  streams = orchestrator.getEntities(IoTStream.getTypeUri(), 0);
-        List<EntityLD>  streams = orchestrator.getEntities(".*", 0,0);
+        List<EntityLD>  streams = orchestrator.getEntities(".*", null, 0,0);
         Assert.notNull(streams);
         LOGGER.info(streams.size()+" streams returned");
     }
@@ -132,7 +133,7 @@ public class OrchestratorTest extends EnvVariablesSetter {
         byte[] iotStreamModelJson = Files.readAllBytes(Paths.get("samples/IoTStream.json"));
         IoTStream ioTStream = IoTStream.fromJson(iotStreamModelJson);
 
-        List<IoTStream> streams = orchestrator.getStreams(new String[]{ioTStream.getURI()});
+        List<IoTStream> streams = orchestrator.getStreamsById(new String[]{ioTStream.getURI()});
         //List<IoTStream> streams = orchestrator.getStreams("SELECT ?s ?p ?o WHERE { ?s ?p ?o . FILTER (?s=<"+ioTStream.getURI()+">) . } ");
         Assert.notNull(streams);
         LOGGER.info(streams.size()+" streams returned");
@@ -151,8 +152,8 @@ public class OrchestratorTest extends EnvVariablesSetter {
 
         String[] ids = new String[]{"iotc:Sensor_FIBARO+System+FGWPE%2FF+Wall+Plug+Gen5_CurrentEnergyUse"};
 
-        List<EntityLD> entities = orchestrator.getEntities(ids, Sensor.getTypeUri());
-        List<Sensor> sensors = orchestrator.getEntities(ids, Sensor.class);
+        List<EntityLD> entities = orchestrator.getEntitiesById(ids, Sensor.getTypeUri());
+        List<Sensor> sensors = orchestrator.getEntitiesById(ids, Sensor.class);
 
         Assert.notNull(entities );
         LOGGER.info(entities.size()+" entities returned");
@@ -163,7 +164,7 @@ public class OrchestratorTest extends EnvVariablesSetter {
     @Order(6)
     public void getAllSensorsTest() throws Exception {
         LOGGER.info("getAllSensorsTest()");
-        List<Sensor> sensors = orchestrator.getSensors(0,0);
+        List<Sensor> sensors = orchestrator.getSensors(null,0,0);
         Assert.notNull(sensors);
         LOGGER.info(sensors.size()+" sensors returned");
     }
@@ -173,7 +174,7 @@ public class OrchestratorTest extends EnvVariablesSetter {
     @Order(7)
     public void getAllPlatformsTest() throws Exception {
         LOGGER.info("getAllPlatformsTest()");
-        List<SosaPlatform> platforms = orchestrator.getPlatforms(0,0);
+        List<SosaPlatform> platforms = orchestrator.getPlatforms(null,0,0);
         Assert.notNull(platforms);
         LOGGER.info(platforms.size()+" platforms returned");
     }
@@ -182,7 +183,7 @@ public class OrchestratorTest extends EnvVariablesSetter {
     @Test
     public void getAllObservablePropertiesTest() throws Exception {
         LOGGER.info("getAllObservablePropertiesTest()");
-        List<ObservableProperty> items = orchestrator.getObservableProperties(0,0);
+        List<ObservableProperty> items = orchestrator.getObservableProperties(null,0,0);
         Assert.notNull(items);
         LOGGER.info(items.size()+" ObservableProperties returned");
     }
@@ -190,19 +191,21 @@ public class OrchestratorTest extends EnvVariablesSetter {
     @Ignore
     @Test
     @Order(7)
-    public void getQueryTest() throws Exception {
+    public void getByQueryTest() throws Exception {
         LOGGER.info("getStreamByCustomQueryTest()");
         //List<EntityLD> streams = orchestrator.getEntities("Vehicle", "brandName.value=Mercedes");
-        List<IoTStream> streams = orchestrator.getStreams("sosa:madeBySensor.object=iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_MotionAlarmCancelationDelay",0,0);
+        JsonObject query = new JsonObject();
+        query.addProperty("sosa:madeBySensor", "iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_MotionAlarmCancelationDelay");
+        List<IoTStream> streams = orchestrator.getStreams(query,0,0);
         String abc="213";
     }
 
-    //@Ignore
+    @Ignore
     @Test
     @Order(8)
     public void getCustomEntityTest() throws Exception {
         LOGGER.info("getCustomEntityTest()");
-        List<EntityLD> models = orchestrator.getEntities("http://www.agtinternational.com/ontologies/SmartHome#IoTDevice", 0,0);
+        //List<EntityLD> models = orchestrator.getEntities("http://www.agtinternational.com/ontologies/SmartHome#IoTDevice", 0,0);
         String abc="213";
     }
 
@@ -241,7 +244,7 @@ public class OrchestratorTest extends EnvVariablesSetter {
     @Test
     public void subscribeMultipleTest() throws Exception {
         LOGGER.info("subscribeMultipleTest()");
-        List<IoTStream> streams = orchestrator.getStreams(0,0);
+        List<IoTStream> streams = orchestrator.getStreams(null,0,0);
         for(IoTStream stream : streams) {
             //IoTStream iotObservationModel = IoTStream.fromJson(iotStreamModel);
             String[] attributes = new String[]{

@@ -12,7 +12,8 @@ public class GetEntitiesCommand extends RPCCommand {
     int offset = 0;
     int limit = 0;
     String[] ids;
-    String query;
+    //String query;
+    JsonObject jsonQuery;
     String typeURI;
 
     public GetEntitiesCommand(String[] ids, int offset, int limit){
@@ -26,9 +27,9 @@ public class GetEntitiesCommand extends RPCCommand {
         this.typeURI = typeURI;
     }
 
-    public GetEntitiesCommand(String typeURI, String query, int offset, int limit){
+    public GetEntitiesCommand(String typeURI, JsonObject query, int offset, int limit){
         this.typeURI = typeURI;
-        this.query = query;
+        this.jsonQuery = query;
         this.offset = offset;
         this.limit = limit;
     }
@@ -44,10 +45,6 @@ public class GetEntitiesCommand extends RPCCommand {
         return ids;
     }
 
-    public String getQuery() {
-        return query;
-    }
-
     public String getTypeURI() {
         return typeURI;
     }
@@ -56,6 +53,10 @@ public class GetEntitiesCommand extends RPCCommand {
 
     public int getLimit() {
         return limit;
+    }
+
+    public JsonObject getJsonQuery() {
+        return jsonQuery;
     }
 
     public static GetEntitiesCommand fromJson(String json) {

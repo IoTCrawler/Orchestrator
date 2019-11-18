@@ -12,11 +12,21 @@
       "@type": "@id"
     },
     "iot-stream": "http://purl.org/iot/ontology/iot-stream#",
-    "sosa": "http://www.w3.org/ns/sosa/"
+    "sosa": "http://www.w3.org/ns/sosa/",
+    "completeness":  "http://purl.oclc.org/NET/UASO/qoi2#Completeness",
+    "artificiality": "http://purl.oclc.org/NET/UASO/qoi2#Artificiality"
   },
   "sosa:madeBySensor": {
     "type": "Relationship",
     "object": "http://www.w3.org/ns/sosa/gateway_00055110D732_device_8_sensor_64"
+  },
+  "completeness": {
+    "type": "Property",
+    "value": 0.88
+  },
+  "artificiality": {
+    "type": "Property",
+    "value": 0.92
   },
   "iot-stream:hasAttribute": [
     {

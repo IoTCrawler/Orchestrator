@@ -5,6 +5,9 @@ import com.agtinternational.iotcrawler.core.models.*;
 import com.agtinternational.iotcrawler.fiware.clients.NgsiLDClient;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.orange.ngsi2.model.Paginated;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.jena.rdf.model.Model;
@@ -13,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.management.InstanceAlreadyExistsException;
 import java.util.*;
@@ -37,56 +41,7 @@ public class NgsiLD_MdrClient extends AbstractMetadataClient {
     }
 
 
-//    public List<IoTStream> getStreams(String query){
-////
-//        throw new NotImplementedException();
-//
-//        //List<IoTStream>  ret = new ArrayList<>();
-//
-////        List<String> ids = null;
-////        List<String> types = null;
-////        List<String> props = null;
-////
-////        int limit = 0;
-//
-////        if(selector.getSubject()!=null) {
-////            ids = Arrays.asList(new String[]{selector.getSubject()});
-//////            try {
-//////                Entity entity = ngsiLDClient.getEntitiesAsType(selector.getSubject(), null, null).get();
-//////                IoTStream ioTStream = IoTStream.fromEntity(entity);
-//////                ret.add(ioTStream);
-//////            } catch (InterruptedException e) {
-//////                e.printStackTrace();
-//////            } catch (ExecutionException e) {
-//////                e.printStackTrace();
-//////            }
-////
-////        }else if(selector.getPredicate()!=null){
-////            if(selector.getPredicate().trim().equals("a") || selector.getPredicate().equals(RDF.type.getURI()))
-////                types = Arrays.asList(new String[]{ selector.getObject() });
-////            else {
-////                props = Arrays.asList(new String[]{URI.create(selector.getPredicate()).getFragment() +"="+ selector.getObject()});
-////            }
-////        }else{
-////            //Arrays.asList(new String[]{ "http://example.org/common/isParked" })
-////
-////        }
-//
-////        try {
-////            //entities = ngsiLDClient.getEntitiesAsType(String entityId, String type, Collection<String> attrs);
-////            Paginated<Entity> entities = ngsiLDClient.getEntities(ids, null, types, props, 0, limit, false).get();
-////            for(Entity entity: entities.getItems()) {
-////                IoTStream ioTStream = IoTStream.fromEntity(entity);
-////                ret.add(ioTStream);
-////            }
-////        } catch (InterruptedException e) {
-////            e.printStackTrace();
-////        } catch (ExecutionException e) {
-////            e.printStackTrace();
-////        }
-////
-////        return ret;
-//    }
+
 
     @Override
     public List<String> getEntityURIs(String query) {
@@ -94,67 +49,38 @@ public class NgsiLD_MdrClient extends AbstractMetadataClient {
     }
 
     @Override
-    public List<EntityLD> getEntities(String query){
-        throw new NotImplementedException();
+    public List<EntityLD> getEntitiesById(String[] ids, String typeURI) throws Exception {
+        String[] types = new String[]{typeURI};
+        Paginated<EntityLD> paginated = null;
+        paginated = ngsiLDClient.getEntities( (ids!=null?Arrays.asList(ids):null), null, Arrays.asList(types), null, 0, 0, false).get();
+        return (List<EntityLD>)paginated.getItems();
     }
 
     @Override
-    public List<EntityLD> getEntities(String type, String query, int offset, int limit) throws Exception {
+    public List<EntityLD> getEntities(String type, JsonObject query, int offset, int limit) throws Exception {
         String[] types = new String[]{type};
+        String queryStr = null;
+        if(query!=null){
+
+            List<String> pairs = new ArrayList<>();
+            UriComponentsBuilder builder = UriComponentsBuilder.fromPath("");
+            for(String key: query.keySet()){
+                Object value = query.get(key);
+                if(value instanceof JsonPrimitive)
+                    value = ((JsonPrimitive)value).getAsString();
+                else
+                    throw new NotImplementedException();
+                pairs.add(key+".object="+ value.toString());
+            }
+            queryStr = String.join("&", pairs);
+        }
         Paginated<EntityLD> paginated = null;
-        paginated = ngsiLDClient.getEntities(null, null, Arrays.asList(types), null,query,null, null, offset, limit, false).get();
+        paginated = ngsiLDClient.getEntities(null, null, Arrays.asList(types), null, queryStr,null, null, offset, limit, false).get();
         return (List<EntityLD>)paginated.getItems();
     }
 
-    @Override
-    public List<EntityLD> getEntities(String[] ids) throws Exception {
-        Paginated<EntityLD> paginated = null;
-        paginated = ngsiLDClient.getEntities(Arrays.asList(ids), null, null, null, 0, 0, false).get();
-        return (List<EntityLD>)paginated.getItems();
-    }
-
-    @Override
-    public List<EntityLD> getEntities(String[] ids, String typeURI) throws Exception {
-        String[] types = new String[]{typeURI};
-        Paginated<EntityLD> paginated = null;
-        paginated = ngsiLDClient.getEntities(Arrays.asList(ids), null, Arrays.asList(types), null, 0, 0, false).get();
-        return (List<EntityLD>)paginated.getItems();
-    }
-
-    @Override
-    public List<EntityLD> getEntities(String typeURI, int offset, int limit) throws Exception {
-        String[] types = new String[]{typeURI};
-        Paginated<EntityLD> paginated = null;
-        paginated = ngsiLDClient.getEntities(null, null, Arrays.asList(types), null, offset, limit, false).get();
-        return (List<EntityLD>)paginated.getItems();
-    }
-
-//    @Override
-//    public <T> List<T> getEntities(Class<T> targetClass, int limit) throws Exception {
-//
-//        String type = getTypeURI(targetClass);
-//        List<EntityLD> entities =  getEntities(type, limit);
-//        List<T> ret = convertEntitiesToType(entities, targetClass);
-//
-//        return ret;
-//    }
-
-    @Override
-    public <T> List<T> getEntities(String[] ids, Class<T> targetClass) throws Exception {
-        Paginated<EntityLD> entities = null;
-        String type = getTypeURI(targetClass);
-        entities = ngsiLDClient.getEntities(Arrays.asList(ids), null, Arrays.asList(type), null, 0, 0, false).get();
-
-        List<T> ret = convertEntitiesToType(entities.getItems(), targetClass);
-        return ret;
-    }
 
 
-
-//    @Override
-//    public <T> List<T> getEntities(Class<T> type, String query) {
-//        throw new NotImplementedException();
-//    }
 
     @Override
     public Boolean registerEntity(RDFModel entityAsModel) throws Exception{

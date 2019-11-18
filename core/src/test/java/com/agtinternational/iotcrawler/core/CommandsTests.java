@@ -30,7 +30,7 @@ public class CommandsTests {
     @Test
     public void GetEntityCommandTest() throws Exception {
 
-        GetEntitiesCommand command = new GetEntitiesCommand(ioTStream.getURI(), 0);
+        GetEntitiesCommand command = new GetEntitiesCommand(ioTStream.getURI(), 0, 0);
         String jsonString = command.toJson();
         GetEntitiesCommand command2 = GetEntitiesCommand.fromJson(jsonString);
 
@@ -65,7 +65,7 @@ public class CommandsTests {
     @Test
     public void GetObservationsCommandTest() throws Exception {
 
-        GetObservationsCommand command = new GetObservationsCommand(streamObservation.getURI(), 0);
+        GetObservationsCommand command = new GetObservationsCommand(streamObservation.getURI(), 0,0);
         String jsonString = command.toJson();
         GetObservationsCommand command2 = GetObservationsCommand.fromJson(jsonString);
 

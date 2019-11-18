@@ -2,8 +2,8 @@ package com.agtinternational.iotcrawler.core.interfaces;
 
 import com.agtinternational.iotcrawler.core.OrchestratorRPCClient;
 import com.agtinternational.iotcrawler.core.models.*;
-import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 
+import com.google.gson.JsonObject;
 import eu.neclab.iotplatform.ngsi.api.datamodel.NotifyCondition;
 import eu.neclab.iotplatform.ngsi.api.datamodel.Restriction;
 
@@ -34,43 +34,43 @@ public abstract class IoTCrawlerApp extends IotCrawlerClient implements Componen
         return iotCrawlerClient.registerEntity(entity);
     }
 
-    @Override
-    public List<IoTStream> getStreams(int offset, int limit) throws Exception {
-        return iotCrawlerClient.getStreams(offset, limit);
-    }
+//    @Override
+//    public List<IoTStream> getStreams(int offset, int limit) throws Exception {
+//        return iotCrawlerClient.getStreams(offset, limit);
+//    }
 
     @Override
-    public List<IoTStream> getStreams(String query,int offset, int limit) throws Exception {
+    public List<IoTStream> getStreams(JsonObject query, int offset, int limit) throws Exception {
         return iotCrawlerClient.getStreams(query, offset, limit);
     }
 
-    @Override
-    public List<Sensor> getSensors(int offset, int limit) throws Exception {
-        return iotCrawlerClient.getSensors(offset, limit);
-    }
+//    @Override
+//    public List<Sensor> getSensors(int offset, int limit) throws Exception {
+//        return iotCrawlerClient.getSensors(offset, limit);
+//    }
 
     @Override
-    public List<Sensor> getSensors(String query,int offset, int limit) throws Exception {
+    public List<Sensor> getSensors(JsonObject query, int offset, int limit) throws Exception {
         return iotCrawlerClient.getSensors(query, offset, limit);
     }
 
-    @Override
-    public List<SosaPlatform> getPlatforms(int offset, int limit) throws Exception {
-        return iotCrawlerClient.getPlatforms(offset, limit);
-    }
+//    @Override
+//    public List<SosaPlatform> getPlatforms(int offset, int limit) throws Exception {
+//        return iotCrawlerClient.getPlatforms(offset, limit);
+//    }
 
     @Override
-    public List<SosaPlatform> getPlatforms(String query,int offset, int limit) throws Exception {
+    public List<SosaPlatform> getPlatforms(JsonObject query, int offset, int limit) throws Exception {
         return iotCrawlerClient.getPlatforms(query,offset, limit);
     }
 
-    @Override
-    public List<ObservableProperty> getObservableProperties(int offset, int limit) throws Exception {
-        return iotCrawlerClient.getObservableProperties(offset, limit);
-    }
+//    @Override
+//    public List<ObservableProperty> getObservableProperties(int offset, int limit) throws Exception {
+//        return iotCrawlerClient.getObservableProperties(offset, limit);
+//    }
 
     @Override
-    public List<ObservableProperty> getObservableProperties(String query,int offset, int limit) throws Exception {
+    public List<ObservableProperty> getObservableProperties(JsonObject query, int offset, int limit) throws Exception {
         return iotCrawlerClient.getObservableProperties(query, offset, limit);
     }
 
@@ -81,8 +81,8 @@ public abstract class IoTCrawlerApp extends IotCrawlerClient implements Componen
 //    }
 
     @Override
-    public List<String> getEntityURIs(String query) throws Exception {
-        return iotCrawlerClient.getEntityURIs(query);
+    public List<String> getEntityURIs(String query, int offset, int limit) throws Exception {
+        return iotCrawlerClient.getEntityURIs(query, offset, limit);
     }
 
 //    public List<StreamObservation> getObservations() throws Exception {

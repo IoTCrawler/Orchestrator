@@ -134,28 +134,10 @@ public class OrchestratorRPCClient extends IotCrawlerClient implements AutoClose
     }
 
 
-    @Override
-    public List<IoTStream> getStreams(int offset, int limit) throws Exception {
-        final List<IoTStream> ret = new ArrayList<>();
-
-        GetEntitiesCommand command = new GetEntitiesCommand(IoTStream.getTypeUri(), offset, limit);
-
-        final List<EntityLD> entities = execute(command);
-        for(EntityLD entityLD: entities) {
-            try {
-                final IoTStream ioTStream = IoTStream.fromEntity(entityLD);
-                ret.add(ioTStream);
-            } catch (Exception e){
-                LOGGER.error("Failed to create IoTStream of entity: {}", e.getLocalizedMessage());
-                e.printStackTrace();
-            }
-        }
-        return ret;
-    }
 
 
     @Override
-    public List<IoTStream> getStreams(String query, int offset, int limit) throws Exception {
+    public List<IoTStream> getStreams(JsonObject query, int offset, int limit) throws Exception {
         List<IoTStream> ret = new ArrayList<>();
 
         GetEntitiesCommand command = new GetEntitiesCommand(IoTStream.getTypeUri(), query, offset, limit);
@@ -174,29 +156,9 @@ public class OrchestratorRPCClient extends IotCrawlerClient implements AutoClose
         return ret;
     }
 
-    @Override
-    public List<Sensor> getSensors(int offset, int limit) throws Exception {
-        List<Sensor> ret = new ArrayList<>();
-
-        GetEntitiesCommand command = new GetEntitiesCommand(Sensor.getTypeUri(), offset, limit);
-        List<EntityLD> entities = execute(command);
-
-        for(EntityLD entityLD: entities) {
-            try {
-                Sensor sensor = Sensor.fromEntity(entityLD);
-                ret.add(sensor);
-            } catch (Exception e){
-                LOGGER.error("Failed to create Sensor from entity: {}", e.getLocalizedMessage());
-                e.printStackTrace();
-            }
-
-        }
-
-        return ret;
-    }
 
     @Override
-    public List<Sensor> getSensors(String query, int offset, int limit) throws Exception {
+    public List<Sensor> getSensors(JsonObject query, int offset, int limit) throws Exception {
         List<Sensor> ret = new ArrayList<>();
 
         GetEntitiesCommand command = new GetEntitiesCommand(Sensor.getTypeUri(), query, offset, limit);
@@ -215,28 +177,10 @@ public class OrchestratorRPCClient extends IotCrawlerClient implements AutoClose
         return ret;
     }
 
-    @Override
-    public List<SosaPlatform> getPlatforms(int offset, int limit) throws Exception {
-        List<SosaPlatform> ret = new ArrayList<>();
 
-        GetEntitiesCommand command = new GetEntitiesCommand(SosaPlatform.getTypeUri(), offset, limit);
-        List<EntityLD> entities = execute(command);
-
-        for(EntityLD entityLD: entities) {
-            try {
-                SosaPlatform ioTStream = SosaPlatform.fromEntity(entityLD);
-                ret.add(ioTStream);
-            } catch (Exception e){
-                LOGGER.error("Failed to create SosaPlatform from entity: {}", e.getLocalizedMessage());
-                e.printStackTrace();
-            }
-
-        }
-        return ret;
-    }
 
     @Override
-    public List<SosaPlatform> getPlatforms(String query, int offset, int limit) throws Exception {
+    public List<SosaPlatform> getPlatforms(JsonObject query, int offset, int limit) throws Exception {
         List<SosaPlatform> ret = new ArrayList<>();
 
         GetEntitiesCommand command = new GetEntitiesCommand(SosaPlatform.getTypeUri(), query, offset, limit);
@@ -256,29 +200,7 @@ public class OrchestratorRPCClient extends IotCrawlerClient implements AutoClose
     }
 
     @Override
-    public List<ObservableProperty> getObservableProperties(int offset, int limit) throws Exception {
-        List<ObservableProperty> ret = new ArrayList<>();
-
-        GetEntitiesCommand command = new GetEntitiesCommand(ObservableProperty.getTypeUri(), offset, limit);
-        List<EntityLD> entities = execute(command);
-
-        for(EntityLD entityLD: entities) {
-            try {
-                ObservableProperty ioTStream = ObservableProperty.fromEntity(entityLD);
-                ret.add(ioTStream);
-            } catch (Exception e){
-                LOGGER.error("Failed to create ObservableProperty from entity: {}", e.getLocalizedMessage());
-                e.printStackTrace();
-            }
-
-
-        }
-
-        return ret;
-    }
-
-    @Override
-    public List<ObservableProperty> getObservableProperties(String query, int offset, int limit) throws Exception {
+    public List<ObservableProperty> getObservableProperties(JsonObject query, int offset, int limit) throws Exception {
         List<ObservableProperty> ret = new ArrayList<>();
 
         GetEntitiesCommand command = new GetEntitiesCommand(ObservableProperty.getTypeUri(), query, offset, limit);
@@ -298,7 +220,7 @@ public class OrchestratorRPCClient extends IotCrawlerClient implements AutoClose
 
 
     @Override
-    public List<String> getEntityURIs(String query) {
+    public List<String> getEntityURIs(String query, int offset, int limit) {
         throw new NotImplementedException("Not implemented");
     }
 
@@ -328,21 +250,22 @@ public class OrchestratorRPCClient extends IotCrawlerClient implements AutoClose
 //    }
 
     @Override
-    public List<EntityLD> getEntities(String[] ids, String entityType) throws Exception {
+    public List<EntityLD> getEntitiesById(String[] ids, String entityType) throws Exception {
         GetEntitiesCommand command = new GetEntitiesCommand(ids, entityType, 0, 0);
         List<EntityLD> entities = execute(command);
         return entities;
     }
 
-    @Override
-    public List<EntityLD> getEntities(String entityType, int offset, int limit) throws Exception {
-        GetEntitiesCommand command = new GetEntitiesCommand(entityType, offset, limit);
-        List<EntityLD> entities = execute(command);
-        return entities;
-    }
+
+//    @Override
+//    public List<EntityLD> getEntities(String entityType, String query, int offset, int limit) throws Exception {
+//        GetEntitiesCommand command = new GetEntitiesCommand(entityType, query, offset, limit);
+//        List<EntityLD> entities = execute(command);
+//        return entities;
+//    }
 
     @Override
-    public List<EntityLD> getEntities(String entityType, String query, int offset, int limit) throws Exception {
+    public List<EntityLD> getEntities(String entityType, JsonObject query, int offset, int limit) throws Exception {
         GetEntitiesCommand command = new GetEntitiesCommand(entityType, query, offset, limit);
         List<EntityLD> entities = execute(command);
         return entities;

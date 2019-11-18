@@ -9,8 +9,7 @@ import static com.agtinternational.iotcrawler.core.Constants.*;
 
 public class IoTStream extends RDFModel {
 
-    //public static Uri observesProperty;
-
+    public static String madeBySensor = sosaNS+"madeBySensor";
 
     public IoTStream(String uri){
 
@@ -64,7 +63,7 @@ public class IoTStream extends RDFModel {
 //    }
 
     public String getMadeBySensor(){
-        return getAttribute("sosa:madeBySensor");
+        return getAttribute(madeBySensor);
     }
 
 

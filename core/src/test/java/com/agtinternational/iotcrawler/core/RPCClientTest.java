@@ -2,7 +2,7 @@ package com.agtinternational.iotcrawler.core;
 
 import com.agtinternational.iotcrawler.core.interfaces.IotCrawlerClient;
 import com.agtinternational.iotcrawler.core.models.*;
-import com.agtinternational.iotcrawler.fiware.models.EntityLD;
+import com.google.gson.JsonObject;
 import eu.neclab.iotplatform.ngsi.api.datamodel.NotifyCondition;
 import eu.neclab.iotplatform.ngsi.api.datamodel.NotifyConditionEnum;
 import eu.neclab.iotplatform.ngsi.api.datamodel.Restriction;
@@ -67,7 +67,7 @@ public class RPCClientTest extends EnvVariablesSetter {
     @Test
     public void getAllStreamsTest() throws Exception {
 
-        List<IoTStream> streams = rpcClient.getStreams(0);
+        List<IoTStream> streams = rpcClient.getStreams(null,0,0);
         //streams.get(0).getSensorUri();
         Assert.notNull(streams);
         LOGGER.info(streams.size()+" streams returned");
@@ -95,7 +95,7 @@ public class RPCClientTest extends EnvVariablesSetter {
         byte[] iotStreamModelJson = Files.readAllBytes(Paths.get("samples/IoTStream.json"));
         IoTStream ioTStream = IoTStream.fromJson(iotStreamModelJson);
 
-        List<IoTStream> streams = rpcClient.getStreams(new String[]{ioTStream.getURI()});
+        List<IoTStream> streams = rpcClient.getStreamsById(new String[]{ioTStream.getURI()});
         //List<IoTStream> streams = orchestrator.getStreams("SELECT ?s ?p ?o WHERE { ?s ?p ?o . FILTER (?s=<"+ioTStream.getURI()+">) . } ");
         Assert.notNull(streams);
         LOGGER.info(streams.size()+" streams returned");
@@ -104,7 +104,7 @@ public class RPCClientTest extends EnvVariablesSetter {
     @Test
     public void getSensorByIdTest() throws Exception {
         LOGGER.info("getStreamByIdTest()");
-        List<Sensor> entities = rpcClient.getEntities(new String[]{"http://www.w3.org/ns/sosa/gateway_00055110D732_device_8_sensor_64"}, Sensor.class);
+        List<Sensor> entities = rpcClient.getEntitiesById(new String[]{"http://www.w3.org/ns/sosa/gateway_00055110D732_device_8_sensor_64"}, Sensor.class);
         LOGGER.info(entities.size()+" sensors returned");
     }
 
@@ -112,7 +112,7 @@ public class RPCClientTest extends EnvVariablesSetter {
     @Test
     public void getAllSensorsTest() throws Exception {
 
-        List<Sensor> sensors = rpcClient.getSensors(0);
+        List<Sensor> sensors = rpcClient.getSensors(null,0,0);
         Assert.notNull(sensors);
         LOGGER.info(sensors.size()+" sensors returned");
     }
@@ -121,7 +121,7 @@ public class RPCClientTest extends EnvVariablesSetter {
     @Test
     public void getPlatformsTest() throws Exception {
 
-        List<SosaPlatform> platforms = rpcClient.getPlatforms(0);
+        List<SosaPlatform> platforms = rpcClient.getPlatforms(null,0,0);
         Assert.notNull(platforms);
         LOGGER.info(platforms.size()+" platforms returned");
     }
@@ -130,18 +130,23 @@ public class RPCClientTest extends EnvVariablesSetter {
     @Test
     public void getAllObservablePropertiesTest() throws Exception {
 
-        List<ObservableProperty> items = rpcClient.getObservableProperties(0);
+        List<ObservableProperty> items = rpcClient.getObservableProperties(null,0,0);
         Assert.notNull(items);
         LOGGER.info(items.size()+" ObservableProperties returned");
     }
 
-    //@Ignore
+
+    @Ignore
     @Test
     public void getStreamByCustomQueryTest() throws Exception {
-        List<IoTStream> streams = rpcClient.getStreams("SELECT ?s ?p ?o WHERE { ?s ?p ?o . FILTER(?p=<http://www.w3.org/ns/sosa/madeBySensor> && ?o=<http://purl.org/iot/ontology/iot-stream#Sensor_FIBARO+Wall+plug+living+room_CurrentEnergyUse>) }");
+        LOGGER.info("getStreamByCustomQueryTest()");
+
+        JsonObject query = new JsonObject();
+        query.addProperty(IoTStream.madeBySensor, "iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_MotionAlarmCancelationDelay");
+
+        List<IoTStream> streams = rpcClient.getStreams(query,0,0);
         String abc="213";
     }
-
 
     @Ignore
     @Test
@@ -172,7 +177,7 @@ public class RPCClientTest extends EnvVariablesSetter {
     @Test
     public void subscribeMultipleTest() throws Exception {
 
-        List<IoTStream> streams = rpcClient.getStreams(0);
+        List<IoTStream> streams = rpcClient.getStreams(null, 0,0);
         for(IoTStream stream : streams) {
             //IoTStream iotObservationModel = IoTStream.fromJson(iotStreamModel);
             String[] attributes = new String[]{"http://www.agtinternational.com/iotcrawler/ontologies/iotc#current_value"};
@@ -203,7 +208,7 @@ public class RPCClientTest extends EnvVariablesSetter {
         Resource iotStreamResource = iotSteamModel.listResourcesWithProperty(RDF.type).next();
 
         Property hasAttributeProperty = iotSteamModel.createProperty(iotcNS+"hasAttribute");
-        List<StreamObservation> list = rpcClient.getObservations(ioTStream.getURI(), 1);
+        List<StreamObservation> list = rpcClient.getObservations(ioTStream.getURI(), 0,0);
         Model observationModel = list.get(0).getModel();
         Resource observationResource = observationModel.listResourcesWithProperty(RDF.type).next();
         StmtIterator iterator = observationResource.listProperties();
@@ -233,7 +238,7 @@ public class RPCClientTest extends EnvVariablesSetter {
     @Ignore
     @Test
     public void getObservationsTest() throws Exception {
-        List<StreamObservation> list = rpcClient.getObservations("iotc:Stream_Z-Wave+Node+003%3A+FGWP102+Meter+Living+Space_Electric+meter+%28watts%29",1);
+        List<StreamObservation> list = rpcClient.getObservations("iotc:Stream_Z-Wave+Node+003%3A+FGWP102+Meter+Living+Space_Electric+meter+%28watts%29",0,0);
         Map<String, List<Object>> streamObservation = list.get(0).getProperties("http://www.agtinternational.com/ontologies/SmartHome#current_value");
         String abc = "abc";
     }

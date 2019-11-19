@@ -137,7 +137,7 @@ public class OrchestratorRPCClient extends IotCrawlerClient implements AutoClose
 
 
     @Override
-    public List<IoTStream> getStreams(JsonObject query, int offset, int limit) throws Exception {
+    public List<IoTStream> getStreams(String query, int offset, int limit) throws Exception {
         List<IoTStream> ret = new ArrayList<>();
 
         GetEntitiesCommand command = new GetEntitiesCommand(IoTStream.getTypeUri(), query, offset, limit);
@@ -158,7 +158,7 @@ public class OrchestratorRPCClient extends IotCrawlerClient implements AutoClose
 
 
     @Override
-    public List<Sensor> getSensors(JsonObject query, int offset, int limit) throws Exception {
+    public List<Sensor> getSensors(String query, int offset, int limit) throws Exception {
         List<Sensor> ret = new ArrayList<>();
 
         GetEntitiesCommand command = new GetEntitiesCommand(Sensor.getTypeUri(), query, offset, limit);
@@ -180,7 +180,7 @@ public class OrchestratorRPCClient extends IotCrawlerClient implements AutoClose
 
 
     @Override
-    public List<SosaPlatform> getPlatforms(JsonObject query, int offset, int limit) throws Exception {
+    public List<SosaPlatform> getPlatforms(String query, int offset, int limit) throws Exception {
         List<SosaPlatform> ret = new ArrayList<>();
 
         GetEntitiesCommand command = new GetEntitiesCommand(SosaPlatform.getTypeUri(), query, offset, limit);
@@ -200,7 +200,7 @@ public class OrchestratorRPCClient extends IotCrawlerClient implements AutoClose
     }
 
     @Override
-    public List<ObservableProperty> getObservableProperties(JsonObject query, int offset, int limit) throws Exception {
+    public List<ObservableProperty> getObservableProperties(String query, int offset, int limit) throws Exception {
         List<ObservableProperty> ret = new ArrayList<>();
 
         GetEntitiesCommand command = new GetEntitiesCommand(ObservableProperty.getTypeUri(), query, offset, limit);
@@ -265,7 +265,7 @@ public class OrchestratorRPCClient extends IotCrawlerClient implements AutoClose
 //    }
 
     @Override
-    public List<EntityLD> getEntities(String entityType, JsonObject query, int offset, int limit) throws Exception {
+    public List<EntityLD> getEntities(String entityType, String query, int offset, int limit) throws Exception {
         GetEntitiesCommand command = new GetEntitiesCommand(entityType, query, offset, limit);
         List<EntityLD> entities = execute(command);
         return entities;

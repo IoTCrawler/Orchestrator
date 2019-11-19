@@ -7,6 +7,7 @@
     <artifactId>orchestrator</artifactId>
     <version>1.0.9</version>
     <packaging>jar</packaging>
+
     <organization>
         <name>AGT International</name>
         <url>https://www.agtinternational.com/</url>

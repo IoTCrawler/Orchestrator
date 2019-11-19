@@ -40,7 +40,7 @@ public abstract class IoTCrawlerApp extends IotCrawlerClient implements Componen
 //    }
 
     @Override
-    public List<IoTStream> getStreams(JsonObject query, int offset, int limit) throws Exception {
+    public List<IoTStream> getStreams(String query, int offset, int limit) throws Exception {
         return iotCrawlerClient.getStreams(query, offset, limit);
     }
 
@@ -50,7 +50,7 @@ public abstract class IoTCrawlerApp extends IotCrawlerClient implements Componen
 //    }
 
     @Override
-    public List<Sensor> getSensors(JsonObject query, int offset, int limit) throws Exception {
+    public List<Sensor> getSensors(String query, int offset, int limit) throws Exception {
         return iotCrawlerClient.getSensors(query, offset, limit);
     }
 
@@ -60,7 +60,7 @@ public abstract class IoTCrawlerApp extends IotCrawlerClient implements Componen
 //    }
 
     @Override
-    public List<SosaPlatform> getPlatforms(JsonObject query, int offset, int limit) throws Exception {
+    public List<SosaPlatform> getPlatforms(String query, int offset, int limit) throws Exception {
         return iotCrawlerClient.getPlatforms(query,offset, limit);
     }
 
@@ -70,7 +70,7 @@ public abstract class IoTCrawlerApp extends IotCrawlerClient implements Componen
 //    }
 
     @Override
-    public List<ObservableProperty> getObservableProperties(JsonObject query, int offset, int limit) throws Exception {
+    public List<ObservableProperty> getObservableProperties(String query, int offset, int limit) throws Exception {
         return iotCrawlerClient.getObservableProperties(query, offset, limit);
     }
 

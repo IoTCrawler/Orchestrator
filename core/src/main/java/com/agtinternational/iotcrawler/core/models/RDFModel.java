@@ -1,6 +1,5 @@
 package com.agtinternational.iotcrawler.core.models;
 
-import com.agtinternational.iotcrawler.core.OrchestratorRPCClient;
 import com.agtinternational.iotcrawler.core.Utils;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import com.agtinternational.iotcrawler.fiware.models.NGSILD.Relationship;
@@ -72,9 +71,9 @@ public class RDFModel {
     }
 
     public void setType(String typeUri){
-        RDFNode typeNode = getProperty(RDF.type.getURI());
-        if(typeNode!=null)
-            this.model.remove(resource, RDF.type, typeNode);
+        List<RDFNode> typeNodes = getProperty(RDF.type.getURI());
+        if(typeNodes!=null)
+            this.model.remove(resource, RDF.type, typeNodes.get(0));
 
         addProperty(RDF.type, this.model.createResource(typeUri));
     }
@@ -95,13 +94,13 @@ public class RDFModel {
     }
 
     public String getLabel() {
-        return getAttribute(RDFS.label.getURI());
+        return (String)getAttribute(RDFS.label.getURI());
     }
 
     public String getTypeURI(){
         //String ret = model.getResource(RDF.type.getURI()).toString();
         //return ret;
-        RDFNode attributeNode = getProperty(RDF.type.toString());
+        RDFNode attributeNode = getProperty(RDF.type.toString()).get(0);
         return attributeNode.asResource().getURI();
     }
 
@@ -213,7 +212,7 @@ public class RDFModel {
         return getProperties(null);
     }
 
-    public RDFNode getProperty(String uri){
+    public List<RDFNode> getProperty(String uri){
         String[] keySplitted = uri.split(":");
         //if uri in in shorten format
 
@@ -223,26 +222,36 @@ public class RDFModel {
             uri =  fullUri+String.join(":", abc);
         }
 
+        List<RDFNode> ret = new ArrayList<>();
         StmtIterator iterator = model.listStatements();
         while (iterator.hasNext()){
             Statement statement = iterator.nextStatement();
             if (statement.getSubject().equals(resource) && statement.getPredicate().getURI().equals(uri))
-                return statement.getObject();
+                ret.add(statement.getObject());
         }
-        return null;
+        return ret;
     }
 
     public Map<String, List<Object>> getProperties(){
         return getProperties(null);
     }
 
-    public String getAttribute(String uri){
-        RDFNode node = getProperty(uri);
-        if(node instanceof Resource)
-            return node.asResource().toString();
-        if(node instanceof Literal)
-            return node.asLiteral().getString();
-        return null;
+    public Object getAttribute(String uri){
+        List<RDFNode> nodes = getProperty(uri);
+        List<String> ret = new ArrayList<>();
+        for(RDFNode node: nodes) {
+            if (node instanceof Resource)
+                ret.add(node.asResource().toString());
+            if (node instanceof Literal)
+                ret.add(node.asLiteral().getString());
+        }
+        if(ret.size()==0)
+            return null;
+
+        if(ret.size()==1)
+            return ret.get(0);
+
+        return ret;
     }
 
     public Map<String, List<Object>> getProperties(String uri){
@@ -561,4 +570,6 @@ public class RDFModel {
         EntityLD ret = new EntityLD(getURI(), typePrefix+type, attributes, context);
         return ret;
     }
+
+
 }

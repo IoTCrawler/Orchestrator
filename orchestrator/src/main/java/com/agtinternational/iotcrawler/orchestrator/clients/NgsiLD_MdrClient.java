@@ -5,6 +5,7 @@ import com.agtinternational.iotcrawler.core.models.*;
 import com.agtinternational.iotcrawler.fiware.clients.NgsiLDClient;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -68,7 +69,13 @@ public class NgsiLD_MdrClient extends AbstractMetadataClient {
                 Object value = query.get(key);
                 if(value instanceof JsonPrimitive)
                     value = ((JsonPrimitive)value).getAsString();
-                else
+                else if(value instanceof JsonArray){
+                    List<String> values = new ArrayList<>();
+                    for(JsonElement element: ((JsonArray)value)){
+                        values.add(element.getAsString());
+                    }
+                    value = String.join(",", values);
+                }else
                     throw new NotImplementedException();
                 pairs.add(key+".object="+ value.toString());
             }

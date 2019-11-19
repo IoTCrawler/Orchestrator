@@ -137,9 +137,10 @@ public class ModelTests {
         byte[] json = Files.readAllBytes(Paths.get("samples/Platform.json"));
         SosaPlatform sosaPlatform = SosaPlatform.fromJson(json);
 
+        Object hosts = sosaPlatform.hosts();
         String label = ioTStream.getLabel();
-        RDFNode rdfNode = ioTStream.getProperty("sosa:madeBySensor");
-        RDFNode rdfNode2 = ioTStream.getProperty("madeBySensor");
+        Object rdfNode = ioTStream.getProperty("sosa:madeBySensor");
+        Object rdfNode2 = ioTStream.getProperty("madeBySensor");
         //String sensorsUri = ioTStream.getSensorUri();//getSensor();
         String abc = "123";
     }

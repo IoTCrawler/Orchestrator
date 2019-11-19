@@ -1,5 +1,6 @@
 package com.agtinternational.iotcrawler.orchestrator;
 
+import com.agtinternational.iotcrawler.core.Utils;
 import com.agtinternational.iotcrawler.core.interfaces.IotCrawlerClient;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import com.agtinternational.iotcrawler.orchestrator.clients.AbstractDataClient;
@@ -137,11 +138,6 @@ public class Orchestrator extends IotCrawlerClient {
                 exception = new Exception("Failed to parse command from "+messageObj+": "+e.getLocalizedMessage(), e);
             }
 
-
-            JsonObject queryJson = command.getJsonQuery();
-            int limit = command.getLimit();
-            int offset = command.getOffset();
-
             List<EntityLD> entities = null;
             if(command!=null)
             try {
@@ -149,7 +145,12 @@ public class Orchestrator extends IotCrawlerClient {
                     //Class targetClass = Utils.getTargetClass(command.getTypeURI());
                     entities = metadataClient.getEntitiesById(command.getIds(), command.getTypeURI());
                 }else {
-                    entities = metadataClient.getEntities(command.getTypeURI(), queryJson, offset, limit);
+                    String query = command.getJsonQuery();
+                    int limit = command.getLimit();
+                    int offset = command.getOffset();
+
+                    JsonObject jsonQuery = Utils.parseJsonQuery(query);
+                    entities = metadataClient.getEntities(command.getTypeURI(), jsonQuery, offset, limit);
                     JsonArray jsonArray = EntitiesToJson(entities);
                 }
             }
@@ -576,8 +577,9 @@ public class Orchestrator extends IotCrawlerClient {
 
 
     @Override
-    public List<EntityLD> getEntities(String entityType, JsonObject query, int offset, int limit) throws Exception {
-        return metadataClient.getEntities(entityType, query, offset, limit);
+    public List<EntityLD> getEntities(String entityType, String query, int offset, int limit) throws Exception {
+        JsonObject jsonQuery = Utils.parseJsonQuery(query);
+        return metadataClient.getEntities(entityType, jsonQuery, offset, limit);
     }
 
     @Override

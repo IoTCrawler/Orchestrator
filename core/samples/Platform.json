@@ -2,7 +2,8 @@
   "@id" : "http://www.agtinternational.com/ontologies/SmartHome#Platform_openhab_192.168.1.101",
   "@type" : "http://www.w3.org/ns/sosa/Platform",
   "label" : "openhab_192.168.1.101",
-  "hosts" : "http://www.agtinternational.com/ontologies/SmartHome#Device_Z-Wave+Node+002%3A+FGWP102+Metered+Wall+Plug+Switch",
+  "hosts" : ["http://www.agtinternational.com/ontologies/SmartHome#Device_Z-Wave+Node+002%3A+FGWP102+Metered+Wall+Plug+Switch",
+             "http://www.agtinternational.com/ontologies/SmartHome#Device_Z-Wave+Node+002%3A+FGWP102+Antenna"],
   "@context" : {
     "hosts" : {
       "@id" : "http://www.w3.org/ns/sosa/hosts",

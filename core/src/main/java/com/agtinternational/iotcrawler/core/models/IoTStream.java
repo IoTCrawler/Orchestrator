@@ -5,11 +5,13 @@ import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.vocabulary.RDFS;
 
+import java.util.List;
+
 import static com.agtinternational.iotcrawler.core.Constants.*;
 
 public class IoTStream extends RDFModel {
 
-    public static String madeBySensor = sosaNS+"madeBySensor";
+    //public static String madeBySensor = sosaNS+"madeBySensor";
 
     public IoTStream(String uri){
 
@@ -23,15 +25,6 @@ public class IoTStream extends RDFModel {
 
     }
 
-//    public Sensor getSensor(LinkFilter filter, int skip, int first){
-//        //String sensorUri = getSensorUri();
-//        //RDFNode rdfNode = getProperty(sosaPrefix+":madeBySensor");
-//        return new Sensor("sosa:sensor1");
-//    }
-
-//    public Sensor getSensor(){
-//        return new Sensor(getMadeBySensor());
-//    }
 
     public IoTStream(String uri, Model model){
         super(uri, IoTStream.getTypeUri(), model);
@@ -62,8 +55,8 @@ public class IoTStream extends RDFModel {
 //        return new ObservableProperty("http://Uri");
 //    }
 
-    public String getMadeBySensor(){
-        return getAttribute(madeBySensor);
+    public List<String> madeBySensor(){
+        return (List<String>)getAttribute(SOSA.madeBySensor);
     }
 
 

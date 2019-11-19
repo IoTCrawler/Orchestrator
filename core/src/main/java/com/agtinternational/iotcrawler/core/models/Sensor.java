@@ -1,18 +1,15 @@
 package com.agtinternational.iotcrawler.core.models;
 
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
-import com.orange.ngsi2.model.Entity;
-import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.vocabulary.RDFS;
-import com.agtinternational.iotcrawler.core.Constants;
 
 import static com.agtinternational.iotcrawler.core.Constants.sosaNS;
 import static com.agtinternational.iotcrawler.core.Constants.sosaPrefix;
 
 public class Sensor extends RDFModel {
+
+
 
     public Sensor(String uri){
         super(uri, getTypeUri());
@@ -29,20 +26,20 @@ public class Sensor extends RDFModel {
     }
 
     public void observes(Object value){
-        addProperty(sosaNS + "observes", value);
+        addProperty(SOSA.observes, value);
     }
 
-    public String getObserves(){
-        String ret = getAttribute(sosaNS + "observes");
+    public String observes(){
+        String ret = (String)getAttribute(SOSA.observes);
         return ret;
     }
 
     public void isHostedBy(Object value){
-        addProperty(sosaNS + "isHostedBy", value);
+        addProperty(SOSA.isHostedBy, value);
     }
 
-    public String getIsHostedBy(){
-        String ret = getAttribute(sosaNS + "isHostedBy");
+    public String isHostedBy(){
+        String ret = (String)getAttribute(SOSA.isHostedBy);
         return ret;
     }
 

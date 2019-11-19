@@ -144,7 +144,7 @@ public class RPCClientTest extends EnvVariablesSetter {
         JsonObject query = new JsonObject();
         query.addProperty(IoTStream.madeBySensor, "iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_MotionAlarmCancelationDelay");
 
-        List<IoTStream> streams = rpcClient.getStreams(query,0,0);
+        List<IoTStream> streams = rpcClient.getStreams(query.toString(),0,0);
         String abc="213";
     }
 

@@ -4,10 +4,14 @@ import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.vocabulary.RDFS;
 
+import java.util.List;
+
 import static com.agtinternational.iotcrawler.core.Constants.*;
 
 
 public class SosaPlatform extends RDFModel {
+
+
 
     public SosaPlatform(String uri){
         super(uri, getTypeUri());
@@ -26,6 +30,15 @@ public class SosaPlatform extends RDFModel {
     public SosaPlatform(String uri, Model model){
         super(uri, model);
         setType(SosaPlatform.getTypeUri());
+    }
+
+    public void hosts(Object value){
+        addProperty(SOSA.hosts, value);
+    }
+
+    public Object hosts(){
+        Object ret = getAttribute(SOSA.hosts);
+        return ret;
     }
 
     public static String getTypeUri(){

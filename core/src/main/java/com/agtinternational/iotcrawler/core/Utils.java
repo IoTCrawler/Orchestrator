@@ -1,13 +1,8 @@
 package com.agtinternational.iotcrawler.core;
 
-import com.agtinternational.iotcrawler.core.models.IoTStream;
-import com.agtinternational.iotcrawler.core.models.ObservableProperty;
-import com.agtinternational.iotcrawler.core.models.Sensor;
-import com.agtinternational.iotcrawler.core.models.SosaPlatform;
+import com.agtinternational.iotcrawler.core.models.*;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
+import com.google.gson.*;
 import org.apache.commons.io.Charsets;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.riot.Lang;
@@ -178,5 +173,24 @@ public class Utils {
             }
 
         return ret;
+    }
+
+    public static JsonObject parseJsonQuery(String query){
+        JsonParser jsonParser = new JsonParser();
+        JsonObject jsonObject = (JsonObject) jsonParser.parse(query);
+        for(String key : jsonObject.keySet()){
+            if(SOSA.observes.toLowerCase().endsWith(key.toLowerCase())) {
+                JsonElement value = jsonObject.get(key);
+                jsonObject.remove(key);
+                jsonObject.add(SOSA.observes, value);
+            }
+
+            if(SOSA.madeBySensor.toLowerCase().endsWith(key.toLowerCase())) {
+                JsonElement value = jsonObject.get(key);
+                jsonObject.remove(key);
+                jsonObject.add(SOSA.madeBySensor, value);
+            }
+        }
+        return jsonObject;
     }
 }

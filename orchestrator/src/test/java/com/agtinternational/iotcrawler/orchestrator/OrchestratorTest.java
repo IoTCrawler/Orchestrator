@@ -196,7 +196,7 @@ public class OrchestratorTest extends EnvVariablesSetter {
         //List<EntityLD> streams = orchestrator.getEntities("Vehicle", "brandName.value=Mercedes");
         JsonObject query = new JsonObject();
         query.addProperty("sosa:madeBySensor", "iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_MotionAlarmCancelationDelay");
-        List<IoTStream> streams = orchestrator.getStreams(query,0,0);
+        List<IoTStream> streams = orchestrator.getStreams(query.toString(),0,0);
         String abc="213";
     }
 
@@ -205,7 +205,9 @@ public class OrchestratorTest extends EnvVariablesSetter {
     @Order(8)
     public void getCustomEntityTest() throws Exception {
         LOGGER.info("getCustomEntityTest()");
-        //List<EntityLD> models = orchestrator.getEntities("http://www.agtinternational.com/ontologies/SmartHome#IoTDevice", 0,0);
+        //String query = "{'sosa:madeBySensor' : ['iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_Temperature']}";
+        String query = "{\"sosa:madeBySensor\":[\"iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_MotionAlarmCancelationDelay\",\"iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_Temperature\"]}";
+        List<EntityLD> models = orchestrator.getEntities(IoTStream.getTypeUri(), query, 0,0);
         String abc="213";
     }
 

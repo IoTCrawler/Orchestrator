@@ -18,30 +18,30 @@ public abstract class IotCrawlerClient implements Component {
         return getEntitiesById(ids, IoTStream.class);
     }
 
-    public List<IoTStream> getStreams(JsonObject query, int offset, int limit) throws Exception{
-        return getEntitiesByQuery(IoTStream.class, query, offset, limit);
+    public List<IoTStream> getStreams(String query, int offset, int limit) throws Exception{
+        return getEntities(IoTStream.class, query, offset, limit);
     }
 
 
     /////////////////////////////////////Sensors
-    public List<Sensor> getSensors(JsonObject query, int offset, int limit) throws Exception{
-        return getEntitiesByQuery(Sensor.class, query, offset, limit);
+    public List<Sensor> getSensors(String query, int offset, int limit) throws Exception{
+        return getEntities(Sensor.class, query, offset, limit);
     }
 
     /////////////////////////////////////Platforms
-    public List<SosaPlatform> getPlatforms(JsonObject query, int offset, int limit) throws Exception{
-        return getEntitiesByQuery(SosaPlatform.class, query, offset, limit);
+    public List<SosaPlatform> getPlatforms(String query, int offset, int limit) throws Exception{
+        return getEntities(SosaPlatform.class, query, offset, limit);
     }
 
     /////////////////////////////////////Properties
-    public List<ObservableProperty> getObservableProperties(JsonObject query, int offset, int limit) throws Exception{
-        return getEntitiesByQuery(ObservableProperty.class, query, offset, limit);
+    public List<ObservableProperty> getObservableProperties(String query, int offset, int limit) throws Exception{
+        return getEntities(ObservableProperty.class, query, offset, limit);
     }
 
 
     /////////////////////////////////////Observations
     public List<StreamObservation> getObservations(String streamId,  int offset, int limit) throws Exception{
-        return getEntitiesByQuery(StreamObservation.class, null, offset, limit);
+        return getEntities(StreamObservation.class, null, offset, limit);
     }
 
 
@@ -52,19 +52,13 @@ public abstract class IotCrawlerClient implements Component {
         return Utils.convertEntitiesToType(entities, targetClass);
     }
 
-//    public <T> List<T> getEntities(Class<T> targetClass, String query, int offset, int limit) throws Exception{
-//        List<EntityLD> entities = getEntities(Utils.getTypeURI(targetClass), query, offset, limit);
-//        return Utils.convertEntitiesToType(entities, targetClass);
-//    }
-
-    public <T> List<T> getEntitiesByQuery(Class<T> targetClass, JsonObject query, int offset, int limit) throws Exception{
+    public <T> List<T> getEntities(Class<T> targetClass, String query, int offset, int limit) throws Exception{
         List<EntityLD> entities = getEntities(Utils.getTypeURI(targetClass), query, offset, limit);
         return Utils.convertEntitiesToType(entities, targetClass);
     }
 
     public abstract List<EntityLD> getEntitiesById(String[] ids, String entityType) throws Exception;
-    //public abstract List<EntityLD> getEntities(String entityType, String query, int offset, int limit) throws Exception;
-    public abstract List<EntityLD> getEntities(String entityType, JsonObject query, int offset, int limit) throws Exception;
+    public abstract List<EntityLD> getEntities(String entityType, String query, int offset, int limit) throws Exception;
 
     public abstract Boolean registerEntity(RDFModel model) throws Exception;
     public abstract Boolean pushObservationsToBroker(List<StreamObservation> observations) throws Exception;

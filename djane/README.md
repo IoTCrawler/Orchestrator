@@ -10,4 +10,4 @@ A fork of the [https://github.com/sensinov/djane](https://github.com/sensinov/dj
 
 # Docker Image
 
-gitlab.iotcrawler.net:4567/core/djane:1.0.0
+gitlab.iotcrawler.net:4567/core/djane:1.0.1

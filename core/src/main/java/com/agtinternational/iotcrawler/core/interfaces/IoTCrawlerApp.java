@@ -3,7 +3,6 @@ package com.agtinternational.iotcrawler.core.interfaces;
 import com.agtinternational.iotcrawler.core.OrchestratorRPCClient;
 import com.agtinternational.iotcrawler.core.models.*;
 
-import com.google.gson.JsonObject;
 import eu.neclab.iotplatform.ngsi.api.datamodel.NotifyCondition;
 import eu.neclab.iotplatform.ngsi.api.datamodel.Restriction;
 
@@ -60,7 +59,7 @@ public abstract class IoTCrawlerApp extends IotCrawlerClient implements Componen
 //    }
 
     @Override
-    public List<SosaPlatform> getPlatforms(String query, int offset, int limit) throws Exception {
+    public List<Platform> getPlatforms(String query, int offset, int limit) throws Exception {
         return iotCrawlerClient.getPlatforms(query,offset, limit);
     }
 

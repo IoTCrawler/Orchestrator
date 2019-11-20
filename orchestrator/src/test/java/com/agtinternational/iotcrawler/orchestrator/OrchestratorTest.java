@@ -174,7 +174,7 @@ public class OrchestratorTest extends EnvVariablesSetter {
     @Order(7)
     public void getAllPlatformsTest() throws Exception {
         LOGGER.info("getAllPlatformsTest()");
-        List<SosaPlatform> platforms = orchestrator.getPlatforms(null,0,0);
+        List<Platform> platforms = orchestrator.getPlatforms(null,0,0);
         Assert.notNull(platforms);
         LOGGER.info(platforms.size()+" platforms returned");
     }

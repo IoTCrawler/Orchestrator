@@ -180,15 +180,15 @@ public class OrchestratorRPCClient extends IotCrawlerClient implements AutoClose
 
 
     @Override
-    public List<SosaPlatform> getPlatforms(String query, int offset, int limit) throws Exception {
-        List<SosaPlatform> ret = new ArrayList<>();
+    public List<Platform> getPlatforms(String query, int offset, int limit) throws Exception {
+        List<Platform> ret = new ArrayList<>();
 
-        GetEntitiesCommand command = new GetEntitiesCommand(SosaPlatform.getTypeUri(), query, offset, limit);
+        GetEntitiesCommand command = new GetEntitiesCommand(Platform.getTypeUri(), query, offset, limit);
         List<EntityLD> entities = execute(command);
 
         for(EntityLD entityLD: entities) {
             try {
-                SosaPlatform ioTStream = SosaPlatform.fromEntity(entityLD);
+                Platform ioTStream = Platform.fromEntity(entityLD);
                 ret.add(ioTStream);
             } catch (Exception e){
                 LOGGER.error("Failed to create SosaPlatform from entity: {}", e.getLocalizedMessage());

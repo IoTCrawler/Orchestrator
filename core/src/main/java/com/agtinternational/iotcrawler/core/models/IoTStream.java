@@ -55,8 +55,8 @@ public class IoTStream extends RDFModel {
 //        return new ObservableProperty("http://Uri");
 //    }
 
-    public List<String> madeBySensor(){
-        return (List<String>)getAttribute(SOSA.madeBySensor);
+    public String madeBySensor(){
+        return (String)getAttribute(SOSA.madeBySensor);
     }
 
 

@@ -149,7 +149,7 @@ public class Orchestrator extends IotCrawlerClient {
                     int limit = command.getLimit();
                     int offset = command.getOffset();
 
-                    JsonObject jsonQuery = Utils.parseJsonQuery(query);
+                    JsonObject jsonQuery = (query!=null ? Utils.parseJsonQuery(query): null);
                     entities = metadataClient.getEntities(command.getTypeURI(), jsonQuery, offset, limit);
                     JsonArray jsonArray = EntitiesToJson(entities);
                 }

@@ -10,8 +10,6 @@ import org.apache.jena.riot.RDFDataMgr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URI;
@@ -37,6 +35,11 @@ public class Utils {
 //    }
 
     private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+    public static String prettyPrint(String jsonString){
+        JsonElement parsed = new JsonParser().parse(jsonString);
+        return gson.toJson(parsed);
+    }
 
     public static String prettyPrint(JsonElement jsonElement){
         return gson.toJson(jsonElement);
@@ -114,8 +117,8 @@ public class Utils {
             type = IoTStream.getTypeUri();
         else if(targetClass.equals(Sensor.class))
             type = Sensor.getTypeUri();
-        else if(targetClass.equals(SosaPlatform.class))
-            type = SosaPlatform.getTypeUri();
+        else if(targetClass.equals(Platform.class))
+            type = Platform.getTypeUri();
 
         else if(targetClass.equals(ObservableProperty.class))
             type = ObservableProperty.getTypeUri();
@@ -131,8 +134,8 @@ public class Utils {
             ret = IoTStream.class;
         else if(typeURI.equals(Sensor.getTypeUri()))
             ret =  Sensor.class;
-        else if(typeURI.equals(SosaPlatform.getTypeUri()))
-            ret = SosaPlatform.class;
+        else if(typeURI.equals(Platform.getTypeUri()))
+            ret = Platform.class;
 
         else if(typeURI.equals(ObservableProperty.getTypeUri()))
             ret = ObservableProperty.class;
@@ -155,8 +158,8 @@ public class Utils {
                     if(targetClass.equals(Sensor.class))
                         toAdd = (T)Sensor.fromEntity(entity);
 
-                    if(targetClass.equals(SosaPlatform.class))
-                        toAdd = (T)SosaPlatform.fromEntity(entity);
+                    if(targetClass.equals(Platform.class))
+                        toAdd = (T) Platform.fromEntity(entity);
 
                     if(targetClass.equals(ObservableProperty.class))
                         toAdd = (T)ObservableProperty.fromEntity(entity);

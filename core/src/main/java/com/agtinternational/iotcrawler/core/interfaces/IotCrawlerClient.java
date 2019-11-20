@@ -4,7 +4,6 @@ package com.agtinternational.iotcrawler.core.interfaces;
 import com.agtinternational.iotcrawler.core.Utils;
 import com.agtinternational.iotcrawler.core.models.*;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
-import com.google.gson.JsonObject;
 import eu.neclab.iotplatform.ngsi.api.datamodel.NotifyCondition;
 import eu.neclab.iotplatform.ngsi.api.datamodel.Restriction;
 
@@ -29,8 +28,8 @@ public abstract class IotCrawlerClient implements Component {
     }
 
     /////////////////////////////////////Platforms
-    public List<SosaPlatform> getPlatforms(String query, int offset, int limit) throws Exception{
-        return getEntities(SosaPlatform.class, query, offset, limit);
+    public List<Platform> getPlatforms(String query, int offset, int limit) throws Exception{
+        return getEntities(Platform.class, query, offset, limit);
     }
 
     /////////////////////////////////////Properties

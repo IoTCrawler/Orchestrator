@@ -28,10 +28,17 @@ public class ObservableProperty extends RDFModel {
         addProperty(RDFS.label, label);
     }
 
+    public void isObservedBy(Object value){
+        addProperty(SOSA.isObservedBy, value);
+    }
+
+    public Object isObservedBy(){
+        Object ret = getAttribute(SOSA.isObservedBy);
+        return ret;
+    }
+
     public static String getTypeUri() {
-        //return ObservableProperty.class.getSimpleName();
-        //return "sosa:ObservableProperty";
-        return sosaPrefix+":"+"ObservableProperty";
+        return SOSA.observableProperty;
     }
 
     public static ObservableProperty fromEntity(EntityLD entity) throws Exception {

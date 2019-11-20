@@ -1,7 +1,7 @@
 package com.agtinternational.iotcrawler.core;
 
 import com.agtinternational.iotcrawler.core.models.IoTStream;
-import com.agtinternational.iotcrawler.core.models.SosaPlatform;
+import com.agtinternational.iotcrawler.core.models.Platform;
 import com.agtinternational.iotcrawler.core.models.StreamObservation;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import com.agtinternational.iotcrawler.fiware.models.Utils;
@@ -10,7 +10,6 @@ import eu.neclab.iotplatform.ngsi.api.datamodel.ContextElement;
 import eu.neclab.iotplatform.ngsi.api.datamodel.ContextMetadata;
 import eu.neclab.iotplatform.ngsi.api.datamodel.EntityId;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
-import org.apache.jena.rdf.model.RDFNode;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -135,7 +134,7 @@ public class ModelTests {
         IoTStream ioTStream = IoTStream.fromJson(iotStreamJson);
 
         byte[] json = Files.readAllBytes(Paths.get("samples/Platform.json"));
-        SosaPlatform sosaPlatform = SosaPlatform.fromJson(json);
+        Platform sosaPlatform = Platform.fromJson(json);
 
         Object hosts = sosaPlatform.hosts();
         String label = ioTStream.getLabel();

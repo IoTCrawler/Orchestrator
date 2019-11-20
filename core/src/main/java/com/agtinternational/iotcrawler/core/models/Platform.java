@@ -4,32 +4,29 @@ import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.vocabulary.RDFS;
 
-import java.util.List;
-
 import static com.agtinternational.iotcrawler.core.Constants.*;
 
 
-public class SosaPlatform extends RDFModel {
+public class Platform extends RDFModel {
 
 
-
-    public SosaPlatform(String uri){
+    public Platform(String uri){
         super(uri, getTypeUri());
     }
 
-    public SosaPlatform(String uri, String label){
+    public Platform(String uri, String label){
         this(uri);
         addProperty(RDFS.label, label);
     }
 
-    public SosaPlatform(String uri, String classURI, String label){
+    public Platform(String uri, String classURI, String label){
         this(uri, label);
         setType(classURI);
     }
 
-    public SosaPlatform(String uri, Model model){
+    public Platform(String uri, Model model){
         super(uri, model);
-        setType(SosaPlatform.getTypeUri());
+        setType(Platform.getTypeUri());
     }
 
     public void hosts(Object value){
@@ -46,19 +43,19 @@ public class SosaPlatform extends RDFModel {
         return sosaPrefix+":"+"Platform";
     }
 
-    public static SosaPlatform fromJson(String jsonString){
+    public static Platform fromJson(String jsonString){
         RDFModel rdfModel = RDFModel.fromJson(jsonString);
-        return new SosaPlatform(rdfModel.getURI(), rdfModel.getModel());
+        return new Platform(rdfModel.getURI(), rdfModel.getModel());
     }
 
-    public static SosaPlatform fromJson(byte[] json){
+    public static Platform fromJson(byte[] json){
         return fromJson(new String(json));
     }
 
-    public static SosaPlatform fromEntity(EntityLD entity) throws Exception {
+    public static Platform fromEntity(EntityLD entity) throws Exception {
         entity.setType(getTypeUri());
         RDFModel rdfModel = RDFModel.fromEntity(entity);
-        return new SosaPlatform(rdfModel.getURI(), rdfModel.getModel());
+        return new Platform(rdfModel.getURI(), rdfModel.getModel());
     }
 
 //    public static SosaPlatform fromJsonObject(JsonObject jsonObject) {

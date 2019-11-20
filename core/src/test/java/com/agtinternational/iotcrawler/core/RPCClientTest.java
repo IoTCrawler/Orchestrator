@@ -121,7 +121,7 @@ public class RPCClientTest extends EnvVariablesSetter {
     @Test
     public void getPlatformsTest() throws Exception {
 
-        List<SosaPlatform> platforms = rpcClient.getPlatforms(null,0,0);
+        List<Platform> platforms = rpcClient.getPlatforms(null,0,0);
         Assert.notNull(platforms);
         LOGGER.info(platforms.size()+" platforms returned");
     }
@@ -142,7 +142,7 @@ public class RPCClientTest extends EnvVariablesSetter {
         LOGGER.info("getStreamByCustomQueryTest()");
 
         JsonObject query = new JsonObject();
-        query.addProperty(IoTStream.madeBySensor, "iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_MotionAlarmCancelationDelay");
+        query.addProperty(SOSA.madeBySensor, "iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_MotionAlarmCancelationDelay");
 
         List<IoTStream> streams = rpcClient.getStreams(query.toString(),0,0);
         String abc="213";

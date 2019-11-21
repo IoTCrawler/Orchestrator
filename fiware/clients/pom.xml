@@ -20,6 +20,11 @@
         <fiware.models.version>1.0.0</fiware.models.version>
     </properties>
 
+    <organization>
+        <name>AGT International. Author Pavel Smirnov (psmirnov@agtinternational.com)</name>
+        <url>https://www.agtinternational.com/</url>
+    </organization>
+    <inceptionYear>2019</inceptionYear>
 
     <dependencies>
 
@@ -257,6 +262,32 @@
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>2.0.0</version>
+                <configuration>
+                    <licenseName>mit</licenseName>
+                    <!--                    <licenseResolver>${project.baseUri}/src/license</licenseResolver>-->
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>first</id>
+                        <goals>
+                            <goal>update-file-header</goal>
+                        </goals>
+                        <phase>process-sources</phase>
+                        <configuration>
+                            <licenseName>mit</licenseName>
+                            <roots>
+                                <root>src/main/java</root>
+                                <root>src/test</root>
+                            </roots>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <plugin>

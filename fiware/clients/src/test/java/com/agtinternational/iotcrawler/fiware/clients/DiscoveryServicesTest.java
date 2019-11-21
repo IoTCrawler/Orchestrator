@@ -1,4 +1,3 @@
-import com.agtinternational.iotcrawler.fiware.clients.PatchedSouthBound;
 import eu.neclab.iotplatform.ngsi.api.datamodel.*;
 import org.junit.Assert;
 import org.junit.Before;

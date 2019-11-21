@@ -25,13 +25,13 @@ start-containers:
 	docker-compose -f docker-compose.yml up -d
 
 ngsi-ld-client-test:
-	mvn -Dtest=NgsiLDClientTest test
-	#mvn -Dtest=NgsiLDClientTest#addEntityTest surefire:test
-	#mvn -Dtest=NgsiLDClientTest#updateEntityTest surefire:test
-	#mvn -Dtest=NgsiLDClientTest#getEntitiesTest surefire:test
+	mvn -Dtest=com.agtinternational.iotcrawler.fiware.clients.NgsiLDClientTest test
+	#mvn -Dtest=com.agtinternational.iotcrawler.fiware.clients.NgsiLDClientTest#addEntityTest surefire:test
+	#mvn -Dtest=com.agtinternational.iotcrawler.fiware.clients.NgsiLDClientTest#updateEntityTest surefire:test
+	#mvn -Dtest=com.agtinternational.iotcrawler.fiware.clients.NgsiLDClientTest#getEntitiesTest surefire:test
 
 iot-broker-client-test:
-	mvn -Dtest=IoTBrokerClientTest test
+	mvn -Dtest=com.agtinternational.iotcrawler.fiware.clients.IoTBrokerClientTest test
 
 stop-containers:
 	echo "Stopping running containers"	

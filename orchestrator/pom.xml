@@ -8,8 +8,9 @@
     <version>1.0.9</version>
     <packaging>jar</packaging>
 
+
     <organization>
-        <name>AGT International</name>
+        <name>AGT International. Author Pavel Smirnov (psmirnov@agtinternational.com)</name>
         <url>https://www.agtinternational.com/</url>
     </organization>
    <inceptionYear>2019</inceptionYear>
@@ -233,31 +234,31 @@
         <testSourceDirectory>src/test/java</testSourceDirectory>
         <plugins>
 
-            <!--<plugin>-->
-                <!--<groupId>org.codehaus.mojo</groupId>-->
-                <!--<artifactId>license-maven-plugin</artifactId>-->
-                <!--<version>2.0.0</version>-->
-                <!--<configuration>-->
-                    <!--<licenseName>mit</licenseName>-->
-                    <!--&lt;!&ndash;                    <licenseResolver>${project.baseUri}/src/license</licenseResolver>&ndash;&gt;-->
-                <!--</configuration>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<id>first</id>-->
-                        <!--<goals>-->
-                            <!--<goal>update-file-header</goal>-->
-                        <!--</goals>-->
-                        <!--<phase>process-sources</phase>-->
-                        <!--<configuration>-->
-                            <!--<licenseName>mit</licenseName>-->
-                            <!--<roots>-->
-                                <!--<root>src/main/java</root>-->
-                                <!--<root>src/test</root>-->
-                            <!--</roots>-->
-                        <!--</configuration>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-            <!--</plugin>-->
+<!--            <plugin>-->
+<!--                <groupId>org.codehaus.mojo</groupId>-->
+<!--                <artifactId>license-maven-plugin</artifactId>-->
+<!--                <version>2.0.0</version>-->
+<!--                <configuration>-->
+<!--                    <licenseName>mit</licenseName>-->
+<!--                    &lt;!&ndash;                    <licenseResolver>${project.baseUri}/src/license</licenseResolver>&ndash;&gt;-->
+<!--                </configuration>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>first</id>-->
+<!--                        <goals>-->
+<!--                            <goal>update-file-header</goal>-->
+<!--                        </goals>-->
+<!--                        <phase>process-sources</phase>-->
+<!--                        <configuration>-->
+<!--                            <licenseName>mit</licenseName>-->
+<!--                            <roots>-->
+<!--                                <root>src/main/java</root>-->
+<!--                                <root>src/test</root>-->
+<!--                            </roots>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -269,17 +270,17 @@
                 </configuration>
             </plugin>
 
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.springframework.boot</groupId>-->
+<!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <goals>-->
+<!--                            <goal>repackage</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
 
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>

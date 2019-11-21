@@ -26,11 +26,11 @@ if [ "$1" = "compose-up" ]; then
 fi 
 
 if [ "$1" = "test-ngsi-ld-client" ]; then
-	mvn -Dtest=NgsiLDClientTest test
+	mvn -Dtest=com.agtinternational.iotcrawler.fiware.clients.NgsiLDClientTest test
 fi 
 
 if [ "$1" = "test-iot-broker-client" ]; then
-	mvn -Dtest=IoTBrokerClientTest test
+	mvn -Dtest=com.agtinternational.iotcrawler.fiware.clients.IoTBrokerClientTest test
 fi 
 
 if [ "$1" = "compose-down" ]; then

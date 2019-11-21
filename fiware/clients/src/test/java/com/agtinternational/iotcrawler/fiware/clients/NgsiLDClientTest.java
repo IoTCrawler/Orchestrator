@@ -1,5 +1,3 @@
-import com.agtinternational.iotcrawler.fiware.clients.NGSILD;
-import com.agtinternational.iotcrawler.fiware.clients.NgsiLDClient;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import com.agtinternational.iotcrawler.fiware.models.NGSILD.Property;
 import com.agtinternational.iotcrawler.fiware.models.NGSILD.Relationship;
@@ -14,7 +12,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
-import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;

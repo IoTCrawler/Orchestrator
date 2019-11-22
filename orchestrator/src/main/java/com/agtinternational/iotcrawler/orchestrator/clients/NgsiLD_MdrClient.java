@@ -84,29 +84,33 @@ public class NgsiLD_MdrClient extends AbstractMetadataClient {
     }
 
     @Override
-    public List<EntityLD> getEntities(String type, JsonObject query, int offset, int limit) throws Exception {
+    public List<EntityLD> getEntities(String type, JsonObject query, Map<String, Number> ranking, int offset, int limit) throws Exception {
         String[] types = new String[]{type};
         String queryStr = null;
-        if(query!=null){
-
-            List<String> pairs = new ArrayList<>();
-            UriComponentsBuilder builder = UriComponentsBuilder.fromPath("");
-            for(String key: query.keySet()){
+        List<String> pairs = new ArrayList<>();
+        if(query!=null) {
+            for (String key : query.keySet()) {
                 Object value = query.get(key);
-                if(value instanceof JsonPrimitive)
-                    value = ((JsonPrimitive)value).getAsString();
-                else if(value instanceof JsonArray){
+                if (value instanceof JsonPrimitive)
+                    value = ((JsonPrimitive) value).getAsString();
+                else if (value instanceof JsonArray) {
                     List<String> values = new ArrayList<>();
-                    for(JsonElement element: ((JsonArray)value)){
+                    for (JsonElement element : ((JsonArray) value)) {
                         values.add(element.getAsString());
                     }
                     value = String.join(",", values);
-                }else
+                } else
                     throw new NotImplementedException();
-                pairs.add(key+".object="+ value.toString());
+                pairs.add(key + ".object=" + value.toString());
             }
-            queryStr = String.join("&", pairs);
         }
+
+        if(ranking!=null)
+            for(String key: ranking.keySet())
+                pairs.add("rankWeights["+key+"]="+ ranking.get(key).toString());
+
+        queryStr = String.join("&", pairs);
+
         Paginated<EntityLD> paginated = null;
         paginated = ngsiLDClient.getEntities(null, null, Arrays.asList(types), null, queryStr,null, null, offset, limit, false).get();
         return (List<EntityLD>)paginated.getItems();

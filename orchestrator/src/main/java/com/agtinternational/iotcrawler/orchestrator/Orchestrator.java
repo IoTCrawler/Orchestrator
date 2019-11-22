@@ -75,7 +75,7 @@ public class Orchestrator extends IotCrawlerClient {
     AbstractDataClient dataBrokerClient;
     HttpServer httpServer;
     Semaphore httpServiceFinishedMutex = new Semaphore(0);
-    JsonParser parser = new JsonParser();
+    JsonParser jsonParser = new JsonParser();
 
     Channel channel;
     Map<String, String> rpcSubscriptionRequests = new HashMap<>();
@@ -147,7 +147,7 @@ public class Orchestrator extends IotCrawlerClient {
     public void receiveCommand(byte[] data, AMQP.BasicProperties properties){
 
         String message = new String(data);
-        JsonObject messageObj = (JsonObject)parser.parse(message);
+        JsonObject messageObj = (JsonObject) jsonParser.parse(message);
         String reply = null;
 
         String command0 = messageObj.get("command").getAsString();
@@ -171,17 +171,18 @@ public class Orchestrator extends IotCrawlerClient {
                     //Class targetClass = Utils.getTargetClass(command.getTypeURI());
                     entities = metadataClient.getEntitiesById(command.getIds(), command.getTypeURI());
                 }else {
-                    String query = command.getJsonQuery();
+                    String query = command.getQuery();
                     int limit = command.getLimit();
                     int offset = command.getOffset();
+                    Map<String, Number> ranking = command.getRanking();
 
                     JsonObject jsonQuery = (query!=null ? Utils.parseJsonQuery(query): null);
-                    entities = metadataClient.getEntities(command.getTypeURI(), jsonQuery, offset, limit);
-                    JsonArray jsonArray = EntitiesToJson(entities);
+                    entities = metadataClient.getEntities(command.getTypeURI(), jsonQuery, ranking, offset, limit);
                 }
             }
             catch (Exception e){
                 exception = new Exception("Failed to get entities: "+e.getLocalizedMessage(), e);
+                e.printStackTrace();
             }
 
             if(entities!=null){
@@ -197,6 +198,7 @@ public class Orchestrator extends IotCrawlerClient {
             }
             catch (Exception e){
                 exception = new Exception("Failed to parse command from "+messageObj+": "+e.getLocalizedMessage(), e);
+                e.printStackTrace();
             }
             if(registerEntityCommand!=null)
             try {
@@ -205,6 +207,7 @@ public class Orchestrator extends IotCrawlerClient {
             }
             catch (Exception e){
                 exception = new Exception("Failed to register entity: "+e.getLocalizedMessage(), e.getCause());
+                e.printStackTrace();
 
             }
         }else if(command0.equals(GetObservationsCommand.class.getSimpleName())){
@@ -215,6 +218,7 @@ public class Orchestrator extends IotCrawlerClient {
             }
             catch (Exception e){
                 exception = new Exception("Failed to parse command from "+message+": "+e.getLocalizedMessage(), e.getCause());
+                e.printStackTrace();
             }
             if(command1!=null)
                 try {
@@ -223,6 +227,7 @@ public class Orchestrator extends IotCrawlerClient {
                 }
                 catch (Exception e){
                     exception = new Exception("Failed to get observations: "+e.getLocalizedMessage(), e);
+                    e.printStackTrace();
                 }
         }else if(command0.equals(PushObservationsCommand.class.getSimpleName())){
 
@@ -603,9 +608,10 @@ public class Orchestrator extends IotCrawlerClient {
 
 
     @Override
-    public List<EntityLD> getEntities(String entityType, String query, int offset, int limit) throws Exception {
+    public List<EntityLD> getEntities(String entityType, String query, Map<String, Number> ranking, int offset, int limit) throws Exception {
         JsonObject jsonQuery = Utils.parseJsonQuery(query);
-        return metadataClient.getEntities(entityType, jsonQuery, offset, limit);
+        //JsonObject jsonObject = (JsonObject)jsonParser.parse(query);
+        return metadataClient.getEntities(entityType, jsonQuery, ranking, offset, limit);
     }
 
     @Override
@@ -613,64 +619,6 @@ public class Orchestrator extends IotCrawlerClient {
         return metadataClient.getEntityURIs(query);
     }
 
-
-
-    //@Override
-//    public <T> List<T> getEntities(Class<T> targetClass, int limit) throws Exception {
-//        return metadataClient.getEntities(targetClass, limit);
-//    }
-//
-//    @Override
-//    public <T> List<T> getEntities(Class<T> targetClass, String query) {
-//        return metadataClient.getEntities(targetClass, query);
-//    }
-
-//    @Override
-//    public List<RDFModel> getEntities(FilteringSelector selector, int limit) {
-//        return metadataClient.getEntities(selector, limit);
-//    }
-
-//    public List<IoTStream> getStreams(int limit) throws Exception {
-//        return metadataClient.getEntities(IoTStream.class, limit);
-//    }
-
-
-//    public List<IoTStream> getStreams(String query){
-//        return metadataClient.getEntities(IoTStream.class, query);
-//    }
-//
-//    public List<IoTStream> getStreams(String[] ids) throws Exception {
-//        return metadataClient.getEntities(ids, IoTStream.class);
-//    }
-//
-//    public List<Sensor> getSensors(int limit) throws Exception {
-//        return metadataClient.getEntities(Sensor.class, limit);
-//    }
-//
-//    @Override
-//    public List<Sensor> getSensors(String query){
-//        return metadataClient.getEntities(Sensor.class, query);
-//    }
-//
-//    @Override
-//    public List<SosaPlatform> getPlatforms(int limit) throws Exception {
-//        return metadataClient.getEntities(SosaPlatform.class, limit);
-//    }
-//
-//    @Override
-//    public List<SosaPlatform> getPlatforms(String query) {
-//        return metadataClient.getEntities(SosaPlatform.class, query);
-//    }
-//
-//    @Override
-//    public List<ObservableProperty> getObservableProperties(int limit) throws Exception {
-//        return metadataClient.getEntities(ObservableProperty.class, limit);
-//    }
-//
-//    @Override
-//    public List<ObservableProperty> getObservableProperties(String query) {
-//        return metadataClient.getEntities(ObservableProperty.class, query);
-//    }
 
 
 

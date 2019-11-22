@@ -53,6 +53,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -109,9 +110,17 @@ public class OrchestratorTest extends EnvVariablesSetter {
 
     @Test
     @Order(2)
-    public void getAllStreamsTest() throws Exception {
+    public void getStreamsTest() throws Exception {
         LOGGER.info("getAllStreamsTest()");
-        List<IoTStream> streams = orchestrator.getStreams(null,0,0);
+        //List<IoTStream> streams = orchestrator.getStreams(null,0,0);
+        Map<String, Number> ranking = new HashMap<>();
+        ranking.put("completeness", 0.4);
+        ranking.put("timeliness", 0);
+        ranking.put("plausibility", 0);
+        ranking.put("artificiality", 0.6);
+        ranking.put("concordance", 0);
+
+        List<IoTStream> streams = orchestrator.getStreams(null, ranking, 0,0);
         Assert.notNull(streams);
 
         LOGGER.info(streams.size()+" streams returned");
@@ -139,7 +148,7 @@ public class OrchestratorTest extends EnvVariablesSetter {
     public void getEntitiesTest() throws Exception {
         LOGGER.info("getEntitiesTest()");
         //List<EntityLD>  streams = orchestrator.getEntities(IoTStream.getTypeUri(), 0);
-        List<EntityLD>  streams = orchestrator.getEntities(".*", null, 0,0);
+        List<EntityLD>  streams = orchestrator.getEntities(".*", null, null, 0,0);
         Assert.notNull(streams);
         LOGGER.info(streams.size()+" streams returned");
     }
@@ -223,7 +232,9 @@ public class OrchestratorTest extends EnvVariablesSetter {
         //List<EntityLD> streams = orchestrator.getEntities("Vehicle", "brandName.value=Mercedes");
         JsonObject query = new JsonObject();
         query.addProperty("sosa:madeBySensor", "iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_MotionAlarmCancelationDelay");
-        List<IoTStream> streams = orchestrator.getStreams(query.toString(),0,0);
+        query.addProperty("http://www.w3.org/2000/01/rdf-schema#label","iotc:Stream_AEON+Labs+ZW100+MultiSensor+6_Brightness");
+
+        List<IoTStream> streams = orchestrator.getStreams(query.toString(), null, 0,0);
         String abc="213";
     }
 
@@ -234,7 +245,7 @@ public class OrchestratorTest extends EnvVariablesSetter {
         LOGGER.info("getCustomEntityTest()");
         //String query = "{'sosa:madeBySensor' : ['iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_Temperature']}";
         String query = "{\"sosa:madeBySensor\":[\"iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_MotionAlarmCancelationDelay\",\"iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_Temperature\"]}";
-        List<EntityLD> models = orchestrator.getEntities(IoTStream.getTypeUri(), query, 0,0);
+        List<EntityLD> models = orchestrator.getEntities(IoTStream.getTypeUri(), query, null, 0,0);
         String abc="213";
     }
 
@@ -273,7 +284,7 @@ public class OrchestratorTest extends EnvVariablesSetter {
     @Test
     public void subscribeMultipleTest() throws Exception {
         LOGGER.info("subscribeMultipleTest()");
-        List<IoTStream> streams = orchestrator.getStreams(null,0,0);
+        List<IoTStream> streams = orchestrator.getStreams(null, null,0,0);
         for(IoTStream stream : streams) {
             //IoTStream iotObservationModel = IoTStream.fromJson(iotStreamModel);
             String[] attributes = new String[]{

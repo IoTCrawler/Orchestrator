@@ -32,6 +32,7 @@ import com.google.gson.JsonObject;
 import org.apache.jena.rdf.model.Model;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 public abstract class AbstractMetadataClient {
@@ -44,7 +45,7 @@ public abstract class AbstractMetadataClient {
 
     //public abstract List<EntityLD> getEntities(String[] ids) throws Exception;
     public abstract List<EntityLD> getEntitiesById(String[] ids, String typeURI) throws Exception;
-    public abstract List<EntityLD> getEntities(String type, JsonObject query, int offset, int limit) throws Exception;
+    public abstract List<EntityLD> getEntities(String type, JsonObject query, Map<String, Number> ranking, int offset, int limit) throws Exception;
 
     //public abstract List<EntityLD> getEntities(String query);
     //public abstract <T> List<T> getEntities(String[] ids, Class<T> targetClass) throws Exception;

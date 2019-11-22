@@ -32,6 +32,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import java.lang.reflect.Type;
+import java.util.Map;
 
 public class GetEntitiesCommand extends RPCCommand {
 
@@ -39,8 +40,9 @@ public class GetEntitiesCommand extends RPCCommand {
     int limit = 0;
     String[] ids;
     //String query;
-    String jsonQuery;
+    String query;
     String typeURI;
+    Map<String, Number> ranking;
 
     public GetEntitiesCommand(String[] ids, int offset, int limit){
         this.ids = ids;
@@ -53,11 +55,13 @@ public class GetEntitiesCommand extends RPCCommand {
         this.typeURI = typeURI;
     }
 
-    public GetEntitiesCommand(String typeURI, String query, int offset, int limit){
+    public GetEntitiesCommand(String typeURI, String query, Map<String, Number> ranking, int offset, int limit){
         this.typeURI = typeURI;
-        this.jsonQuery = query;
+        this.query = query;
+        this.ranking = ranking;
         this.offset = offset;
         this.limit = limit;
+
     }
 
     public GetEntitiesCommand(String typeURI, int offset, int limit){
@@ -81,8 +85,12 @@ public class GetEntitiesCommand extends RPCCommand {
         return limit;
     }
 
-    public String getJsonQuery() {
-        return jsonQuery;
+    public String getQuery() {
+        return query;
+    }
+
+    public Map<String, Number> getRanking() {
+        return ranking;
     }
 
     public static GetEntitiesCommand fromJson(String json) {

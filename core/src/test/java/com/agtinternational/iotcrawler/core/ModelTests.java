@@ -156,7 +156,7 @@ public class ModelTests {
     @Test
     @Ignore
     public void test1() throws Exception {
-        byte[] iotStreamJson = Files.readAllBytes(Paths.get("samples/IoTStream.json"));
+        byte[] iotStreamJson = Files.readAllBytes(Paths.get("samples/IoTStream2.json"));
         IoTStream ioTStream = IoTStream.fromJson(iotStreamJson);
 
         byte[] json = Files.readAllBytes(Paths.get("samples/Platform.json"));

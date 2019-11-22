@@ -58,7 +58,7 @@ public class IoTStream extends RDFModel {
 
     public static String getTypeUri(){
         //return "iotc:IoTStream";
-        return iotcPrefix+":"+IoTStream.class.getSimpleName();
+        return iotcPrefix+":"+"iot-stream";//IoTStream.class.getSimpleName();
     }
 
     public static IoTStream fromEntity(EntityLD entity) throws Exception {

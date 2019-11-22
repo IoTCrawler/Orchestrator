@@ -81,11 +81,10 @@ public class Sensor extends RDFModel {
         return new Sensor(rdfModel.getURI(), rdfModel.getModel());
     }
 
-//    public static Sensor fromJsonObject(JsonObject jsonObject) {
-//        String uri = agtSmartHome+"#Device_"+jsonObject.get("Hostname").hashCode();
-//        SosaPlatform ret = new SosaPlatform(uri, jsonObject.get("Hostname").getAsString());
-//        return ret;
-//    }
+    public static Sensor fromJsonObject(String jsonString) {
+        RDFModel rdfModel = RDFModel.fromJson(jsonString);
+        return new Sensor(rdfModel.getURI(), rdfModel.getModel());
+    }
 
 
 

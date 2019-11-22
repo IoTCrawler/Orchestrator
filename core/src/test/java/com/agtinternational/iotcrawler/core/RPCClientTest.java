@@ -93,7 +93,7 @@ public class RPCClientTest extends EnvVariablesSetter {
     @Test
     public void getAllStreamsTest() throws Exception {
 
-        List<IoTStream> streams = rpcClient.getStreams(null,0,0);
+        List<IoTStream> streams = rpcClient.getStreams(null, null,0,0);
         //streams.get(0).getSensorUri();
         Assert.notNull(streams);
         LOGGER.info(streams.size()+" streams returned");
@@ -170,7 +170,7 @@ public class RPCClientTest extends EnvVariablesSetter {
         JsonObject query = new JsonObject();
         query.addProperty(SOSA.madeBySensor, "iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_MotionAlarmCancelationDelay");
 
-        List<IoTStream> streams = rpcClient.getStreams(query.toString(),0,0);
+        List<IoTStream> streams = rpcClient.getStreams(query.toString(), null,0,0);
         String abc="213";
     }
 
@@ -203,7 +203,7 @@ public class RPCClientTest extends EnvVariablesSetter {
     @Test
     public void subscribeMultipleTest() throws Exception {
 
-        List<IoTStream> streams = rpcClient.getStreams(null, 0,0);
+        List<IoTStream> streams = rpcClient.getStreams(null, null,0,0);
         for(IoTStream stream : streams) {
             //IoTStream iotObservationModel = IoTStream.fromJson(iotStreamModel);
             String[] attributes = new String[]{"http://www.agtinternational.com/iotcrawler/ontologies/iotc#current_value"};

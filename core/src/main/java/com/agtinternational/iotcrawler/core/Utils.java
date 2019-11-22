@@ -197,6 +197,7 @@ public class Utils {
 
                 } catch (Exception e) {
                     LOGGER.error("Failed to create "+targetClass.getSimpleName()+" from {}: {}", entity.getId(), e.getLocalizedMessage());
+                    e.printStackTrace();
                 }
 
             }
@@ -205,6 +206,8 @@ public class Utils {
     }
 
     public static JsonObject parseJsonQuery(String query){
+        if(query==null)
+            return null;
         JsonParser jsonParser = new JsonParser();
         JsonObject jsonObject = (JsonObject) jsonParser.parse(query);
         for(String key : jsonObject.keySet()){

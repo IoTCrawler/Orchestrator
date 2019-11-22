@@ -34,6 +34,7 @@ import eu.neclab.iotplatform.ngsi.api.datamodel.NotifyCondition;
 import eu.neclab.iotplatform.ngsi.api.datamodel.Restriction;
 
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 public abstract class IotCrawlerClient implements Component {
@@ -43,30 +44,30 @@ public abstract class IotCrawlerClient implements Component {
         return getEntitiesById(ids, IoTStream.class);
     }
 
-    public List<IoTStream> getStreams(String query, int offset, int limit) throws Exception{
-        return getEntities(IoTStream.class, query, offset, limit);
+    public List<IoTStream> getStreams(String query, Map<String, Number> ranking, int offset, int limit) throws Exception{
+        return getEntities(IoTStream.class, query, ranking, offset, limit);
     }
 
 
     /////////////////////////////////////Sensors
     public List<Sensor> getSensors(String query, int offset, int limit) throws Exception{
-        return getEntities(Sensor.class, query, offset, limit);
+        return getEntities(Sensor.class, query, null, offset, limit);
     }
 
     /////////////////////////////////////Platforms
     public List<Platform> getPlatforms(String query, int offset, int limit) throws Exception{
-        return getEntities(Platform.class, query, offset, limit);
+        return getEntities(Platform.class, query, null, offset, limit);
     }
 
     /////////////////////////////////////Properties
     public List<ObservableProperty> getObservableProperties(String query, int offset, int limit) throws Exception{
-        return getEntities(ObservableProperty.class, query, offset, limit);
+        return getEntities(ObservableProperty.class, query, null, offset, limit);
     }
 
 
     /////////////////////////////////////Observations
     public List<StreamObservation> getObservations(String streamId,  int offset, int limit) throws Exception{
-        return getEntities(StreamObservation.class, null, offset, limit);
+        return getEntities(StreamObservation.class, streamId, null, offset, limit);
     }
 
 
@@ -77,13 +78,13 @@ public abstract class IotCrawlerClient implements Component {
         return Utils.convertEntitiesToType(entities, targetClass);
     }
 
-    public <T> List<T> getEntities(Class<T> targetClass, String query, int offset, int limit) throws Exception{
-        List<EntityLD> entities = getEntities(Utils.getTypeURI(targetClass), query, offset, limit);
+    public <T> List<T> getEntities(Class<T> targetClass, String query,  Map<String, Number> ranking, int offset, int limit) throws Exception{
+        List<EntityLD> entities = getEntities(Utils.getTypeURI(targetClass), query, ranking, offset, limit);
         return Utils.convertEntitiesToType(entities, targetClass);
     }
 
     public abstract List<EntityLD> getEntitiesById(String[] ids, String entityType) throws Exception;
-    public abstract List<EntityLD> getEntities(String entityType, String query, int offset, int limit) throws Exception;
+    public abstract List<EntityLD> getEntities(String entityType, String query, Map<String, Number> ranking, int offset, int limit) throws Exception;
 
     public abstract Boolean registerEntity(RDFModel model) throws Exception;
     public abstract Boolean pushObservationsToBroker(List<StreamObservation> observations) throws Exception;

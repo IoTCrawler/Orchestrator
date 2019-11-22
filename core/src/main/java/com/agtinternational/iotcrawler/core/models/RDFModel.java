@@ -98,7 +98,7 @@ public class RDFModel {
 
     public void setType(String typeUri){
         List<RDFNode> typeNodes = getProperty(RDF.type.getURI());
-        if(typeNodes!=null)
+        if(typeNodes!=null && typeNodes.size()>0)
             this.model.remove(resource, RDF.type, typeNodes.get(0));
 
         addProperty(RDF.type, this.model.createResource(typeUri));

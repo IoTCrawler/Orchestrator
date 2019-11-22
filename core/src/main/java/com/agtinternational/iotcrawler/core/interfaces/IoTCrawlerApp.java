@@ -35,6 +35,7 @@ import eu.neclab.iotplatform.ngsi.api.datamodel.Restriction;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 public abstract class IoTCrawlerApp extends IotCrawlerClient implements Component {
@@ -65,8 +66,8 @@ public abstract class IoTCrawlerApp extends IotCrawlerClient implements Componen
 //    }
 
     @Override
-    public List<IoTStream> getStreams(String query, int offset, int limit) throws Exception {
-        return iotCrawlerClient.getStreams(query, offset, limit);
+    public List<IoTStream> getStreams(String query, Map<String, Number> ranking, int offset, int limit) throws Exception {
+        return iotCrawlerClient.getStreams(query, ranking, offset, limit);
     }
 
 //    @Override

@@ -39,6 +39,7 @@ import eu.neclab.iotplatform.ngsi.api.datamodel.NotifyConditionEnum;
 import eu.neclab.iotplatform.ngsi.api.datamodel.Restriction;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RDFS;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -96,7 +97,7 @@ public class OrchestratorTest extends EnvVariablesSetter {
         IoTStream ioTStream = IoTStream.fromJson(iotStreamModelJson);
         ioTStream.setType(IoTStream.getTypeUri());
 
-        IoTStream stream1 = new IoTStream("http://purl.org/iot/ontology/iot-stream#Stream_FIBARO%2520Wall%2520plug%2520living%2520room_CurrentEnergyUse");
+        IoTStream stream1 = new IoTStream("http://purl.org/iot/ontology/iot-stream#Stream_FIBARO%2520Wall%2520plug%2520living%2520room_CurrentEnergyUse", "CurrentEnergyUse");
         //byte[] iotStreamModelJson = Files.readAllBytes(Paths.get("samples/EntityFromBroker.json"));
         //EntityLD entityLD = EntityLD.fromJsonString(new String(iotStreamModelJson));
         //IoTStream ioTStream = IoTStream.fromEntity(entityLD);
@@ -111,6 +112,17 @@ public class OrchestratorTest extends EnvVariablesSetter {
     @Test
     @Order(2)
     public void getStreamsTest() throws Exception {
+        LOGGER.info("getAllStreamsTest()");
+
+        List<IoTStream> streams = orchestrator.getStreams(null, null, 0,0);
+        Assert.notNull(streams);
+
+        LOGGER.info(streams.size()+" streams returned");
+    }
+
+    @Test
+    @Order(2)
+    public void getRankedStreamsTest() throws Exception {
         LOGGER.info("getAllStreamsTest()");
         //List<IoTStream> streams = orchestrator.getStreams(null,0,0);
         Map<String, Number> ranking = new HashMap<>();
@@ -219,7 +231,10 @@ public class OrchestratorTest extends EnvVariablesSetter {
     @Test
     public void getAllObservablePropertiesTest() throws Exception {
         LOGGER.info("getAllObservablePropertiesTest()");
-        List<ObservableProperty> items = orchestrator.getObservableProperties(null,0,0);
+        JsonObject query = new JsonObject();
+        query.addProperty(RDFS.label.getURI(), "Motion");
+
+        List<ObservableProperty> items = orchestrator.getObservableProperties(query.toString(),0,0);
         Assert.notNull(items);
         LOGGER.info(items.size()+" ObservableProperties returned");
     }

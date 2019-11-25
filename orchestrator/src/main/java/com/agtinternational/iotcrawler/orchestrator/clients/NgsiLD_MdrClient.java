@@ -43,21 +43,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.management.InstanceAlreadyExistsException;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Semaphore;
 
-import static com.agtinternational.iotcrawler.core.Utils.convertEntitiesToType;
-import static com.agtinternational.iotcrawler.core.Utils.getTypeURI;
 import static com.agtinternational.iotcrawler.orchestrator.Constants.NGSILD_BROKER_URI;
 
 public class NgsiLD_MdrClient extends AbstractMetadataClient {
     private Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
     NgsiLDClient ngsiLDClient;
+    boolean cutURIs = true;
     //String serverUrl = "http://155.54.95.248:9090/ngsi-ld/";
 
     public NgsiLD_MdrClient(){
@@ -88,6 +85,7 @@ public class NgsiLD_MdrClient extends AbstractMetadataClient {
         String[] types = new String[]{type};
         String queryStr = null;
         List<String> pairs = new ArrayList<>();
+
         if(query!=null) {
             for (String key : query.keySet()) {
                 Object value = query.get(key);
@@ -101,7 +99,12 @@ public class NgsiLD_MdrClient extends AbstractMetadataClient {
                     value = String.join(",", values);
                 } else
                     throw new NotImplementedException();
-                pairs.add(key + ".object=" + value.toString());
+
+                key = resolveURI(key);
+                //ToDO: make a proper resolution!
+                //pairs.add(key + "=" + value.toString());
+                pairs.add(key + ".value=" + value.toString());
+                //pairs.add(key + ".object=" + value.toString());
             }
         }
 
@@ -116,34 +119,27 @@ public class NgsiLD_MdrClient extends AbstractMetadataClient {
         return (List<EntityLD>)paginated.getItems();
     }
 
+    private String resolveURI(String uri){
+        if(cutURIs)
+            return Utils.getFragment(uri);
 
+        return uri;
+    }
 
 
     @Override
-    public Boolean registerEntity(RDFModel entityAsModel) throws Exception{
-        LOGGER.info("registerEntity {}", entityAsModel.getURI());
+    public Boolean registerEntity(RDFModel rdfModel) throws Exception{
+        LOGGER.info("registerEntity {}", rdfModel.getURI());
         Semaphore reqFinished = new Semaphore(0);
 //        Semaphore deleteFinished = new Semaphore(0);
         List<Boolean> ret = new ArrayList<>();
         List<Exception> exception = new ArrayList<>();
 //        boolean updating = false;
         try {
-            EntityLD entity = entityAsModel.toEntityLD();
-
-//            // Check if it already exists in the MDR
-//            String[] id = new String[]{ entity.getId() };
-//            Paginated<EntityLD> entities =
-//                    ngsiLDClient.getEntities(Arrays.asList(id), null, null, null,0, 0,
-//                            false).get();
-//            updating = entities.getItems().size() != 0;
+            EntityLD entity = rdfModel.toEntityLD(cutURIs);
 
             ListenableFuture<Void> req;
-//            if(updating) {
-//                ngsiLDClient.deleteEntity(entity.getId(), null).addCallback(
-//                        aVoid -> deleteFinished.release(),
-//                        aVoid -> deleteFinished.release());
-//                deleteFinished.acquire();
-//            }
+
 
             req = ngsiLDClient.addEntity(entity);
             req.addCallback(new ListenableFutureCallback<Void>() {
@@ -186,7 +182,5 @@ public class NgsiLD_MdrClient extends AbstractMetadataClient {
     public Boolean registerEntity(String uri, Model entitiy) {
         throw new NotImplementedException();
     }
-
-
 
 }

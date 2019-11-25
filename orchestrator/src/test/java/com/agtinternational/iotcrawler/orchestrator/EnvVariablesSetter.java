@@ -54,8 +54,8 @@ public class EnvVariablesSetter {
 //        environmentVariables.set(Constants.TRIPLE_STORE_PASS, "xyzzy");
 
         if(!System.getenv().containsKey(NGSILD_BROKER_URI))
-            //environmentVariables.set(Constants.NGSILD_BROKER_URI, "http://djane:3000/ngsi-ld/");
-            environmentVariables.set(Constants.NGSILD_BROKER_URI, "http://localhost:3003/ngsi-ld/");
+            environmentVariables.set(Constants.NGSILD_BROKER_URI, "http://djane:3000/ngsi-ld/");
+            //environmentVariables.set(Constants.NGSILD_BROKER_URI, "http://localhost:3003/ngsi-ld/");
             //environmentVariables.set(Constants.NGSILD_BROKER_URI, "http://localhost:3000/ngsi-ld/");
             //environmentVariables.set(NGSILD_BROKER_URI, "http://localhost:9090/ngsi-ld/");
             //environmentVariables.set(NGSILD_BROKER_URI, "http://155.54.95.248:9090/ngsi-ld/");

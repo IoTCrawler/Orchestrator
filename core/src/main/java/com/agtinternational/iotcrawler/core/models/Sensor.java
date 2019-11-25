@@ -42,7 +42,7 @@ public class Sensor extends RDFModel {
     }
 
     public Sensor(String uri, Model model){
-        super(uri, model);
+        super(uri, getTypeUri(), model);
     }
 
 

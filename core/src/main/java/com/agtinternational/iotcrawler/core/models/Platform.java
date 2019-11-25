@@ -45,14 +45,14 @@ public class Platform extends RDFModel {
         addProperty(RDFS.label, label);
     }
 
-    public Platform(String uri, String classURI, String label){
-        this(uri, label);
-        setType(classURI);
-    }
+//    public Platform(String uri, String classURI, String label){
+//        this(uri, label);
+//        setType(classURI);
+//    }
 
     public Platform(String uri, Model model){
-        super(uri, model);
-        setType(Platform.getTypeUri());
+        super(uri, getTypeUri(), model);
+        //setType(Platform.getTypeUri());
     }
 
     public void hosts(Object value){

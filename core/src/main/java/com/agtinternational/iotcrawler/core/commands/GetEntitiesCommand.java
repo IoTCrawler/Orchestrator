@@ -55,6 +55,13 @@ public class GetEntitiesCommand extends RPCCommand {
         this.typeURI = typeURI;
     }
 
+    public GetEntitiesCommand(String typeURI, int offset, int limit){
+        this.typeURI = typeURI;
+        this.limit = limit;
+        this.offset = offset;
+        this.limit = limit;
+    }
+
     public GetEntitiesCommand(String typeURI, String query, Map<String, Number> ranking, int offset, int limit){
         this.typeURI = typeURI;
         this.query = query;
@@ -64,12 +71,7 @@ public class GetEntitiesCommand extends RPCCommand {
 
     }
 
-    public GetEntitiesCommand(String typeURI, int offset, int limit){
-        this.typeURI = typeURI;
-        this.limit = limit;
-        this.offset = offset;
-        this.limit = limit;
-    }
+
 
     public String[] getIds() {
         return ids;

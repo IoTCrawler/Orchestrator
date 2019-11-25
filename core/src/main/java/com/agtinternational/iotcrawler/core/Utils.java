@@ -31,6 +31,7 @@ import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import com.google.gson.*;
 import org.apache.commons.io.Charsets;
 import org.apache.jena.rdf.model.*;
+import org.apache.jena.rdf.model.impl.ModelCom;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.slf4j.Logger;
@@ -41,6 +42,7 @@ import java.io.StringWriter;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Utils {
 
@@ -203,6 +205,33 @@ public class Utils {
             }
 
         return ret;
+    }
+
+    public static String cutURL(String inputURL, Map<String, String> namespaces){
+
+        String URLNameSpace = ModelFactory.createDefaultModel().createProperty(inputURL).getNameSpace();
+        String fragment = (inputURL.startsWith(URLNameSpace)? inputURL.substring(URLNameSpace.length()) : Utils.getFragment(inputURL));
+
+        String nsKey = null;
+        if (URLNameSpace.endsWith(":")) { //ns is a prefix
+            nsKey = URLNameSpace.substring(0, URLNameSpace.length() - 1);
+        } else {//ns is a full URI
+            if (!namespaces.containsValue(URLNameSpace)) {
+                String[] splitted = URI.create(URLNameSpace).getPath().split("/");
+                nsKey = splitted[splitted.length - 1];
+                namespaces.put(nsKey, URLNameSpace);
+            } else
+                nsKey = findNsByValue(URLNameSpace, namespaces);
+        }
+        inputURL = nsKey+":"+fragment;
+        return inputURL;
+    }
+
+    private static String findNsByValue(String value, Map<String, String> namespaces){
+        for(String nsKey: namespaces.keySet())
+            if(namespaces.get(nsKey).equals(value))
+                return nsKey;
+        return null;
     }
 
     public static JsonObject parseJsonQuery(String query){

@@ -34,8 +34,6 @@ import eu.neclab.iotplatform.ngsi.api.datamodel.ContextAttribute;
 import eu.neclab.iotplatform.ngsi.api.datamodel.ContextElement;
 import eu.neclab.iotplatform.ngsi.api.datamodel.EntityId;
 import org.apache.commons.lang3.NotImplementedException;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.vocabulary.RDFS;
 
@@ -59,15 +57,15 @@ public class RDFModel {
     protected URI uri;
     protected Model model;
     protected Resource resource;
-    protected Map<String, String> namespaces1 = new HashMap<>();
+    protected Map<String, String> namespaces = new HashMap<>();
 
     public RDFModel(){
-        namespaces1.put("sosa", sosaNS);
-        namespaces1.put("iotc", iotcNS);
-        namespaces1.put("rdf-schema", RDFS.getURI());
+        namespaces.put("sosa", sosaNS);
+        namespaces.put("iotc", iotcNS);
+        namespaces.put("rdfs", RDFS.getURI());
     }
 
-    public RDFModel(String uri){
+    private RDFModel(String uri){
         this();
         this.uri = URI.create(uri);
         model = ModelFactory.createDefaultModel();
@@ -79,15 +77,14 @@ public class RDFModel {
         setType(typeURI);
     }
 
-    public RDFModel(String uri, Model model){
-        this(uri);
-        this.model = model;
-    }
+//    public RDFModel(String uri, Model model){
+//        this(uri);
+//        this.model = model;
+//    }
 
     public RDFModel(String uri, String typeURI, Model model){
-        this(uri);
+        this(uri, typeURI);
         this.model = model;
-        setType(typeURI);
     }
 
 
@@ -131,7 +128,7 @@ public class RDFModel {
     }
 
     public Map<String, String> getNamespaces() {
-        return namespaces1;
+        return namespaces;
     }
 
     public Resource getResource(){
@@ -242,8 +239,8 @@ public class RDFModel {
         String[] keySplitted = uri.split(":");
         //if uri in in shorten format
 
-        if(namespaces1.containsKey(keySplitted[0])) {
-            String fullUri = namespaces1.get(keySplitted[0]);
+        if(namespaces.containsKey(keySplitted[0])) {
+            String fullUri = namespaces.get(keySplitted[0]);
             List<String> abc = Arrays.asList(keySplitted).subList(1, keySplitted.length);
             uri =  fullUri+String.join(":", abc);
         }
@@ -424,13 +421,16 @@ public class RDFModel {
         Model model = Utils.readModel(jsonString.getBytes());
 
         String uri = "";
+        String typeUri = "";
         StmtIterator iterator = model.listStatements();
         while (iterator.hasNext()){
             Statement statement = iterator.next();
-            if (statement.getPredicate().equals(RDF.type))
+            if (statement.getPredicate().equals(RDF.type)) {
                 uri = statement.getSubject().getURI();
+                typeUri = statement.getObject().asResource().getURI();
+            }
         }
-        return new RDFModel(uri, model);
+        return new RDFModel(uri, typeUri, model);
     }
 
     public static RDFModel fromContextElement(ContextElement contextElement){
@@ -468,80 +468,47 @@ public class RDFModel {
 
 
     private String findNsByValue(String value){
-        for(String nsKey: namespaces1.keySet())
-            if(namespaces1.get(nsKey).equals(value))
+        for(String nsKey: namespaces.keySet())
+            if(namespaces.get(nsKey).equals(value))
                 return nsKey;
         return null;
     }
 
-    public EntityLD toEntityLD() throws Exception {
+    public EntityLD toEntityLD() throws Exception{
+        return toEntityLD(false);
+    }
 
-        String typeUri = getTypeURI();
+    public EntityLD toEntityLD(boolean cutURIs) throws Exception {
 
-        String typeNamespaceUri = model.createProperty(typeUri).getNameSpace();
-        String type = (typeUri.startsWith(typeNamespaceUri)? typeUri.substring(typeNamespaceUri.length()) : Utils.getFragment(typeUri));
-        String typeNsKey = null;
-        if(typeNamespaceUri.endsWith(":")){ //ns is a prefix
-            typeNsKey = typeNamespaceUri.substring(0, typeNamespaceUri.length()-1);
-        }else {//ns is a full URI
-            if (!namespaces1.containsValue(typeNamespaceUri)) {
-                String[] splitted = URI.create(typeNamespaceUri).getPath().split("/");
-                typeNsKey = splitted[splitted.length - 1];
-                namespaces1.put(typeNsKey, typeNamespaceUri);
-            }else
-                typeNsKey = findNsByValue(typeNamespaceUri);
-        }
+        String type = getTypeURI();
 
-        //String typePrefix = (typeNsKey!=null && !type.startsWith(typeNsKey+":")?typeNsKey+":":"");
-        String typePrefix = typeNamespaceUri;
+        if(cutURIs)
+            type = Utils.cutURL(type, namespaces);
 
         StmtIterator iterator = this.model.listStatements();
         Map<String, Attribute> attributes = new HashMap<String, Attribute>();
         while (iterator.hasNext()) {
             Statement statement = iterator.nextStatement();
-            if(!statement.getPredicate().equals(RDF.type)){
+            if(statement.getPredicate().equals(RDF.type))
+                continue;
 
-                Attribute attribute = null;
+            Attribute attribute = null;
+            String attrName = statement.getPredicate().getURI();
+            if(cutURIs)
+                attrName = Utils.cutURL(attrName, namespaces);
 
-                String ns = statement.getPredicate().getNameSpace();
-                String nsKey = null;
-                String nsURI = null;
-                if(ns.endsWith(":")){
-                    nsKey = ns.substring(0, ns.length()-1);
-                    if (!namespaces1.containsKey(nsKey))
-                        throw new Exception("Namespace URI for "+nsKey+" not found");
-//                        String[] splitted = URI.create(nsUri).getPath().split("/");
-//                        namespaces.put(nsKey, splitted[splitted.length - 1]);
-                    nsURI = namespaces1.get(nsKey);
-
-                }else {
-                    nsURI = ns;
-                    if (!namespaces1.containsValue(nsURI)) {
-                        String[] splitted = URI.create(nsURI).getPath().split("/");
-                        nsKey = splitted[splitted.length - 1];
-                        namespaces1.put(nsKey, nsURI);
-                    }else
-                        nsKey = findNsByValue(nsURI);
-
-                }
-
-                String localName = statement.getPredicate().getLocalName();
-                String attrName = (nsKey!=null && !localName.startsWith(nsKey+":") ?nsKey+":":"")+localName;
-                //String attrName = nsURI+localName;
-                //String attrName = localName;
-
-                if(statement.getObject().isResource()){
-                    attribute = new Relationship();
-                    //attribute.setType();
-                    //attValues.add(statement.getObject().asResource().getURI());
-                    ((Relationship) attribute).setObject(statement.getObject().asResource().getURI());
-                    //Statement typeStatement = statement.getObject().asResource().getProperty(RDF.type);
-                    //attribute.setType(Optional.of(typeStatement.getSubject().getURI()));
-                }else if (statement.getObject().isLiteral()){
-                    attribute  = new com.agtinternational.iotcrawler.fiware.models.NGSILD.Property();
-                    //attValues.add(statement.getObject().asResource().getURI());
-                    attribute.setValue(statement.getObject().asLiteral().toString());
-                    //attribute.setType(Optional.of(statement.getObject().asLiteral().getDatatypeURI()));
+            if(statement.getObject().isResource()){
+                attribute = new Relationship();
+                //attribute.setType();
+                //attValues.add(statement.getObject().asResource().getURI());
+                ((Relationship) attribute).setObject(statement.getObject().asResource().getURI());
+                //Statement typeStatement = statement.getObject().asResource().getProperty(RDF.type);
+                //attribute.setType(Optional.of(typeStatement.getSubject().getURI()));
+            }else if (statement.getObject().isLiteral()){
+                attribute  = new com.agtinternational.iotcrawler.fiware.models.NGSILD.Property();
+                //attValues.add(statement.getObject().asResource().getURI());
+                attribute.setValue(statement.getObject().asLiteral().toString());
+                //attribute.setType(Optional.of(statement.getObject().asLiteral().getDatatypeURI()));
 //                    Literal literal = statement.getLiteral();
 //                    //List<ContextMetadata> metadata = new ArrayList<ContextMetadata>();//{{ add(new ContextMetadata("units", URI.create("units"), "dB")); }};
 //                    //List<ContextMetadata> metadata = null;
@@ -551,11 +518,11 @@ public class RDFModel {
 ////                ContextAttribute contextAttribute = new ContextAttribute(statement.getPredicate().getLocalName(), URI.create(literal.getDatatypeURI()), literal.getString(), metadata);
 ////                contextAttributeList.add(contextAttribute);
 //                    attributes.put(statement.getPredicate().getLocalName(), attribute);
-                }else{
-                    throw new NotImplementedException("");
+            }else{
+                throw new NotImplementedException("");
 
-                }
-                // else if (statement.getPredicate().hasURI(Constants.belongsTo)) {
+            }
+            // else if (statement.getPredicate().hasURI(Constants.belongsTo)) {
 ////                ContextAttribute contextAttribute = new ContextAttribute(statement.getPredicate().getLocalName(), URI.create(iotStreamURI), statement.getObject().asResource().getURI(), null);
 ////                contextAttributeList.add(contextAttribute);
 //                    attribute.setType(Optional.of(Constants.iotStreamURI));
@@ -563,37 +530,37 @@ public class RDFModel {
 //                } else {
 //                    //LOGGER.info("Skipped as non literal: {}", statement.getPredicate().getURI());
 //                    String abc = "123";
-                //}
-                //attributes.put(statement.getPredicate().getLocalName(), attribute);
-                if(attributes.containsKey(attrName)) {
-                     Object value =  attributes.get(attrName);
-                     if (value instanceof List)
-                         ((List)(value)).add(attribute);
-                     else{
-                         List list = new ArrayList();
-                         list.add(value);
-                         list.add(attribute);
-                         LOGGER.warn("List insertion not implemented for attributes. Skipping {}", attrName);
-                         //attributes.put(attrName, list);
-                     }
-                }else
-                    attributes.put(attrName, attribute);
-                //attributes.put(attrName, attValues);
-            }
+            //}
+            //attributes.put(statement.getPredicate().getLocalName(), attribute);
+            if(attributes.containsKey(attrName)) {
+                 Object value =  attributes.get(attrName);
+                 if (value instanceof List)
+                     ((List)(value)).add(attribute);
+                 else{
+                     List list = new ArrayList();
+                     list.add(value);
+                     list.add(attribute);
+                     LOGGER.warn("List insertion not implemented for attributes. Skipping {}", attrName);
+                     //attributes.put(attrName, list);
+                 }
+            }else
+                attributes.put(attrName, attribute);
+            //attributes.put(attrName, attValues);
+
         }
 
 
-        Map<String, Object> context = null;
+        Map<String, Object> context = new HashMap<>();
         String jsonStr = toJsonLDString();
         JsonObject parsed = (JsonObject)new JsonParser().parse(jsonStr);
         if(parsed.get("@context") instanceof JsonObject){
-            context = new Gson().fromJson(parsed.get("@context").toString(), HashMap.class);
-            for(String NsKey: namespaces1.keySet())
-            context.put(NsKey, namespaces1.get(NsKey));
+            //context = new Gson().fromJson(parsed.get("@context").toString(), HashMap.class);
+            for(String NsKey: namespaces.keySet())
+                context.put(NsKey, namespaces.get(NsKey));
         }
 
 
-        EntityLD ret = new EntityLD(getURI(), typePrefix+type, attributes, context);
+        EntityLD ret = new EntityLD(getURI(), type, attributes, context);
         return ret;
     }
 

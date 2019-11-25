@@ -48,8 +48,7 @@ public class StreamObservation extends RDFModel {
     }
 
     public StreamObservation(String uri, Model model){
-        super(uri, model);
-
+        super(uri, getTypeUri(), model);
     }
 
     public static String getTypeUri(){

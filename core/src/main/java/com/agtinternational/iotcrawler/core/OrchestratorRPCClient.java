@@ -116,7 +116,7 @@ public class OrchestratorRPCClient extends IotCrawlerClient implements AutoClose
                 channel.queueBind(queueName, IOTCRAWLER_COMMANDS_EXCHANGE, "");
                 LOGGER.debug("Initing RabbitRpcClient");
                 rabbitRpcClient = RabbitRpcClient.create(connection, IOTCRAWLER_COMMANDS_EXCHANGE);
-                rabbitRpcClient.setMaxWaitingTime(3000);
+                rabbitRpcClient.setMaxWaitingTime(30000);
             } catch (IOException e) {
 
             } catch (Exception e) {

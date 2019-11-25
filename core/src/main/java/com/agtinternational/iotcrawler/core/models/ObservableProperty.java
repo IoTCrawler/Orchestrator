@@ -41,18 +41,20 @@ public class ObservableProperty extends RDFModel {
         super(uri, getTypeUri());
     }
 
-    public ObservableProperty(String uri, String classURI){
-        super(uri, classURI);
+    public ObservableProperty(String uri, String label){
+        this(uri);
+        addProperty(RDFS.label, label);
     }
 
     public ObservableProperty(String uri, Model model){
-        super(uri, model);
+        this(uri);
+        this.model = model;
     }
 
-    public ObservableProperty(String uri, String classURI, String label){
-        this(uri, classURI);
-        addProperty(RDFS.label, label);
-    }
+//    public ObservableProperty(String uri, String classURI, String label){
+//        this(uri, classURI);
+//        addProperty(RDFS.label, label);
+//    }
 
     public void isObservedBy(Object value){
         addProperty(SOSA.isObservedBy, value);

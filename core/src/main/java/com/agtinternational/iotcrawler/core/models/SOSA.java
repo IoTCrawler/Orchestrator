@@ -38,6 +38,8 @@ public class SOSA {
     public static String observes = sosaPrefix+":observes";
     public static String isObservedBy = sosaPrefix+":isObservedBy";
 
+    public static String platform = sosaPrefix+":Platform";
+    public static String sensor = sosaPrefix+":Sensor";
     public static String observableProperty = sosaPrefix+":"+"ObservableProperty";
 
 }

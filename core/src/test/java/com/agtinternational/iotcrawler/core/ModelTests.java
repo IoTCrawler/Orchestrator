@@ -27,6 +27,7 @@ package com.agtinternational.iotcrawler.core;
  */
 
 import com.agtinternational.iotcrawler.core.models.IoTStream;
+import com.agtinternational.iotcrawler.core.models.ObservableProperty;
 import com.agtinternational.iotcrawler.core.models.Platform;
 import com.agtinternational.iotcrawler.core.models.StreamObservation;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
@@ -156,8 +157,15 @@ public class ModelTests {
     @Test
     @Ignore
     public void test1() throws Exception {
-        byte[] iotStreamJson = Files.readAllBytes(Paths.get("samples/IoTStream2.json"));
-        IoTStream ioTStream = IoTStream.fromJson(iotStreamJson);
+        //byte[] iotStreamJson = Files.readAllBytes(Paths.get("samples/IoTStream2.json"));
+        //IoTStream ioTStream = IoTStream.fromJson(iotStreamJson);
+
+        ObservableProperty observableProperty = new ObservableProperty("http://property1", "Property1");
+
+        IoTStream ioTStream = new IoTStream("http://stream1", "Stream1");
+        String abc = ioTStream.toJsonLDString();
+        EntityLD entityLD = ioTStream.toEntityLD();
+        EntityLD entityWithShortUris = ioTStream.toEntityLD(true);
 
         byte[] json = Files.readAllBytes(Paths.get("samples/Platform.json"));
         Platform sosaPlatform = Platform.fromJson(json);
@@ -167,7 +175,7 @@ public class ModelTests {
         Object rdfNode = ioTStream.getProperty("sosa:madeBySensor");
         Object rdfNode2 = ioTStream.getProperty("madeBySensor");
         //String sensorsUri = ioTStream.getSensorUri();//getSensor();
-        String abc = "123";
+
     }
 
 

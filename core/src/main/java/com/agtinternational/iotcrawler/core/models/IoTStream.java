@@ -53,12 +53,12 @@ public class IoTStream extends RDFModel {
 
 
     public IoTStream(String uri, Model model){
-        super(uri, IoTStream.getTypeUri(), model);
+        super(uri, getTypeUri(), model);
     }
 
     public static String getTypeUri(){
-        //return "iotc:IoTStream";
-        return iotcPrefix+":"+"iot-stream";//IoTStream.class.getSimpleName();
+        return iotcNS+"IoTStream";
+        //return iotcPrefix+":"+"iot-stream";//IoTStream.class.getSimpleName();
     }
 
     public static IoTStream fromEntity(EntityLD entity) throws Exception {

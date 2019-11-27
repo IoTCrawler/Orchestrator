@@ -5,7 +5,6 @@ import com.agtinternational.iotcrawler.fiware.models.NGSILD.GeoProperty;
 import com.agtinternational.iotcrawler.fiware.models.NGSILD.Property;
 import com.agtinternational.iotcrawler.fiware.models.NGSILD.Relationship;
 import com.google.gson.*;
-import com.google.gson.annotations.JsonAdapter;
 import com.orange.ngsi2.model.Attribute;
 import com.orange.ngsi2.model.Metadata;
 import org.apache.commons.lang3.NotImplementedException;
@@ -21,61 +20,95 @@ public class Utils {
         return gson.toJson(jsonElement);
     }
 
-    public static JsonObject mapToJson(Map mapObject){
-        JsonObject ret = new JsonObject();
-        for(Object key : mapObject.keySet()){
-            Object value = mapObject.get(key);
-
-            if(value instanceof String)
-                ret.addProperty(key.toString(), (String)value);
-            else if(value instanceof Number)
-                ret.addProperty(key.toString(), (Number)value);
-            else {
-                JsonElement valueJson = objectToJson(value);
-                ret.add(key.toString(), valueJson);
-            }
-//            if(value instanceof Map)
-//                ret.add(key.toString(),  mapToJson((Map)value));
-//            else if(value instanceof Iterable) {
-//                Iterator iterator = ((Iterable)value).iterator();
-//                JsonArray jsonArray = new JsonArray();
-//                while(iterator.hasNext())
-//                    jsonArray.add(objectToJson(iterator.next()));
-//                ret.add(key.toString(), jsonArray);
-//            }else if(value instanceof Attribute)
-//                ret.add(key.toString(),  attributeToJson((Attribute)value));
-//            else if(value instanceof String)
+//    public static JsonObject mapToJson(Map mapObject){
+//        JsonObject ret = new JsonObject();
+//        for(Object key : mapObject.keySet()){
+//            Object value = mapObject.get(key);
+//
+//            if(value instanceof String)
 //                ret.addProperty(key.toString(), (String)value);
 //            else if(value instanceof Number)
 //                ret.addProperty(key.toString(), (Number)value);
-//            else
-//                throw new NotImplementedException(value.getClass().getName());
-        }
-        return ret;
-    }
+//            else {
+//                JsonElement valueJson = objectToJson(value);
+//                ret.add(key.toString(), valueJson);
+//            }
+//
+//        }
+//        return ret;
+//    }
 
-    public static JsonElement objectToJson(Object value){
-        if(value instanceof Map)
-            return mapToJson((Map)value);
-        else if(value instanceof Iterable) {
-            Iterator iterator = ((Iterable)value).iterator();
+//    public static JsonElement objectToJson(Object value){
+//        if(value instanceof Map) {
+//
+//            return mapToJson((Map) value);
+//        }else if(value instanceof Iterable) {
+//            Iterator iterator = ((Iterable)value).iterator();
+//            JsonArray jsonArray = new JsonArray();
+//            while(iterator.hasNext()) {
+//                Object value = iterator.next()
+//                jsonArray.add(objectToJson());
+//            }
+//            return jsonArray;
+//        }else if(value instanceof Attribute)
+//            return attributeToJson((Attribute)value);
+//        else
+//            throw new NotImplementedException(value.getClass().getName());
+//    }
+
+    public static JsonElement objectToJson(Object object){
+
+        if(object.getClass().isArray())
+            object = Arrays.asList((Object[])object);
+
+        if(object instanceof Property)
+            return Utils.attributeToJson((Attribute) object);
+
+        if(object instanceof String)
+            return new JsonPrimitive((String)object);
+
+        if(object instanceof Number)
+            return new JsonPrimitive((Number) object);
+
+        if(object instanceof Boolean)
+            return  new JsonPrimitive((Boolean) object);
+
+        if(object instanceof Map){
+            JsonObject jsonObject = new JsonObject();
+            Map mapObject = (Map)object;
+            for(Object key : mapObject.keySet()){
+                Object value = mapObject.get(key);
+                JsonElement jsonElement = objectToJson(value);
+                jsonObject.add(key.toString(), jsonElement);
+            }
+            return jsonObject;
+        }
+
+        if(object instanceof Iterable){
+            Iterator iterator = ((Iterable)object).iterator();
             JsonArray jsonArray = new JsonArray();
-            while(iterator.hasNext())
-                jsonArray.add(objectToJson(iterator.next()));
+            while(iterator.hasNext()){
+                Object value = iterator.next();
+                JsonElement jsonElement = objectToJson(value);
+                jsonArray.add(jsonElement);
+            }
             return jsonArray;
-        }else if(value instanceof Attribute)
-            return attributeToJson((Attribute)value);
-        else
-            throw new NotImplementedException(value.getClass().getName());
+        }
+
+        throw new NotImplementedException("");
+
     }
 
     public static JsonObject attributeToJson(Attribute attribute){
         JsonObject ret = new JsonObject();
-        ret.addProperty("type", attribute.getType().get());
-        if(attribute.getType().get().toLowerCase().equals("relationship"))
-            ret.addProperty("object", String.valueOf(attribute.getValue()));
-        else
-            ret.addProperty("value", String.valueOf(attribute.getValue()));
+        String type = attribute.getType().get().toString();
+        Object value0 = attribute.getValue();
+        ret.addProperty("type", type);
+
+        JsonElement jsonElement = objectToJson(value0);
+
+        String attKey = (type.toLowerCase().equals("relationship")? "object": "value");
+        ret.add(attKey, (JsonElement) jsonElement);
 
         if(attribute instanceof Relationship){
             Map<String, Object> attributes = ((Relationship)attribute).getAttributes();
@@ -144,7 +177,7 @@ public class Utils {
             //System.out.println(attKey+" => "+attValue);
 
             List<Object> values = new ArrayList<>();
-            List<Attribute> attributes = new ArrayList<Attribute>();
+            List<Object> attributes = new ArrayList<>();
 
             if(attValue instanceof Map) {
                 Attribute attribute2 = extractAttribute((Map)attValue);
@@ -162,7 +195,8 @@ public class Utils {
                         throw new org.apache.commons.lang3.NotImplementedException(value.getClass().getName()+" not implemented ");
                 }
                 if(values.size()>0){
-                    attributes.add(new Property(values));
+                    attributes.addAll(values);
+                    //attributes.add(new Property(values));
                 }
                 ret.put(attKey, attributes);
             }else if(attValue instanceof String || attValue instanceof Number){

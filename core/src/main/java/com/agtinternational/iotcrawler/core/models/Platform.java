@@ -64,6 +64,15 @@ public class Platform extends RDFModel {
         return ret;
     }
 
+    public String location(){
+        String ret = (String)getAttribute(iotcNS + "Location");
+        return ret;
+    }
+
+    public void location(Object value){
+        addProperty(iotcNS + "Location", value);
+    }
+
     public static String getTypeUri(){
         //return SosaPlatform.class.getSimpleName();
         return sosaPrefix+":"+"Platform";

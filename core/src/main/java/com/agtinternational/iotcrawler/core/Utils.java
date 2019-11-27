@@ -173,7 +173,7 @@ public class Utils {
         return ret;
     }
 
-    public static <T> List<T> convertEntitiesToType(Iterable<EntityLD> entities, Class<T> targetClass) throws Exception {
+    public static <T> List<T> convertEntitiesToTargetClass(Iterable<EntityLD> entities, Class<T> targetClass) throws Exception {
         List<T> ret = new ArrayList<>();
 
         if(entities!=null)

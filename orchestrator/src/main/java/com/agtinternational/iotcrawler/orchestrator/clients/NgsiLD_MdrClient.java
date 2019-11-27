@@ -73,58 +73,37 @@ public class NgsiLD_MdrClient extends AbstractMetadataClient {
     }
 
     @Override
-    public List<EntityLD> getEntitiesById(String[] ids, String typeURI) throws Exception {
-        String[] types = new String[]{typeURI};
+    public List<EntityLD> getEntitiesById(String[] ids, String type) throws Exception {
+        if(cutURIs)
+            type = Utils.cutURL(type, RDFModel.getNamespaces());
+
+        String[] types = new String[]{type};
         Paginated<EntityLD> paginated = null;
         paginated = ngsiLDClient.getEntities( (ids!=null?Arrays.asList(ids):null), null, Arrays.asList(types), null, 0, 0, false).get();
         return (List<EntityLD>)paginated.getItems();
     }
 
     @Override
-    public List<EntityLD> getEntities(String type, JsonObject query, Map<String, Number> ranking, int offset, int limit) throws Exception {
-        String[] types = new String[]{type};
-        String queryStr = null;
-        List<String> pairs = new ArrayList<>();
+    public List<EntityLD> getEntities(String type, String query, Map<String, Number> ranking, int offset, int limit) throws Exception {
 
-        if(query!=null) {
-            for (String key : query.keySet()) {
-                Object value = query.get(key);
-                if (value instanceof JsonPrimitive)
-                    value = ((JsonPrimitive) value).getAsString();
-                else if (value instanceof JsonArray) {
-                    List<String> values = new ArrayList<>();
-                    for (JsonElement element : ((JsonArray) value)) {
-                        values.add(element.getAsString());
-                    }
-                    value = String.join(",", values);
-                } else
-                    throw new NotImplementedException();
+        if(cutURIs)
+            type = Utils.cutURL(type, RDFModel.getNamespaces());
 
-                key = resolveURI(key);
-                //ToDO: make a proper resolution!
-                //pairs.add(key + "=" + value.toString());
-                pairs.add(key + ".value=" + value.toString());
-                //pairs.add(key + ".object=" + value.toString());
-            }
-        }
+        String[] types = new String[]{  type };
+
+        List<String> pairs = (query!=null?Arrays.asList(query.split("&")):new ArrayList<>());
 
         if(ranking!=null)
             for(String key: ranking.keySet())
                 pairs.add("rankWeights["+key+"]="+ ranking.get(key).toString());
-
-        queryStr = String.join("&", pairs);
+        query = String.join("&", pairs);
 
         Paginated<EntityLD> paginated = null;
-        paginated = ngsiLDClient.getEntities(null, null, Arrays.asList(types), null, queryStr,null, null, offset, limit, false).get();
+        paginated = ngsiLDClient.getEntities(null, null, Arrays.asList(types), null, query,null, null, offset, limit, false).get();
         return (List<EntityLD>)paginated.getItems();
     }
 
-    private String resolveURI(String uri){
-        if(cutURIs)
-            return Utils.getFragment(uri);
 
-        return uri;
-    }
 
 
     @Override

@@ -57,7 +57,9 @@ public class CommandsTests {
     public void GetEntityCommandTest() throws Exception {
         String query = "sosa:observes.value=iotc:Property";
         GetEntitiesCommand command = new GetEntitiesCommand(ioTStream.getURI(),  query, null,0, 0);
+        //GetEntitiesCommand command = new GetEntitiesCommand(IoTStream.class,  query, null,0, 0);
         String jsonString = command.toJson();
+        //Class targetClass = Class.forName(command.getTargetClass());
         GetEntitiesCommand command2 = GetEntitiesCommand.fromJson(jsonString);
 
         org.junit.Assert.assertEquals(jsonString, command2.toJson());

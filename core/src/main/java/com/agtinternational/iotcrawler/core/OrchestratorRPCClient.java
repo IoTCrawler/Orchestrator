@@ -268,8 +268,15 @@ public class OrchestratorRPCClient extends IotCrawlerClient implements AutoClose
 //    }
 
     @Override
+    public <T> List<T> getEntities(Class<T> targetClass, String query, Map<String, Number> ranking, int offset, int limit) throws Exception {
+        GetEntitiesCommand command = new GetEntitiesCommand(targetClass, query, null, offset, limit);
+        List<T> entities = execute(command, targetClass);
+        return entities;
+    }
+
+    @Override
     public List<EntityLD> getEntities(String entityType, String query, Map<String, Number> ranking, int offset, int limit) throws Exception {
-        GetEntitiesCommand command = new GetEntitiesCommand(entityType, query, null, offset, limit);
+        GetEntitiesCommand command = new GetEntitiesCommand(entityType, query, ranking, offset, limit);
         List<EntityLD> entities = execute(command);
         return entities;
     }
@@ -350,6 +357,11 @@ public class OrchestratorRPCClient extends IotCrawlerClient implements AutoClose
         return exchangeName;
     }
 
+    private <T> List<T> execute(GetEntitiesCommand command, Class<T> targetClass) throws Exception {
+        List<EntityLD> entities = execute(command);
+        List<T> ret = Utils.convertEntitiesToTargetClass(entities, targetClass);
+        return ret;
+    }
 
     private List<EntityLD> execute(GetEntitiesCommand command) throws Exception {
         List<EntityLD> ret = new ArrayList<>();

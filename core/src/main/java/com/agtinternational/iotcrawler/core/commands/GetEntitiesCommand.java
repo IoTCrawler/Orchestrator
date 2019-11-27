@@ -39,7 +39,7 @@ public class GetEntitiesCommand extends RPCCommand {
     int offset = 0;
     int limit = 0;
     String[] ids;
-    //String query;
+    String targetClass;
     String query;
     String typeURI;
     Map<String, Number> ranking;
@@ -68,9 +68,15 @@ public class GetEntitiesCommand extends RPCCommand {
         this.ranking = ranking;
         this.offset = offset;
         this.limit = limit;
-
     }
 
+    public GetEntitiesCommand(Class targetClass, String query, Map<String, Number> ranking, int offset, int limit){
+        this.targetClass = targetClass.getName();
+        this.query = query;
+        this.ranking = ranking;
+        this.offset = offset;
+        this.limit = limit;
+    }
 
 
     public String[] getIds() {
@@ -93,6 +99,10 @@ public class GetEntitiesCommand extends RPCCommand {
 
     public Map<String, Number> getRanking() {
         return ranking;
+    }
+
+    public String getTargetClass() {
+        return targetClass;
     }
 
     public static GetEntitiesCommand fromJson(String json) {

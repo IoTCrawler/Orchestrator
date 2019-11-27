@@ -75,16 +75,17 @@ public abstract class IotCrawlerClient implements Component {
 
     public <T> List<T> getEntitiesById(String[] ids, Class<T> targetClass) throws Exception{
         List<EntityLD> entities = getEntitiesById(ids, Utils.getTypeURI(targetClass));
-        return Utils.convertEntitiesToType(entities, targetClass);
+        return Utils.convertEntitiesToTargetClass(entities, targetClass);
     }
 
-    public <T> List<T> getEntities(Class<T> targetClass, String query,  Map<String, Number> ranking, int offset, int limit) throws Exception{
-        List<EntityLD> entities = getEntities(Utils.getTypeURI(targetClass), query, ranking, offset, limit);
-        return Utils.convertEntitiesToType(entities, targetClass);
-    }
+
+//        List<EntityLD> entities = getEntities(Utils.getTypeURI(targetClass), query, ranking, offset, limit);
+//        return Utils.convertEntitiesToType(entities, targetClass);
+//    }
 
     public abstract List<EntityLD> getEntitiesById(String[] ids, String entityType) throws Exception;
     public abstract List<EntityLD> getEntities(String entityType, String query, Map<String, Number> ranking, int offset, int limit) throws Exception;
+    public abstract  <T> List<T> getEntities(Class<T> targetClass, String query,  Map<String, Number> ranking, int offset, int limit) throws Exception;
 
     public abstract Boolean registerEntity(RDFModel model) throws Exception;
     public abstract Boolean pushObservationsToBroker(List<StreamObservation> observations) throws Exception;

@@ -55,8 +55,8 @@ public class Sensor extends RDFModel {
         addProperty(SOSA.observes, value);
     }
 
-    public String observes(){
-        String ret = (String)getAttribute(SOSA.observes);
+    public Object observes(){
+        Object ret = getAttribute(SOSA.observes);
         return ret;
     }
 
@@ -64,8 +64,8 @@ public class Sensor extends RDFModel {
         addProperty(SOSA.isHostedBy, value);
     }
 
-    public String isHostedBy(){
-        String ret = (String)getAttribute(SOSA.isHostedBy);
+    public Object isHostedBy(){
+        Object ret = getAttribute(SOSA.isHostedBy);
         return ret;
     }
 

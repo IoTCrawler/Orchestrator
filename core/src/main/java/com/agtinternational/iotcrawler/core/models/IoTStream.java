@@ -31,6 +31,7 @@ import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.vocabulary.RDFS;
 
+import java.net.URI;
 import java.util.List;
 
 import static com.agtinternational.iotcrawler.core.Constants.*;
@@ -81,8 +82,8 @@ public class IoTStream extends RDFModel {
 //        return new ObservableProperty("http://Uri");
 //    }
 
-    public String madeBySensor(){
-        return (String)getAttribute(SOSA.madeBySensor);
+    public Object madeBySensor(){
+        return getAttribute(SOSA.madeBySensor);
     }
 
 

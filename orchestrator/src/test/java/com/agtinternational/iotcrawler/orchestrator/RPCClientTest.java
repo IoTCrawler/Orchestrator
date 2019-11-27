@@ -122,7 +122,7 @@ public class RPCClientTest extends EnvVariablesSetter {
     @Test
     public void getAllStreamsTest() throws Exception {
         LOGGER.info("getAllStreamsTest()");
-        List<IoTStream> streams = rpcClient.getStreams(null,0,0);
+        List<IoTStream> streams = rpcClient.getStreams(null, null,0,0);
         //streams.get(0).getSensorUri();
         LOGGER.info(streams.size()+" streams returned");
         Assert.notNull(streams);
@@ -215,7 +215,7 @@ public class RPCClientTest extends EnvVariablesSetter {
     @Test
     public void subscribeMultipleTest() throws Exception {
 
-        List<IoTStream> streams = rpcClient.getStreams(null,0,0);
+        List<IoTStream> streams = rpcClient.getStreams(null,null,0,0);
         for(IoTStream stream : streams) {
             //IoTStream iotObservationModel = IoTStream.fromJson(iotStreamModel);
             String[] attributes = new String[]{"http://www.agtinternational.com/iotcrawler/ontologies/iotc#current_value"};

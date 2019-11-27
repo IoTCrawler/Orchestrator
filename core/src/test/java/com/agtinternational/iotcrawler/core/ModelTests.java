@@ -26,20 +26,20 @@ package com.agtinternational.iotcrawler.core;
  * #L%
  */
 
-import com.agtinternational.iotcrawler.core.models.IoTStream;
-import com.agtinternational.iotcrawler.core.models.ObservableProperty;
-import com.agtinternational.iotcrawler.core.models.Platform;
-import com.agtinternational.iotcrawler.core.models.StreamObservation;
+import com.agtinternational.iotcrawler.core.models.*;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import com.agtinternational.iotcrawler.fiware.models.Utils;
+import com.google.gson.JsonObject;
 import eu.neclab.iotplatform.ngsi.api.datamodel.ContextAttribute;
 import eu.neclab.iotplatform.ngsi.api.datamodel.ContextElement;
 import eu.neclab.iotplatform.ngsi.api.datamodel.ContextMetadata;
 import eu.neclab.iotplatform.ngsi.api.datamodel.EntityId;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import javax.swing.text.html.parser.Entity;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -167,18 +167,37 @@ public class ModelTests {
         EntityLD entityLD = ioTStream.toEntityLD();
         EntityLD entityWithShortUris = ioTStream.toEntityLD(true);
 
-        byte[] json = Files.readAllBytes(Paths.get("samples/Platform.json"));
-        Platform sosaPlatform = Platform.fromJson(json);
-
-        Object hosts = sosaPlatform.hosts();
-        String label = ioTStream.getLabel();
+        String label = ioTStream.label();
         Object rdfNode = ioTStream.getProperty("sosa:madeBySensor");
         Object rdfNode2 = ioTStream.getProperty("madeBySensor");
         //String sensorsUri = ioTStream.getSensorUri();//getSensor();
 
+
+
     }
 
+    @Test
+    @Ignore
+    public void test2() throws Exception {
 
+        byte[] json = Files.readAllBytes(Paths.get("samples/Platform.json"));
+        Platform sosaPlatform = Platform.fromJson(json);
+
+        RDFModel[] array = new RDFModel[]{ new RDFModel("http://sensor1"), new RDFModel("http://sensor2") } ;
+        sosaPlatform.hosts(array);
+
+        JsonObject jsonObject1 = sosaPlatform.toJsonObject();
+        System.out.println(Utils.prettyPrint(jsonObject1));
+
+        System.out.println("--------------------------------------");
+
+        EntityLD entityLD = sosaPlatform.toEntityLD(true);
+        JsonObject jsonObject2 = entityLD.toJsonObject();
+        System.out.println(Utils.prettyPrint(jsonObject2));
+
+        //Assert.assertEquals(jsonObject1, jsonObject2);
+        String abc = "abc";
+    }
 
 
 }

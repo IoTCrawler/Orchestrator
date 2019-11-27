@@ -74,19 +74,8 @@ public class EntityLD /*extends Entity*/ {
         jsonObject.addProperty("id", getId());
         jsonObject.addProperty("type", getType());
         if(context!=null){
-            JsonElement contextJson=null;
-            if(context instanceof String) {
-                contextJson = new JsonPrimitive((String)context);
-            }else if(context instanceof List) {
-                contextJson = listToJson((List)context);
-            }else if (context instanceof Map){
-                contextJson = Utils.mapToJson((Map)context);
-            }else if (context instanceof JsonElement){
-                contextJson = (JsonElement) context;
-            }else
-                throw new NotImplementedException(context.getClass().getName()+" not implemented ");
-            if(contextJson!=null)
-                jsonObject.add("@context", contextJson);
+            JsonElement contextJson = Utils.objectToJson(context);
+            jsonObject.add("@context", contextJson);
         }
 
         Map<String, Attribute>  attributeMap = getAttributes();

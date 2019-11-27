@@ -26,20 +26,20 @@ package com.agtinternational.iotcrawler.core.models;
  * #L%
  */
 
-import static com.agtinternational.iotcrawler.core.Constants.sosaPrefix;
+import static com.agtinternational.iotcrawler.core.Constants.sosaNS;
 
 public class SOSA {
 
-    public static String madeBySensor = sosaPrefix+":madeBySensor";
+    public static String madeBySensor = sosaNS+"madeBySensor";
 
-    public static String hosts = sosaPrefix+":hosts";
-    public static String isHostedBy = sosaPrefix+":isHostedBy";
+    public static String hosts = sosaNS+"hosts";
+    public static String isHostedBy = sosaNS+"isHostedBy";
 
-    public static String observes = sosaPrefix+":observes";
-    public static String isObservedBy = sosaPrefix+":isObservedBy";
+    public static String observes = sosaNS+"observes";
+    public static String isObservedBy = sosaNS+"isObservedBy";
 
-    public static String platform = sosaPrefix+":Platform";
-    public static String sensor = sosaPrefix+":Sensor";
-    public static String observableProperty = sosaPrefix+":"+"ObservableProperty";
+    public static String platform = sosaNS+"Platform";
+    public static String sensor = sosaNS+"Sensor";
+    public static String observableProperty = sosaNS+"ObservableProperty";
 
 }

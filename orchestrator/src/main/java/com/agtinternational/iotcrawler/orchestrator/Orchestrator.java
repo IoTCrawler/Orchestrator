@@ -35,9 +35,7 @@ import com.agtinternational.iotcrawler.orchestrator.clients.IotBrokerDataClient;
 import com.agtinternational.iotcrawler.orchestrator.clients.NgsiLD_MdrClient;
 import com.agtinternational.iotcrawler.core.commands.*;
 import com.agtinternational.iotcrawler.core.models.*;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import com.lambdaworks.redis.RedisClient;
 import com.lambdaworks.redis.api.StatefulRedisConnection;
 import com.lambdaworks.redis.api.sync.RedisCommands;
@@ -45,6 +43,7 @@ import com.rabbitmq.client.*;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang3.tuple.Pair;
 import eu.neclab.iotplatform.ngsi.api.datamodel.*;
 import org.slf4j.Logger;
@@ -54,6 +53,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
+import java.lang.reflect.Method;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.*;
@@ -69,6 +69,7 @@ public class Orchestrator extends IotCrawlerClient {
     String rabbitHost = "localhost";
     String redisHost = "localhost";
     String endpoint = "/notify";
+    boolean cutURIs = true;
 
     //AbstractMetadataClient metadataClient;
     AbstractMetadataClient metadataClient;
@@ -169,15 +170,25 @@ public class Orchestrator extends IotCrawlerClient {
             try {
                 if(command.getIds()!=null) {
                     //Class targetClass = Utils.getTargetClass(command.getTypeURI());
-                    entities = metadataClient.getEntitiesById(command.getIds(), command.getTypeURI());
+                    entities = getEntitiesById(command.getIds(), command.getTypeURI());
                 }else {
                     String query = command.getQuery();
                     int limit = command.getLimit();
                     int offset = command.getOffset();
                     Map<String, Number> ranking = command.getRanking();
+                    String typeURI = command.getTypeURI();
 
-                    JsonObject jsonQuery = (query!=null ? Utils.parseJsonQuery(query): null);
-                    entities = metadataClient.getEntities(command.getTypeURI(), jsonQuery, ranking, offset, limit);
+                    if(command.getTargetClass()!=null) {
+                        Class targetClass = Class.forName(command.getTargetClass());
+                        //entities = getEntities(targetClass, query, ranking, offset, limit);
+                        String queryStr = resolveQuery(targetClass, query, ranking);
+                        String URL = Utils.getTypeURI(targetClass);
+                        String key = Utils.cutURL(URL, RDFModel.getNamespaces());
+                        entities = getEntities(key, queryStr, ranking,  offset, limit);
+                    }
+                    else
+                        entities = getEntities(typeURI, query, ranking, offset, limit);
+
                 }
             }
             catch (Exception e){
@@ -604,21 +615,85 @@ public class Orchestrator extends IotCrawlerClient {
         return metadataClient.getEntitiesById(ids, targetClass);
     }
 
+    public String resolveQuery(Class targetClass, String query, Map<String, Number> ranking){
 
+        List<String> pairs = new ArrayList<>();
+        if(query!=null) {
+            JsonObject jsonQuery = Utils.parseJsonQuery(query);
+            for (String key : jsonQuery.keySet()) {
+                Object value = jsonQuery.get(key);
+                if (value instanceof JsonPrimitive)
+                    value = ((JsonPrimitive) value).getAsString();
+                else if (value instanceof JsonArray) {
+                    List<String> values = new ArrayList<>();
+                    for (JsonElement element : ((JsonArray) value)) {
+                        values.add(element.getAsString());
+                    }
+                    value = String.join(",", values);
+                } else
+                    throw new NotImplementedException();
+
+                key = resolveURI(key);
+                String[] splitted = key.split(":");
+
+                Method method = null;
+                try {
+                    method = RDFModel.class.getDeclaredMethod(splitted[splitted.length-1]);
+                }
+                catch (Exception e){
+
+                }
+
+                if(method==null)
+                    try {
+                        method = targetClass.getDeclaredMethod(splitted[splitted.length-1]);
+                    }
+                    catch (Exception e){
+
+                    }
+
+                if(method!=null){
+                    Class returnType = method.getReturnType();
+                    if(returnType==String.class || returnType==Number.class || returnType==Boolean.class)
+                        key+=".value";
+                    else
+                        key+=".object";
+                }
+
+                pairs.add(key + "=" + value.toString());
+            }
+        }
+
+        String queryStr = (pairs.size()>0 ? String.join("&", pairs): null);
+        return queryStr;
+    }
+
+    @Override
+    public <T> List<T> getEntities(Class<T> targetClass, String query, Map<String, Number> ranking,  int offset, int limit) throws Exception {
+
+        String queryStr = resolveQuery(targetClass, query, ranking);
+        List<EntityLD> entities = getEntities(Utils.getTypeURI(targetClass), queryStr, ranking,  offset, limit);
+        return Utils.convertEntitiesToTargetClass(entities, targetClass);
+    }
 
 
     @Override
     public List<EntityLD> getEntities(String entityType, String query, Map<String, Number> ranking, int offset, int limit) throws Exception {
-        JsonObject jsonQuery = Utils.parseJsonQuery(query);
-        //JsonObject jsonObject = (JsonObject)jsonParser.parse(query);
-        return metadataClient.getEntities(entityType, jsonQuery, ranking, offset, limit);
+        List<EntityLD> ret = metadataClient.getEntities(entityType, query, ranking, offset, limit);
+        return ret;
+    }
+
+    private String resolveURI(String uri){
+        if(cutURIs && uri.startsWith("http://"))
+            return Utils.cutURL(uri, RDFModel.getNamespaces());
+
+        return uri;
     }
 
     @Override
     public List<String> getEntityURIs(String query, int offset, int limit) {
         return metadataClient.getEntityURIs(query);
     }
-
 
 
 

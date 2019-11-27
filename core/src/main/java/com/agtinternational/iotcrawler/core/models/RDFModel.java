@@ -57,16 +57,19 @@ public class RDFModel {
     protected URI uri;
     protected Model model;
     protected Resource resource;
-    protected Map<String, String> namespaces = new HashMap<>();
+    protected static Map<String, String> namespaces = new HashMap<>();
 
-    public RDFModel(){
+
+    static
+    {
         namespaces.put("sosa", sosaNS);
         namespaces.put("iotc", iotcNS);
         namespaces.put("rdfs", RDFS.getURI());
     }
 
-    private RDFModel(String uri){
-        this();
+
+
+    public RDFModel(String uri){
         this.uri = URI.create(uri);
         model = ModelFactory.createDefaultModel();
         resource = model.createResource(uri);
@@ -116,7 +119,7 @@ public class RDFModel {
         return model;
     }
 
-    public String getLabel() {
+    public String label() {
         return (String)getAttribute(RDFS.label.getURI());
     }
 
@@ -127,7 +130,7 @@ public class RDFModel {
         return attributeNode.asResource().getURI();
     }
 
-    public Map<String, String> getNamespaces() {
+    public static Map<String, String> getNamespaces() {
         return namespaces;
     }
 
@@ -181,14 +184,23 @@ public class RDFModel {
         //if(Utils.getFragment(uri)!=null && URI.create(uri).getFragment().toLowerCase().equals("label"))
           //  uri = RDFS.label.getURI();
 
-        Property property = model.createProperty(uri); //(pair.getKey().asResource().getURI().equals(RDF.type.getURI())? RDF.type: model.createProperty(pair.getKey().asResource().getURI()));
-        addProperty(property, value);
+        Property property = model.createProperty(uri);
+        if(value.getClass().isArray())
+            value = Arrays.asList((Object[])value);
+
+        if(value instanceof Iterable) {
+          Iterator iterator = ((Iterable) value).iterator();
+          while (iterator.hasNext())
+              addProperty(property, iterator.next());
+        }else
+            addProperty(property, value);
     }
 
     public void addProperty(Property property, Object value){
         if (value instanceof RDFModel){
             //resource.addProperty(property, ((RDFModel) value).resource);
-            model.add(((RDFModel) value).getModel());
+            //model.add(((RDFModel) value).getModel());
+            model.add(resource, property, ((RDFModel)value).getResource());
         }else if (value instanceof Resource) {
             model.add(resource, property, (Resource)value);
         } else if (value instanceof Literal) {
@@ -220,6 +232,15 @@ public class RDFModel {
             XSDDatatype xsdDatatype = getXSD(value);
             Literal literal = model.createTypedLiteral(value, xsdDatatype);
             model.addLiteral(resource, property, literal);
+        }else if(value.getClass().isArray()){
+            List value2=  Arrays.asList((Object[])value);
+            addProperty(property, value2);
+        }else if(value instanceof Iterable) {
+            Iterator iterator = ((Iterable)value).iterator();
+            while(iterator.hasNext()){
+                Object value1 = iterator.next();
+                addProperty(property, value1);
+            }
         }else{
             throw new NotImplementedException("Add property not implemented for "+ value.getClass().getName());
         }
@@ -331,11 +352,11 @@ public class RDFModel {
     }
 
     public static RDFModel fromEntity(EntityLD entity) throws Exception {
-        RDFModel ret = new RDFModel(entity.getId());
+        RDFModel ret = new RDFModel(entity.getId(), entity.getType());
         //return fromJson(jsonString);
-        Model model = ModelFactory.createDefaultModel();
-        Resource resource = model.createResource(entity.getId());
-        model.add(resource, RDF.type, model.createResource(entity.getType()));
+        //Model model = ModelFactory.createDefaultModel();
+        //Resource resource = model.createResource(entity.getId());
+        //model.add(resource, RDF.type, model.createResource(entity.getType()));
 
         for(String attributeKey : entity.getAttributes().keySet()){
             Object attribute = entity.getAttributes().get(attributeKey);
@@ -370,28 +391,24 @@ public class RDFModel {
             if(attrTypeUri==null)
                 throw new Exception("Type of " + attributeKey +" attribute is not declared as URI");
 
-            Property property = model.createProperty(attrTypeUri);
+            //Property property = model.createProperty(attrTypeUri);
             /*
             if(attribute instanceof Relationship) {
                 Resource resource2 = model.createResource(attribute.getId());
                 for (String key2 : ((Relationship) attribute).getProperties().keySet())
             }
             */
-            if(attribute instanceof Relationship){
-                model.add(resource, property, model.createResource(String.valueOf(((Relationship) attribute).getObject())));
-            }else if(attribute instanceof Attribute) {
-                model.add(resource, property, String.valueOf(((Attribute) attribute).getValue()));
-            }else if(attribute instanceof Iterable){
+            if(attribute instanceof Iterable){
                 Iterator iterator = ((Iterable) attribute).iterator();
                 while(iterator.hasNext()) {
                     Object attribute2 = iterator.next();
-                    if(attribute2 instanceof Relationship)
-                        model.add(resource, property, model.createResource(String.valueOf(((Relationship) attribute2).getObject())));
-                    else
-                        model.add(resource, property, String.valueOf(((Attribute) attribute2).getValue()));
+                    Object value2 = getValueFromAttribute(attribute2);
+                    ret.addProperty(attrTypeUri, value2);
                 }
-            }else
-                throw new NotImplementedException("");
+            }else {
+                Object value = getValueFromAttribute(attribute);
+                ret.addProperty(attrTypeUri, value);
+            }
 
         }
 
@@ -409,8 +426,17 @@ public class RDFModel {
 //                }
             }
 
-        ret.setModel(model);
         return ret;
+    }
+
+    private static Object getValueFromAttribute(Object attribute){
+        if(attribute instanceof Relationship)
+            return ((Relationship) attribute).getObject();
+
+        if(attribute instanceof Attribute)
+            return ((Attribute) attribute).getValue();
+
+        throw new NotImplementedException(attribute.getClass().getSimpleName());
     }
 
     public static RDFModel fromJson(byte[] json){
@@ -533,15 +559,17 @@ public class RDFModel {
             //}
             //attributes.put(statement.getPredicate().getLocalName(), attribute);
             if(attributes.containsKey(attrName)) {
-                 Object value =  attributes.get(attrName);
+                 Attribute property =  attributes.get(attrName);
+                 Object value = property.getValue();
                  if (value instanceof List)
-                     ((List)(value)).add(attribute);
+                     ((List)(value)).add(attribute.getValue());
                  else{
                      List list = new ArrayList();
                      list.add(value);
-                     list.add(attribute);
-                     LOGGER.warn("List insertion not implemented for attributes. Skipping {}", attrName);
+                     list.add(attribute.getValue());
+                     property.setValue(list);
                      //attributes.put(attrName, list);
+                     //LOGGER.warn("List insertion not implemented for attributes. Skipping {}", attrName);
                  }
             }else
                 attributes.put(attrName, attribute);

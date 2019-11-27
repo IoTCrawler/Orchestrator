@@ -21,9 +21,10 @@ public class ModelsTest {
     public static Collection parameters() throws Exception {
         return Arrays.asList(new Object[][]{
                 //new Object[]{ createEntity() },
-                //new Object[]{ readEntity("samples/Vehicle.json") },
-                //new Object[]{ readEntity("samples/TemperatureSensor.json") },
-                new Object[]{ readEntity("samples/IoTStream.json") }
+                //new Object[]{ readEntity("samples/VehicleLD.json") },
+                //new Object[]{ readEntity("samples/TemperatureSensorLD.json") },
+                //new Object[]{ readEntity("samples/IoTStreamLD.json") }
+                new Object[]{ readEntity("samples/PlatformLD.json") }
         });
     }
 
@@ -50,9 +51,9 @@ public class ModelsTest {
         Assert.assertEquals(entityLD2.toJsonObject(), entity.toJsonObject());
     }
 
-    @Test
-    public void attributesToJson(){
-        JsonObject jsonObject = Utils.mapToJson(entity.getAttributes());
-        Assert.assertNotNull(jsonObject);
-    }
+//    @Test
+//    public void attributesToJson(){
+//        JsonObject jsonObject = Utils.mapToJson(entity.getAttributes());
+//        Assert.assertNotNull(jsonObject);
+//    }
 }

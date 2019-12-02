@@ -40,6 +40,7 @@ public class EnvVariablesSetter {
 
 
         environmentVariables.set(NGSILD_BROKER_URL, "http://djane:3000/ngsi-ld/");
+        //environmentVariables.set(NGSILD_BROKER_URL, "http://localhost:3001/ngsi-ld/");
         //environmentVariables.set(NGSILD_BROKER_URL, "http://localhost:3003/ngsi-ld/");
         //environmentVariables.set(NGSILD_BROKER_URL, "http://155.54.95.248:9090/ngsi-ld/");
         //environmentVariables.set(NGSILD_BROKER_URL, "http://localhost:9090/ngsi-ld/");

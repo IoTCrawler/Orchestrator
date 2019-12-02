@@ -188,6 +188,16 @@ public class NgsiLDClientTest extends EnvVariablesSetter{
 
     @Order(2)
     @Test
+    public void getAllEntitiesTest() throws ExecutionException, InterruptedException {
+        Collection<String> types = Arrays.asList(new String[]{ ".*" });
+        Paginated<EntityLD> entities = ngsiLdClient.getEntities(null, null, types, null, 0, 0, false).get();
+        Assert.assertNotNull(entities.getItems());
+        Assert.assertNotNull(entities.getItems().size()>0);
+        //Assert.assertTrue(entities.getItems().get(0).toJsonObject().equals(entity.toJsonObject()));
+    }
+
+    @Order(2)
+    @Test
     public void getByTypeTest() throws ExecutionException, InterruptedException {
         Collection<String> types = Arrays.asList(new String[]{ entity.getType() });
         //Collection<String> types = Arrays.asList(new String[]{ ".*" });

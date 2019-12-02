@@ -1,4 +1,4 @@
-/*-
+package com.agtinternational.iotcrawler.fiware.clients;/*-
  * #%L
  * fiware-clients
  * %%
@@ -23,6 +23,7 @@
  * THE SOFTWARE.
  * #L%
  */
+import com.agtinternational.iotcrawler.fiware.clients.NgsiLDClientTest;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import org.junit.Before;
 import org.junit.contrib.java.lang.system.EnvironmentVariables;

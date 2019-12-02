@@ -84,7 +84,6 @@ public class OrchestratorTest extends EnvVariablesSetter {
     @Test
     public void orchestratorTest() throws Exception {
         LOGGER.info("orchestratorTest()");
-        orchestrator.run();
         String abc = "123";
     }
 
@@ -119,6 +118,7 @@ public class OrchestratorTest extends EnvVariablesSetter {
 
         LOGGER.info(streams.size()+" streams returned");
     }
+
 
     @Test
     @Order(2)

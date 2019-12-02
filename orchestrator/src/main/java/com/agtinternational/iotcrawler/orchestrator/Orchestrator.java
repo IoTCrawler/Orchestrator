@@ -30,7 +30,6 @@ import com.agtinternational.iotcrawler.core.Utils;
 import com.agtinternational.iotcrawler.core.interfaces.IotCrawlerClient;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import com.agtinternational.iotcrawler.orchestrator.clients.AbstractDataClient;
-import com.agtinternational.iotcrawler.orchestrator.clients.AbstractMetadataClient;
 import com.agtinternational.iotcrawler.orchestrator.clients.IotBrokerDataClient;
 import com.agtinternational.iotcrawler.orchestrator.clients.NgsiLD_MdrClient;
 import com.agtinternational.iotcrawler.core.commands.*;
@@ -40,19 +39,25 @@ import com.lambdaworks.redis.RedisClient;
 import com.lambdaworks.redis.api.StatefulRedisConnection;
 import com.lambdaworks.redis.api.sync.RedisCommands;
 import com.rabbitmq.client.*;
+
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang3.tuple.Pair;
 import eu.neclab.iotplatform.ngsi.api.datamodel.*;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.EntityBuilder;
+import org.apache.http.client.methods.*;
+import org.apache.http.entity.HttpEntityWrapper;
+import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.StringWriter;
+import java.io.*;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.nio.charset.Charset;
@@ -68,13 +73,15 @@ public class Orchestrator extends IotCrawlerClient {
 
     String rabbitHost = "localhost";
     String redisHost = "localhost";
-    String endpoint = "/notify";
+    String notificationsEndpoint = "/notify";
+    String ngsiEndpoint = "/ngsi-ld/v1";
     boolean cutURIs = true;
 
     //AbstractMetadataClient metadataClient;
-    AbstractMetadataClient metadataClient;
+    NgsiLD_MdrClient metadataClient;
     AbstractDataClient dataBrokerClient;
     HttpServer httpServer;
+    HttpClient httpClient;
     Semaphore httpServiceFinishedMutex = new Semaphore(0);
     JsonParser jsonParser = new JsonParser();
 
@@ -107,6 +114,7 @@ public class Orchestrator extends IotCrawlerClient {
 
         //metadataClient = new TripleStoreMDRClient();
         httpServer = new HttpServer();
+        httpClient = HttpClients.createDefault();
         metadataClient = new NgsiLD_MdrClient();
         dataBrokerClient = new IotBrokerDataClient();
 
@@ -408,16 +416,15 @@ public class Orchestrator extends IotCrawlerClient {
                 e.printStackTrace();
                 LOGGER.error("Failed to create rabbit channel/consumer");
             }
-            LOGGER.info(" [*] Waiting for RPC messages also from Rabbit");
+            LOGGER.info(" [*] Waiting for RPC messages via from Rabbit");
         }
-
-
-
 
 
         initHttpServer();
         startHttpServer();
     }
+
+
 
     private void initHttpServer(){
         LOGGER.info("Initializing web server");
@@ -427,113 +434,73 @@ public class Orchestrator extends IotCrawlerClient {
         }
         catch (Exception e){
             LOGGER.error("Failed to init http server: {}", e.getLocalizedMessage());
-            httpServer = null;
+            e.printStackTrace();
             return;
         }
 
-        Function<String, Void> notificationReceivedHandler = new Function<String, Void>() {
-            @Override
-            public Void apply(String theString) {
-                if(theString.length()==0)
-                    return null;
-
-
-                NotifyContextRequest notification = (NotifyContextRequest)NotifyContextRequest.parseStringToJson(theString, NotifyContextRequest.class);
-                String subscriptionId = notification.getSubscriptionId();
-
-                if(streamObservationHandlers.containsKey(subscriptionId)) {
-                    List<ContextElementResponse> contextElementResponses = notification.getContextElementResponseList();
-                    ContextElementResponse contextElementResponse = contextElementResponses.get(0);
-                    ContextElement contextElement = contextElementResponse.getContextElement();
-                    StreamObservation streamObservation = StreamObservation.fromContextElement(contextElement);
-                    streamObservationHandlers.get(subscriptionId).apply(streamObservation);
-                }else{
-                    //if(redisSyncCommands.hget("rpcSubscriptionIds", subscriptionId)!=null)
-                    AMQP.BasicProperties props = new AMQP.BasicProperties
-                            .Builder()
-                            .correlationId(subscriptionId)
-                            .build();
-//					try {
-//							channel.basicPublish(subscriptionId, "", props, theString.getBytes("UTF-8"));
-//							//published = true;
-//						} catch (IOException e) {
-//							LOGGER.error("Failed to publish to channel: {}", e.getLocalizedMessage());
-//							e.printStackTrace();
-//						}
-//
-					Boolean published = false;
-					while(!published){
-						try {
-                            channel.basicPublish(subscriptionId, "", props, theString.getBytes("UTF-8"));
-							published = true;
-						} catch (IOException e) {
-							e.printStackTrace();
-                            LOGGER.error("Failed to publish notification {} to a rabbitMQ channel: {}", subscriptionId, e.getLocalizedMessage());
-						}
-
-						if(!published)
-                            try{
-                                LOGGER.debug("Reopening channel");
-                                channel = connection.createChannel();
-                                LOGGER.debug("Redeclaring exchange {}", subscriptionId);
-                                channel.exchangeDeclare(subscriptionId, "fanout");
-                                LOGGER.debug("Trying to publish into exchange {}", subscriptionId);
-                                channel.basicPublish(subscriptionId, "", props, theString.getBytes("UTF-8"));
-                                published = true;
-                            }
-                            catch (IOException e) {
-                                e.printStackTrace();
-                                LOGGER.error("Failed to publish to channel: {}", e.getLocalizedMessage());
-                            }
-					}
-                }
-//                else {
-//                    LOGGER.warn("Failed to find handler for subscription id: {}. Deleting subscription", subscriptionId);
-//                    try {
-//                        dataBrokerClient.deleteSubscription(subscriptionId);
-//                    }catch (Exception e){
-//                        LOGGER.error(e.getLocalizedMessage());
-//                        e.printStackTrace();
-//                    }
-//                }
-
-                return null;
-            }
-        };
-
-
-        httpServer.addContext(endpoint, new HttpHandler() {
+        httpServer.addContext(notificationsEndpoint, notificationsHandlerFunction);
+        httpServer.addContext(ngsiEndpoint, new HttpHandler(){
             @Override
             public void handle(HttpExchange he) throws IOException {
-                // parse request
-                LOGGER.info("POST request received");
-                String response="";
-                String theString = null;
-                try {
+
+                String response = "";
+
+                String combinedUri = metadataClient.getBrokerHost()+he.getRequestURI().toString();
+
+                HttpRequestBase httpRequest = null;
+                if(he.getRequestMethod().equals("GET")) {
+                    httpRequest = new HttpGet(combinedUri);
+
+                 }else if(he.getRequestMethod().equals("POST")) {
+
+                    httpRequest = new HttpPost(combinedUri);
+
                     InputStream is = he.getRequestBody();
 
                     StringWriter writer = new StringWriter();
                     IOUtils.copy(is, writer, Charset.defaultCharset());
-                    theString = writer.toString();
+                    String body = writer.toString();
 
-                    // send response
-                    response= "Received: "+theString;
-                    //receivings.add(theString);
-                    LOGGER.info(response);
-                }
-                catch (Exception e){
-                    response = "Error: "+e.getLocalizedMessage();
-                    LOGGER.error("Failed to read the message: {}", e.getLocalizedMessage());
-                }
+                    HttpEntity entity = EntityBuilder.create()
+                            .setBinary(body.getBytes())
+                            //.setStream(he.getRequestBody())
+                            .build();
 
-                if(theString!=null) {
-                    try {
-                        notificationReceivedHandler.apply(theString);
-                    } catch (Exception e) {
-                        LOGGER.error("Failed to apply handler on message: {}", e.getLocalizedMessage());
-                        e.printStackTrace();
-                    }
+                    //RequestBuilder requestBuilder = RequestBuilder.create().set
+
+                    ((HttpPost)httpRequest).setEntity(entity);
+                    //httpRequest.setHeader("Content-length", String.valueOf(entity.getContentLength()));
+                }else if(he.getRequestMethod().equals("DELETE")) {
+                    httpRequest = new HttpDelete(combinedUri);
+                }else if(he.getRequestMethod().equals("PUT")) {
+                    httpRequest = new HttpPut(combinedUri);
+                }else if(he.getRequestMethod().equals("OPTIONS")) {
+                    httpRequest = new HttpPut(combinedUri);
+                }else throw new NotImplementedException(he.getRequestMethod()+" not implemented");
+
+                LOGGER.info("{} request received to {}",he.getRequestMethod(), he.getRequestURI().toString());
+
+                httpRequest.setHeader("Accept", "application/json");
+                httpRequest.setHeader("Content-type", "application/json");
+
+                HttpResponse response2 = httpClient.execute(httpRequest);
+                BufferedReader rd = new BufferedReader(new InputStreamReader(response2.getEntity().getContent()));
+
+                StringBuffer result = new StringBuffer();
+                String line = "";
+                while ((line = rd.readLine()) != null) {
+                    result.append(line);
                 }
+                response = result.toString();
+
+//                if(theString!=null) {
+//                    try {
+//                        handlingFunction.apply(theString);
+//                    } catch (Exception e) {
+//                        LOGGER.error("Failed to apply handler on message: {}", e.getLocalizedMessage());
+//                        e.printStackTrace();
+//                    }
+//                }
 
                 Map<String, Object> parameters = new HashMap<String, Object>();
                 for (String key : parameters.keySet())
@@ -546,9 +513,80 @@ public class Orchestrator extends IotCrawlerClient {
 
             }
         });
-
-
     }
+
+
+    private Function<String, Void> notificationsHandlerFunction = new Function<String, Void>() {
+        @Override
+        public Void apply(String theString) {
+            if(theString.length()==0)
+                return null;
+
+
+            NotifyContextRequest notification = (NotifyContextRequest)NotifyContextRequest.parseStringToJson(theString, NotifyContextRequest.class);
+            String subscriptionId = notification.getSubscriptionId();
+
+            if(streamObservationHandlers.containsKey(subscriptionId)) {
+                List<ContextElementResponse> contextElementResponses = notification.getContextElementResponseList();
+                ContextElementResponse contextElementResponse = contextElementResponses.get(0);
+                ContextElement contextElement = contextElementResponse.getContextElement();
+                StreamObservation streamObservation = StreamObservation.fromContextElement(contextElement);
+                streamObservationHandlers.get(subscriptionId).apply(streamObservation);
+            }else{
+                //if(redisSyncCommands.hget("rpcSubscriptionIds", subscriptionId)!=null)
+                AMQP.BasicProperties props = new AMQP.BasicProperties
+                        .Builder()
+                        .correlationId(subscriptionId)
+                        .build();
+//					try {
+//							channel.basicPublish(subscriptionId, "", props, theString.getBytes("UTF-8"));
+//							//published = true;
+//						} catch (IOException e) {
+//							LOGGER.error("Failed to publish to channel: {}", e.getLocalizedMessage());
+//							e.printStackTrace();
+//						}
+//
+                Boolean published = false;
+                while(!published){
+                    try {
+                        channel.basicPublish(subscriptionId, "", props, theString.getBytes("UTF-8"));
+                        published = true;
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        LOGGER.error("Failed to publish notification {} to a rabbitMQ channel: {}", subscriptionId, e.getLocalizedMessage());
+                    }
+
+                    if(!published)
+                        try{
+                            LOGGER.debug("Reopening channel");
+                            channel = connection.createChannel();
+                            LOGGER.debug("Redeclaring exchange {}", subscriptionId);
+                            channel.exchangeDeclare(subscriptionId, "fanout");
+                            LOGGER.debug("Trying to publish into exchange {}", subscriptionId);
+                            channel.basicPublish(subscriptionId, "", props, theString.getBytes("UTF-8"));
+                            published = true;
+                        }
+                        catch (IOException e) {
+                            e.printStackTrace();
+                            LOGGER.error("Failed to publish to channel: {}", e.getLocalizedMessage());
+                        }
+                }
+            }
+//                else {
+//                    LOGGER.warn("Failed to find handler for subscription id: {}. Deleting subscription", subscriptionId);
+//                    try {
+//                        dataBrokerClient.deleteSubscription(subscriptionId);
+//                    }catch (Exception e){
+//                        LOGGER.error(e.getLocalizedMessage());
+//                        e.printStackTrace();
+//                    }
+//                }
+
+            return null;
+        }
+    };
+
+
 
     private void startHttpServer(){
         if(httpServer==null){
@@ -560,6 +598,7 @@ public class Orchestrator extends IotCrawlerClient {
             httpServer.start();
             serverStarted = true;
             httpServiceFinishedMutex.acquire();
+            LOGGER.info(" [*] Waiting for RPC messages via REST");
         } catch (Exception e) {
             LOGGER.error("Failed to start web server: {}", e.getLocalizedMessage());
             e.printStackTrace();
@@ -713,7 +752,7 @@ public class Orchestrator extends IotCrawlerClient {
         for(String attribute: attributes)
             attrs2.add( URI.create(attribute).getFragment()!=null?URI.create(attribute).getFragment():attribute);
 
-        String reference = httpServer.getUrl()+ endpoint;
+        String reference = httpServer.getUrl()+ ngsiEndpoint;
 
         LOGGER.debug("Subscribing to ({}) with a reference {}", entityId, reference);
         String subscriptionId = dataBrokerClient.subscribeTo(entityId, attributes, reference, notifyConditions, restriction);

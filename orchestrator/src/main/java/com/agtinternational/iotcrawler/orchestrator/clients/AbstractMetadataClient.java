@@ -47,6 +47,8 @@ public abstract class AbstractMetadataClient {
     public abstract List<EntityLD> getEntitiesById(String[] ids, String typeURI) throws Exception;
     public abstract List<EntityLD> getEntities(String type, String query, Map<String, Number> ranking, int offset, int limit) throws Exception;
 
+    public abstract String getBrokerHost();
+
     //public abstract List<EntityLD> getEntities(String query);
     //public abstract <T> List<T> getEntities(String[] ids, Class<T> targetClass) throws Exception;
 //    public abstract <T> List<T> getEntities(Class<T> type, int limit) throws Exception;

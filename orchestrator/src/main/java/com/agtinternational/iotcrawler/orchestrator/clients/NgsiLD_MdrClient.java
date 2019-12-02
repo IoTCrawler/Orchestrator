@@ -31,10 +31,6 @@ import com.agtinternational.iotcrawler.core.models.*;
 import com.agtinternational.iotcrawler.fiware.clients.NgsiLDClient;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import com.orange.ngsi2.model.Paginated;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.jena.rdf.model.Model;
@@ -48,24 +44,31 @@ import javax.management.InstanceAlreadyExistsException;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
-import static com.agtinternational.iotcrawler.orchestrator.Constants.NGSILD_BROKER_URI;
+import static com.agtinternational.iotcrawler.fiware.clients.Constants.NGSILD_BROKER_URL;
+
 
 public class NgsiLD_MdrClient extends AbstractMetadataClient {
     private Logger LOGGER = LoggerFactory.getLogger(this.getClass());
-
+    private String brokerUrl;
+    private String brokerHost;
     NgsiLDClient ngsiLDClient;
     boolean cutURIs = true;
     //String serverUrl = "http://155.54.95.248:9090/ngsi-ld/";
 
     public NgsiLD_MdrClient(){
-        String serverUrl = (System.getenv().containsKey(NGSILD_BROKER_URI)? System.getenv(NGSILD_BROKER_URI): "http://localhost:3000/ngsi-ld/");
+        this((System.getenv().containsKey(NGSILD_BROKER_URL)? System.getenv(NGSILD_BROKER_URL): "http://localhost:3000/ngsi-ld/"));
+    }
 
-        LOGGER.info("Initializing NgsiLD_MdrClient at {}", serverUrl);
-        ngsiLDClient = new NgsiLDClient(serverUrl);
+    public NgsiLD_MdrClient(String brokerUrl){
+        brokerHost = brokerUrl.split("/ngsi-ld")[0];
+        LOGGER.info("Initializing NgsiLD_MdrClient at {}", brokerUrl);
+        ngsiLDClient = new NgsiLDClient(brokerUrl);
     }
 
 
-
+    public String getBrokerHost() {
+        return brokerHost;
+    }
 
     @Override
     public List<String> getEntityURIs(String query) {

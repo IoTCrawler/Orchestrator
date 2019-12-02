@@ -36,7 +36,7 @@ public class Constants {
     public static final String TRIPLE_STORE_USER = "TRIPLE_STORE_USER";
     public static final String TRIPLE_STORE_PASS = "TRIPLE_STORE_PASS";
     public static final String IOT_BROKER_URI = "IOT_BROKER_URI";
-    public static final String NGSILD_BROKER_URI = "NGSILD_BROKER_URI";
+    //public static final String NGSILD_BROKER_URI = "NGSILD_BROKER_URI";
 
     public static final String HTTP_SERVER_HOST = "HTTP_SERVER_HOST";
     public static final String HTTP_SERVER_PORT = "HTTP_SERVER_PORT";

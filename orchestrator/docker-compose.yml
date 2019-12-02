@@ -33,7 +33,8 @@ services:
       - iotcrawler
   ranking:
     #docker run --memory "300M" --memory-swap "1G" --name "ranking" --init --detach --env INDEXER_URL=http://localhost:3002 --publish-all gitlab.iotcrawler.net:4567/ranking/ranking
-    image: gitlab.iotcrawler.net:4567/ranking/ranking/master:latest
+    #image: gitlab.iotcrawler.net:4567/ranking/ranking/master:latest
+    image: gitlab.iotcrawler.net:4567/ranking/ranking/2-perform-term-to-uri-expansion-as-specified-by-ngsi-ld-section-5-5-7:latest
     #image: gitlab.iotcrawler.net:4567/ranking/ranking:5-ranking-fails-for-entities-with-only-type
     environment:
      #- INDEXER_URL=http://djane

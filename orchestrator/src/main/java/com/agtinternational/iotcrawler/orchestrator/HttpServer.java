@@ -26,11 +26,21 @@ package com.agtinternational.iotcrawler.orchestrator;
  * #L%
  */
 
+import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.StringWriter;
 import java.net.InetSocketAddress;
+import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
 
 public class HttpServer {
     private Logger LOGGER = LoggerFactory.getLogger(HttpServer.class);
@@ -45,7 +55,7 @@ public class HttpServer {
     public HttpServer(){
 
         host = (System.getenv().containsKey(Constants.HTTP_SERVER_HOST)? System.getenv(Constants.HTTP_SERVER_HOST): "localhost");
-        port = (System.getenv().containsKey(Constants.HTTP_SERVER_PORT)? Integer.parseInt(System.getenv(Constants.HTTP_SERVER_PORT)): 3003);
+        port = (System.getenv().containsKey(Constants.HTTP_SERVER_PORT)? Integer.parseInt(System.getenv(Constants.HTTP_SERVER_PORT)): 3001);
         url = "http://"+host+":"+port;
 
     }
@@ -55,10 +65,63 @@ public class HttpServer {
         httpServer = com.sun.net.httpserver.HttpServer.create(new InetSocketAddress(port), 0);
     }
 
-    public void addContext(String endpoint, HttpHandler handler){
+    public void addContext(String endpoint, HttpHandler httpHandler){
         LOGGER.info("Adding endpoint {}", url+endpoint);
-        httpServer.createContext(endpoint, handler);
+        httpServer.createContext(endpoint, httpHandler);
     }
+
+    public void addContext(String endpoint, Function handlingFunction){
+        LOGGER.info("Adding endpoint {}", url+endpoint);
+        httpServer.createContext(endpoint, new HttpHandler(){
+            @Override
+            public void handle(HttpExchange he) throws IOException {
+                // parse request
+                LOGGER.info("POST request received");
+                String response="";
+                String theString = null;
+                try {
+                    InputStream is = he.getRequestBody();
+
+                    StringWriter writer = new StringWriter();
+                    IOUtils.copy(is, writer, Charset.defaultCharset());
+                    theString = writer.toString();
+
+                    // send response
+                    response= "Received: "+theString;
+                    //receivings.add(theString);
+                    LOGGER.info(response);
+                }
+                catch (Exception e){
+                    response = "Error: "+e.getLocalizedMessage();
+                    LOGGER.error("Failed to read the message: {}", e.getLocalizedMessage());
+                }
+
+                if(theString!=null) {
+                    try {
+                        handlingFunction.apply(theString);
+                    } catch (Exception e) {
+                        LOGGER.error("Failed to apply handler on message: {}", e.getLocalizedMessage());
+                        e.printStackTrace();
+                    }
+                }
+
+                Map<String, Object> parameters = new HashMap<String, Object>();
+                for (String key : parameters.keySet())
+                    response += key + " = " + parameters.get(key) + "\n";
+                he.sendResponseHeaders(200, response.length());
+
+                OutputStream os = he.getResponseBody();
+                os.write(response.toString().getBytes());
+                os.close();
+
+            }
+        });
+    }
+
+//    public HttpHandler genericHttpHandler(Function handlingFunction){
+//        return
+//
+//    }
 
     public void start(){
         httpServer.start();

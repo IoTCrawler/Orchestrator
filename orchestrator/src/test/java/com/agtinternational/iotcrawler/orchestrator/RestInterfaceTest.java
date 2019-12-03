@@ -221,21 +221,21 @@ public class RestInterfaceTest  extends EnvVariablesSetter {
 //    }
 
 
-//    @Order(9)
-//    @Test
-//    public void subscribeTest() throws Exception {
-//        LOGGER.info("subscribeTest()");
-//        byte[] iotStreamModelJson = Files.readAllBytes(Paths.get("samples/IoTStream.json"));
-//        IoTStream ioTStream = IoTStream.fromJson(iotStreamModelJson);
-//        //IoTStream iotObservationModel = IoTStream.fromJson(iotStreamModel);
-//
-//        //String entityUri = "http://purl.org/iot/ontology/iot-stream#StreamObservation_gateway_00055110D732_device_8_sensor_64_stream";
-//        String entityUri = ioTStream.getURI();
-//
-//        String[] attributes = new String[]{"http://www.agtinternational.com/iotcrawler/ontologies/iotc#current_value"};
-//        NotifyCondition notifyCondition = new NotifyCondition(NotifyConditionEnum.ONCHANGE, Arrays.asList(attributes), null);
-//
-//        ngsiLD_mdrClient.s.subscribeTo(entityUri, attributes, Arrays.asList(new NotifyCondition[]{notifyCondition}), new Restriction(),
+    @Order(9)
+    @Test
+    public void subscribeTest() throws Exception {
+        LOGGER.info("subscribeTest()");
+        byte[] iotStreamModelJson = Files.readAllBytes(Paths.get("samples/IoTStream.json"));
+        IoTStream ioTStream = IoTStream.fromJson(iotStreamModelJson);
+        //IoTStream iotObservationModel = IoTStream.fromJson(iotStreamModel);
+
+        //String entityUri = "http://purl.org/iot/ontology/iot-stream#StreamObservation_gateway_00055110D732_device_8_sensor_64_stream";
+        String entityUri = ioTStream.getURI();
+
+        String[] attributes = new String[]{"http://www.agtinternational.com/iotcrawler/ontologies/iotc#current_value"};
+        NotifyCondition notifyCondition = new NotifyCondition(NotifyConditionEnum.ONCHANGE, Arrays.asList(attributes), null);
+
+//        ngsiLD_mdrClient.subscribeTo(entityUri, attributes, Arrays.asList(new NotifyCondition[]{notifyCondition}), new Restriction(),
 //                new Function<StreamObservation, Void>() {
 //                    @Override
 //                    public Void apply(StreamObservation streamObservation) {
@@ -243,9 +243,9 @@ public class RestInterfaceTest  extends EnvVariablesSetter {
 //                        return null;
 //                    }
 //                });
-//        // orchestrator.run() will hang up test execution
-//        //orchestrator.run();
-//    }
+        // orchestrator.run() will hang up test execution
+        //orchestrator.run();
+    }
 
 
 //    @Ignore

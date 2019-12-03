@@ -81,7 +81,7 @@ public class Orchestrator extends IotCrawlerClient {
     NgsiLD_MdrClient metadataClient;
     AbstractDataClient dataBrokerClient;
     HttpServer httpServer;
-    HttpClient httpClient;
+
     Semaphore httpServiceFinishedMutex = new Semaphore(0);
     JsonParser jsonParser = new JsonParser();
 
@@ -114,7 +114,6 @@ public class Orchestrator extends IotCrawlerClient {
 
         //metadataClient = new TripleStoreMDRClient();
         httpServer = new HttpServer();
-        httpClient = HttpClients.createDefault();
         metadataClient = new NgsiLD_MdrClient();
         dataBrokerClient = new IotBrokerDataClient();
 
@@ -439,80 +438,7 @@ public class Orchestrator extends IotCrawlerClient {
         }
 
         httpServer.addContext(notificationsEndpoint, notificationsHandlerFunction);
-        httpServer.addContext(ngsiEndpoint, new HttpHandler(){
-            @Override
-            public void handle(HttpExchange he) throws IOException {
-
-                String response = "";
-
-                String combinedUri = metadataClient.getBrokerHost()+he.getRequestURI().toString();
-
-                HttpRequestBase httpRequest = null;
-                if(he.getRequestMethod().equals("GET")) {
-                    httpRequest = new HttpGet(combinedUri);
-
-                 }else if(he.getRequestMethod().equals("POST")) {
-
-                    httpRequest = new HttpPost(combinedUri);
-
-                    InputStream is = he.getRequestBody();
-
-                    StringWriter writer = new StringWriter();
-                    IOUtils.copy(is, writer, Charset.defaultCharset());
-                    String body = writer.toString();
-
-                    HttpEntity entity = EntityBuilder.create()
-                            .setBinary(body.getBytes())
-                            //.setStream(he.getRequestBody())
-                            .build();
-
-                    //RequestBuilder requestBuilder = RequestBuilder.create().set
-
-                    ((HttpPost)httpRequest).setEntity(entity);
-                    //httpRequest.setHeader("Content-length", String.valueOf(entity.getContentLength()));
-                }else if(he.getRequestMethod().equals("DELETE")) {
-                    httpRequest = new HttpDelete(combinedUri);
-                }else if(he.getRequestMethod().equals("PUT")) {
-                    httpRequest = new HttpPut(combinedUri);
-                }else if(he.getRequestMethod().equals("OPTIONS")) {
-                    httpRequest = new HttpPut(combinedUri);
-                }else throw new NotImplementedException(he.getRequestMethod()+" not implemented");
-
-                LOGGER.info("{} request received to {}",he.getRequestMethod(), he.getRequestURI().toString());
-
-                httpRequest.setHeader("Accept", "application/json");
-                httpRequest.setHeader("Content-type", "application/json");
-
-                HttpResponse response2 = httpClient.execute(httpRequest);
-                BufferedReader rd = new BufferedReader(new InputStreamReader(response2.getEntity().getContent()));
-
-                StringBuffer result = new StringBuffer();
-                String line = "";
-                while ((line = rd.readLine()) != null) {
-                    result.append(line);
-                }
-                response = result.toString();
-
-//                if(theString!=null) {
-//                    try {
-//                        handlingFunction.apply(theString);
-//                    } catch (Exception e) {
-//                        LOGGER.error("Failed to apply handler on message: {}", e.getLocalizedMessage());
-//                        e.printStackTrace();
-//                    }
-//                }
-
-                Map<String, Object> parameters = new HashMap<String, Object>();
-                for (String key : parameters.keySet())
-                    response += key + " = " + parameters.get(key) + "\n";
-                he.sendResponseHeaders(200, response.length());
-
-                OutputStream os = he.getResponseBody();
-                os.write(response.toString().getBytes());
-                os.close();
-
-            }
-        });
+        httpServer.addContext(ngsiEndpoint, httpServer.proxyingHandler(metadataClient.getBrokerHost()));
     }
 
 

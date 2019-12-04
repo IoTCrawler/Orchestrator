@@ -84,7 +84,7 @@ public class OrchestratorTest extends EnvVariablesSetter {
     @Test
     public void orchestratorTest() throws Exception {
         LOGGER.info("orchestratorTest()");
-        String abc = "123";
+        orchestrator.run();
     }
 
 

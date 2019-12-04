@@ -29,13 +29,17 @@ package com.agtinternational.iotcrawler.orchestrator;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.NotImplementedException;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.EntityBuilder;
+import org.apache.http.client.methods.*;
+import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.StringWriter;
+import java.io.*;
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 import java.util.HashMap;
@@ -47,6 +51,7 @@ public class HttpServer {
 
     //private String endpoint = "/notify";
 
+    HttpClient httpClient;
     private com.sun.net.httpserver.HttpServer httpServer;
     private String url;
     private String host;
@@ -57,6 +62,8 @@ public class HttpServer {
         host = (System.getenv().containsKey(Constants.HTTP_SERVER_HOST)? System.getenv(Constants.HTTP_SERVER_HOST): "localhost");
         port = (System.getenv().containsKey(Constants.HTTP_SERVER_PORT)? Integer.parseInt(System.getenv(Constants.HTTP_SERVER_PORT)): 3001);
         url = "http://"+host+":"+port;
+
+        httpClient = HttpClients.createDefault();
 
     }
 
@@ -118,10 +125,80 @@ public class HttpServer {
         });
     }
 
-//    public HttpHandler genericHttpHandler(Function handlingFunction){
-//        return
-//
-//    }
+    public HttpHandler proxyingHandler(String brokerHost) {
+        return new HttpHandler() {
+            @Override
+            public void handle(HttpExchange he) throws IOException {
+
+                String response = "";
+
+                String combinedUri = brokerHost + he.getRequestURI().toString();
+
+                HttpRequestBase httpRequest = null;
+                if (he.getRequestMethod().equals("GET")) {
+                    httpRequest = new HttpGet(combinedUri);
+
+                } else if (he.getRequestMethod().equals("POST")) {
+
+                    httpRequest = new HttpPost(combinedUri);
+
+                    InputStream is = he.getRequestBody();
+
+                    StringWriter writer = new StringWriter();
+                    IOUtils.copy(is, writer, Charset.defaultCharset());
+                    String body = writer.toString();
+
+                    HttpEntity entity = EntityBuilder.create()
+                            .setBinary(body.getBytes())
+                            .build();
+
+                    ((HttpPost) httpRequest).setEntity(entity);
+                    //httpRequest.setHeader("Content-length", String.valueOf(entity.getContentLength()));
+                } else if (he.getRequestMethod().equals("DELETE")) {
+                    httpRequest = new HttpDelete(combinedUri);
+                } else if (he.getRequestMethod().equals("PUT")) {
+                    httpRequest = new HttpPut(combinedUri);
+                } else if (he.getRequestMethod().equals("OPTIONS")) {
+                    httpRequest = new HttpPut(combinedUri);
+                } else throw new NotImplementedException(he.getRequestMethod() + " not implemented");
+
+                LOGGER.info("{} request received to {}", he.getRequestMethod(), he.getRequestURI().toString());
+
+                httpRequest.setHeader("Accept", "application/json");
+                httpRequest.setHeader("Content-type", "application/json");
+
+                HttpResponse response2 = httpClient.execute(httpRequest);
+                BufferedReader rd = new BufferedReader(new InputStreamReader(response2.getEntity().getContent()));
+
+                StringBuffer result = new StringBuffer();
+                String line = "";
+                while ((line = rd.readLine()) != null) {
+                    result.append(line);
+                }
+                response = result.toString();
+
+//                if(theString!=null) {
+//                    try {
+//                        handlingFunction.apply(theString);
+//                    } catch (Exception e) {
+//                        LOGGER.error("Failed to apply handler on message: {}", e.getLocalizedMessage());
+//                        e.printStackTrace();
+//                    }
+//                }
+
+                Map<String, Object> parameters = new HashMap<String, Object>();
+                for (String key : parameters.keySet())
+                    response += key + " = " + parameters.get(key) + "\n";
+                he.sendResponseHeaders(200, response.length());
+
+                OutputStream os = he.getResponseBody();
+                os.write(response.toString().getBytes());
+                os.close();
+
+
+            }
+        };
+    }
 
     public void start(){
         httpServer.start();

@@ -56,7 +56,7 @@ public class IotBrokerDataClient /*extends TripleStoreClient*/ implements Abstra
         //super(defaultTripleStoreURI);
         this.ioTBrokerEndpoint = ioTBrokerEndpoint;
 
-        LOGGER.info("Initializing IoTBrokerClient at {}", ioTBrokerEndpoint);
+        LOGGER.info("Initializing IoTBrokerClient to {}", ioTBrokerEndpoint);
 
         iotBrokerClient = new PatchedSouthBound();
         iotBrokerClient.setNgsi9url(ioTBrokerEndpoint+"/");

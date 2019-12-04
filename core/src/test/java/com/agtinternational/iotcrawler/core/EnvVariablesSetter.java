@@ -37,7 +37,7 @@ public class EnvVariablesSetter {
     public void init(){
 
         environmentVariables.set(Constants.IOTCRAWLER_RABBIT_HOST, "10.67.1.107");
-
+        environmentVariables.set(Constants.IOTCRAWLER_ORCHESTRATOR_HOST, "http://localhost:3001/ngsi-ld");
 
     }
 }

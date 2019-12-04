@@ -319,7 +319,6 @@ public class NgsiLDClientTest extends EnvVariablesSetter{
     public void addRegistrationTest() throws Exception {
         Semaphore reqFinished = new Semaphore(0);
 
-
         SubjectRegistration subjectRegistration = new SubjectRegistration();
         subjectRegistration.setEntities(Arrays.asList(new SubjectEntity[]{ new SubjectEntity() }));
 

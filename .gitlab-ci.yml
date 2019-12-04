@@ -1,6 +1,6 @@
 stages:
-  - build
-  - build-image
+  #- build
+  #- build-image
   - tests
 
 

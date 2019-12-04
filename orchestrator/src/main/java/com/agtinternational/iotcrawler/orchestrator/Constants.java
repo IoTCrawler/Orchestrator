@@ -32,10 +32,10 @@ public class Constants {
 //    public static final String ORCHESTRATOR_RABBIT_HOST = "ORCHESTRATOR_RABBIT_HOST";
 //    public static final String ORCHESTRATOR_REDIS_HOST = "ORCHESTRATOR_REDIS_HOST";
 
-    public static final String TRIPLE_STORE_URI = "TRIPLE_STORE_URI";
+    public static final String TRIPLE_STORE_URL = "TRIPLE_STORE_URL";
     public static final String TRIPLE_STORE_USER = "TRIPLE_STORE_USER";
     public static final String TRIPLE_STORE_PASS = "TRIPLE_STORE_PASS";
-    public static final String IOT_BROKER_URI = "IOT_BROKER_URI";
+    public static final String IOT_BROKER_URL = "IOT_BROKER_URL";
     //public static final String NGSILD_BROKER_URI = "NGSILD_BROKER_URI";
 
     public static final String HTTP_SERVER_HOST = "HTTP_SERVER_HOST";

@@ -49,7 +49,7 @@ public class IotBrokerDataClient /*extends TripleStoreClient*/ implements Abstra
     PatchedSouthBound iotBrokerClient;
 
     public IotBrokerDataClient(){
-        this((System.getenv().containsKey(Constants.IOT_BROKER_URI)?System.getenv(Constants.IOT_BROKER_URI):"http://localhost:8060/ngsi10"));
+        this((System.getenv().containsKey(Constants.IOT_BROKER_URL)?System.getenv(Constants.IOT_BROKER_URL):"http://localhost:8060/ngsi10"));
     }
 
     public IotBrokerDataClient(String ioTBrokerEndpoint){

@@ -66,7 +66,7 @@ public class TripleStoreClient  {
 //    }
 
     public TripleStoreClient(){
-        this(System.getenv(TRIPLE_STORE_URI), new SimpleAuthenticator(System.getenv(TRIPLE_STORE_USER).toString(), System.getenv(TRIPLE_STORE_PASS).toCharArray()));
+        this(System.getenv(TRIPLE_STORE_URL), new SimpleAuthenticator(System.getenv(TRIPLE_STORE_USER).toString(), System.getenv(TRIPLE_STORE_PASS).toCharArray()));
     }
 
     public TripleStoreClient(String endpointAddress, HttpAuthenticator httpAuthenticator){

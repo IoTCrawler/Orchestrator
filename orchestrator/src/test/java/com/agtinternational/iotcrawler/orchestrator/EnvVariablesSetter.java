@@ -61,9 +61,9 @@ public class EnvVariablesSetter {
             //environmentVariables.set(NGSILD_BROKER_URI, "http://localhost:9090/ngsi-ld/");
             //environmentVariables.set(NGSILD_BROKER_URI, "http://155.54.95.248:9090/ngsi-ld/");
 
-        if(!System.getenv().containsKey(IOT_BROKER_URI))
+        if(!System.getenv().containsKey(IOT_BROKER_URL))
             //environmentVariables.set(Constants.IOT_BROKER_URI, "http://10.67.1.107:8060/ngsi10");
-            environmentVariables.set(IOT_BROKER_URI, "http://iotbroker:8060/ngsi10");
+            environmentVariables.set(IOT_BROKER_URL, "http://iotbroker:8060/ngsi10");
 
         if(!System.getenv().containsKey(HTTP_SERVER_HOST))
             environmentVariables.set(HTTP_SERVER_HOST, "10.67.1.107");

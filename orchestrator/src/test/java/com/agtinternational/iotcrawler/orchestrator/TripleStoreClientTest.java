@@ -49,7 +49,7 @@ public class TripleStoreClientTest extends EnvVariablesSetter {
     @Before
     public void init(){
         super.init();
-        tripleStoreClient = new TripleStoreClient(System.getenv(Constants.TRIPLE_STORE_URI), new SimpleAuthenticator(System.getenv(Constants.TRIPLE_STORE_USER).toString(), System.getenv(Constants.TRIPLE_STORE_PASS).toCharArray()));
+        tripleStoreClient = new TripleStoreClient(System.getenv(Constants.TRIPLE_STORE_URL), new SimpleAuthenticator(System.getenv(Constants.TRIPLE_STORE_USER).toString(), System.getenv(Constants.TRIPLE_STORE_PASS).toCharArray()));
     }
 
     @Ignore

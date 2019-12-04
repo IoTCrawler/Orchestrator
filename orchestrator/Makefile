@@ -25,7 +25,7 @@ start-containers:
 	docker ps -a | grep iotbroker && docker ps -a | grep iotbroker | cut -c1-12 | xargs docker rm --force &
 	docker ps -a | grep mongo && docker ps -a | grep mongo | cut -c1-12 | xargs docker rm --force &
 	docker ps -a | grep orchestrator && docker ps -a | grep orchestrator | cut -c1-12 | xargs docker rm --force &
-	sleep 5
+	sleep 15
 	echo "Starting docker-compose"
 	docker-compose -f docker-compose.yml up -d
 	echo "Containers should be started"

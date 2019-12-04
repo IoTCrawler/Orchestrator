@@ -4,21 +4,21 @@ stages:
   - tests
 
 
-build:
-  stage: build
-  script:
-    - make install
+#build:
+#  stage: build
+#  script:
+#    - make install
     
-build-image:
-  stage: build-image
-  image: gitlab.iotcrawler.net:4567/core/maven-docker-compose:latest
-  before_script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-  script:
-    - export CGO_ENABLED=1
-    - systemctl status docker | grep Tasks
-    - cd orchestrator && make build-image && cd ..
-    - cd orchestrator && make push-image && cd ..  
+#build-image:
+#  stage: build-image
+#  image: gitlab.iotcrawler.net:4567/core/maven-docker-compose:latest
+#  before_script:
+#    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#  script:
+#    - export CGO_ENABLED=1
+#    - systemctl status docker | grep Tasks
+#    - cd orchestrator && make build-image && cd ..
+#    - cd orchestrator && make push-image && cd ..  
 
 tests: 
   stage: tests

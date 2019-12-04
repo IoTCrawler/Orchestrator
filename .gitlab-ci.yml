@@ -26,6 +26,7 @@ tests:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker ps
     - cd orchestrator && make start-containers && cd ..
+    - docker ps
   script:
     - less /proc/meminfo
     - echo $IOTCRAWLER_RABBIT_HOST

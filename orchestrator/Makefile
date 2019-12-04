@@ -41,7 +41,7 @@ orchestrator-test:
 
 rpc-client-test:
 	export JAVA_TOOL_OPTIONS="-Xmx256m -Xms256m"
-	mvn test
+	export IOTCRAWLER_RABBIT_HOST=localhost && export IOTCRAWLER_REDIS_HOST=localhost && export NGSILD_BROKER_URL=http://localhost:3000/ngsi-ld/ && mvn test
 	#mvn -Dtest=RPCClientTest surefire:test
 
 stop-containers:

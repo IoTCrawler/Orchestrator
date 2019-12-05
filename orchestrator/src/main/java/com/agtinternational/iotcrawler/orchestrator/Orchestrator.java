@@ -40,27 +40,16 @@ import com.lambdaworks.redis.api.StatefulRedisConnection;
 import com.lambdaworks.redis.api.sync.RedisCommands;
 import com.rabbitmq.client.*;
 
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang3.tuple.Pair;
 import eu.neclab.iotplatform.ngsi.api.datamodel.*;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.EntityBuilder;
-import org.apache.http.client.methods.*;
-import org.apache.http.entity.HttpEntityWrapper;
-import org.apache.http.impl.client.HttpClients;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.*;
 import java.lang.reflect.Method;
 import java.net.URI;
-import java.nio.charset.Charset;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 import java.util.function.Function;
@@ -74,7 +63,7 @@ public class Orchestrator extends IotCrawlerClient {
     String rabbitHost = "localhost";
     String redisHost = "localhost";
     String notificationsEndpoint = "/notify";
-    String ngsiEndpoint = "/ngsi-ld/v1";
+    String ngsiEndpoint = "/ngsi-ld";
     boolean cutURIs = true;
 
     //AbstractMetadataClient metadataClient;

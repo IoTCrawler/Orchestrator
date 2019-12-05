@@ -82,7 +82,7 @@ public class OrchestratorRPCClient extends IotCrawlerClient implements AutoClose
 
         int attempt = 0;
         while (connection==null && attempt<12){
-            LOGGER.debug("Trying connect to Rabbit");
+            LOGGER.debug("Trying connect to Rabbit at {}", rabbitHost);
             attempt++;
             try {
                 connection = factory.newConnection();

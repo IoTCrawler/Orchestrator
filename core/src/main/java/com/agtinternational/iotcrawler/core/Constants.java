@@ -28,7 +28,7 @@ package com.agtinternational.iotcrawler.core;
 
 public class Constants {
 
-    public static final String IOTCRAWLER_ORCHESTRATOR_HOST = "IOTCRAWLER_ORCHESTRATOR_HOST";
+    public static final String IOTCRAWLER_ORCHESTRATOR_URL = "IOTCRAWLER_ORCHESTRATOR_URL";
     public static final String IOTCRAWLER_RABBIT_HOST = "IOTCRAWLER_RABBIT_HOST";
     public static final String IOTCRAWLER_REDIS_HOST = "IOTCRAWLER_REDIS_HOST";
     public static final String IOTCRAWLER_COMMANDS_EXCHANGE = "IOTCRAWLER_COMMANDS_EXCHANGE";

@@ -113,7 +113,7 @@ public class OrchestratorTest extends EnvVariablesSetter {
     public void getStreamsTest() throws Exception {
         LOGGER.info("getAllStreamsTest()");
 
-        List<IoTStream> streams = orchestrator.getStreams(null, null, 0,0);
+        List<IoTStream> streams = orchestrator.getStreams(null, null, 0,1);
         Assert.notNull(streams);
 
         LOGGER.info(streams.size()+" streams returned");

@@ -25,6 +25,7 @@ tests:
   before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker ps
+    - less /proc/meminfo
     - cd orchestrator && make start-containers && cd ..
     - docker ps
   script:

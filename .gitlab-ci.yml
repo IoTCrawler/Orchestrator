@@ -33,5 +33,5 @@ tests:
     - echo $IOTCRAWLER_RABBIT_HOST
     - cd orchestrator && make rpc-client-test  && cd ..
   after_script:
-    #- cd orchestrator && make stop-containers
+    - cd orchestrator && make stop-containers
   

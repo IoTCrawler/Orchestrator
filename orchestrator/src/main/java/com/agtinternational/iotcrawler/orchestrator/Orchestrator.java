@@ -368,44 +368,44 @@ public class Orchestrator extends IotCrawlerClient {
         //redisConnection = redisClient.connect();
         //redisSyncCommands = redisConnection.sync();
 
-        LOGGER.info("Connecting to RabbitMQ at {}", rabbitHost);
-        ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost(rabbitHost);
-
-        int attempt = 0;
-        while(connection==null) {
-            attempt++;
-            try {
-                LOGGER.debug("Trying to connect to rabbit (Attempt {} of {})", attempt, 12);
-                connection = factory.newConnection();
-            } catch (Exception e) {
-                e.printStackTrace();
-                Thread.sleep(5000);
-            }
-        }
-
-        if(connection!=null) {
-
-            String queueName = null;
-            try {
-                channel = connection.createChannel();
-                channel.exchangeDeclare(IOTCRAWLER_COMMANDS_EXCHANGE, "fanout");
-                queueName = channel.queueDeclare().getQueue();
-                channel.queueBind(queueName, IOTCRAWLER_COMMANDS_EXCHANGE, "");
-
-                Consumer consumer = new DefaultConsumer(channel) {
-                    @Override
-                    public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) {
-                        receiveCommand(body, properties);
-                    }
-                };
-                channel.basicConsume(queueName, true, consumer);
-            } catch (Exception e) {
-                e.printStackTrace();
-                LOGGER.error("Failed to create rabbit channel/consumer");
-            }
-            LOGGER.info(" [*] Waiting for RPC messages via from Rabbit");
-        }
+//        LOGGER.info("Connecting to RabbitMQ at {}", rabbitHost);
+//        ConnectionFactory factory = new ConnectionFactory();
+//        factory.setHost(rabbitHost);
+//
+//        int attempt = 0;
+//        while(connection==null) {
+//            attempt++;
+//            try {
+//                LOGGER.debug("Trying to connect to rabbit (Attempt {} of {})", attempt, 12);
+//                connection = factory.newConnection();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                Thread.sleep(5000);
+//            }
+//        }
+//
+//        if(connection!=null) {
+//
+//            String queueName = null;
+//            try {
+//                channel = connection.createChannel();
+//                channel.exchangeDeclare(IOTCRAWLER_COMMANDS_EXCHANGE, "fanout");
+//                queueName = channel.queueDeclare().getQueue();
+//                channel.queueBind(queueName, IOTCRAWLER_COMMANDS_EXCHANGE, "");
+//
+//                Consumer consumer = new DefaultConsumer(channel) {
+//                    @Override
+//                    public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) {
+//                        receiveCommand(body, properties);
+//                    }
+//                };
+//                channel.basicConsume(queueName, true, consumer);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                LOGGER.error("Failed to create rabbit channel/consumer");
+//            }
+//            LOGGER.info(" [*] Waiting for RPC messages via from Rabbit");
+//        }
 
 
         initHttpServer();

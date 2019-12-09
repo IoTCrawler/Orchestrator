@@ -65,8 +65,8 @@ public class EnvVariablesSetter {
             //environmentVariables.set(Constants.IOT_BROKER_URI, "http://10.67.1.107:8060/ngsi10");
             environmentVariables.set(IOT_BROKER_URL, "http://iotbroker:8060/ngsi10");
 
-        if(!System.getenv().containsKey(HTTP_SERVER_HOST))
-            environmentVariables.set(HTTP_SERVER_HOST, "10.67.1.107");
+        //if(!System.getenv().containsKey(HTTP_SERVER_HOST))
+        //    environmentVariables.set(HTTP_SERVER_HOST, "10.67.1.107");
 
         if(!System.getenv().containsKey(HTTP_SERVER_PORT))
             environmentVariables.set(HTTP_SERVER_PORT, "3001");

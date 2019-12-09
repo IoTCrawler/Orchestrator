@@ -131,7 +131,7 @@ public class HttpServer {
             public void handle(HttpExchange he) throws IOException {
 
                 String response = "";
-c
+
                 String combinedUri = brokerHost + he.getRequestURI().toString();
 
                 HttpRequestBase httpRequest = null;
@@ -167,15 +167,25 @@ c
                 httpRequest.setHeader("Accept", "application/json");
                 httpRequest.setHeader("Content-type", "application/json");
 
-                HttpResponse response2 = httpClient.execute(httpRequest);
-                BufferedReader rd = new BufferedReader(new InputStreamReader(response2.getEntity().getContent()));
+                try {
+                    HttpResponse response2 = httpClient.execute(httpRequest);
+                    BufferedReader rd = new BufferedReader(new InputStreamReader(response2.getEntity().getContent()));
 
-                StringBuffer result = new StringBuffer();
-                String line = "";
-                while ((line = rd.readLine()) != null) {
-                    result.append(line);
+                    StringBuffer result = new StringBuffer();
+                    String line = "";
+                    while ((line = rd.readLine()) != null) {
+                        result.append(line);
+                    }
+                    response = result.toString();
+                    he.sendResponseHeaders(200, response.length());
                 }
-                response = result.toString();
+                catch (Exception e){
+                    response = "{ error: \"Failed to send request to broker\"}";
+                    he.sendResponseHeaders(500, response.length());
+                    LOGGER.error(e.getLocalizedMessage());
+                    //e.printStackTrace();
+                }
+
 
 //                if(theString!=null) {
 //                    try {
@@ -189,7 +199,7 @@ c
                 Map<String, Object> parameters = new HashMap<String, Object>();
                 for (String key : parameters.keySet())
                     response += key + " = " + parameters.get(key) + "\n";
-                he.sendResponseHeaders(200, response.length());
+                //he.sendResponseHeaders(200, response.length());
 
                 OutputStream os = he.getResponseBody();
                 os.write(response.toString().getBytes());

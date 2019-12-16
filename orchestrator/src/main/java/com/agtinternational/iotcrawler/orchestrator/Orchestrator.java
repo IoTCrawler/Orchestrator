@@ -55,6 +55,8 @@ import java.util.concurrent.Semaphore;
 import java.util.function.Function;
 
 import static com.agtinternational.iotcrawler.core.Constants.*;
+import static com.agtinternational.iotcrawler.fiware.clients.Constants.NGSILD_BROKER_URL;
+import static com.agtinternational.iotcrawler.orchestrator.Constants.RANKING_COMPONENT_URI;
 
 
 public class Orchestrator extends IotCrawlerClient {
@@ -103,7 +105,7 @@ public class Orchestrator extends IotCrawlerClient {
 
         //metadataClient = new TripleStoreMDRClient();
         httpServer = new HttpServer();
-        metadataClient = new NgsiLD_MdrClient();
+        metadataClient = new NgsiLD_MdrClient((System.getenv().containsKey(RANKING_COMPONENT_URI)? System.getenv(RANKING_COMPONENT_URI): System.getenv(NGSILD_BROKER_URL)));
         dataBrokerClient = new IotBrokerDataClient();
 
         if (System.getenv().containsKey(IOTCRAWLER_RABBIT_HOST))
@@ -500,7 +502,6 @@ public class Orchestrator extends IotCrawlerClient {
             return null;
         }
     };
-
 
 
     private void startHttpServer(){

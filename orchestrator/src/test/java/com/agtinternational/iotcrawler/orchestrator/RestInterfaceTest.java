@@ -91,6 +91,7 @@ public class RestInterfaceTest  extends EnvVariablesSetter {
         LOGGER.info(entities.size() + " streams returned");
     }
 
+    @Ignore
     @Test
     @Order(3)
     public void registerEntitiesTest() throws Exception {

@@ -48,11 +48,11 @@ import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.function.Function;
+
+import static com.agtinternational.iotcrawler.core.Constants.IOTCRAWLER_ORCHESTRATOR_URL;
 //import org.junit.runner.RunWith;
 //import org.junit.runners.Parameterized;
 
-import static com.agtinternational.iotcrawler.core.Constants.IOTCRAWLER_COMMANDS_EXCHANGE;
-import static com.agtinternational.iotcrawler.core.Constants.*;
 
 
 //ToDo: timeout for requests

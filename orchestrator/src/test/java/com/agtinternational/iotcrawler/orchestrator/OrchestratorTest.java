@@ -67,6 +67,7 @@ public class OrchestratorTest extends EnvVariablesSetter {
 
     private Logger LOGGER = LoggerFactory.getLogger(OrchestratorTest.class);
 
+
     Orchestrator orchestrator;
 
     @Before
@@ -85,6 +86,8 @@ public class OrchestratorTest extends EnvVariablesSetter {
     public void orchestratorTest() throws Exception {
         LOGGER.info("orchestratorTest()");
         orchestrator.run();
+
+        String test = "123";
     }
 
 

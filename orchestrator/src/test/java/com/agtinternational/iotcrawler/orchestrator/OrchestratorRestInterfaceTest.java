@@ -6,8 +6,7 @@ import com.agtinternational.iotcrawler.orchestrator.clients.NgsiLD_MdrClient;
 import com.google.gson.JsonObject;
 import eu.neclab.iotplatform.ngsi.api.datamodel.NotifyCondition;
 import eu.neclab.iotplatform.ngsi.api.datamodel.NotifyConditionEnum;
-import eu.neclab.iotplatform.ngsi.api.datamodel.Restriction;
-import org.apache.jena.vocabulary.RDFS;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -22,21 +21,52 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.concurrent.Semaphore;
 
-import static com.agtinternational.iotcrawler.fiware.clients.Constants.NGSILD_BROKER_URL;
-
-public class RestInterfaceTest  extends EnvVariablesSetter {
+public class OrchestratorRestInterfaceTest extends EnvVariablesSetter {
 
     private Logger LOGGER = LoggerFactory.getLogger(OrchestratorTest.class);
 
-    //Orchestrator orchestrator;
-    NgsiLD_MdrClient ngsiLD_mdrClient;
+    Thread thread;
+    Orchestrator orchestrator;
+    NgsiLD_MdrClient orchestratorRestClient;
+    Semaphore orchestratorStartedMutex;
+
 
     @Before
     public void init() {
         super.init();
-        ngsiLD_mdrClient = new NgsiLD_MdrClient( "http://localhost:3001/ngsi-ld/");
+        //using NgsiLD_MdrClient for testing orchestrator's NGSILD REST interface
+        orchestratorRestClient = new NgsiLD_MdrClient( "http://localhost:3001/ngsi-ld/");
+        orchestratorStartedMutex = new Semaphore(0);
+
+        orchestrator = new Orchestrator();
+        try {
+            orchestrator.init();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    orchestrator.run();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        thread.start();
+
+        try {
+            LOGGER.info("Waiting 3 seconds to start orchestrator");
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        LOGGER.info("Starting tests");
     }
 
 
@@ -54,7 +84,7 @@ public class RestInterfaceTest  extends EnvVariablesSetter {
         //IoTStream ioTStream = IoTStream.fromEntity(entityLD);
 
         //ioTStream.addProperty(RDFS.label, "label1");
-        Boolean result = ngsiLD_mdrClient.registerEntity(ioTStream);
+        Boolean result = orchestratorRestClient.registerEntity(ioTStream);
         Assert.isTrue(result);
         LOGGER.info("Stream was registered");
     }
@@ -65,7 +95,7 @@ public class RestInterfaceTest  extends EnvVariablesSetter {
     public void getStreamsTest() throws Exception {
         LOGGER.info("getAllStreamsTest()");
 
-        List<EntityLD> entities = ngsiLD_mdrClient.getEntities(IoTStream.getTypeUri(), null, null, 0, 0);
+        List<EntityLD> entities = orchestratorRestClient.getEntities(IoTStream.getTypeUri(), null, null, 0, 0);
         Assert.notNull(entities);
 
         LOGGER.info(entities.size() + " streams returned");
@@ -85,7 +115,7 @@ public class RestInterfaceTest  extends EnvVariablesSetter {
         ranking.put("concordance", 0);
 
         //List<IoTStream> streams = orchestrator.getStreams(null, ranking, 0, 0);
-        List<EntityLD> entities = ngsiLD_mdrClient.getEntities(IoTStream.getTypeUri(), null, ranking, 0, 0);
+        List<EntityLD> entities = orchestratorRestClient.getEntities(IoTStream.getTypeUri(), null, ranking, 0, 0);
         Assert.notNull(entities);
 
         LOGGER.info(entities.size() + " streams returned");
@@ -101,7 +131,7 @@ public class RestInterfaceTest  extends EnvVariablesSetter {
             byte[] iotStreamModelJson = Files.readAllBytes(Paths.get("samples/" + type + ".json"));
             RDFModel entity = RDFModel.fromJson(iotStreamModelJson);
             //Boolean result = orchestrator.registerEntity(entity);
-            Boolean result = ngsiLD_mdrClient.registerEntity(entity);
+            Boolean result = orchestratorRestClient.registerEntity(entity);
 
             Assert.isTrue(result);
             LOGGER.info("Entity {} was registered", type);
@@ -116,9 +146,9 @@ public class RestInterfaceTest  extends EnvVariablesSetter {
         LOGGER.info("getEntitiesTest()");
         //List<EntityLD>  streams = orchestrator.getEntities(IoTStream.getTypeUri(), 0);
         //List<EntityLD> streams = orchestrator.getEntities(".*", null, null, 0, 0);
-        List<EntityLD> streams = ngsiLD_mdrClient.getEntities(IoTStream.getTypeUri(), null, null, 0, 0);
-        Assert.notNull(streams);
-        LOGGER.info(streams.size() + " streams returned");
+        List<EntityLD> entities = orchestratorRestClient.getEntities(IoTStream.getTypeUri(), null, null, 0, 0);
+        Assert.notNull(entities);
+        LOGGER.info(entities.size() + " entities returned");
     }
 
 
@@ -136,13 +166,12 @@ public class RestInterfaceTest  extends EnvVariablesSetter {
         byte[] iotStreamModelJson = Files.readAllBytes(Paths.get("samples/IoTStream.json"));
         IoTStream ioTStream = IoTStream.fromJson(iotStreamModelJson);
 
-        List<EntityLD> streams = ngsiLD_mdrClient.getEntitiesById(new String[]{ioTStream.getURI()}, IoTStream.getTypeUri());
+        List<EntityLD> streams = orchestratorRestClient.getEntitiesById(new String[]{ioTStream.getURI()}, IoTStream.getTypeUri());
         //List<IoTStream> streams = orchestrator.getStreams("SELECT ?s ?p ?o WHERE { ?s ?p ?o . FILTER (?s=<"+ioTStream.getURI()+">) . } ");
         Assert.notNull(streams);
         LOGGER.info(streams.size() + " streams returned");
     }
 
-    @Ignore
     @Test
     @Order(5)
     public void getEntityByIdTest() throws Exception {
@@ -155,7 +184,7 @@ public class RestInterfaceTest  extends EnvVariablesSetter {
 
         String[] ids = new String[]{"iotc:Sensor_FIBARO+System+FGWPE%2FF+Wall+Plug+Gen5_CurrentEnergyUse"};
 
-        List<EntityLD> streams = ngsiLD_mdrClient.getEntitiesById(ids, Sensor.getTypeUri());
+        List<EntityLD> streams = orchestratorRestClient.getEntitiesById(ids, Sensor.getTypeUri());
         //List<Sensor> sensors = orchestrator.getEntitiesById(ids, Sensor.class);
 
         Assert.notNull(streams);
@@ -167,7 +196,7 @@ public class RestInterfaceTest  extends EnvVariablesSetter {
     @Order(6)
     public void getAllSensorsTest() throws Exception {
         LOGGER.info("getAllSensorsTest()");
-        List<EntityLD> sensors = ngsiLD_mdrClient.getEntities(Sensor.getTypeUri(), null, null, 0,0);
+        List<EntityLD> sensors = orchestratorRestClient.getEntities(Sensor.getTypeUri(), null, null, 0,0);
         Assert.notNull(sensors);
         LOGGER.info(sensors.size() + " sensors returned");
     }
@@ -177,7 +206,7 @@ public class RestInterfaceTest  extends EnvVariablesSetter {
     @Order(7)
     public void getAllPlatformsTest() throws Exception {
         LOGGER.info("getAllPlatformsTest()");
-        List<EntityLD> platforms = ngsiLD_mdrClient.getEntities(Platform.getTypeUri(), null, null, 0,0);
+        List<EntityLD> platforms = orchestratorRestClient.getEntities(Platform.getTypeUri(), null, null, 0,0);
         Assert.notNull(platforms);
         LOGGER.info(platforms.size() + " platforms returned");
     }
@@ -205,7 +234,7 @@ public class RestInterfaceTest  extends EnvVariablesSetter {
         query.addProperty("http://www.w3.org/2000/01/rdf-schema#label", "iotc:Stream_AEON+Labs+ZW100+MultiSensor+6_Brightness");
 
         //List<IoTStream> streams = orchestrator.getStreams(query.toString(), null, 0, 0);
-        List<EntityLD> platforms = ngsiLD_mdrClient.getEntities(IoTStream.getTypeUri(), query.toString(), null, 0,0);
+        List<EntityLD> platforms = orchestratorRestClient.getEntities(IoTStream.getTypeUri(), query.toString(), null, 0,0);
         Assert.notNull(platforms);
         LOGGER.info(platforms.size() + " Streams returned");
     }
@@ -320,4 +349,9 @@ public class RestInterfaceTest  extends EnvVariablesSetter {
 //        Assert.isTrue(true);
 //    }
 
+    @After
+    public void getObservationsTest() throws Exception {
+        LOGGER.info("stopping orchestrator");
+        thread.stop();
+    }
 }

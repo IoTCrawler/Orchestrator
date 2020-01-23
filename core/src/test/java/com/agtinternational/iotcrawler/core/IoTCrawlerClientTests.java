@@ -101,7 +101,7 @@ public class IoTCrawlerClientTests extends EnvVariablesSetter {
     }
 
     @Test
-    public void getAllStreamsTest() throws Exception {
+    public void getStreamsTest() throws Exception {
 
         List<IoTStream> streams = iotCrawlerClient.getStreams(null, null,0,0);
         //streams.get(0).getSensorUri();
@@ -146,7 +146,7 @@ public class IoTCrawlerClientTests extends EnvVariablesSetter {
 
     //@Ignore
     @Test
-    public void getAllSensorsTest() throws Exception {
+    public void getSensorsTest() throws Exception {
 
         List<Sensor> sensors = iotCrawlerClient.getSensors(null,0,0);
         Assert.notNull(sensors);
@@ -181,7 +181,7 @@ public class IoTCrawlerClientTests extends EnvVariablesSetter {
         query.addProperty(SOSA.madeBySensor, "iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_MotionAlarmCancelationDelay");
 
         List<IoTStream> streams = iotCrawlerClient.getStreams(query.toString(), null,0,0);
-        String abc="213";
+        LOGGER.info(streams.size()+" streams returned");
     }
 
     @Ignore
@@ -204,9 +204,10 @@ public class IoTCrawlerClientTests extends EnvVariablesSetter {
                         return null;
                     }
                 });
-        long until = System.currentTimeMillis()+60000;
-        while(System.currentTimeMillis()<until)
-            Thread.sleep(1000);
+        Assert.isTrue(true);
+//        long until = System.currentTimeMillis()+60000;
+//        while(System.currentTimeMillis()<until)
+//            Thread.sleep(1000);
     }
 
     @Ignore
@@ -268,7 +269,7 @@ public class IoTCrawlerClientTests extends EnvVariablesSetter {
 
         StreamObservation streamObservation = StreamObservation.fromJson(new String(model));
         iotCrawlerClient.pushObservationsToBroker(Arrays.asList(new StreamObservation[]{ streamObservation }));
-        String abc = "abc";
+        Assert.isTrue(true);
     }
 
     @Ignore
@@ -276,7 +277,7 @@ public class IoTCrawlerClientTests extends EnvVariablesSetter {
     public void getObservationsTest() throws Exception {
         List<StreamObservation> list = iotCrawlerClient.getObservations("iotc:Stream_Z-Wave+Node+003%3A+FGWP102+Meter+Living+Space_Electric+meter+%28watts%29",0,0);
         Map<String, List<Object>> streamObservation = list.get(0).getProperties("http://www.agtinternational.com/ontologies/SmartHome#current_value");
-        String abc = "abc";
+        Assert.isTrue(true);
     }
 
 

@@ -57,8 +57,8 @@ public class EnvVariablesSetter {
         if(!System.getenv().containsKey(NGSILD_BROKER_URL))
             environmentVariables.set(NGSILD_BROKER_URL, "http://djane:3000/ngsi-ld/");
 
-        if(!System.getenv().containsKey(RANKING_COMPONENT_URI))
-            environmentVariables.set(RANKING_COMPONENT_URI, "http://localhost:3003/ngsi-ld/");
+//        if(!System.getenv().containsKey(RANKING_COMPONENT_URI))
+//            environmentVariables.set(RANKING_COMPONENT_URI, "http://localhost:3003/ngsi-ld/");
 
             //environmentVariables.set(Constants.NGSILD_BROKER_URI, "http://localhost:3003/ngsi-ld/");
             //environmentVariables.set(Constants.NGSILD_BROKER_URI, "http://localhost:3000/ngsi-ld/");

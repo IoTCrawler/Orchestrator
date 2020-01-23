@@ -51,6 +51,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 import java.util.function.Function;
 
 import static com.agtinternational.iotcrawler.core.Constants.iotcNS;
@@ -68,6 +69,7 @@ public class RPCClientTest extends EnvVariablesSetter {
     public void init(){
         super.init();
         //orchestrator = new Orchestrator();
+
         rpcClient = new OrchestratorRPCClient();
         try {
             if(orchestrator!=null)
@@ -78,17 +80,24 @@ public class RPCClientTest extends EnvVariablesSetter {
             e.printStackTrace();
         }
 
-        if(orchestrator!=null)
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    orchestrator.run();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        if(orchestrator!=null) {
+            try {
+                orchestrator.run();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        }).start();
+        }
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    orchestrator.run();
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }).start();
+
 
     }
 

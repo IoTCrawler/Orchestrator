@@ -1,6 +1,7 @@
 package com.agtinternational.iotcrawler.orchestrator;
 
 import com.agtinternational.iotcrawler.core.models.IoTStream;
+import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import com.agtinternational.iotcrawler.orchestrator.clients.NgsiLD_MdrClient;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -15,6 +16,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
+import java.util.logging.Level;
 
 public class OrchestratorBenchmarkingLoader extends EnvVariablesSetter{
 
@@ -60,29 +62,38 @@ public class OrchestratorBenchmarkingLoader extends EnvVariablesSetter{
     @Ignore
     public void benchmarkingOperationsTest() throws Exception {
 
-        IoTStream ioTStream1 = new IoTStream("Stream_"+System.currentTimeMillis());
 
-        int num_of_threads = 1024;
+
+        int num_of_threads = 1;
         ExecutorService es = Executors.newFixedThreadPool(num_of_threads);
         final Map<String, Long> vars = new HashMap<>();
         List<Callable<String>> tasks = new ArrayList<>();
 
-        int amount = num_of_threads*100;
-        for(int i=0; i<amount;i++){
-            final int j = i;
-            tasks.add(new Callable<String>() {
-                @Override
-                public String call() throws Exception {
-                    NgsiLD_MdrClient orchestratorRestClient = new NgsiLD_MdrClient( "http://localhost:3001/ngsi-ld/");
-                    long started = System.currentTimeMillis();
-                    Boolean result = orchestratorRestClient.registerEntity(ioTStream1);
-                    if(result) {
+
+        int tasks_per_thread = 1;
+        int totalTasks = 0;
+        for(int i=0; i<num_of_threads;i++){
+            final NgsiLD_MdrClient orchestratorRestClient = new NgsiLD_MdrClient( "http://10.67.1.107:3001/ngsi-ld/");
+
+            for(int j=0; j<tasks_per_thread; j++) {
+                final int k = totalTasks;
+                tasks.add(new Callable<String>() {
+                    @Override
+                    public String call() throws Exception {
+
+                        long started = System.currentTimeMillis();
+                        IoTStream ioTStream1 = new IoTStream("Stream_"+String.valueOf(k)+"_"+System.currentTimeMillis());
+                        List<EntityLD>  result = orchestratorRestClient.getEntities(IoTStream.getTypeUri(),null,null, 0,0);
+                        //Boolean result = orchestratorRestClient.registerEntity(ioTStream1);
+                        //if (result) {
                         long took = System.currentTimeMillis() - started;
-                        vars.put(String.valueOf(j), took);
+                        vars.put(String.valueOf(k), took);
+                        //}
+                        return null;
                     }
-                    return null;
-                }
-            });
+                });
+                totalTasks++;
+            }
         }
         es.invokeAll(tasks);
 

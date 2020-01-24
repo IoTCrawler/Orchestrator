@@ -20,14 +20,14 @@ import java.util.logging.Level;
 
 public class OrchestratorBenchmarkingLoader extends EnvVariablesSetter{
 
-    private Logger LOGGER = LoggerFactory.getLogger(OrchestratorTest.class);
+    private Logger LOGGER = LoggerFactory.getLogger("OrchestratorBench");
 
     Thread thread;
     Orchestrator orchestrator;
     NgsiLD_MdrClient orchestratorRestClient;
     Semaphore orchestratorStartedMutex;
-    //String url = "http://10.67.1.107:3001/ngsi-ld/";
-    String url = "http://localhost:3001/ngsi-ld/";
+    String url = "http://10.67.1.107:3001/ngsi-ld/";
+    //String url = "http://localhost:3001/ngsi-ld/";
 
     @Before
     public void init() {
@@ -40,16 +40,18 @@ public class OrchestratorBenchmarkingLoader extends EnvVariablesSetter{
 
 
 
-        int num_of_threads = 64;
+        int num_of_threads = 128;
+        int tasks_per_thread = 10;
+
         ExecutorService es = Executors.newFixedThreadPool(num_of_threads);
         final Map<String, Long> vars = new HashMap<>();
         List<Callable<String>> tasks = new ArrayList<>();
 
 
-        int tasks_per_thread = 5;
+
         int totalTasks = 0;
         for(int i=0; i<num_of_threads;i++){
-            final NgsiLD_MdrClient orchestratorRestClient = new NgsiLD_MdrClient( url);
+            final NgsiLD_MdrClient orchestratorRestClient = new NgsiLD_MdrClient(url);
 
             for(int j=0; j<tasks_per_thread; j++) {
                 final int k = totalTasks;
@@ -57,9 +59,10 @@ public class OrchestratorBenchmarkingLoader extends EnvVariablesSetter{
                     @Override
                     public String call() throws Exception {
 
-                        long started = System.currentTimeMillis();
+
                         IoTStream ioTStream1 = new IoTStream("Stream_"+String.valueOf(k)+"_"+System.currentTimeMillis());
-                        List<EntityLD>  result = orchestratorRestClient.getEntities(IoTStream.getTypeUri(),null,null, 0,0);
+                        long started = System.currentTimeMillis();
+                        List<EntityLD>  result = orchestratorRestClient.getEntities(IoTStream.getTypeUri(),null,null, 0,1);
                         //Boolean result = orchestratorRestClient.registerEntity(ioTStream1);
                         //if (result) {
                         long took = System.currentTimeMillis() - started;
@@ -71,11 +74,31 @@ public class OrchestratorBenchmarkingLoader extends EnvVariablesSetter{
                 totalTasks++;
             }
         }
-        es.invokeAll(tasks);
 
-        long totalTime = vars.values().stream().mapToLong(e->e).sum();
-        Number avg = totalTime/vars.size();
-        LOGGER.info("Avg time is {}",avg);
+        LOGGER.info("NumThreads: {}; Tasks per thread: {} Tasks total: {}", num_of_threads, tasks_per_thread, totalTasks);
 
+        int experiments = 7;
+        long totalLat = 0;
+        long totalThroughtput = 0;
+        for(int i=0; i<experiments; i++) {
+            long started = System.currentTimeMillis();
+            es.invokeAll(tasks);
+            long runtime = System.currentTimeMillis() - started;
+
+            long waitingTime = vars.values().stream().mapToLong(e -> e).sum();
+            long avgLatency = waitingTime / vars.size();
+            double throughtput = Math.round(vars.size()/Math.round(runtime/1000));
+
+            LOGGER.info("Exp {} done. {} tasks in {} ms. Waiting time: {}; Throughtput: {} tasks/s; Avg latency is {}", i, vars.size(), runtime, waitingTime, throughtput, avgLatency);
+
+            if(i>1) {//skipping first 2 runs because of rest
+                totalLat += avgLatency;
+                totalThroughtput+=throughtput;
+            }
+
+            Thread.sleep(3000);
+        }
+
+        LOGGER.info("{} Experiments done. Throughtput: {} tasks/s; Latency: {} ms", experiments-2, totalThroughtput/(experiments-2), totalLat/(experiments-2));
     }
 }

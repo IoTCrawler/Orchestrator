@@ -39,15 +39,11 @@ public class OrchestratorBenchmarkingLoader extends EnvVariablesSetter{
     public void benchmarkingOperationsTest() throws Exception {
 
 
+        int num_of_threads = 128;
+        int tasks_per_thread = 20;
 
-        int num_of_threads = 256;
-        int tasks_per_thread = 10;
-
-        ExecutorService es = Executors.newFixedThreadPool(num_of_threads);
         final Map<String, Long> vars = new HashMap<>();
         List<Callable<String>> tasks = new ArrayList<>();
-
-
 
         int totalTasks = 0;
         for(int i=0; i<num_of_threads;i++){
@@ -77,17 +73,18 @@ public class OrchestratorBenchmarkingLoader extends EnvVariablesSetter{
 
         LOGGER.info("NumThreads: {}; Tasks per thread: {} Tasks total: {}", num_of_threads, tasks_per_thread, totalTasks);
 
-        int experiments = 7;
+        int experiments = 12;
         long totalLat = 0;
         long totalThroughtput = 0;
         for(int i=0; i<experiments; i++){
+            ExecutorService es = Executors.newFixedThreadPool(num_of_threads);
             long started = System.currentTimeMillis();
             es.invokeAll(tasks);
             long runtime = System.currentTimeMillis() - started;
 
             long waitingTime = vars.values().stream().mapToLong(e -> e).sum();
             long avgLatency = waitingTime / vars.size();
-            double throughtput = Math.round(vars.size()/Math.round(runtime/1000));
+            double throughtput = Math.round(vars.size()/(runtime/1000.0));
 
             LOGGER.info("Exp {} done. {} tasks in {} ms. Waiting time: {}; Throughtput: {} tasks/s; Avg latency is {}", i, vars.size(), runtime, waitingTime, throughtput, avgLatency);
 
@@ -95,8 +92,9 @@ public class OrchestratorBenchmarkingLoader extends EnvVariablesSetter{
                 totalLat += avgLatency;
                 totalThroughtput+=throughtput;
             }
+
             vars.clear();
-            Thread.sleep(3000);
+            //Thread.sleep(3000);
         }
 
         LOGGER.info("{} Experiments done. Throughtput: {} tasks/s; Latency: {} ms", experiments-2, totalThroughtput/(experiments-2), totalLat/(experiments-2));

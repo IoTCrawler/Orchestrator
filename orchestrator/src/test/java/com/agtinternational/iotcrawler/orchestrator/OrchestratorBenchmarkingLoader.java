@@ -26,8 +26,8 @@ public class OrchestratorBenchmarkingLoader extends EnvVariablesSetter{
     Orchestrator orchestrator;
     NgsiLD_MdrClient orchestratorRestClient;
     Semaphore orchestratorStartedMutex;
-    //String url = "http://10.67.1.107:3001/ngsi-ld/";
-    String url = "http://localhost:3001/ngsi-ld/";
+    String url = "http://10.67.1.107:3001/ngsi-ld/";
+    //String url = "http://localhost:3001/ngsi-ld/";
 
     @Before
     public void init() {
@@ -39,8 +39,9 @@ public class OrchestratorBenchmarkingLoader extends EnvVariablesSetter{
     public void benchmarkingOperationsTest() throws Exception {
 
 
-        int num_of_threads = 256;
-        int tasks_per_thread = 20;
+        int num_of_threads = 512;
+        int tasks_per_thread = 10;
+        int experiments = 10;
 
         final Map<String, Long> vars = new HashMap<>();
         List<Callable<String>> tasks = new ArrayList<>();
@@ -73,7 +74,6 @@ public class OrchestratorBenchmarkingLoader extends EnvVariablesSetter{
 
         LOGGER.info("NumThreads: {}; Tasks per thread: {} Tasks total: {}", num_of_threads, tasks_per_thread, totalTasks);
 
-        int experiments = 12;
         long totalLat = 0;
         long totalThroughtput = 0;
         for(int i=0; i<experiments; i++){
@@ -84,9 +84,9 @@ public class OrchestratorBenchmarkingLoader extends EnvVariablesSetter{
 
             long waitingTime = vars.values().stream().mapToLong(e -> e).sum();
             long avgLatency = waitingTime / vars.size();
-            double throughtput = Math.round(vars.size()/(runtime/1000.0));
+            double throughtput = Math.round(totalTasks/(runtime/1000.0));
 
-            LOGGER.info("Exp {} done. {} tasks in {} ms. Waiting time: {}; Throughtput: {} tasks/s; Avg latency is {}", i, vars.size(), runtime, waitingTime, throughtput, avgLatency);
+            LOGGER.info("Exp {} done. {} metrics in {} ms. Waiting time: {}; Throughtput: {} tasks/s; Avg latency is {}", i, vars.size(), runtime, waitingTime, throughtput, avgLatency);
 
             if(i>1) {//skipping first 2 runs because of rest
                 totalLat += avgLatency;

@@ -39,7 +39,7 @@ public class OrchestratorBenchmarkingLoader extends EnvVariablesSetter{
     public void benchmarkingOperationsTest() throws Exception {
 
 
-        int num_of_threads = 128;
+        int num_of_threads = 256;
         int tasks_per_thread = 20;
 
         final Map<String, Long> vars = new HashMap<>();

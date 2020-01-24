@@ -26,36 +26,12 @@ public class OrchestratorBenchmarkingLoader extends EnvVariablesSetter{
     Orchestrator orchestrator;
     NgsiLD_MdrClient orchestratorRestClient;
     Semaphore orchestratorStartedMutex;
-
+    //String url = "http://10.67.1.107:3001/ngsi-ld/";
+    String url = "http://localhost:3001/ngsi-ld/";
 
     @Before
     public void init() {
         super.init();
-        //using NgsiLD_MdrClient for testing orchestrator's NGSILD REST interface
-        //orchestratorRestClient = new NgsiLD_MdrClient( "http://localhost:3001/ngsi-ld/");
-        orchestratorStartedMutex = new Semaphore(0);
-
-
-//        thread = new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                try {
-//                    orchestrator.run();
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-//
-//        thread.start();
-//
-//        try {
-//            LOGGER.info("Waiting 3 seconds to start orchestrator");
-//            Thread.sleep(3000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-        LOGGER.info("Starting tests");
     }
 
     @Test
@@ -64,16 +40,16 @@ public class OrchestratorBenchmarkingLoader extends EnvVariablesSetter{
 
 
 
-        int num_of_threads = 1;
+        int num_of_threads = 64;
         ExecutorService es = Executors.newFixedThreadPool(num_of_threads);
         final Map<String, Long> vars = new HashMap<>();
         List<Callable<String>> tasks = new ArrayList<>();
 
 
-        int tasks_per_thread = 1;
+        int tasks_per_thread = 5;
         int totalTasks = 0;
         for(int i=0; i<num_of_threads;i++){
-            final NgsiLD_MdrClient orchestratorRestClient = new NgsiLD_MdrClient( "http://10.67.1.107:3001/ngsi-ld/");
+            final NgsiLD_MdrClient orchestratorRestClient = new NgsiLD_MdrClient( url);
 
             for(int j=0; j<tasks_per_thread; j++) {
                 final int k = totalTasks;

@@ -61,7 +61,7 @@ public class NgsiLD_MdrClient extends AbstractMetadataClient {
 
     public NgsiLD_MdrClient(String brokerUrl){
         brokerHost = brokerUrl.split("/ngsi-ld")[0];
-        LOGGER.info("Initializing NgsiLD_MdrClient to {}", brokerUrl);
+        LOGGER.debug("Initializing NgsiLD_MdrClient to {}", brokerUrl);
         ngsiLDClient = new NgsiLDClient(brokerUrl);
     }
 

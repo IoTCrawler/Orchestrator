@@ -196,7 +196,7 @@ public class NgsiLDClient {
         url = url.replace("%255B","%5B");
         url = url.replace("%255D","%5D");
 
-        LOGGER.debug("Requesting {}", url);
+        LOGGER.trace("Requesting {}", url);
         return adaptPaginated(request(HttpMethod.GET, url, null, EntityLD[].class), offset, limit);
     }
 

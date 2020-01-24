@@ -26,8 +26,8 @@ public class OrchestratorBenchmarkingLoader extends EnvVariablesSetter{
     Orchestrator orchestrator;
     NgsiLD_MdrClient orchestratorRestClient;
     Semaphore orchestratorStartedMutex;
-    String url = "http://10.67.1.107:3001/ngsi-ld/";
-    //String url = "http://localhost:3001/ngsi-ld/";
+    //String url = "http://10.67.1.107:3001/ngsi-ld/";
+    String url = "http://localhost:3001/ngsi-ld/";
 
     @Before
     public void init() {
@@ -40,7 +40,7 @@ public class OrchestratorBenchmarkingLoader extends EnvVariablesSetter{
 
 
 
-        int num_of_threads = 128;
+        int num_of_threads = 256;
         int tasks_per_thread = 10;
 
         ExecutorService es = Executors.newFixedThreadPool(num_of_threads);
@@ -80,7 +80,7 @@ public class OrchestratorBenchmarkingLoader extends EnvVariablesSetter{
         int experiments = 7;
         long totalLat = 0;
         long totalThroughtput = 0;
-        for(int i=0; i<experiments; i++) {
+        for(int i=0; i<experiments; i++){
             long started = System.currentTimeMillis();
             es.invokeAll(tasks);
             long runtime = System.currentTimeMillis() - started;
@@ -95,7 +95,7 @@ public class OrchestratorBenchmarkingLoader extends EnvVariablesSetter{
                 totalLat += avgLatency;
                 totalThroughtput+=throughtput;
             }
-
+            vars.clear();
             Thread.sleep(3000);
         }
 

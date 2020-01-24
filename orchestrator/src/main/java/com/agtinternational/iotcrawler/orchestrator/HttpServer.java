@@ -83,7 +83,7 @@ public class HttpServer {
             @Override
             public void handle(HttpExchange he) throws IOException {
                 // parse request
-                LOGGER.info("POST request received");
+                LOGGER.trace("POST request received");
                 String response="";
                 String theString = null;
                 try {
@@ -96,7 +96,7 @@ public class HttpServer {
                     // send response
                     response= "Received: "+theString;
                     //receivings.add(theString);
-                    LOGGER.info(response);
+                    LOGGER.trace(response);
                 }
                 catch (Exception e){
                     response = "Error: "+e.getLocalizedMessage();
@@ -162,7 +162,7 @@ public class HttpServer {
                     httpRequest = new HttpPut(combinedUri);
                 } else throw new NotImplementedException(he.getRequestMethod() + " not implemented");
 
-                LOGGER.info("{} request received to {}", he.getRequestMethod(), he.getRequestURI().toString());
+                LOGGER.trace("{} request received to {}", he.getRequestMethod(), he.getRequestURI().toString());
 
                 httpRequest.setHeader("Accept", "application/json");
                 httpRequest.setHeader("Content-type", "application/json");

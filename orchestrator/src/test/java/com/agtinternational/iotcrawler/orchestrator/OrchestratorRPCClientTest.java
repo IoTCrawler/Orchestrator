@@ -57,7 +57,7 @@ import java.util.function.Function;
 import static com.agtinternational.iotcrawler.core.Constants.iotcNS;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class RPCClientTest extends EnvVariablesSetter {
+public class OrchestratorRPCClientTest extends EnvVariablesSetter {
 
     private Logger LOGGER = LoggerFactory.getLogger(OrchestratorTest.class);
 

@@ -47,25 +47,25 @@ public class OrchestratorRestInterfaceTest extends EnvVariablesSetter {
             e.printStackTrace();
         }
 
-        thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    orchestrator.run();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        thread.start();
-
-        try {
-            LOGGER.info("Waiting 3 seconds to start orchestrator");
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        thread = new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    orchestrator.run();
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
+//
+//        thread.start();
+//
+//        try {
+//            LOGGER.info("Waiting 3 seconds to start orchestrator");
+//            Thread.sleep(3000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
         LOGGER.info("Starting tests");
     }
 
@@ -86,6 +86,7 @@ public class OrchestratorRestInterfaceTest extends EnvVariablesSetter {
         //ioTStream.addProperty(RDFS.label, "label1");
         Boolean result = orchestratorRestClient.registerEntity(ioTStream);
         Assert.isTrue(result);
+
         LOGGER.info("Stream was registered");
     }
 
@@ -354,4 +355,6 @@ public class OrchestratorRestInterfaceTest extends EnvVariablesSetter {
         LOGGER.info("stopping orchestrator");
         thread.stop();
     }
+
+
 }

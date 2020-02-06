@@ -23,6 +23,7 @@
         <fiware.clients.version>1.0.8</fiware.clients.version>
         <fiware.models.version>1.0.0</fiware.models.version>
         <iotcrawler.core.version>1.0.0</iotcrawler.core.version>
+        <iotbroker.client.version>7.1-SNAPSHOT</iotbroker.client.version>
     </properties>
 
 <!--    <repositories>-->
@@ -53,7 +54,29 @@
             </exclusions>
         </dependency>
 
-
+        <dependency>
+            <groupId>eu.neclab.iotplatform</groupId>
+            <artifactId>iotbroker.client</artifactId>
+            <version>${iotbroker.client.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.ops4j.pax.logging</groupId>
+                    <artifactId>pax-logging-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.ops4j.pax.logging</groupId>
+                    <artifactId>pax-logging-service</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>org.springframework.web</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>org.springframework.jms</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 
     <dependency>
         <groupId>org.junit.jupiter</groupId>

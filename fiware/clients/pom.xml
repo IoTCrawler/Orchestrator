@@ -13,7 +13,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <slf4j.version>1.7.15</slf4j.version>
         <junit.version>5</junit.version>
-        <ngsi2.client.version>0.1.2-SNAPSHOT</ngsi2.client.version>
+        <ngsi2.client.version>0.1.0-SNAPSHOT</ngsi2.client.version>
 <!--        <ngsi.api.version>7.1-SNAPSHOT</ngsi.api.version>-->
 <!--        <iotbroker.commons.version>7.1-SNAPSHOT</iotbroker.commons.version>-->
         <iotbroker.client.version>7.1-SNAPSHOT</iotbroker.client.version>

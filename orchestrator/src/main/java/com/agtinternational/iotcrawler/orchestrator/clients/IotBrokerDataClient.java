@@ -27,9 +27,9 @@ package com.agtinternational.iotcrawler.orchestrator.clients;
  */
 
 import com.agtinternational.iotcrawler.fiware.clients.CustomSubscribeContextRequest;
-import com.agtinternational.iotcrawler.fiware.clients.PatchedSouthBound;
 import com.agtinternational.iotcrawler.orchestrator.Constants;
 import com.agtinternational.iotcrawler.core.models.*;
+import eu.neclab.iotplatform.iotbroker.client.Southbound;
 import eu.neclab.iotplatform.ngsi.api.datamodel.*;
 import org.apache.jena.rdf.model.*;
 import org.slf4j.Logger;
@@ -46,7 +46,7 @@ public class IotBrokerDataClient /*extends TripleStoreClient*/ implements Abstra
     private static Logger LOGGER = LoggerFactory.getLogger(IotBrokerDataClient.class);
     private String ioTBrokerEndpoint;
 
-    PatchedSouthBound iotBrokerClient;
+    Southbound iotBrokerClient;
 
     public IotBrokerDataClient(){
         this((System.getenv().containsKey(Constants.IOT_BROKER_URL)?System.getenv(Constants.IOT_BROKER_URL):"http://localhost:8060/ngsi10"));
@@ -56,7 +56,7 @@ public class IotBrokerDataClient /*extends TripleStoreClient*/ implements Abstra
         //super(defaultTripleStoreURI);
         this.ioTBrokerEndpoint = ioTBrokerEndpoint;
 
-        iotBrokerClient = new PatchedSouthBound();
+        iotBrokerClient = new Southbound();
         iotBrokerClient.setNgsi9url(ioTBrokerEndpoint+"/");
         iotBrokerClient.setNgsi9RemoteUrl(ioTBrokerEndpoint+"/");
         iotBrokerClient.setNgsi9rootPath("ngsi9");

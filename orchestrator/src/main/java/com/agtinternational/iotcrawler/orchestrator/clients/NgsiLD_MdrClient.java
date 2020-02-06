@@ -122,7 +122,6 @@ public class NgsiLD_MdrClient extends AbstractMetadataClient {
 
             ListenableFuture<Void> req;
 
-
             req = ngsiLDClient.addEntity(entity);
             req.addCallback(new ListenableFutureCallback<Void>() {
                 @Override

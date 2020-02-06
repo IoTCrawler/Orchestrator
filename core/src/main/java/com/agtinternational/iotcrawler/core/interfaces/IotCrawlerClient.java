@@ -87,6 +87,9 @@ public abstract class IotCrawlerClient implements Component {
     public abstract List<EntityLD> getEntities(String entityType, String query, Map<String, Number> ranking, int offset, int limit) throws Exception;
     public abstract  <T> List<T> getEntities(Class<T> targetClass, String query,  Map<String, Number> ranking, int offset, int limit) throws Exception;
 
+
+    public Boolean registerStream(IoTStream ioTStream) throws Exception { return registerEntity(ioTStream); }
+
     public abstract Boolean registerEntity(RDFModel model) throws Exception;
     public abstract Boolean pushObservationsToBroker(List<StreamObservation> observations) throws Exception;
     public abstract String subscribeTo(String streamId, String[] attributes, List<NotifyCondition> notifyConditions, Restriction restriction, Function<StreamObservation, Void> onChange) throws Exception;

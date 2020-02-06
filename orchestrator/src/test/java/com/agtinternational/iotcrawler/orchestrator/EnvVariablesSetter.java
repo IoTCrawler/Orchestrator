@@ -36,10 +36,9 @@ import static com.agtinternational.iotcrawler.orchestrator.Constants.*;
 
 public class EnvVariablesSetter {
 
-    public final EnvironmentVariables environmentVariables = new EnvironmentVariables();
+    public static final EnvironmentVariables environmentVariables = new EnvironmentVariables();
 
-    @Before
-    public void init(){
+    public static void init(){
         //public static final String IoTCTripleStoreURI = "http://10.67.42.53:10035/repositories/IoTCrawler2/sparql";
         //public static final String defaultTripleStoreURI = "http://10.67.42.53:10035/repositories/KB/sparql";
 

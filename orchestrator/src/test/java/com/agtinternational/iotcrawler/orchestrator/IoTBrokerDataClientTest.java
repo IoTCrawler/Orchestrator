@@ -39,13 +39,14 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
-public class IoTBrokerDataClientTest extends EnvVariablesSetter{
+public class IoTBrokerDataClientTest{
 
     IotBrokerDataClient dataClient;
     private final static String httpServerUrl = "http://10.67.1.41:3001/notify";
 
     @Before
     public void init(){
+        EnvVariablesSetter.init();
         dataClient = new IotBrokerDataClient();
     }
 

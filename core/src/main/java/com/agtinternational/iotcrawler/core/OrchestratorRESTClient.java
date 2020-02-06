@@ -43,6 +43,7 @@ import eu.neclab.iotplatform.ngsi.api.datamodel.*;
 import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.concurrent.ListenableFuture;
 
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -68,9 +69,12 @@ public class OrchestratorRESTClient extends IotCrawlerClient implements AutoClos
     //RabbitRpcClient rabbitRpcClient;
     //Consumer consumer;
 
+    public OrchestratorRESTClient(String url){
+        orchestratorUrl = url;
+    }
 
     @Override
-    public void init() throws Exception {
+    public void init(){
 
         if(System.getenv().containsKey(IOTCRAWLER_ORCHESTRATOR_URL))
             orchestratorUrl = System.getenv(IOTCRAWLER_ORCHESTRATOR_URL);
@@ -162,10 +166,10 @@ public class OrchestratorRESTClient extends IotCrawlerClient implements AutoClos
     }
 
     @Override
-    public Boolean registerEntity(RDFModel model) throws Exception {
-        //ngsiLDClient.addEntity(model);
-        RegisterEntityCommand command = new RegisterEntityCommand(model);
-        throw new NotImplementedException("");
+    public Boolean registerEntity(RDFModel rdfModel) throws Exception {
+        ListenableFuture<Void> ret = ngsiLDClient.addEntity(rdfModel.toEntityLD(true));
+
+
     }
 
     @Override

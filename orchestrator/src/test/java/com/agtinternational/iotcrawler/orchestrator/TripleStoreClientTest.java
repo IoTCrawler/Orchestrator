@@ -42,13 +42,13 @@ import java.util.Map;
 
 import static com.agtinternational.iotcrawler.core.Constants.iotcNS;
 
-public class TripleStoreClientTest extends EnvVariablesSetter {
+public class TripleStoreClientTest {
 
     TripleStoreClient tripleStoreClient;
 
     @Before
     public void init(){
-        super.init();
+        EnvVariablesSetter.init();
         tripleStoreClient = new TripleStoreClient(System.getenv(Constants.TRIPLE_STORE_URL), new SimpleAuthenticator(System.getenv(Constants.TRIPLE_STORE_USER).toString(), System.getenv(Constants.TRIPLE_STORE_PASS).toCharArray()));
     }
 

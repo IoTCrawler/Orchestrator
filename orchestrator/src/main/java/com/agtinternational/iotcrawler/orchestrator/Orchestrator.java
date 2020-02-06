@@ -104,8 +104,12 @@ public class Orchestrator extends IotCrawlerClient {
     public void init() throws Exception {
 
         //metadataClient = new TripleStoreMDRClient();
+        LOGGER.info("Initializing web server");
         httpServer = new HttpServer();
+        LOGGER.info("Initializing NGSI-LD Client");
         metadataClient = new NgsiLD_MdrClient((System.getenv().containsKey(RANKING_COMPONENT_URI)? System.getenv(RANKING_COMPONENT_URI): System.getenv(NGSILD_BROKER_URL)));
+
+        LOGGER.info("Initializing IoTBroker Client");
         dataBrokerClient = new IotBrokerDataClient();
 
         if (System.getenv().containsKey(IOTCRAWLER_RABBIT_HOST))
@@ -113,9 +117,6 @@ public class Orchestrator extends IotCrawlerClient {
 
         if (System.getenv().containsKey(IOTCRAWLER_REDIS_HOST))
             redisHost = System.getenv(IOTCRAWLER_REDIS_HOST);
-
-
-
 
     }
 
@@ -577,6 +578,7 @@ public class Orchestrator extends IotCrawlerClient {
         return metadataClient.getEntitiesById(ids, targetClass);
     }
 
+    //Function for resolving json-based queires (graphGL ones?)
     public String resolveQuery(Class targetClass, String query, Map<String, Number> ranking){
 
         List<String> pairs = new ArrayList<>();

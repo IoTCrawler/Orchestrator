@@ -32,9 +32,6 @@ import com.agtinternational.iotcrawler.core.models.*;
 import eu.neclab.iotplatform.ngsi.api.datamodel.NotifyCondition;
 import eu.neclab.iotplatform.ngsi.api.datamodel.NotifyConditionEnum;
 import eu.neclab.iotplatform.ngsi.api.datamodel.Restriction;
-import org.apache.commons.lang3.tuple.Pair;
-import org.apache.jena.rdf.model.*;
-import org.apache.jena.vocabulary.RDF;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -51,23 +48,20 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.Semaphore;
 import java.util.function.Function;
 
-import static com.agtinternational.iotcrawler.core.Constants.iotcNS;
-
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class OrchestratorRPCClientTest extends EnvVariablesSetter {
+public class OrchestratorTestsRPC extends OrchestratorTests {
 
-    private Logger LOGGER = LoggerFactory.getLogger(OrchestratorTest.class);
+    private Logger LOGGER = LoggerFactory.getLogger(OrchestratorTests.class);
 
     OrchestratorRPCClient rpcClient;
     Orchestrator orchestrator;
 
 
-    @Before
+    @Override
     public void init(){
-        super.init();
+        EnvVariablesSetter.init();
         //orchestrator = new Orchestrator();
 
         rpcClient = new OrchestratorRPCClient();

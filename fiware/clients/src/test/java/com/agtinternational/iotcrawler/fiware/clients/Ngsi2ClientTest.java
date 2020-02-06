@@ -1,4 +1,4 @@
-/*-
+package com.agtinternational.iotcrawler.fiware.clients;/*-
  * #%L
  * fiware-clients
  * %%

@@ -24,7 +24,7 @@
  * #L%
  */
 package com.agtinternational.iotcrawler.fiware.clients;
-import com.agtinternational.iotcrawler.fiware.clients.PatchedSouthBound;
+import eu.neclab.iotplatform.iotbroker.client.Southbound;
 import eu.neclab.iotplatform.ngsi.api.datamodel.*;
 import org.junit.Assert;
 import org.junit.Before;
@@ -32,7 +32,6 @@ import org.junit.Test;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -44,12 +43,12 @@ public class DiscoveryServicesTest {
     //private final static String serverUrl = "http://155.54.95.237:8065";
     private final static String serverUrl = "http://localhost:8065";
 
-    PatchedSouthBound iotBrokerClient;
+    Southbound iotBrokerClient;
 
     @Before
     public void init(){
         //docker run -d -t -p 8065:8065 -p 8060:8060 fiware/iotbroker:standalone-dev -p iotbroker_historicalagent="enabled"
-        iotBrokerClient = new PatchedSouthBound();
+        iotBrokerClient = new Southbound();
         iotBrokerClient.setNgsi9url(serverUrl);
         iotBrokerClient.setNgsi9RemoteUrl(serverUrl);
         iotBrokerClient.setNgsi9rootPath("ngsi9");

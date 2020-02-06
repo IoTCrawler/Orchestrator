@@ -5,6 +5,7 @@ prepare-djane:
 	sed -i "s~let authentication=true;~let authentication=false;~g" ~/djane/config/config.js
 	cd ~/djane && docker build . -t gitlab.iotcrawler.net:4567/core/djane:1.0.0
 
+
 prepare-scorpio:
 	rm -rf ~/scorpio
 	cd ~ && git clone https://github.com/ScorpioBroker/ScorpioBroker.git

@@ -40,7 +40,6 @@
  *
  */
 
-import com.agtinternational.iotcrawler.fiware.clients.PatchedNgsi2Client;
 import com.orange.ngsi2.client.Ngsi2Client;
 import com.orange.ngsi2.exception.Ngsi2Exception;
 import com.orange.ngsi2.model.*;
@@ -84,8 +83,7 @@ public class Ngsi2ClientTest {
 
     @Before
     public void init() throws Exception {
-        //ngsi2Client = new Ngsi2Client(new CustomAsyncRestTemplate(new HttpComponentsAsyncClientHttpRequestFactory()), serverUrl);
-        ngsi2Client = new PatchedNgsi2Client(new AsyncRestTemplate(new HttpComponentsAsyncClientHttpRequestFactory()), serverUrl);
+        ngsi2Client = new Ngsi2Client(new AsyncRestTemplate(new HttpComponentsAsyncClientHttpRequestFactory()), serverUrl);
         //asyncRestTemplate.setMessageConverters(Collections.singletonList(new MappingJackson2HttpMessageConverter(Utils.objectMapper)));
         entity = createEntity();
         //accomulatorServerUrl = new URL(accumulatorServerUrl);

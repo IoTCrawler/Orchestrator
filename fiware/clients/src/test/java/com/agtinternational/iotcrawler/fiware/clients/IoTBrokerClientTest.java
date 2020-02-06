@@ -23,8 +23,8 @@
  * THE SOFTWARE.
  * #L%
  */
-import com.agtinternational.iotcrawler.fiware.clients.CustomSubscribeContextRequest;
-import com.agtinternational.iotcrawler.fiware.clients.PatchedSouthBound;
+package com.agtinternational.iotcrawler.fiware.clients;
+import eu.neclab.iotplatform.iotbroker.client.Southbound;
 import eu.neclab.iotplatform.ngsi.api.datamodel.*;
 import org.junit.Assert;
 import org.junit.Before;
@@ -57,14 +57,14 @@ public class IoTBrokerClientTest {
     private final static String serverUrl = "http://localhost:8060/ngsi10";
     private final static String httpServerUrl = "http://10.67.1.41:3001/notify";
 
-    PatchedSouthBound iotBrokerClient;
+    Southbound iotBrokerClient;
     ContextElement sensor;
 
     @Before
     public void init() throws IOException {
         //Requires enabling of historicalAgent (database)
         //docker run -d -t -p 8065:8065 -p 8060:8060 fiware/iotbroker:standalone-dev -p iotbroker_historicalagent="enabled"
-        iotBrokerClient = new PatchedSouthBound();
+        iotBrokerClient = new Southbound();
 
         iotBrokerClient.setNgsi9url(serverUrl+"/");
         iotBrokerClient.setNgsi9RemoteUrl(serverUrl+"/");

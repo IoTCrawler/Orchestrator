@@ -72,7 +72,7 @@ public class IoTCrawlerClientTests extends EnvVariablesSetter {
     public static Collection parameters() throws Exception {
         return Arrays.asList(new Object[][]{
                 //{ new OrchestratorRPCClient() },
-                { new OrchestratorRESTClient() }
+                { new OrchestratorRESTClient("http://localhost:3001") }
                 });
     }
 

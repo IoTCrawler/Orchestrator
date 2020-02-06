@@ -168,7 +168,7 @@ public class OrchestratorRESTClient extends IotCrawlerClient implements AutoClos
     @Override
     public Boolean registerEntity(RDFModel rdfModel) throws Exception {
         ListenableFuture<Void> ret = ngsiLDClient.addEntity(rdfModel.toEntityLD(true));
-
+        throw new NotImplementedException("");
 
     }
 

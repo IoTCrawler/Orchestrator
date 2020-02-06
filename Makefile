@@ -7,7 +7,7 @@ push-agent:
 install:
 	cd fiware && make install
 	cd core && mvn install -DskipTests=true	
-	#cd orchestrator && make package
+	cd orchestrator && make package
 
 install-reqs:
 	cd orchestrator && make install-reqs

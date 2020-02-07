@@ -15,8 +15,10 @@ prepare-scorpio:
 
 
 install:
-	[ ! -d ~/.m2/repository/eu/neclab/iotplatform ] && cd /tmp && rm -rf iot.Aeron && git clone git@gitlab.iotcrawler.net:orchestrator/iot.Aeron.git && cd /tmp/iot.Aeron/IoTbrokerParent && mvn install -DskipTests=true && cd /tmp/iot.Aeron/eu.neclab.iotplatform.ngsi.api && mvn install -DskipTests=true && cd /tmp/iot.Aeron/eu.neclab.iotplatform.iotbroker.commons && mvn install -DskipTests=true && cd /tmp/iot.Aeron/eu.neclab.iotplatform.iotbroker.client && mvn install -DskipTests=true || echo "iot.Aeron is ready"
-	[ ! -d ~/.m2/repository/com/orange/fiware/ngsi2-client ] && cd /tmp && rm -rf fiware-ngsi2-api && git clone git@gitlab.iotcrawler.net:orchestrator/fiware-ngsi2-api.git && cd fiware-ngsi2-api && mvn install -DskipTests=true && cd ngsi2-client && mvn install -DskipTests=true || echo "fiware-ngsi2-api is ready"
+	[ ! -d /tmp/iot.Aeron ] && cd /tmp && git clone git@gitlab.iotcrawler.net:orchestrator/iot.Aeron.git || echo "/tmp/iot.Aeron is ready"
+	[ ! -d ~/.m2/repository/eu/neclab/iotplatform ] && cd /tmp/iot.Aeron/IoTbrokerParent && mvn install -DskipTests=true && cd /tmp/iot.Aeron/eu.neclab.iotplatform.ngsi.api && mvn install -DskipTests=true && cd /tmp/iot.Aeron/eu.neclab.iotplatform.iotbroker.commons && mvn install -DskipTests=true && cd /tmp/iot.Aeron/eu.neclab.iotplatform.iotbroker.client && mvn install -DskipTests=true || echo "iot.Aeron is ready"
+	[ ! -d /tmp/fiware-ngsi2-api ] && cd /tmp && git clone git@gitlab.iotcrawler.net:orchestrator/fiware-ngsi2-api.git || echo "/tmp/fiware-ngsi2-api is ready"
+   	[ ! -d ~/.m2/repository/com/orange/fiware/ngsi2-client ] && cd /tmp/fiware-ngsi2-api && mvn install -DskipTests=true && cd /tmp/fiware-ngsi2-api/ngsi2-client && mvn install -DskipTests=true || echo "fiware-ngsi2-api is ready"
 	mvn install -DskipTests=true
 
 start-containers:

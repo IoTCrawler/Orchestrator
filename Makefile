@@ -5,9 +5,9 @@ push-agent:
 	docker build -t gitlab.iotcrawler.net:4567/core/maven-docker-compose .
 
 install:
-	cd fiware && make install
-	cd core && mvn install -DskipTests=true	
-	cd orchestrator && make package
+	cd fiware && make install && cd ..
+	cd core && mvn install -DskipTests=true	 && cd ..
+	cd orchestrator && make package && cd ..
 
 install-reqs:
 	cd orchestrator && make install-reqs

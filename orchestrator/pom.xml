@@ -55,6 +55,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>4.1.6.RELEASE</version>
+        </dependency>
+
+        <dependency>
             <groupId>eu.neclab.iotplatform</groupId>
             <artifactId>iotbroker.client</artifactId>
             <version>${iotbroker.client.version}</version>

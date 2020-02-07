@@ -11,7 +11,7 @@ build:
     - (if [ ! -d /tmp/iot.Aeron ]; then git clone https://gitlab+deploy-token-9:RndhUNUGsbQh8n8tA_8v@gitlab.iotcrawler.net/orchestrator/iot.Aeron.git /tmp/iot.Aeron; fi);
   script:
     - make install
-    
+
 build-image:
   stage: build-image
   image: gitlab.iotcrawler.net:4567/core/maven-docker-compose:latest
@@ -21,9 +21,9 @@ build-image:
     - export CGO_ENABLED=1
     - systemctl status docker | grep Tasks
     - cd orchestrator && make build-image && cd ..
-    - cd orchestrator && make push-image && cd ..  
+    - cd orchestrator && make push-image && cd ..
 
-tests: 
+tests:
   stage: tests
   before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
@@ -37,4 +37,3 @@ tests:
     - cd orchestrator && make rpc-client-test  && cd ..
   after_script:
     - cd orchestrator && make stop-containers
-  

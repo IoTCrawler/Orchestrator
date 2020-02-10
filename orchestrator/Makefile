@@ -32,6 +32,7 @@ start-containers:
 	docker-compose up -d
 	echo "Containers should be started"
 	docker-compose ps
+
 start:
 	#docker-compose up &
 	#export HTTP_SERVER_HOST=192.168.56.101 && java -cp target/orchestrator-1.0.7.jar com.agtinternational.iotcrawler.orchestrator.Orchestrator

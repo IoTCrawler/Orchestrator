@@ -32,11 +32,11 @@ tests:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker ps
     - less /proc/meminfo
-    - cd orchestrator && make start-containers && cd ..
+    - cd $CI_PROJECT_DIR/orchestrator && make start-containers
     - docker ps
   script:
     - less /proc/meminfo
     - echo $IOTCRAWLER_RABBIT_HOST
-    - cd orchestrator && make rpc-client-test  && cd ..
+    - cd $CI_PROJECT_DIR/orchestrator && make rpc-client-test
   after_script:
-    - cd orchestrator && make stop-containers
+    - cd $CI_PROJECT_DIR/orchestrator && make stop-containers

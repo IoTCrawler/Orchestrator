@@ -37,6 +37,6 @@ tests:
   script:
     - less /proc/meminfo
     - echo $IOTCRAWLER_RABBIT_HOST
-    - cd $CI_PROJECT_DIR/orchestrator && make rpc-client-test
+    - cd $CI_PROJECT_DIR/orchestrator && make rest-client-test
   after_script:
     - cd $CI_PROJECT_DIR/orchestrator && make stop-containers

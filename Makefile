@@ -5,23 +5,23 @@ push-agent:
 	docker build -t gitlab.iotcrawler.net:4567/core/maven-docker-compose .
 
 install:
-	cd fiware && make install && cd ..
-	cd core && mvn install -DskipTests=true	 && cd ..
-	cd orchestrator && make package && cd ..
+    CI_PROJECT_DIR=${CI_PROJECT_DIR:-$(pwd)}
+	cd $CI_PROJECT_DIR/fiware && make install
+	cd $CI_PROJECT_DIR/core && mvn install -DskipTests=true
+	cd $CI_PROJECT_DIR/orchestrator && make package
 
 install-reqs:
-	cd orchestrator && make install-reqs
-
+	cd $CI_PROJECT_DIR/orchestrator && make install-reqs
 
 start:
-	cd orchestrator && docker-compose up &
+	cd $CI_PROJECT_DIR/orchestrator && docker-compose up &
 	sleep 5
-	cd orchestrator && docker-compose up orchestrator
+	cd $CI_PROJECT_DIR/orchestrator && docker-compose up orchestrator
 	#cd orchestrator && sh iotbroker.sh &
 	#cd orchestrator && make start &
-	exi
+
 test-orchestrator:
-	cd orchestrator && make test
+	cd $CI_PROJECT_DIR/orchestrator && make test
 
 test-fiware-clients:
-	cd fiware/clients && make test
+	cd $CI_PROJECT_DIR/fiware/clients && make test

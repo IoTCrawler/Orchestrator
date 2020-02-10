@@ -29,7 +29,7 @@ start-containers:
 	echo "Old containers should be stopped"
 	docker-compose ps
 	echo "Starting docker-compose"
-	docker-compose up -d || echo "docker-compose executed"
+	docker-compose up -d
 	echo "Containers should be started"
 	docker-compose ps
 start:
@@ -41,10 +41,19 @@ orchestrator-test:
 	mvn -Dtest=OrchestratorTest test
 	#mvn -Dtest=OrchestratorTest surefire:test
 
+rest-client-test:
+	export JAVA_TOOL_OPTIONS="-Xmx256m -Xms256m"
+	export IOTCRAWLER_RABBIT_HOST=localhost
+	export IOTCRAWLER_REDIS_HOST=localhost
+	export NGSILD_BROKER_URL=http://localhost:3000/ngsi-ld/
+	mvn -Dtest=OrchestratorTestsREST surefire:test
+
 rpc-client-test:
 	export JAVA_TOOL_OPTIONS="-Xmx256m -Xms256m"
-	export IOTCRAWLER_RABBIT_HOST=localhost && export IOTCRAWLER_REDIS_HOST=localhost && export NGSILD_BROKER_URL=http://localhost:3000/ngsi-ld/ && mvn test
-	#mvn -Dtest=RPCClientTest surefire:test
+	export IOTCRAWLER_RABBIT_HOST=localhost
+	export IOTCRAWLER_REDIS_HOST=localhost
+	export NGSILD_BROKER_URL=http://localhost:3000/ngsi-ld/
+	mvn -Dtest=OrchestratorTestsRPC surefire:test
 
 stop-containers:
 	echo "Stopping running containers"	

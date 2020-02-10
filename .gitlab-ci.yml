@@ -1,7 +1,8 @@
 stages:
-  - build
-#  - build-image
   - tests
+#  - build
+#  - build-image
+
 
 
 build:

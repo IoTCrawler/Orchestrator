@@ -85,6 +85,7 @@ public class OrchestratorTests /*extends EnvVariablesSetter*/ {
 
     @Test
     @Order(2)
+    @Ignore
     public void registerStreamTest() throws Exception {
         LOGGER.info("registerStreamTest()");
         //byte[] iotStreamModelJson = Files.readAllBytes(Paths.get("samples/IoTStream.json"));
@@ -139,6 +140,7 @@ public class OrchestratorTests /*extends EnvVariablesSetter*/ {
 
     @Test
     @Order(5)
+    @Ignore
     public void registerEntitiesTest() throws Exception {
         LOGGER.info("registerEntityTest()");
         String[] entityTypes = new String[]{ "IoTStream", "Sensor", "Platform" };
@@ -255,6 +257,7 @@ public class OrchestratorTests /*extends EnvVariablesSetter*/ {
 
     @Test
     @Order(13)
+    @Ignore
     public void getCustomEntityTest() throws Exception {
         LOGGER.info("getCustomEntityTest()");
         //String query = "{'sosa:madeBySensor' : ['iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_Temperature']}";
@@ -268,6 +271,7 @@ public class OrchestratorTests /*extends EnvVariablesSetter*/ {
 
     @Order(14)
     @Test
+    @Ignore
     public void subscribeToIoTBrokerTest() throws Exception {
         LOGGER.info("subscribeTest()");
         byte[] iotStreamModelJson = Files.readAllBytes(Paths.get("samples/IoTStream.json"));
@@ -346,6 +350,7 @@ public class OrchestratorTests /*extends EnvVariablesSetter*/ {
 
     @Order(15)
     @Test
+    @Ignore
     public void pushObservationsTest() throws Exception {
         LOGGER.info("pushObservationsTest()");
         byte[] model = Files.readAllBytes(Paths.get("samples/Observation.json"));
@@ -357,6 +362,7 @@ public class OrchestratorTests /*extends EnvVariablesSetter*/ {
 
     @Order(15)
     @Test
+    @Ignore
     public void getObservationsTest() throws Exception {
         LOGGER.info("getObservationsTest()");
         List<StreamObservation> list = orchestatorClient.getObservations("iotc:Stream_Z-Wave+Node+002%3A+FGWP102+Metered+Wall+Plug+Switch_Alarm+%28power%29",0,1);

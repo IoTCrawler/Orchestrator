@@ -15,14 +15,14 @@ stages:
 #  - cleanup
 
 
-#build:
-#  stage: build
-#  before_script:
-#    #- docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-#  script:
-#    - sh make.sh install
-#    - cd $CI_PROJECT_DIR/orchestrator && make build-image
-#    - cd $CI_PROJECT_DIR/orchestrator && make push-image
+build:
+  stage: build
+  before_script:
+    #- docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - sh make.sh install
+    - cd $CI_PROJECT_DIR/orchestrator && make build-image
+    #- cd $CI_PROJECT_DIR/orchestrator && make push-image
 
 test:
   stage: test

@@ -17,10 +17,7 @@ import-image:
 # 	docker network create iotcrawler > /dev/null 2>&1 &
 
 start-containers:
-	make create-network
-	#echo "Pulling needed images"
-	#docker-compose pull
-
+	#make create-network
 	echo "Stopping any already running containers"
 	docker ps -a | grep djane && docker ps -a | grep djane | cut -c1-12 | xargs docker rm --force || echo "done for djane"
 	docker ps -a | grep iotbroker && docker ps -a | grep iotbroker | cut -c1-12 | xargs docker rm --force || echo "done for iotbroker"

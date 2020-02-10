@@ -27,7 +27,7 @@ stages:
 test:
   stage: test
   before_script:
-#    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker ps
     #- less /proc/meminfo
     - cd $CI_PROJECT_DIR/orchestrator && make start-containers

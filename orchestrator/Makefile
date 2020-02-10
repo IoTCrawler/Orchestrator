@@ -39,7 +39,7 @@ start:
 	export HTTP_SERVER_HOST=10.59.0.101 && export IOTCRAWLER_RABBIT_HOST=rabbit && export IOTCRAWLER_REDIS_HOST=redis && export NGSILD_BROKER_URL=http://djane:3000/ngsi-ld/ && export IOT_BROKER_URL=http://iotbroker:8060/ngsi10  && java -jar target/orchestrator-1.0.8.jar
 	
 orchestrator-test:
-    mvn package -DskipTests=true
+	mvn package -DskipTests=true
 	mvn -Dtest=OrchestratorTestsREST surefire:test
 	#mvn -Dtest=OrchestratorTest surefire:test
 

@@ -64,7 +64,8 @@ public class OrchestratorTestsREST extends OrchestratorTests {
     @Override
     public void init() {
         EnvVariablesSetter.init();
-        orchestatorClient = new OrchestratorRESTClient( System.getenv().get(IOTCRAWLER_ORCHESTRATOR_URL));
+        LOGGER.info("Initializing NGSI-LD client to {}",System.getenv().get(IOTCRAWLER_ORCHESTRATOR_URL));
+        orchestatorClient = new OrchestratorRESTClient(System.getenv().get(IOTCRAWLER_ORCHESTRATOR_URL));
 //        orchestrator = new Orchestrator();
         try {
 //            orchestrator.init();

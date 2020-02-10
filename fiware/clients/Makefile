@@ -20,7 +20,7 @@ prepare-iotbroker:
 install:
 	(if [ ! -d ~/.m2/repository/eu/neclab/iotplatform/iotbroker/client ]; then make prepare-iotbroker; fi);
 	(if [ ! -d ~/.m2/repository/com/agtinternational/iotcrawler/fiware-models ]; then cd ../fiware-models && make install; fi);
-	mvn install -DskipTests=true
+	(if [ ! -d ~/.m2/repository/com/agtinternational/iotcrawler/fiware-models ]; then mvn install -DskipTests=true; fi);
 
 # start-containers:
 # 	make stop-containers

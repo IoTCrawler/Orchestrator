@@ -47,7 +47,10 @@ orchestrator-test:
 rest-client-test:
 	export JAVA_TOOL_OPTIONS="-Xmx256m -Xms256m"
 	mvn package -DskipTests=true
-	export ORCHESTRATOR_ID=$(docker ps | grep orchestrator: | awk '{print $1}') && export ORCHESTRATOR_IP=$(docker inspect -f "{{ .NetworkSettings.Networks.iotcrawler.IPAddress}}" ${ORCHESTRATOR_ID}) && export IOTCRAWLER_ORCHESTRATOR_IP=http://${ORCHESTRATOR_IP}:3001/ngsi-ld/ && mvn -Dtest=OrchestratorTestsREST surefire:test
+	export ORCHESTRATOR_ID=$(docker ps | grep orchestrator: | awk '{print $1}')
+	export ORCHESTRATOR_IP=$(docker inspect -f "{{ .NetworkSettings.Networks.iotcrawler.IPAddress}}" ${ORCHESTRATOR_ID})
+	export IOTCRAWLER_ORCHESTRATOR_IP=http://${ORCHESTRATOR_IP}:3001/ngsi-ld/
+	mvn -Dtest=OrchestratorTestsREST surefire:test
 
 rpc-client-test:
 	export JAVA_TOOL_OPTIONS="-Xmx256m -Xms256m"

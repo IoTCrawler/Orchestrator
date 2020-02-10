@@ -65,41 +65,41 @@ public class OrchestratorTestsREST extends OrchestratorTests {
     public void init() {
         EnvVariablesSetter.init();
         orchestatorClient = new OrchestratorRESTClient( System.getenv().get(IOTCRAWLER_ORCHESTRATOR_URL));
-        orchestrator = new Orchestrator();
+//        orchestrator = new Orchestrator();
         try {
-            orchestrator.init();
+//            orchestrator.init();
             orchestatorClient.init();
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    orchestrator.run();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+//
+//        thread = new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    orchestrator.run();
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
 
     }
 
-    @Test
-    @Order(1)
-    public void startingOrchestatorTest() throws Exception {
-        LOGGER.info("Starting orchestrator");
-        thread.start();
-
-        try {
-            LOGGER.info("Waiting 3 seconds");
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        LOGGER.info("Orchestrator should be started. Starting tests");
-    }
+//    @Test
+//    @Order(1)
+//    public void startingOrchestatorTest() throws Exception {
+//        LOGGER.info("Starting orchestrator");
+//        thread.start();
+//
+//        try {
+//            LOGGER.info("Waiting 3 seconds");
+//            Thread.sleep(3000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//        LOGGER.info("Orchestrator should be started. Starting tests");
+//    }
 
 //    @Test
 //    @Order(2)

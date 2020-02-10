@@ -42,6 +42,11 @@ public class EnvVariablesSetter {
         //public static final String IoTCTripleStoreURI = "http://10.67.42.53:10035/repositories/IoTCrawler2/sparql";
         //public static final String defaultTripleStoreURI = "http://10.67.42.53:10035/repositories/KB/sparql";
 
+
+
+        if(!System.getenv().containsKey(IOTCRAWLER_ORCHESTRATOR_URL))
+            environmentVariables.set(IOTCRAWLER_ORCHESTRATOR_URL, "http://localhost:3001/ngsi-ld/");
+
         if(!System.getenv().containsKey(IOTCRAWLER_RABBIT_HOST))
             //environmentVariables.set(IOTCRAWLER_RABBIT_HOST, "localhost");
             environmentVariables.set(IOTCRAWLER_RABBIT_HOST, "rabbit");

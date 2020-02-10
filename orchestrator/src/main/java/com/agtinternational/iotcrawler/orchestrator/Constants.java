@@ -32,6 +32,8 @@ public class Constants {
 //    public static final String ORCHESTRATOR_RABBIT_HOST = "ORCHESTRATOR_RABBIT_HOST";
 //    public static final String ORCHESTRATOR_REDIS_HOST = "ORCHESTRATOR_REDIS_HOST";
 
+    public static final String IOTCRAWLER_ORCHESTRATOR_URL = "IOTCRAWLER_ORCHESTRATOR_URL";
+
     public static final String TRIPLE_STORE_URL = "TRIPLE_STORE_URL";
     public static final String TRIPLE_STORE_USER = "TRIPLE_STORE_USER";
     public static final String TRIPLE_STORE_PASS = "TRIPLE_STORE_PASS";

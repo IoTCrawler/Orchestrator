@@ -48,6 +48,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.agtinternational.iotcrawler.orchestrator.Constants.IOTCRAWLER_ORCHESTRATOR_URL;
+
 //public class OrchestratorTestsREST extends EnvVariablesSetter {
 public class OrchestratorTestsREST extends OrchestratorTests {
 
@@ -62,7 +64,7 @@ public class OrchestratorTestsREST extends OrchestratorTests {
     @Override
     public void init() {
         EnvVariablesSetter.init();
-        orchestatorClient = new OrchestratorRESTClient( "http://localhost:3001/ngsi-ld/");
+        orchestatorClient = new OrchestratorRESTClient( System.getenv().get(IOTCRAWLER_ORCHESTRATOR_URL));
         orchestrator = new Orchestrator();
         try {
             orchestrator.init();

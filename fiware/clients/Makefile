@@ -22,13 +22,13 @@ install:
 	(if [ ! -d ~/.m2/repository/com/agtinternational/iotcrawler/fiware-models ]; then cd ../fiware-models && make install; fi);
 	mvn install -DskipTests=true
 
-start-containers:
-	make stop-containers
-	docker network create djanenet &
-	echo "Pulling needed images"
-	docker-compose pull
-	echo "Starting docker-compose"
-	docker-compose -f docker-compose.yml up -d
+# start-containers:
+# 	make stop-containers
+# 	docker network create djanenet &
+# 	echo "Pulling needed images"
+# 	docker-compose pull
+# 	echo "Starting docker-compose"
+# 	docker-compose -f docker-compose.yml up -d
 
 ngsi-ld-client-test:
 	mvn -Dtest=com.agtinternational.iotcrawler.fiware.clients.NgsiLDClientTest test

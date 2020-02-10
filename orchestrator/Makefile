@@ -20,13 +20,14 @@ start-containers:
 	make create-network
 	#echo "Pulling needed images"
 	#docker-compose pull
-	echo "Stopping any already running containers"
-	docker ps -a | grep djane && docker ps -a | grep djane | cut -c1-12 | xargs docker rm --force || echo "done for djane"
-	docker ps -a | grep iotbroker && docker ps -a | grep iotbroker | cut -c1-12 | xargs docker rm --force || echo "done for iotbroker"
-	docker ps -a | grep mongo && docker ps -a | grep mongo | cut -c1-12 | xargs docker rm --force || echo "done for mongo"
-	docker ps -a | grep orchestrator && docker ps -a | grep orchestrator | cut -c1-12 | xargs docker rm --force || echo "done for orchestrator"
-	echo "Old containers should be stopped. Waiting 5 sec"
-	sleep 5
+
+# 	echo "Stopping any already running containers"
+# 	docker ps -a | grep djane && docker ps -a | grep djane | cut -c1-12 | xargs docker rm --force || echo "done for djane"
+# 	docker ps -a | grep iotbroker && docker ps -a | grep iotbroker | cut -c1-12 | xargs docker rm --force || echo "done for iotbroker"
+# 	docker ps -a | grep mongo && docker ps -a | grep mongo | cut -c1-12 | xargs docker rm --force || echo "done for mongo"
+# 	docker ps -a | grep orchestrator && docker ps -a | grep orchestrator | cut -c1-12 | xargs docker rm --force || echo "done for orchestrator"
+# 	echo "Old containers should be stopped. Waiting 5 sec"
+# 	sleep 5
 	docker-compose ps
 	echo "Starting docker-compose"
 	docker-compose up -d

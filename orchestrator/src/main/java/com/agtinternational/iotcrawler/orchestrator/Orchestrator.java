@@ -70,7 +70,7 @@ public class Orchestrator extends IotCrawlerClient {
 
     //AbstractMetadataClient metadataClient;
     NgsiLD_MdrClient metadataClient;
-    AbstractDataClient dataBrokerClient;
+    IotBrokerDataClient dataBrokerClient;
     HttpServer httpServer;
 
     Semaphore httpServiceFinishedMutex = new Semaphore(0);
@@ -106,11 +106,12 @@ public class Orchestrator extends IotCrawlerClient {
         //metadataClient = new TripleStoreMDRClient();
         LOGGER.info("Initializing web server");
         httpServer = new HttpServer();
-        LOGGER.info("Initializing NGSI-LD Client");
-        metadataClient = new NgsiLD_MdrClient((System.getenv().containsKey(RANKING_COMPONENT_URI)? System.getenv(RANKING_COMPONENT_URI): System.getenv(NGSILD_BROKER_URL)));
 
-        LOGGER.info("Initializing IoTBroker Client");
+        metadataClient = new NgsiLD_MdrClient((System.getenv().containsKey(RANKING_COMPONENT_URI)? System.getenv(RANKING_COMPONENT_URI): System.getenv(NGSILD_BROKER_URL)));
+        LOGGER.info("Initialized NGSI-LD Client to {}", metadataClient.getBrokerHost());
+
         dataBrokerClient = new IotBrokerDataClient();
+        LOGGER.info("Initialized IoTBroker Client to {}", dataBrokerClient.getIoTBrokerEndpoint());
 
         if (System.getenv().containsKey(IOTCRAWLER_RABBIT_HOST))
             rabbitHost = System.getenv(IOTCRAWLER_RABBIT_HOST);

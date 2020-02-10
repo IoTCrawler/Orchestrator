@@ -59,7 +59,7 @@ public class EnvVariablesSetter {
 //        environmentVariables.set(Constants.TRIPLE_STORE_PASS, "xyzzy");
 
         if(!System.getenv().containsKey(NGSILD_BROKER_URL))
-            environmentVariables.set(NGSILD_BROKER_URL, "http://djane:3000/ngsi-ld/");
+            environmentVariables.set(NGSILD_BROKER_URL, "http://djane:3002/ngsi-ld/");
 
 //        if(!System.getenv().containsKey(RANKING_COMPONENT_URI))
 //            environmentVariables.set(RANKING_COMPONENT_URI, "http://localhost:3003/ngsi-ld/");

@@ -52,12 +52,12 @@
             <groupId>com.agtinternational.iotcrawler</groupId>
             <artifactId>fiware-models</artifactId>
             <version>${fiware.models.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>eu.neclab.iotplatform</groupId>
-                    <artifactId>iotbroker.commons</artifactId>
-                </exclusion>
-            </exclusions>
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    <groupId>eu.neclab.iotplatform</groupId>-->
+<!--                    <artifactId>iotbroker.commons</artifactId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
@@ -68,12 +68,12 @@
         </dependency>
 
 
-        <!--<dependency>-->
-            <!--<groupId>eu.neclab.iotplatform</groupId>-->
-            <!--<artifactId>iotbroker.commons</artifactId>-->
-            <!--<version>${iotbroker.version}</version>-->
-            <!--&lt;!&ndash;<scope>compile</scope>&ndash;&gt;-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>eu.neclab.iotplatform</groupId>
+            <artifactId>iotbroker.commons</artifactId>
+            <version>${iotbroker.version}</version>
+            <!--<scope>compile</scope>-->
+        </dependency>
 
         <!--<dependency>-->
             <!--<groupId>eu.neclab.iotplatform</groupId>-->

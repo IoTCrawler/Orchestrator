@@ -52,6 +52,10 @@ public class IotBrokerDataClient /*extends TripleStoreClient*/ implements Abstra
         this((System.getenv().containsKey(Constants.IOT_BROKER_URL)?System.getenv(Constants.IOT_BROKER_URL):"http://localhost:8060/ngsi10"));
     }
 
+    public String getIoTBrokerEndpoint() {
+        return ioTBrokerEndpoint;
+    }
+
     public IotBrokerDataClient(String ioTBrokerEndpoint){
         //super(defaultTripleStoreURI);
         this.ioTBrokerEndpoint = ioTBrokerEndpoint;

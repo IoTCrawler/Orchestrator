@@ -13,8 +13,8 @@ export-image:
 import-image:
 	docker load < orchestrator.tar
 
-create-network:
-	docker network create iotcrawler > /dev/null 2>&1 &
+# create-network:
+# 	docker network create iotcrawler > /dev/null 2>&1 &
 
 start-containers:
 	make create-network

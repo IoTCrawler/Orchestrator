@@ -18,13 +18,13 @@ create-network:
 
 start-containers:
 	make create-network
-	echo "Pulling needed images"
-	docker-compose pull
+	#echo "Pulling needed images"
+	#docker-compose pull
 	echo "Stopping any already running containers"
-	docker ps -a | grep djane && docker ps -a | grep djane | cut -c1-12 | xargs docker rm --force
-	docker ps -a | grep iotbroker && docker ps -a | grep iotbroker | cut -c1-12 | xargs docker rm --force
-	docker ps -a | grep mongo && docker ps -a | grep mongo | cut -c1-12 | xargs docker rm --force
-	docker ps -a | grep orchestrator && docker ps -a | grep orchestrator | cut -c1-12 | xargs docker rm --force
+	docker ps -a | grep djane && docker ps -a | grep djane | cut -c1-12 | xargs docker rm --force || echo "done for djane"
+	docker ps -a | grep iotbroker && docker ps -a | grep iotbroker | cut -c1-12 | xargs docker rm --force || echo "done for iotbroker"
+	docker ps -a | grep mongo && docker ps -a | grep mongo | cut -c1-12 | xargs docker rm --force || echo "done for mongo"
+	docker ps -a | grep orchestrator && docker ps -a | grep orchestrator | cut -c1-12 | xargs docker rm --force || echo "done for orchestrator"
 	sleep 15
 	echo "Old containers should be stopped"
 	docker-compose ps

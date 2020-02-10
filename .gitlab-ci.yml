@@ -38,7 +38,7 @@ test:
     - cd $CI_PROJECT_DIR/orchestrator && make rest-client-test
     - cd $CI_PROJECT_DIR/orchestrator && make rpc-client-test
   after_script:
-    - cd $CI_PROJECT_DIR/orchestrator && make stop-containers
+    #- cd $CI_PROJECT_DIR/orchestrator && make stop-containers
 
 #include:
 #  - template: Jobs/Code-Quality.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Jobs/Code-Quality.gitlab-ci.yml

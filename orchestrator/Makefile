@@ -27,10 +27,9 @@ start-containers:
 	docker ps -a | grep orchestrator && docker ps -a | grep orchestrator | cut -c1-12 | xargs docker rm --force || echo "done for orchestrator"
 	sleep 15
 	echo "Old containers should be stopped"
-	lsof -i:3000
 	docker-compose ps
 	echo "Starting docker-compose"
-	docker-compose -f docker-compose.yml up -d
+	docker-compose up -d || echo "docker-compose executed"
 	echo "Containers should be started"
 	docker-compose ps
 start:

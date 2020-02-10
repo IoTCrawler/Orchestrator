@@ -15,10 +15,7 @@ prepare-scorpio:
 
 prepare-iotbroker:
 	(if [ ! -d /tmp/iot.Aeron ]; then git clone https://gitlab+deploy-token-10:jCz86jEA8FPs3wpjhoN-@gitlab.iotcrawler.net/orchestrator/iot.Aeron.git /tmp/iot.Aeron ; fi);
-	cd /tmp/iot.Aeron/IoTbrokerParent && mvn install -DskipTests=true
-	cd /tmp/iot.Aeron/eu.neclab.iotplatform.ngsi.api && mvn install -DskipTests=true
-	cd /tmp/iot.Aeron/eu.neclab.iotplatform.iotbroker.commons && mvn install -DskipTests=true
-	cd /tmp/iot.Aeron/eu.neclab.iotplatform.iotbroker.client && mvn install -DskipTests=true
+	cd /tmp/iot.Aeron/IoTbrokerParent && mvn install -DskipTests=true && cd /tmp/iot.Aeron/eu.neclab.iotplatform.ngsi.api && mvn install -DskipTests=true && cd /tmp/iot.Aeron/eu.neclab.iotplatform.iotbroker.commons && mvn install -DskipTests=true && cd /tmp/iot.Aeron/eu.neclab.iotplatform.iotbroker.client && mvn install -DskipTests=true
 
 install:
 	(if [ ! -d ~/.m2/repository/eu/neclab/iotplatform/iotbroker/client ]; then make prepare-iotbroker; fi);

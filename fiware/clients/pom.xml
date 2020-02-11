@@ -68,22 +68,7 @@
         </dependency>
 
 
-        <dependency>
-            <groupId>eu.neclab.iotplatform</groupId>
-            <artifactId>iotbroker.commons</artifactId>
-            <version>${iotbroker.client.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-web</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-webmvc</artifactId>
-                </exclusion>
-            </exclusions>
-            <!--<scope>compile</scope>-->
-        </dependency>
+
 
         <!--<dependency>-->
             <!--<groupId>eu.neclab.iotplatform</groupId>-->
@@ -179,6 +164,39 @@
             <version>2.9.8</version>
         </dependency>
 
+        <dependency>
+            <groupId>eu.neclab.iotplatform</groupId>
+            <artifactId>iotbroker.commons</artifactId>
+            <version>${iotbroker.client.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-web</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-webmvc</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.ops4j.pax.logging</groupId>
+                    <artifactId>pax-logging-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.ops4j.pax.logging</groupId>
+                    <artifactId>pax-logging-service</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>org.springframework.web</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>org.springframework.jms</artifactId>
+                </exclusion>
+            </exclusions>
+
+            <!--<scope>compile</scope>-->
+        </dependency>
 
         <dependency>
             <groupId>eu.neclab.iotplatform</groupId>

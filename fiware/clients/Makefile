@@ -21,7 +21,7 @@ prepare-iotbroker:
 	cd /tmp/iot.Aeron/eu.neclab.iotplatform.iotbroker.client && mvn install -DskipTests=true
 
 install:
-    echo "Checking iot-broker dependency"
+	echo "Checking iot-broker dependency"
 	(if [ ! -d ~/.m2/repository/eu/neclab/iotplatform/iotbroker/client ]; then make prepare-iotbroker; fi);
 	echo "Checking fiware-models dependency"
 	(if [ ! -d ~/.m2/repository/com/agtinternational/iotcrawler/fiware-models ]; then cd ../fiware-models && make install; fi);

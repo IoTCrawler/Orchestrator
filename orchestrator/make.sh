@@ -1,4 +1,5 @@
 if [ "$1" = "rest-client-test" ]; then
+  # Orchestrator: rest-client-test
 	export JAVA_TOOL_OPTIONS="-Xmx256m -Xms256m"
 	mvn package -DskipTests=true
 	export ORCHESTRATOR_ID=$(docker ps | grep orchestrator: | awk '{print $1}')

@@ -27,7 +27,7 @@ stages:
 test:
   stage: test
   before_script:
-    #- docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker ps
     #- less /proc/meminfo
     - cd $CI_PROJECT_DIR/orchestrator && make start-containers
@@ -38,7 +38,7 @@ test:
     - cd $CI_PROJECT_DIR/orchestrator && sh make.sh rest-client-test
     #- cd $CI_PROJECT_DIR/orchestrator && make rpc-client-test
   after_script:
-#    - cd $CI_PROJECT_DIR/orchestrator && make stop-containers
+    - cd $CI_PROJECT_DIR/orchestrator && make stop-containers
 
 include:
   #- template: Jobs/Code-Quality.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Jobs/Code-Quality.gitlab-ci.yml

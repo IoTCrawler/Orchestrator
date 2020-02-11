@@ -71,7 +71,7 @@
         <dependency>
             <groupId>eu.neclab.iotplatform</groupId>
             <artifactId>iotbroker.commons</artifactId>
-            <version>${iotbroker.version}</version>
+            <version>${iotbroker.client.version}</version>
             <!--<scope>compile</scope>-->
         </dependency>
 

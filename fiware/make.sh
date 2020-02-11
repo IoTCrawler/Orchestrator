@@ -4,8 +4,8 @@ echo ${CI_PROJECT_DIR}
 set -e
 
 if [ "$1" = "install" ]; then
-	echo "Installing fiware-models"
+	# "Installing fiware-models"
 	cd $CI_PROJECT_DIR/fiware/models && make install
-	echo "Installing fiware-clients"
+	# "Installing fiware-clients"
 	cd $CI_PROJECT_DIR/fiware/clients && make install
 fi

@@ -32,9 +32,6 @@ stages:
   - performance
   - cleanup
 
-variables:
-  ROLLOUT_RESOURCE_TYPE: deployment
-
 #build:
 #  stage: build
 #  tags:

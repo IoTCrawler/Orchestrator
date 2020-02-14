@@ -2,8 +2,8 @@ if [ "$1" = "rest-client-test" ]; then
   # Orchestrator: rest-client-test
 	#export JAVA_TOOL_OPTIONS="-Xmx256m -Xms256m"
 	mvn package -DskipTests=true
-	echo "export ORCHESTRATOR_ID=$(docker ps | grep orchestrator: | awk '{print $1}')"
-	ORCHESTRATOR_ID=$(docker ps | grep orchestrator: | awk '{print $1}')
+	echo "export ORCHESTRATOR_ID=$(docker ps | grep orchestrator/master | awk '{print $1}')"
+	ORCHESTRATOR_ID=$(docker ps | grep "orchestrator/master" | awk '{print $1}')
 	export ORCHESTRATOR_ID=$ORCHESTRATOR_ID
 	docker inspect ${ORCHESTRATOR_ID}
 	export ORCHESTRATOR_IP=$(docker inspect -f "{{ .NetworkSettings.Networks.orchestrator_default.IPAddress}}" ${ORCHESTRATOR_ID})

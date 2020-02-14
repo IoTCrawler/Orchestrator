@@ -5,7 +5,7 @@ build-image:
 	mvn compile jib:dockerBuild
 
 push-image:
-	docker push gitlab.iotcrawler.net:4567/orchestrator/orchestrator:1.0.9
+	docker push gitlab.iotcrawler.net:4567/orchestrator/orchestrator/master
 
 export-image:
 	docker save iotcrawler/orchestrator > orchestator.tar

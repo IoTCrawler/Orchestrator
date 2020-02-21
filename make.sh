@@ -14,17 +14,3 @@ if [ "$1" = "install" ]; then
 	echo "# Main: Packaging orchestrator"
 	cd ${CI_PROJECT_DIR}/orchestrator && make package
 fi
-
-if [ "$1" = "push-image" ]; then
-  echo "# Setting env vars for pushing"
-  if [[ -z "$CI_COMMIT_TAG" ]]; then
-        export CI_APPLICATION_REPOSITORY=${CI_APPLICATION_REPOSITORY:-$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG}
-        export CI_APPLICATION_TAG=${CI_APPLICATION_TAG:-$CI_COMMIT_SHA}
-      else
-        export CI_APPLICATION_REPOSITORY=${CI_APPLICATION_REPOSITORY:-$CI_REGISTRY_IMAGE}
-        export CI_APPLICATION_TAG=${CI_APPLICATION_TAG:-$CI_COMMIT_TAG}
-  fi
-  echo "# Pushing image to registry"
-  docker push "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
-	#docker push "$CI_APPLICATION_REPOSITORY:latest"
-fi

@@ -32,16 +32,25 @@ stages:
   - performance
   - cleanup
 
-#build:
-#  stage: build
-#  tags:
-#    - java_maven
-#  before_script:
-#    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-#  script:
-#    - sh make.sh install
-#    - cd $CI_PROJECT_DIR/orchestrator && make build-image
-#    - cd $CI_PROJECT_DIR/orchestrator && make push-image
+build:
+  stage: build
+  tags:
+    - java_maven
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - |
+      if [[ -z "$CI_COMMIT_TAG" ]]; then
+      export CI_APPLICATION_REPOSITORY=${CI_APPLICATION_REPOSITORY:-$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG}
+      export CI_APPLICATION_TAG=${CI_APPLICATION_TAG:-$CI_COMMIT_SHA}
+      else
+      export CI_APPLICATION_REPOSITORY=${CI_APPLICATION_REPOSITORY:-$CI_REGISTRY_IMAGE}
+      export CI_APPLICATION_TAG=${CI_APPLICATION_TAG:-$CI_COMMIT_TAG}
+      fi
+
+  script:
+    - sh make.sh install
+    - cd $CI_PROJECT_DIR/orchestrator && make build-image
+    - cd $CI_PROJECT_DIR/orchestrator && make push-image
 
 test:
   stage: test

@@ -4,9 +4,9 @@ package:
 build-image:
 	mvn compile jib:dockerBuild
 
-push-image:
-	docker push "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
-	docker push "$CI_APPLICATION_REPOSITORY:latest"
+# push-image:
+# 	docker push "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
+# 	docker push "$CI_APPLICATION_REPOSITORY:latest"
 
 export-image:
 	docker save iotcrawler/orchestrator > orchestator.tar

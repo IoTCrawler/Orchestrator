@@ -15,7 +15,7 @@ if [ "$1" = "install" ]; then
 	cd ${CI_PROJECT_DIR}/orchestrator && make package
 fi
 
-if [ "$1" = "push" ]; then
+if [ "$1" = "push-image" ]; then
   if [[ -z "$CI_COMMIT_TAG" ]]; then
         export CI_APPLICATION_REPOSITORY=${CI_APPLICATION_REPOSITORY:-$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG}
         export CI_APPLICATION_TAG=${CI_APPLICATION_TAG:-$CI_COMMIT_SHA}

@@ -48,8 +48,8 @@ build:
       fi
 
   script:
-    - sh make.sh install
-    - cd $CI_PROJECT_DIR/orchestrator && make build-image
+    #- sh make.sh install
+    #- cd $CI_PROJECT_DIR/orchestrator && make build-image
     - cd $CI_PROJECT_DIR/orchestrator && sh make.sh push-image
 
 #test:

@@ -189,7 +189,7 @@ public class NgsiLDClient {
      * @return the listener to notify of completion
      */
     public ListenableFuture<Void> addEntity(EntityLD entity) {
-        return adapt(request(HttpMethod.POST, UriComponentsBuilder.fromHttpUrl(baseURL).path("v1/entities").toUriString(), entity, Void.class));
+        return adapt(request(HttpMethod.POST, UriComponentsBuilder.fromHttpUrl(baseURL).path("v1/entities/").toUriString(), entity, Void.class));
     }
 
     /**

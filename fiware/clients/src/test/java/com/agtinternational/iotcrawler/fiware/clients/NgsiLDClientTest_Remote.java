@@ -30,7 +30,7 @@ import org.junit.contrib.java.lang.system.EnvironmentVariables;
 
 import static com.agtinternational.iotcrawler.fiware.clients.Constants.NGSILD_BROKER_URL;
 
-public class NgsiLDClient_RemoteTest extends NgsiLDClientTest {
+public class NgsiLDClientTest_Remote extends NgsiLDClientTest {
 
     public final EnvironmentVariables environmentVariables = new EnvironmentVariables();
 
@@ -41,7 +41,7 @@ public class NgsiLDClient_RemoteTest extends NgsiLDClientTest {
         super.init();
     }
 
-    public NgsiLDClient_RemoteTest(EntityLD entityLD) {
+    public NgsiLDClientTest_Remote(EntityLD entityLD) {
         super(entityLD);
     }
 

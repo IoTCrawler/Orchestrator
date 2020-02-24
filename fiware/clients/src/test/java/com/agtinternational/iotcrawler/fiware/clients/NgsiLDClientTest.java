@@ -59,7 +59,7 @@ public class NgsiLDClientTest extends EnvVariablesSetter{
 
     private Logger LOGGER = LoggerFactory.getLogger(NgsiLDClientTest.class);
 
-    String serverUrl = "http://localhost:3000/ngsi-ld/";
+    String serverUrl;
 
     private NgsiLDClient ngsiLdClient;
     private EntityLD entity;

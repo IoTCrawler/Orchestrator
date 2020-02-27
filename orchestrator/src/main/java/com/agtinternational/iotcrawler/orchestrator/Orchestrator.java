@@ -29,7 +29,6 @@ package com.agtinternational.iotcrawler.orchestrator;
 import com.agtinternational.iotcrawler.core.Utils;
 import com.agtinternational.iotcrawler.core.interfaces.IotCrawlerClient;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
-import com.agtinternational.iotcrawler.orchestrator.clients.AbstractDataClient;
 import com.agtinternational.iotcrawler.orchestrator.clients.IotBrokerDataClient;
 import com.agtinternational.iotcrawler.orchestrator.clients.NgsiLD_MdrClient;
 import com.agtinternational.iotcrawler.core.commands.*;
@@ -56,7 +55,7 @@ import java.util.function.Function;
 
 import static com.agtinternational.iotcrawler.core.Constants.*;
 import static com.agtinternational.iotcrawler.fiware.clients.Constants.NGSILD_BROKER_URL;
-import static com.agtinternational.iotcrawler.orchestrator.Constants.RANKING_COMPONENT_URI;
+import static com.agtinternational.iotcrawler.orchestrator.Constants.RANKING_COMPONENT_URL;
 
 
 public class Orchestrator extends IotCrawlerClient {
@@ -107,7 +106,7 @@ public class Orchestrator extends IotCrawlerClient {
         LOGGER.info("Initializing web server");
         httpServer = new HttpServer();
 
-        metadataClient = new NgsiLD_MdrClient((System.getenv().containsKey(RANKING_COMPONENT_URI)? System.getenv(RANKING_COMPONENT_URI): System.getenv(NGSILD_BROKER_URL)));
+        metadataClient = new NgsiLD_MdrClient((System.getenv().containsKey(RANKING_COMPONENT_URL)? System.getenv(RANKING_COMPONENT_URL): System.getenv(NGSILD_BROKER_URL)));
         LOGGER.info("Initialized NGSI-LD Client to {}", metadataClient.getBrokerHost());
 
         dataBrokerClient = new IotBrokerDataClient();

@@ -1,14 +1,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hello-world-go
+  name: iotcrawler
   labels:
-    app: go
+    app: orchestrator
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
-      app: go
+      app: orchestrator
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -17,22 +17,22 @@ spec:
   template:
     metadata:
       labels:
-        app: go
+        app: orchestrator
     spec:
       containers:
-        - name: go
+        - name: orchestrator
           image: <CI_APPLICATION_REPOSITORY>:<CI_APPLICATION_TAG>
           ports:
             - containerPort: 3001
-          livenessProbe:
-            httpGet:
-              path: /healthz
-              port: 8080
-            initialDelaySeconds: 2
-            periodSeconds: 2
-          readinessProbe:
-            httpGet:
-              path: /healthz
-              port: 8080
-            initialDelaySeconds: 2
-            periodSeconds: 2
+#          livenessProbe:
+#            httpGet:
+#              path: /healthz
+#              port: 8080
+#            initialDelaySeconds: 2
+#            periodSeconds: 2
+#          readinessProbe:
+#            httpGet:
+#              path: /healthz
+#              port: 8080
+#            initialDelaySeconds: 2
+#            periodSeconds: 2

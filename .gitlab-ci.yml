@@ -32,25 +32,25 @@ stages:
   - performance
   - cleanup
 
-build:
-  stage: build
-  tags:
-    - java_maven
-  before_script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - |
-      if [[ -z "$CI_COMMIT_TAG" ]]; then
-      export CI_APPLICATION_REPOSITORY=${CI_APPLICATION_REPOSITORY:-$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG}
-      export CI_APPLICATION_TAG=${CI_APPLICATION_TAG:-$CI_COMMIT_SHA}
-      else
-      export CI_APPLICATION_REPOSITORY=${CI_APPLICATION_REPOSITORY:-$CI_REGISTRY_IMAGE}
-      export CI_APPLICATION_TAG=${CI_APPLICATION_TAG:-$CI_COMMIT_TAG}
-      fi
-
-  script:
-    - sh make.sh install
-    - cd $CI_PROJECT_DIR/orchestrator && make build-image
-    - cd $CI_PROJECT_DIR/orchestrator && sh make.sh push-image
+#build:
+#  stage: build
+#  tags:
+#    - java_maven
+#  before_script:
+#    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#    - |
+#      if [[ -z "$CI_COMMIT_TAG" ]]; then
+#      export CI_APPLICATION_REPOSITORY=${CI_APPLICATION_REPOSITORY:-$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG}
+#      export CI_APPLICATION_TAG=${CI_APPLICATION_TAG:-$CI_COMMIT_SHA}
+#      else
+#      export CI_APPLICATION_REPOSITORY=${CI_APPLICATION_REPOSITORY:-$CI_REGISTRY_IMAGE}
+#      export CI_APPLICATION_TAG=${CI_APPLICATION_TAG:-$CI_COMMIT_TAG}
+#      fi
+#
+#  script:
+#    - sh make.sh install
+#    - cd $CI_PROJECT_DIR/orchestrator && make build-image
+#    - cd $CI_PROJECT_DIR/orchestrator && sh make.sh push-image
 
 #test:
 #  stage: test
@@ -83,8 +83,8 @@ deploy:
     - kubectl config set-context default --cluster=k8s --user=gitlab
     - kubectl get pods
     - kubectl config use-context default
-    - sed -i "s/<CI_APPLICATION_REPOSITORY>/${CI_APPLICATION_REPOSITORY}/g" deployment.yaml
-    - sed -i "s/<CI_APPLICATION_TAG>/${CI_APPLICATION_TAG}/g" deployment.yaml
+    #- sed -i "s/<CI_APPLICATION_REPOSITORY>/${CI_APPLICATION_REPOSITORY}/g" deployment.yaml
+    #- sed -i "s/<CI_APPLICATION_TAG>/${CI_APPLICATION_TAG}/g" deployment.yaml
     - kubectl apply -f deployment.yaml
 
 include:

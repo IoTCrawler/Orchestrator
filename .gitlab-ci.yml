@@ -78,6 +78,7 @@ deploy:
     #- echo "${SERVER} is SERVER"
     #- echo "${CERTIFICATE_AUTHORITY_DATA} is CERTIFICATE_AUTHORITY_DATA"
     #- echo "${USER_TOKEN} is USER_TOKEN"
+    - rm /root/.kube
     - kubectl config set-cluster k8s --server="${SERVER}"
     - kubectl config set clusters.k8s.certificate-authority-data ${CERTIFICATE_AUTHORITY_DATA}
     - kubectl config set-credentials gitlab --token="${USER_TOKEN}"

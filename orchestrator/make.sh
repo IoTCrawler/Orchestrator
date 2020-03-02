@@ -35,8 +35,8 @@ if [ "$1" = "push-image" ]; then
 #    echo "Logging to GitLab Container Registry with CI credentials..."
 #    docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
 #  fi
-
-  echo "# Pushing to registry: gitlab.iotcrawler.net:4567/orchestrator/orchestrator${CI_APPLICATION_REPOSITORY}:$CI_APPLICATION_TAG"
-  docker push "gitlab.iotcrawler.net:4567/orchestrator/orchestrator${CI_APPLICATION_REPOSITORY}:$CI_APPLICATION_TAG"
-	docker push "gitlab.iotcrawler.net:4567/orchestrator/orchestrator${CI_APPLICATION_REPOSITORY}:latest"
+# gitlab.iotcrawler.net:4567/orchestrator/orchestrator is already in variables
+  echo "# Pushing to registry: ${CI_APPLICATION_REPOSITORY}:$CI_APPLICATION_TAG"
+  docker push "${CI_APPLICATION_REPOSITORY}:$CI_APPLICATION_TAG"
+	docker push "${CI_APPLICATION_REPOSITORY}:latest"
 fi

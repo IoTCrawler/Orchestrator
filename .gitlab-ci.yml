@@ -87,9 +87,9 @@ build:
 #    - kubectl config set-context default --cluster=k8s --user=gitlab
 #    - kubectl config use-context default
 #    - kubectl create -f configmaps.yaml
-#    - kubectl apply -f deployment.yaml
-#    #- sed -i "s/<CI_APPLICATION_REPOSITORY>/${CI_APPLICATION_REPOSITORY}/g" deployment.yaml
-#    #- sed -i "s/<CI_APPLICATION_TAG>/${CI_APPLICATION_TAG}/g" deployment.yaml
+#    - kubectl apply -f deployment_.yaml
+#    #- sed -i "s/<CI_APPLICATION_REPOSITORY>/${CI_APPLICATION_REPOSITORY}/g" deployment_.yaml
+#    #- sed -i "s/<CI_APPLICATION_TAG>/${CI_APPLICATION_TAG}/g" deployment_.yaml
 
 
 include:

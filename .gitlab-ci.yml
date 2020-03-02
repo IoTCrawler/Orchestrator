@@ -76,12 +76,11 @@ deploy:
   image: dtzar/helm-kubectl
   script:
     - echo "${SERVER} is SERVER"
-    - echo "${CERTIFICATE_AUTHORITY_DATA} is CERTIFICATE_AUTHORITY_DATA"
-    - echo "${USER_TOKEN} is USER_TOKEN"
+    #- echo "${CERTIFICATE_AUTHORITY_DATA} is CERTIFICATE_AUTHORITY_DATA"
+    #- echo "${USER_TOKEN} is USER_TOKEN"
     - echo "${CI_PROJECT_PATH_SLUG} is CI_PROJECT_PATH_SLUG"
     - echo "${KUBE_INGRESS_BASE_DOMAIN} is KUBE_INGRESS_BASE_DOMAIN"
     - echo "${KUBECONFIG} is KUBECONFIG"
-    -
     - kubectl config set-cluster k8s --server="${SERVER}"
     - kubectl config set clusters.k8s.certificate-authority-data ${CERTIFICATE_AUTHORITY_DATA}
     - kubectl config set-credentials gitlab --token="${USER_TOKEN}"

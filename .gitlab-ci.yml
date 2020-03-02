@@ -3,7 +3,7 @@ image: alpine:latest
 variables:
   # KUBE_INGRESS_BASE_DOMAIN is the application deployment domain and should be set as a variable at the group or project level.
   # KUBE_INGRESS_BASE_DOMAIN: domain.example.com
-  KUBE_NAMESPACE: orchestrator
+  KUBE_NAMESPACE: orchestrator-3-production
   POSTGRES_USER: user
   POSTGRES_PASSWORD: testing-password
   POSTGRES_ENABLED: "true"

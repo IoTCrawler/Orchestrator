@@ -32,17 +32,17 @@ stages:
   - performance
   - cleanup
 
-build:
-  stage: build
-  tags:
-    - java_maven
-  before_script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-  script:
-    - echo "building java from sources"
-    #- sh make.sh install
-    - cd $CI_PROJECT_DIR/orchestrator && make build-image
-    - cd $CI_PROJECT_DIR/orchestrator && sh make.sh push-image
+#build:
+#  stage: build
+#  tags:
+#    - java_maven
+#  before_script:
+#    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#  script:
+#    - echo "building java from sources"
+#    #- sh make.sh install
+#    - cd $CI_PROJECT_DIR/orchestrator && make build-image
+#    - cd $CI_PROJECT_DIR/orchestrator && sh make.sh push-image
 
 #test:
 #  stage: test
@@ -62,32 +62,31 @@ build:
 #  after_script:
 #    - cd $CI_PROJECT_DIR/orchestrator && make stop-containers
 
-#deploy:
-#  stage: deploy
-#  image: dtzar/helm-kubectl
-#  script:
-#    - echo "${SERVER} is SERVER"
-#    #- echo "${CERTIFICATE_AUTHORITY_DATA} is CERTIFICATE_AUTHORITY_DATA"
-#    #- echo "${USER_TOKEN} is USER_TOKEN"
-#    - echo "${CI_PROJECT_PATH_SLUG} is CI_PROJECT_PATH_SLUG"
-#    - echo "${KUBE_INGRESS_BASE_DOMAIN} is KUBE_INGRESS_BASE_DOMAIN"
-#    - echo "${KUBECONFIG} is KUBECONFIG"
-#    - kubectl config set-cluster k8s --server="${SERVER}"
-#    - kubectl config set clusters.k8s.certificate-authority-data ${CERTIFICATE_AUTHORITY_DATA}
-#    - kubectl config set-credentials gitlab --token="${USER_TOKEN}"
-#    - kubectl config set-context default --cluster=k8s --user=gitlab
-#    - kubectl config use-context default
-#    - kubectl create -f configmaps.yaml
-#    - kubectl apply -f deployment_.yaml
-#    #- sed -i "s/<CI_APPLICATION_REPOSITORY>/${CI_APPLICATION_REPOSITORY}/g" deployment_.yaml
-#    #- sed -i "s/<CI_APPLICATION_TAG>/${CI_APPLICATION_TAG}/g" deployment_.yaml
+deploy:
+  stage: deploy
+  image: dtzar/helm-kubectl
+  script:
+    - echo "${SERVER} is SERVER"
+    #- echo "${CERTIFICATE_AUTHORITY_DATA} is CERTIFICATE_AUTHORITY_DATA"
+    #- echo "${USER_TOKEN} is USER_TOKEN"
+    - echo "${CI_PROJECT_PATH_SLUG} is CI_PROJECT_PATH_SLUG"
+    - echo "${KUBE_INGRESS_BASE_DOMAIN} is KUBE_INGRESS_BASE_DOMAIN"
+    - echo "${KUBECONFIG} is KUBECONFIG"
+    - kubectl config set-cluster k8s --server="${SERVER}"
+    - kubectl config set clusters.k8s.certificate-authority-data ${CERTIFICATE_AUTHORITY_DATA}
+    - kubectl config set-credentials gitlab --token="${USER_TOKEN}"
+    - kubectl config set-context default --cluster=k8s --user=gitlab
+    - kubectl config use-context default
+    - kubectl apply -f deployment_.yaml --namespace orchestrator-3-production
+    #- sed -i "s/<CI_APPLICATION_REPOSITORY>/${CI_APPLICATION_REPOSITORY}/g" deployment_.yaml
+    #- sed -i "s/<CI_APPLICATION_TAG>/${CI_APPLICATION_TAG}/g" deployment_.yaml
 
 
 include:
   - template: Jobs/Build.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Jobs/Build.gitlab-ci.yml
   #- template: Jobs/Test.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Jobs/Test.gitlab-ci.yml
   #- template: Jobs/Code-Quality.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Jobs/Code-Quality.gitlab-ci.yml
-  - template: Jobs/Deploy.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml
+#  - template: Jobs/Deploy.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml
   - template: Jobs/DAST-Default-Branch-Deploy.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Jobs/DAST-Default-Branch-Deploy.gitlab-ci.yml
   - template: Jobs/Browser-Performance-Testing.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Jobs/Browser-Performance-Testing.gitlab-ci.yml
   - template: Security/DAST.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Security/DAST.gitlab-ci.yml

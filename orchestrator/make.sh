@@ -31,12 +31,12 @@ if [ "$1" = "push-image" ]; then
 #        export CI_APPLICATION_REPOSITORY=${CI_APPLICATION_REPOSITORY:-$CI_REGISTRY_IMAGE}
 #        export CI_APPLICATION_TAG=${CI_APPLICATION_TAG:-$CI_COMMIT_TAG}
 #  fi
-  if [[ -n "$CI_REGISTRY" && -n "$CI_REGISTRY_USER" ]]; then
+  if [ -n "$CI_REGISTRY" && -n "$CI_REGISTRY_USER" ]; then
     echo "Logging to GitLab Container Registry with CI credentials..."
     docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
   fi
 
-  echo "# Pushing to registry: ${CI_REGISTRY}/$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
+  echo "# Pushing to registry: $CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
   docker push "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
 	docker push "$CI_APPLICATION_REPOSITORY:latest"
 fi

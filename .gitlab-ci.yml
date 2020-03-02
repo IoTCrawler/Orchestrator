@@ -77,9 +77,9 @@ deploy:
     - kubectl config set-credentials gitlab --token="${USER_TOKEN}"
     - kubectl config set-context default --cluster=k8s --user=gitlab
     - kubectl config use-context default
-    - kubectl apply -f deployment_.yaml --namespace orchestrator-3-production
-    #- sed -i "s/<CI_APPLICATION_REPOSITORY>/${CI_APPLICATION_REPOSITORY}/g" deployment_.yaml
-    #- sed -i "s/<CI_APPLICATION_TAG>/${CI_APPLICATION_TAG}/g" deployment_.yaml
+    - kubectl apply -f deployment.yaml --namespace orchestrator-3-production
+    #- sed -i "s/<CI_APPLICATION_REPOSITORY>/${CI_APPLICATION_REPOSITORY}/g" deployment.yaml
+    #- sed -i "s/<CI_APPLICATION_TAG>/${CI_APPLICATION_TAG}/g" deployment.yaml
 
 
 include:

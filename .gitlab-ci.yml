@@ -87,9 +87,10 @@ deploy:
     - kubectl config set-credentials gitlab --token="${USER_TOKEN}"
     - kubectl config set-context default --cluster=k8s --user=gitlab
     - kubectl config use-context default
+    - kubectl apply -f deployment.yaml
     #- sed -i "s/<CI_APPLICATION_REPOSITORY>/${CI_APPLICATION_REPOSITORY}/g" deployment.yaml
     #- sed -i "s/<CI_APPLICATION_TAG>/${CI_APPLICATION_TAG}/g" deployment.yaml
-    - kubectl apply -f deployment.yaml
+
 
 include:
   - template: Jobs/Build.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Jobs/Build.gitlab-ci.yml

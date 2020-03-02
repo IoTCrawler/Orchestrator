@@ -33,5 +33,5 @@ if [ "$1" = "push-image" ]; then
   fi
   echo "# Pushing to registry: $CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
   docker push "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
-	#docker push "$CI_APPLICATION_REPOSITORY:latest"
+	docker push "$CI_APPLICATION_REPOSITORY:latest"
 fi

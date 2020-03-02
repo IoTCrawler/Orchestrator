@@ -49,7 +49,7 @@ build:
 
   script:
     #- echo "build skipped"
-    - sh make.sh install
+    #- sh make.sh install
     - cd $CI_PROJECT_DIR/orchestrator && make build-image
     - cd $CI_PROJECT_DIR/orchestrator && sh make.sh push-image
 

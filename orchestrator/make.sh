@@ -36,7 +36,7 @@ if [ "$1" = "push-image" ]; then
 #    docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
 #  fi
 
-  echo "# Pushing to registry: $CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
+  echo "# Pushing to registry: gitlab.iotcrawler.net:4567/orchestrator/orchestrator/${CI_APPLICATION_REPOSITORY}:$CI_APPLICATION_TAG"
   docker push "gitlab.iotcrawler.net:4567/orchestrator/orchestrator/${CI_APPLICATION_REPOSITORY}:$CI_APPLICATION_TAG"
 	docker push "gitlab.iotcrawler.net:4567/orchestrator/orchestrator/${CI_APPLICATION_REPOSITORY}:latest"
 fi

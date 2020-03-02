@@ -21,7 +21,8 @@ spec:
     spec:
       containers:
         - name: orchestrator
-          image: gitlab.iotcrawler.net:4567/orchestrator/orchestrator:1.0.9
+          #image: gitlab.iotcrawler.net:4567/orchestrator/orchestrator:1.0.9
+          image: gitlab.iotcrawler.net:4567/orchestrator/orchestrator/master:a94f166244a3e40ffd48d30882d72e0435f1e020
           #image: <CI_APPLICATION_REPOSITORY>:<CI_APPLICATION_TAG>
           ports:
             - containerPort: 3001

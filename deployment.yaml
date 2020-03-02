@@ -1,5 +1,6 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+#kind: Deployment
+kind: Pod
 metadata:
   name: iotcrawler
   labels:
@@ -26,9 +27,9 @@ spec:
           #image: <CI_APPLICATION_REPOSITORY>:<CI_APPLICATION_TAG>
           ports:
             - containerPort: 3001
-#          env:
-#            - name: IOTCRAWLER_RABBIT_HOST
-#              value: "rabbit"
+          env:
+            - name: IOTCRAWLER_RABBIT_HOST
+              value: "rabbit"
 #            - name: IOTCRAWLER_REDIS_HOST
 #              value: "redis"
 #            - name: NGSILD_BROKER_URL

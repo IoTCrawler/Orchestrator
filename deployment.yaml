@@ -5,20 +5,20 @@ metadata:
   name: iotcrawler
   labels:
     app: orchestrator
-# spec:
-#   replicas: 1
-#   selector:
-#     matchLabels:
-#       app: orchestrator
-#   strategy:
-#     type: RollingUpdate
-#     rollingUpdate:
-#       maxSurge: 1
-#       maxUnavailable: 33%
-#   template:
-#     metadata:
-#       labels:
-#         app: orchestrator
+ spec:
+   replicas: 1
+   selector:
+     matchLabels:
+       app: orchestrator
+   strategy:
+     type: RollingUpdate
+     rollingUpdate:
+       maxSurge: 1
+       maxUnavailable: 33%
+   template:
+     metadata:
+       labels:
+         app: orchestrator
 spec:
   containers:
     - name: orchestrator

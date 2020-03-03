@@ -22,6 +22,10 @@ fi
 #	mvn -Dtest=OrchestratorTestsRPC surefire:test
 #fi
 
+if [ "$1" = "build-image" ]; then
+  mvn compile jib:dockerBuild
+fi
+
 if [ "$1" = "push-image" ]; then
 #  echo "# Setting env vars for pushing"
   if [ -z "$CI_COMMIT_TAG" ]; then

@@ -1,8 +1,8 @@
 package:
 	mvn package -DskipTests=true
 	
-build-image:
-	mvn compile jib:dockerBuild
+# build-image:
+# 	mvn compile jib:dockerBuild
 
 # push-image:
 # 	docker push "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"

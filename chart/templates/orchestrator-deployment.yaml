@@ -38,7 +38,7 @@ spec:
           value: http://iotbroker:8060/ngsi10
         - name: NGSILD_BROKER_URL
           value: http://djane:3000/ngsi-ld/
-        image: gitlab.iotcrawler.net:4567/orchestrator/orchestrator:1.0.9
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: ""
         name: orchestrator
         ports:

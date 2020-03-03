@@ -16,7 +16,7 @@ variables:
 
   DOCKER_TLS_CERTDIR: ""  # https://gitlab.com/gitlab-org/gitlab-runner/issues/4501
 
-  KUBE_NAMESPACE: orchestrator-local-production
+  #KUBE_NAMESPACE: orchestrator-local-production
   IOTCRAWLER_RABBIT_HOST: rabbit
   IOTCRAWLER_REDIS_HOST: redis
   NGSILD_BROKER_URL: http://djane:3000/ngsi-ld/

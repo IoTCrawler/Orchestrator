@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -c -f docker-compose.yml
+    kompose.version: 1.21.0 (992df58d8)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: ranking
+  name: ranking
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: ranking
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -c -f docker-compose.yml
+        kompose.version: 1.21.0 (992df58d8)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/iotcrawler: "true"
+        io.kompose.service: ranking
+    spec:
+      containers:
+      - env:
+        - name: INDEXER_URL
+          value: http://djane:3000
+        image: gitlab.iotcrawler.net:4567/ranking/ranking/2-perform-term-to-uri-expansion-as-specified-by-ngsi-ld-section-5-5-7:latest
+        imagePullPolicy: ""
+        name: ranking
+        ports:
+        - containerPort: 3003
+        resources: {}
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes: null
+status: {}

@@ -25,6 +25,9 @@ variables:
   HTTP_SERVER_HOST: orchestrator
   HTTP_SERVER_PORT: 3001
 
+  CI_APPLICATION_REPOSITORY: gitlab.iotcrawler.net:4567/orchestrator/orchestrator/master
+  CI_APPLICATION_TAG: 62a1aeb4408048c4e255fb999d4bf11701588c74
+
 stages:
   - build
   - test
@@ -41,17 +44,17 @@ stages:
   - performance
   - cleanup
 
-build:
-  stage: build
-  tags:
-    - java_maven
-  before_script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-  script:
-    - echo "building java from sources is skipped"
-    #- sh make.sh install
-    - cd $CI_PROJECT_DIR/orchestrator && make build-image
-    - cd $CI_PROJECT_DIR/orchestrator && sh make.sh push-image
+#build:
+#  stage: build
+#  tags:
+#    - java_maven
+#  before_script:
+#    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#  script:
+#    - echo "building java from sources is skipped"
+#    #- sh make.sh install
+#    - cd $CI_PROJECT_DIR/orchestrator && make build-image
+#    - cd $CI_PROJECT_DIR/orchestrator && sh make.sh push-image
 
 #test:
 #  stage: test
@@ -70,6 +73,8 @@ build:
 #    #- cd $CI_PROJECT_DIR/orchestrator && make rpc-client-test
 #  after_script:
 #    - cd $CI_PROJECT_DIR/orchestrator && make stop-containers
+
+
 
 deploy:
   stage: deploy

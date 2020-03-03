@@ -3,7 +3,7 @@ image: alpine:latest
 variables:
   # KUBE_INGRESS_BASE_DOMAIN is the application deployment domain and should be set as a variable at the group or project level.
   # KUBE_INGRESS_BASE_DOMAIN: domain.example.com
-  KUBE_NAMESPACE: orchestrator-3-production
+
   POSTGRES_USER: user
   POSTGRES_PASSWORD: testing-password
   POSTGRES_ENABLED: "true"
@@ -15,6 +15,15 @@ variables:
   ROLLOUT_RESOURCE_TYPE: deployment
 
   DOCKER_TLS_CERTDIR: ""  # https://gitlab.com/gitlab-org/gitlab-runner/issues/4501
+
+  KUBE_NAMESPACE: orchestrator-3-production
+  IOTCRAWLER_RABBIT_HOST: rabbit
+  IOTCRAWLER_REDIS_HOST: redis
+  NGSILD_BROKER_URL: http://djane:3000/ngsi-ld/
+  RANKING_COMPONENT_URL: http://djane:3000/ngsi-ld/
+  IOT_BROKER_URL: http://iotbroker:8060/ngsi10
+  HTTP_SERVER_HOST: orchestrator
+  HTTP_SERVER_PORT: 3001
 
 stages:
   - build
@@ -78,8 +87,8 @@ deploy:
     - kubectl config set-context default --cluster=k8s --user=gitlab
     - kubectl config use-context default
     - kubectl apply -f deployment.yaml --namespace ${KUBE_NAMESPACE}
-    #- sed -i "s/<CI_APPLICATION_REPOSITORY>/${CI_APPLICATION_REPOSITORY}/g" deployment.yaml
-    #- sed -i "s/<CI_APPLICATION_TAG>/${CI_APPLICATION_TAG}/g" deployment.yaml
+    - sed -i "s/<CI_APPLICATION_REPOSITORY>/${CI_APPLICATION_REPOSITORY}/g" deployment.yaml
+    - sed -i "s/<CI_APPLICATION_TAG>/${CI_APPLICATION_TAG}/g" deployment.yaml
 
 
 include:

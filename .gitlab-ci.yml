@@ -48,8 +48,8 @@ build:
   stage: build
   tags:
     - java_maven
-  before_script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#  before_script:
+#    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
     - echo "building java from sources is skipped"
     #- sh make.sh install
@@ -73,28 +73,6 @@ build:
 #    #- cd $CI_PROJECT_DIR/orchestrator && make rpc-client-test
 #  after_script:
 #    - cd $CI_PROJECT_DIR/orchestrator && make stop-containers
-
-
-
-#deploy:
-#  stage: deploy
-#  image: dtzar/helm-kubectl
-#  script:
-#    - echo "${SERVER} is SERVER"
-#    #- echo "${CERTIFICATE_AUTHORITY_DATA} is CERTIFICATE_AUTHORITY_DATA"
-#    #- echo "${USER_TOKEN} is USER_TOKEN"
-#    - echo "${CI_PROJECT_PATH_SLUG} is CI_PROJECT_PATH_SLUG"
-#    - echo "${KUBE_INGRESS_BASE_DOMAIN} is KUBE_INGRESS_BASE_DOMAIN"
-#    - echo "${KUBECONFIG} is KUBECONFIG"
-#    - kubectl config set-cluster k8s --server="${SERVER}"
-#    - kubectl config set clusters.k8s.certificate-authority-data ${CERTIFICATE_AUTHORITY_DATA}
-#    - kubectl config set-credentials gitlab --token="${USER_TOKEN}"
-#    - kubectl config set-context default --cluster=k8s --user=gitlab
-#    - kubectl config use-context default
-#    - sed -i "s/<CI_APPLICATION_REPOSITORY>/$CI_APPLICATION_REPOSITORY/g" deployment.yaml
-#    - sed -i "s/<CI_APPLICATION_TAG>/$CI_APPLICATION_TAG/g" deployment.yaml
-#    - cat deployment.yaml
-#    - kubectl apply -f deployment.yaml --namespace ${KUBE_NAMESPACE}
 
 
 include:

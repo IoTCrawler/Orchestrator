@@ -25,22 +25,21 @@ spec:
     spec:
       containers:
       - env:
-        - name: HTTP_SERVER_HOST
-          value: orchestrator
-        - name: HTTP_SERVER_PORT
-          value: "3001"
         - name: IOTCRAWLER_RABBIT_HOST
-          value: rabbit
+          value: "rabbit"  #production-auto-deploy.${repository-name}-${project-id}-production:${port}
         - name: IOTCRAWLER_REDIS_HOST
-          value: redis
-        - name: IOT_BROKER_URL
-          value: http://iotbroker:8060/ngsi10
+          value: "redis"
         - name: NGSILD_BROKER_URL
-          value: http://djane:3000/ngsi-ld/
+          value: "http://155.54.95.248:9090/ngsi-ld/"
+          #value: "http://metadata-repository-scorpiobroker.35.241.228.250.nip.io/ngsi-ld/"
+        - name: HTTP_SERVER_HOST
+          value: "http://orchestrator-orchestrator.35.241.228.250.nip.io"
+        - name: HTTP_SERVER_PORT
+          value: "80"
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: ""
         imagePullSecrets:
-          - name: docker-registry
+          - name: gitlab-registry-root-orchestrator
         name: orchestrator
         ports:
         - containerPort: 3001

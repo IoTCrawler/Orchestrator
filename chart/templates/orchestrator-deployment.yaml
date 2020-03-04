@@ -23,42 +23,44 @@ spec:
       labels:
         io.kompose.service: orchestrator
     spec:
+      imagePullSecrets:
+{{ toYaml .Values.image.secrets | indent 10 }}
       containers:
-      - env:
-        - name: IOTCRAWLER_RABBIT_HOST
-          value: "rabbit"  #production-auto-deploy.${repository-name}-${project-id}-production:${port}
-        - name: IOTCRAWLER_REDIS_HOST
-          value: "redis"
-        - name: NGSILD_BROKER_URL
-          value: "http://155.54.95.248:9090/ngsi-ld/"
-          #value: "http://metadata-repository-scorpiobroker.35.241.228.250.nip.io/ngsi-ld/"
-        - name: HTTP_SERVER_HOST
-          value: "http://orchestrator-orchestrator.35.241.228.250.nip.io"
-        - name: HTTP_SERVER_PORT
-          value: "80"
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        imagePullPolicy: IfNotPresent
-        imagePullSecrets:
-  {{ toYaml .Values.image.secrets | indent 10 }}
-containers:
-  - name: {{ .Chart.Name }}
-    image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-    imagePullPolicy: {{ .Values.image.pullPolicy }}
-    {{- if .Values.application.secretName }}
-    envFrom:
-      - secretRef:
-          name: {{ .Values.application.secretName }}
-    {{- end }}
-    ports:
-      - name: "{{ .Values.service.name }}"
-        containerPort: {{ .Values.service.internalPort }}
-    resources:
-  {{ toYaml .Values.resources | indent 12 }}
-        name: orchestrator
-        ports:
-        - containerPort: 3001
-        resources: {}
-      restartPolicy: Always
-      serviceAccountName: ""
-      volumes: null
-status: {}
+      - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+#      - env:
+#        - name: IOTCRAWLER_RABBIT_HOST
+#          value: "rabbit"  #production-auto-deploy.${repository-name}-${project-id}-production:${port}
+#        - name: IOTCRAWLER_REDIS_HOST
+#          value: "redis"
+#        - name: NGSILD_BROKER_URL
+#          value: "http://155.54.95.248:9090/ngsi-ld/"
+#          #value: "http://metadata-repository-scorpiobroker.35.241.228.250.nip.io/ngsi-ld/"
+#        - name: HTTP_SERVER_HOST
+#          value: "http://orchestrator-orchestrator.35.241.228.250.nip.io"
+#        - name: HTTP_SERVER_PORT
+#          value: "80"
+
+#containers:
+#  - name: {{ .Chart.Name }}
+#    image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+#    imagePullPolicy: {{ .Values.image.pullPolicy }}
+#    {{- if .Values.application.secretName }}
+#    envFrom:
+#      - secretRef:
+#          name: {{ .Values.application.secretName }}
+#    {{- end }}
+#    ports:
+#      - name: "{{ .Values.service.name }}"
+#        containerPort: {{ .Values.service.internalPort }}
+#    resources:
+#  {{ toYaml .Values.resources | indent 12 }}
+#        name: orchestrator
+#        ports:
+#        - containerPort: 3001
+#        resources: {}
+#      restartPolicy: Always
+#      serviceAccountName: ""
+#      volumes: null
+#status: {}

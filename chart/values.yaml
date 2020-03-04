@@ -5,7 +5,7 @@ replicaCount: 1
 strategyType:
 enableSelector:
 deploymentApiVersion: apps/v1
-fullnameOverride: "production"
+#fullnameOverride: "production"
 image:
   repository: gitlab.iotcrawler.net:4567/orchestrator/orchestrator/master
   tag: latest

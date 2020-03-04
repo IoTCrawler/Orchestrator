@@ -29,6 +29,9 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+        ports:
+          - containerPort: 3001
+          - containerPort: 80
         env:
           - name: IOTCRAWLER_RABBIT_HOST
             value: "rabbit"  #production-auto-deploy.${repository-name}-${project-id}-production:${port}
@@ -38,7 +41,7 @@ spec:
             value: "http://155.54.95.248:9090/ngsi-ld/"
             #value: "http://metadata-repository-scorpiobroker.35.241.228.250.nip.io/ngsi-ld/"
           - name: HTTP_SERVER_HOST
-            value: "http://orchestrator-orchestrator.35.241.228.250.nip.io"
+            value: "orchestrator.orchestrator-3-production"
           - name: HTTP_SERVER_PORT
             value: "80"
 

@@ -45,7 +45,9 @@ public class EnvVariablesSetter {
 
 
         if(!System.getenv().containsKey(IOTCRAWLER_ORCHESTRATOR_URL))
-            environmentVariables.set(IOTCRAWLER_ORCHESTRATOR_URL, "http://localhost:3001/ngsi-ld/");
+            environmentVariables.set(IOTCRAWLER_ORCHESTRATOR_URL, "http://orchestrator-orchestrator.35.241.228.250.nip.io/ngsi-ld/");
+            //environmentVariables.set(IOTCRAWLER_ORCHESTRATOR_URL, "http://localhost:3001/ngsi-ld/");
+
 
         if(!System.getenv().containsKey(IOTCRAWLER_RABBIT_HOST))
             //environmentVariables.set(IOTCRAWLER_RABBIT_HOST, "localhost");

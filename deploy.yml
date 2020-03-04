@@ -115,7 +115,7 @@ canary:
     - kubectl config use-context default
     - kubectl delete --all deployment --namespace ${KUBE_NAMESPACE}
     - kubectl delete --all service --namespace ${KUBE_NAMESPACE}
-    #- kubectl create secret docker-registry regcred --docker-server=$CI_REGISTRY --docker-username=$CI_REGISTRY_USER --docker-password=$CI_REGISTRY_PASSWORD
+    - kubectl create secret -n "$KUBE_NAMESPACE" docker-registry "gitlab-registry-${CI_PROJECT_PATH_SLUG}" --docker-server="$CI_REGISTRY" --docker-username="${CI_DEPLOY_USER:-$CI_REGISTRY_USER}" --docker-password="${CI_DEPLOY_PASSWORD:-$CI_REGISTRY_PASSWORD}" --docker-email="$GITLAB_USER_EMAIL" -o yaml --dry-run | kubectl replace -n "$KUBE_NAMESPACE" --force -f -
     - auto-deploy check_kube_domain
     - auto-deploy download_chart
     - auto-deploy ensure_namespace

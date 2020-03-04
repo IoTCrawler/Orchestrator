@@ -38,6 +38,8 @@ public class NgsiLDClientTest_Remote extends NgsiLDClientTest {
     @Before
     public void init(){
         environmentVariables.set(NGSILD_BROKER_URL, "http://155.54.95.248:9090/ngsi-ld/");
+        //environmentVariables.set(NGSILD_BROKER_URL, "http://metadata-repository-scorpiobroker.35.241.228.250.nip.io/ngsi-ld/");
+
         super.init();
     }
 

@@ -85,7 +85,7 @@ public class OrchestratorTests /*extends EnvVariablesSetter*/ {
 
     @Test
     @Order(2)
-    @Ignore
+    //@Ignore
     public void registerStreamTest() throws Exception {
         LOGGER.info("registerStreamTest()");
         //byte[] iotStreamModelJson = Files.readAllBytes(Paths.get("samples/IoTStream.json"));

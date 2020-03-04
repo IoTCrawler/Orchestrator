@@ -29,18 +29,18 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: "{{ .Values.image.pullPolicy }}"
-#      - env:
-#        - name: IOTCRAWLER_RABBIT_HOST
-#          value: "rabbit"  #production-auto-deploy.${repository-name}-${project-id}-production:${port}
-#        - name: IOTCRAWLER_REDIS_HOST
-#          value: "redis"
-#        - name: NGSILD_BROKER_URL
-#          value: "http://155.54.95.248:9090/ngsi-ld/"
-#          #value: "http://metadata-repository-scorpiobroker.35.241.228.250.nip.io/ngsi-ld/"
-#        - name: HTTP_SERVER_HOST
-#          value: "http://orchestrator-orchestrator.35.241.228.250.nip.io"
-#        - name: HTTP_SERVER_PORT
-#          value: "80"
+      - env:
+        - name: IOTCRAWLER_RABBIT_HOST
+          value: "rabbit"  #production-auto-deploy.${repository-name}-${project-id}-production:${port}
+        - name: IOTCRAWLER_REDIS_HOST
+          value: "redis"
+        - name: NGSILD_BROKER_URL
+          value: "http://155.54.95.248:9090/ngsi-ld/"
+          #value: "http://metadata-repository-scorpiobroker.35.241.228.250.nip.io/ngsi-ld/"
+        - name: HTTP_SERVER_HOST
+          value: "http://orchestrator-orchestrator.35.241.228.250.nip.io"
+        - name: HTTP_SERVER_PORT
+          value: "80"
 
 #containers:
 #  - name: {{ .Chart.Name }}

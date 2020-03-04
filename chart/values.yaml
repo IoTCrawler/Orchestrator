@@ -6,7 +6,7 @@ strategyType:
 enableSelector:
 deploymentApiVersion: apps/v1
 image:
-  repository: ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}
+  repository: gitlab.iotcrawler.net:4567/orchestrator/orchestrator/master
   tag: latest
   pullPolicy: IfNotPresent
   secrets:

@@ -9,8 +9,6 @@ metadata:
     io.kompose.service: orchestrator
   name: orchestrator
 spec:
-  imagePullSecrets:
-    - name: gitlab-registry-root-orchestrator
   ports:
   - name: "3001"
     port: 3001

@@ -37,7 +37,7 @@ spec:
         - name: HTTP_SERVER_PORT
           value: "80"
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        imagePullPolicy: ""
+#        imagePullPolicy: ""
         imagePullSecrets:
           - name: gitlab-registry-root-orchestrator
         name: orchestrator

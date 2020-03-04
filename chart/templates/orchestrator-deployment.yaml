@@ -39,9 +39,21 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: IfNotPresent
         imagePullSecrets:
-#          - name: gitlab-registry
-#          - name: gitlab-registry-root-orchestrator
-          - name: gitlab-registry-orchestrator-orchestrator
+  {{ toYaml .Values.image.secrets | indent 10 }}
+containers:
+  - name: {{ .Chart.Name }}
+    image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+    imagePullPolicy: {{ .Values.image.pullPolicy }}
+    {{- if .Values.application.secretName }}
+    envFrom:
+      - secretRef:
+          name: {{ .Values.application.secretName }}
+    {{- end }}
+    ports:
+      - name: "{{ .Values.service.name }}"
+        containerPort: {{ .Values.service.internalPort }}
+    resources:
+  {{ toYaml .Values.resources | indent 12 }}
         name: orchestrator
         ports:
         - containerPort: 3001

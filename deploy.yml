@@ -108,6 +108,7 @@ canary:
   extends: .auto-deploy
   stage: production
   script:
+    - echo "KUBE_NAMESPACE ${KUBE_NAMESPACE}"
     - kubectl config set-cluster k8s --server="${SERVER}"
     - kubectl config set clusters.k8s.certificate-authority-data ${CERTIFICATE_AUTHORITY_DATA}
     - kubectl config set-credentials gitlab --token="${USER_TOKEN}"

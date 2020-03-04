@@ -39,8 +39,8 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: IfNotPresent
         imagePullSecrets:
-          - name: gitlab-registry-root-orchestrator
-          - name: gitlab-registry
+          - name: production-secret
+#          - name: gitlab-registry
         name: orchestrator
         ports:
         - containerPort: 3001

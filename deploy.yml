@@ -116,6 +116,8 @@ canary:
     - kubectl config use-context default
     - kubectl delete --all deployment --namespace ${KUBE_NAMESPACE}
     - kubectl delete --all service --namespace ${KUBE_NAMESPACE}
+    - echo "HELM_HOST $HELM_HOST"
+    - helm version
     #- helm ls
     #- helm init --kubeconfig kube_config --client-only
     #- helm ls

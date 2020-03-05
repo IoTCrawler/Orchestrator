@@ -109,13 +109,13 @@ canary:
   stage: production
   script:
 #    - echo "KUBE_NAMESPACE ${KUBE_NAMESPACE}"
-#    - kubectl config set-cluster k8s --server="${SERVER}"
-#    - kubectl config set clusters.k8s.certificate-authority-data ${CERTIFICATE_AUTHORITY_DATA}
-#    - kubectl config set-credentials gitlab --token="${USER_TOKEN}"
-#    - kubectl config set-context default --cluster=k8s --user=gitlab
-#    - kubectl config use-context default
-#    - kubectl delete --all deployment --namespace ${KUBE_NAMESPACE}
-#    - kubectl delete --all service --namespace ${KUBE_NAMESPACE}
+    - kubectl config set-cluster k8s --server="${SERVER}"
+    - kubectl config set clusters.k8s.certificate-authority-data ${CERTIFICATE_AUTHORITY_DATA}
+    - kubectl config set-credentials gitlab --token="${USER_TOKEN}"
+    - kubectl config set-context default --cluster=k8s --user=gitlab
+    - kubectl config use-context default
+    - kubectl delete --all deployment --namespace ${KUBE_NAMESPACE}
+    - kubectl delete --all service --namespace ${KUBE_NAMESPACE}
     - helm ls
     - helm init --kubeconfig kube_config --client-only
     - helm ls

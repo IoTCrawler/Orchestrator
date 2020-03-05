@@ -66,21 +66,21 @@ public class OrchestratorTestsRPC extends OrchestratorTests {
 
         rpcClient = new OrchestratorRPCClient();
         try {
-            if(orchestrator!=null)
-                orchestrator.init();
+//            if(orchestrator!=null)
+//                orchestrator.init();
             rpcClient.init();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        if(orchestrator!=null) {
-            try {
-                orchestrator.run();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+//
+//        if(orchestrator!=null) {
+//            try {
+//                orchestrator.run();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
 //        new Thread(new Runnable() {
 //            @Override
 //            public void run() {
@@ -95,31 +95,6 @@ public class OrchestratorTestsRPC extends OrchestratorTests {
 
     }
 
-
-
-    @Order(1)
-    @Test
-    public void registerStreamTest() throws Exception {
-        LOGGER.info("registerStreamTest()");
-        byte[] iotStreamModelJson = Files.readAllBytes(Paths.get("samples/IoTStream.json"));
-        IoTStream ioTStream = IoTStream.fromJson(iotStreamModelJson);
-        //ioTStream.addProperty(RDFS.label, "label1");
-        Boolean result = rpcClient.registerEntity(ioTStream);
-        LOGGER.info("Stream registered");
-        Assert.isTrue(result);
-    }
-
-    @Order(2)
-    @Test
-    public void registerEntityTest() throws Exception {
-        LOGGER.info("registerEntityTest()");
-        byte[] iotStreamModelJson = Files.readAllBytes(Paths.get("samples/Platform.json"));
-        //byte[] iotStreamModelJson = Files.readAllBytes(Paths.get("samples/IoTStream.json"));
-        RDFModel entity = RDFModel.fromJson(iotStreamModelJson);
-        //ioTStream.addProperty(RDFS.label, "label1");
-        Boolean result = rpcClient.registerEntity(entity);
-        Assert.isTrue(result);
-    }
 
     @Order(3)
     @Test

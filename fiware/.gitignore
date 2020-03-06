@@ -1,0 +1,13 @@
+.class
+.settings
+.project
+.classpath
+target
+bin
+#intellij
+.idea/
+*.iml
+*.iws
+spy.log
+*.log
+smartHome/src/test/java/com/agt/smartHomeCrawler/EnvVariablesSetter.java

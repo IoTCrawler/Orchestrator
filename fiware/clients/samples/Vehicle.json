@@ -1,0 +1,23 @@
+{
+  "@id": "urn:ngsi-ld:Vehicle:A4569",
+  "@type": "Vehicle",
+  "brandName": {
+    "type": "Property",
+    "value": "Mercedes"
+  },
+  "isParked": {
+    "@type": "Relationship",
+    "object": "urn:ngsi-ld:OffStreetParking:Downtown1",
+    "observedAt": "2018-12-29T12:00:04Z",
+    "providedBy": {
+      "@type": "Relationship",
+      "object": "urn:ngsi-ld:Person:Bob"
+    }
+  },
+  "@context": {
+    "brandName":"http://example.org/vehicle/brandName",
+    "commonTerms":"http://example.org/ngsi-ld/commonTerms.jsonld",
+    "vehicle":"http://example.org/ngsi-ld/vehicle.jsonld",
+    "parking":"http://example.org/ngsi-ld/parking.jsonld"
+  }
+}

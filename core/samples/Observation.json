@@ -1,0 +1,95 @@
+{
+  "@id" : "http://purl.org/iot/ontology/iot-stream#Stream_FIBARO%2520Wall%2520plug%2520living%2520room_CurrentEnergyUse",
+  "@type" : "http://purl.org/iot/ontology/iot-stream#StreamObservation",
+  "belongsTo" : "http://purl.org/iot/ontology/iot-stream#gateway_00055110D732_device_8_sensor_64_stream",
+  "http://www.agtinternational.com/iotcrawler/ontologies/iotc#based_on" : 1,
+  "http://www.agtinternational.com/iotcrawler/ontologies/iotc#changed_by" : 1,
+  "changed_by:_id" : 0,
+  "current_value" : "1.9",
+  "http://www.agtinternational.com/iotcrawler/ontologies/iotc#editable" : 0,
+  "http://www.agtinternational.com/iotcrawler/ontologies/iotc#id" : 64,
+  "http://www.agtinternational.com/iotcrawler/ontologies/iotc#instance" : 0,
+  "http://www.agtinternational.com/iotcrawler/ontologies/iotc#last_changed" : 1550577678,
+  "last_value" : "0.0",
+  "http://www.agtinternational.com/iotcrawler/ontologies/iotc#maximum" : 3000,
+  "http://www.agtinternational.com/iotcrawler/ontologies/iotc#minimum" : 0,
+  "http://www.agtinternational.com/iotcrawler/ontologies/iotc#node_id" : 8,
+  "http://www.agtinternational.com/iotcrawler/ontologies/iotc#state" : 1,
+  "step_value" : "1.0",
+  "target_value" : "0.0",
+  "http://www.agtinternational.com/iotcrawler/ontologies/iotc#type" : 3,
+  "unit" : "W",
+  "@context" : {
+    "last_value" : {
+      "@id" : "http://www.agtinternational.com/iotcrawler/ontologies/iotc#last_value",
+      "@type" : "http://www.w3.org/2001/XMLSchema#decimal"
+    },
+    "changed_by" : {
+      "@id" : "http://www.agtinternational.com/iotcrawler/ontologies/iotc#changed_by",
+      "@type" : "http://www.w3.org/2001/XMLSchema#integer"
+    },
+    "current_value" : {
+      "@id" : "http://www.agtinternational.com/iotcrawler/ontologies/iotc#current_value",
+      "@type" : "http://www.w3.org/2001/XMLSchema#decimal"
+    },
+    "last_changed" : {
+      "@id" : "http://www.agtinternational.com/iotcrawler/ontologies/iotc#last_changed",
+      "@type" : "http://www.w3.org/2001/XMLSchema#integer"
+    },
+    "unit" : {
+      "@id" : "http://www.agtinternational.com/iotcrawler/ontologies/iotc#unit"
+    },
+    "belongsTo" : {
+      "@id" : "http://purl.org/iot/ontology/iot-stream#belongsTo",
+      "@type" : "@id"
+    },
+    "instance" : {
+      "@id" : "http://www.agtinternational.com/iotcrawler/ontologies/iotc#instance",
+      "@type" : "http://www.w3.org/2001/XMLSchema#integer"
+    },
+    "changed_by_id" : {
+      "@id" : "http://www.agtinternational.com/iotcrawler/ontologies/iotc#changed_by_id",
+      "@type" : "http://www.w3.org/2001/XMLSchema#integer"
+    },
+    "minimum" : {
+      "@id" : "http://www.agtinternational.com/iotcrawler/ontologies/iotc#minimum",
+      "@type" : "http://www.w3.org/2001/XMLSchema#integer"
+    },
+    "maximum" : {
+      "@id" : "http://www.agtinternational.com/iotcrawler/ontologies/iotc#maximum",
+      "@type" : "http://www.w3.org/2001/XMLSchema#integer"
+    },
+    "step_value" : {
+      "@id" : "http://www.agtinternational.com/iotcrawler/ontologies/iotc#step_value",
+      "@type" : "http://www.w3.org/2001/XMLSchema#decimal"
+    },
+    "state" : {
+      "@id" : "http://www.agtinternational.com/iotcrawler/ontologies/iotc#state",
+      "@type" : "http://www.w3.org/2001/XMLSchema#integer"
+    },
+    "node_id" : {
+      "@id" : "http://www.agtinternational.com/iotcrawler/ontologies/iotc#node_id",
+      "@type" : "http://www.w3.org/2001/XMLSchema#integer"
+    },
+    "based_on" : {
+      "@id" : "http://www.agtinternational.com/iotcrawler/ontologies/iotc#based_on",
+      "@type" : "http://www.w3.org/2001/XMLSchema#integer"
+    },
+    "target_value" : {
+      "@id" : "http://www.agtinternational.com/iotcrawler/ontologies/iotc#target_value",
+      "@type" : "http://www.w3.org/2001/XMLSchema#decimal"
+    },
+    "type" : {
+      "@id" : "http://www.agtinternational.com/iotcrawler/ontologies/iotc#type",
+      "@type" : "http://www.w3.org/2001/XMLSchema#integer"
+    },
+    "editable" : {
+      "@id" : "http://www.agtinternational.com/iotcrawler/ontologies/iotc#editable",
+      "@type" : "http://www.w3.org/2001/XMLSchema#integer"
+    },
+    "id" : {
+      "@id" : "http://www.agtinternational.com/iotcrawler/ontologies/iotc#id",
+      "@type" : "http://www.w3.org/2001/XMLSchema#integer"
+    }
+  }
+}

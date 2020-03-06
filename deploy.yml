@@ -66,10 +66,10 @@ staging:
     - auto-deploy check_kube_domain
     - auto-deploy download_chart
     - auto-deploy ensure_namespace
-    #- auto-deploy initialize_tiller
-    - tiller -alsologtostderr &
+    - auto-deploy initialize_tiller
+    #- tiller -alsologtostderr &
     - auto-deploy create_secret
-    - auto-deploy deploy  || echo "deployment should be done. Error ignored"
+    - auto-deploy deploy || echo "deployment should be done. Error ignored"
   environment:
     name: staging
     url: http://$CI_PROJECT_PATH_SLUG-staging.$KUBE_INGRESS_BASE_DOMAIN
@@ -135,8 +135,8 @@ canary:
     #- auto-deploy download_chart
     - auto-deploy ensure_namespace
     - auto-deploy create_secret
-    #- auto-deploy initialize_tiller
-    - tiller -alsologtostderr &
+    - auto-deploy initialize_tiller
+    #- tiller -alsologtostderr &
     #- export HELM_HOST=localhost:44134
     #- helm init
     #- helm version

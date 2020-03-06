@@ -48,8 +48,8 @@ build:
   script:
     #- echo "building java from sources is skipped"
     - sh make.sh install
-    - echo "CI_PROJECT_DIR $CI_PROJECT_DIR"
-    - cd $CI_PROJECT_DIR/orchestrator && sh make.sh build-image && sh make.sh push-image
+    - ls ${CI_PROJECT_DIR}
+    - cd ${CI_PROJECT_DIR}/orchestrator && sh make.sh build-image && sh make.sh push-image
 
 #test:
 #  stage: test

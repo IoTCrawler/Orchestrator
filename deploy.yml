@@ -63,11 +63,20 @@ staging:
   extends: .auto-deploy
   stage: staging
   script:
+    - echo "SERVER ${SERVER}"
+    - kubectl config set-cluster k8s --server="${SERVER}"
+    - kubectl config set clusters.k8s.certificate-authority-data ${CERTIFICATE_AUTHORITY_DATA}
+    - kubectl config set-credentials gitlab --token="${USER_TOKEN}"
+    - kubectl config set-context default --cluster=k8s --user=gitlab
+    - kubectl config use-context default
+    - kubectl delete --all deployment --namespace ${KUBE_NAMESPACE}
+    - kubectl delete --all service --namespace ${KUBE_NAMESPACE}
+    -
     - auto-deploy check_kube_domain
     - auto-deploy download_chart
     - auto-deploy ensure_namespace
-    - auto-deploy initialize_tiller
-    #- tiller -alsologtostderr &
+    #- auto-deploy initialize_tiller
+    - tiller -alsologtostderr &
     - auto-deploy create_secret
     - auto-deploy deploy || echo "deployment should be done. Error ignored"
   environment:
@@ -110,13 +119,13 @@ canary:
   stage: production
   script:
     - echo "SERVER ${SERVER}"
-#    - kubectl config set-cluster k8s --server="${SERVER}"
-#    - kubectl config set clusters.k8s.certificate-authority-data ${CERTIFICATE_AUTHORITY_DATA}
-#    - kubectl config set-credentials gitlab --token="${USER_TOKEN}"
-#    - kubectl config set-context default --cluster=k8s --user=gitlab
-#    - kubectl config use-context default
-#    - kubectl delete --all deployment --namespace ${KUBE_NAMESPACE}
-#    - kubectl delete --all service --namespace ${KUBE_NAMESPACE}
+    - kubectl config set-cluster k8s --server="${SERVER}"
+    - kubectl config set clusters.k8s.certificate-authority-data ${CERTIFICATE_AUTHORITY_DATA}
+    - kubectl config set-credentials gitlab --token="${USER_TOKEN}"
+    - kubectl config set-context default --cluster=k8s --user=gitlab
+    - kubectl config use-context default
+    - kubectl delete --all deployment --namespace ${KUBE_NAMESPACE}
+    - kubectl delete --all service --namespace ${KUBE_NAMESPACE}
 #    #- echo "kubectl create secret -n $KUBE_NAMESPACE docker-registry gitlab-registry-${CI_PROJECT_PATH_SLUG} --docker-server=$CI_REGISTRY --docker-username=${CI_DEPLOY_USER:-$CI_REGISTRY_USER} --docker-password=${CI_DEPLOY_PASSWORD:-$CI_REGISTRY_PASSWORD} --docker-email=$GITLAB_USER_EMAIL -o yaml --dry-run | kubectl replace -n $KUBE_NAMESPACE --force -f"
 #    #- kubectl create secret -n "$KUBE_NAMESPACE" docker-registry "gitlab-registry-${CI_PROJECT_PATH_SLUG}" --docker-server="$CI_REGISTRY" --docker-username="${CI_DEPLOY_USER:-$CI_REGISTRY_USER}" --docker-password="${CI_DEPLOY_PASSWORD:-$CI_REGISTRY_PASSWORD}" --docker-email="$GITLAB_USER_EMAIL" -o yaml --dry-run | kubectl replace -n "$KUBE_NAMESPACE" --force -f -
 #    #- kubectl create secret docker-registry regcred --docker-server=$CI_REGISTRY --docker-username=$CI_REGISTRY_USER --docker-password=$CI_REGISTRY_PASSWORD
@@ -125,7 +134,7 @@ canary:
 #    - sed -i "s#<SERVER>#${SERVER}#g" kube_config
 #    - sed -i "s#<TOKEN>#${USER_TOKEN}#g" kube_config
 #
-#    - sed -i "s#helm upgrade --install#helm upgrade --install --force#g" /usr/local/bin/auto-deploy
+    #- sed -i "s#helm upgrade --install#helm upgrade --install --force#g" /usr/local/bin/auto-deploy
 
     #- export KUBECONFIG=kube_config
     #- cat $KUBECONFIG
@@ -135,8 +144,8 @@ canary:
     #- auto-deploy download_chart
     - auto-deploy ensure_namespace
     - auto-deploy create_secret
-    - auto-deploy initialize_tiller
-    #- tiller -alsologtostderr &
+    #- auto-deploy initialize_tiller
+    - tiller -alsologtostderr &
     #- export HELM_HOST=localhost:44134
     #- helm init
     #- helm version

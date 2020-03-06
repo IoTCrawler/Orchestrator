@@ -6,22 +6,18 @@
     <groupId>com.agtinternational.iotcrawler</groupId>
     <artifactId>fiware-models</artifactId>
     <version>1.0.0</version>
+
+    <parent>
+        <groupId>com.agtinternational</groupId>
+        <artifactId>iotcrawler</artifactId>
+        <version>1.0.0</version>
+        <relativePath>../IoTCrawler</relativePath>
+    </parent>
+
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <slf4j.version>1.7.15</slf4j.version>
-        <junit.version>4.11</junit.version>
-        <fiware.clients.version>1.0.7</fiware.clients.version>
-        <hobbit.sdk.version>1.1.18</hobbit.sdk.version>
         <ngsi2.client.version>0.1.0-SNAPSHOT</ngsi2.client.version>
     </properties>
 
-    <organization>
-        <name>AGT International. Author Pavel Smirnov (psmirnov@agtinternational.com)</name>
-        <url>https://www.agtinternational.com/</url>
-    </organization>
-    <inceptionYear>2019</inceptionYear>
 
     <dependencies>
 

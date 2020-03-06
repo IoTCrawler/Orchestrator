@@ -1,8 +1,0 @@
-{"subscriptionId":"40c20-f4c23-8AdCd-31613-40f09-50a20bc8e47bf5cfeb4",
- "contextResponses":[{"contextElement": {"entityId":{
-   "id":"http://purl.org/iot/ontology/iot-stream#StreamObservation_made_by_gateway_00055110D732_device_8_sensor_64_stream",
-   "type":"http://purl.org/iot/ontology/iot-stream#StreamObservation",
-   "isPattern":false,
- },"domainMetadata":[],
-   "attributes":[{"name":"current_value","type":"http://www.w3.org/2001/XMLSchema#decimal","contextValue":"1.3"}],
- },"statusCode":{"code":200,"reasonPhrase":"OK","details":"New ContextElement"}}]}

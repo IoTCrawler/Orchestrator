@@ -2,26 +2,40 @@
 export CI_PROJECT_DIR=${CI_PROJECT_DIR:-$(pwd)}
 echo ${CI_PROJECT_DIR}
 set -e
+ 
+if [ "$1" = "prepare-fiware-models" ]; then
+	#Fiware/clients: Preparing iot-broker
+	(if [ ! -d /tmp/iotc-fiware-models ]; then git clone git@gitlab.iotcrawler.net:core/fiware-models.git /tmp/iotc-fiware-models ; fi);
+	cd /tmp/iotc-fiware-models && mvn install -DskipTests=true
+fi
+
+if [ "$1" = "prepare-fiware-clients" ]; then
+	#Fiware/clients: Preparing iot-broker
+	(if [ ! -d /tmp/iotc-fiware-clients ]; then git clone git@gitlab.iotcrawler.net:core/fiware-clients.git /tmp/iotc-fiware-clients ; fi);
+	cd /tmp/iotc-fiware-clients && mvn install -DskipTests=true
+fi
+
+if [ "$1" = "prepare-core-models" ]; then
+	#Fiware/clients: Preparing iot-broker
+	(if [ ! -d /tmp/iotc-core-models ]; then git clone git@gitlab.iotcrawler.net:core/core-models.git /tmp/iotc-core-models ; fi);
+	cd /tmp/iotc-core-models && mvn install -DskipTests=true
+fi
 
 if [ "$1" = "install" ]; then
 	export CI_PROJECT_DIR=${CI_PROJECT_DIR:-$(pwd)}
-	
 
-# if [ "$1" = "install" ]; then
-	# # Fiware: Installing fiware-models
-	# cd $CI_PROJECT_DIR/fiware/models && make install
-	# # Fiware: Installing fiware-clients
-	# cd $CI_PROJECT_DIR/fiware/clients && make install
-# fi
-	
-  echo "# Main: Installing IoTCrawler fiware dependencies"
-	#(if [ ! -d ~/.m2/repository/com/agtinternational/iotcrawler/fiware ]; then cd ${CI_PROJECT_DIR}/fiware && sh make.sh install; fi);
-  cd ${CI_PROJECT_DIR}/fiware && sh make.sh install
-	echo "# Main: Installing IoTCrawler core dependency"
-	#(if [ ! -d ~/.m2/repository/com/agtinternational/iotcrawler/core ]; then cd ${CI_PROJECT_DIR}/core && mvn install -DskipTests=true; fi);
-	cd ${CI_PROJECT_DIR}/core && mvn install -DskipTests=true
-	echo "# Main: Packaging orchestrator"
-	cd ${CI_PROJECT_DIR}/orchestrator && make package
+  #Fiware/clients: Checking fiware-models dependency
+	(if [ ! -d ~/.m2/repository/com/agtinternational/iotcrawler/fiware-models ]; then sh make.sh prepare-fiware-models; fi);
+	#Fiware/clients: Checking fiware-models dependency
+	(if [ ! -d ~/.m2/repository/com/agtinternational/iotcrawler/fiware-clients ]; then sh make.sh prepare-fiware-clients; fi);
+	# Main: Installing IoTCrawler core dependency
+	(if [ ! -d ~/.m2/repository/com/agtinternational/iotcrawler/core ]; then sh make.sh prepare-core-models; fi);
+  # Main: Installing NGSI.api core dependency
+	(if [ ! -d ~/.m2/repository/eu/neclab/iotplatform/ngsi.api ]; then sh make.sh prepare-ngsi-api; fi);
+  #echo "# Main: Packaging orchestrator"
+	#cd ${CI_PROJECT_DIR}/orchestrator && make package
+
+
 fi
 
 if [ "$1" = "rest-client-test" ]; then

@@ -7,24 +7,20 @@
     <artifactId>fiware-clients</artifactId>
     <version>1.0.8</version>
 
+    <parent>
+        <groupId>com.agtinternational</groupId>
+        <artifactId>iotcrawler</artifactId>
+        <version>1.0.0</version>
+        <relativePath>../IoTCrawler</relativePath>
+    </parent>
+
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <slf4j.version>1.7.15</slf4j.version>
-        <junit.version>5</junit.version>
+
         <ngsi2.client.version>0.1.0-SNAPSHOT</ngsi2.client.version>
-<!--        <ngsi.api.version>7.1-SNAPSHOT</ngsi.api.version>-->
-<!--        <iotbroker.commons.version>7.1-SNAPSHOT</iotbroker.commons.version>-->
         <iotbroker.client.version>7.1-SNAPSHOT</iotbroker.client.version>
         <fiware.models.version>1.0.0</fiware.models.version>
     </properties>
 
-    <organization>
-        <name>AGT International. Author Pavel Smirnov (psmirnov@agtinternational.com)</name>
-        <url>https://www.agtinternational.com/</url>
-    </organization>
-    <inceptionYear>2019</inceptionYear>
 
     <dependencies>
 
@@ -288,119 +284,5 @@
 
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.5.1</version>
-                <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
-                </configuration>
-            </plugin>
 
-             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>license-maven-plugin</artifactId>
-                <version>2.0.0</version>
-                <configuration>
-                    <licenseName>mit</licenseName>
-                    <!--                    <licenseResolver>${project.baseUri}/src/license</licenseResolver>  -->
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>first</id>
-                        <goals>
-                            <goal>update-file-header</goal>
-                        </goals>
-                        <phase>process-sources</phase>
-                        <configuration>
-                            <licenseName>mit</licenseName>
-                            <roots>
-                                <root>src/main/java</root>
-                                <root>src/test</root>
-                            </roots>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-install-plugin</artifactId>
-                <executions>
-<!--                    <execution>-->
-<!--                        <id>hack-binary</id>-->
-<!--                        <phase>validate</phase>-->
-<!--                        <configuration>-->
-<!--                            <file>${basedir}/libs/IoTbrokerParent-${ngsi.api.version}.pom</file>-->
-<!--                            <pomFile>${basedir}/libs/IoTbrokerParent-${ngsi.api.version}.pom</pomFile>-->
-<!--                            <repositoryLayout>default</repositoryLayout>-->
-<!--                            <groupId>eu.neclab.iotplatform</groupId>-->
-<!--                            <artifactId>IoTbrokerParent</artifactId>-->
-<!--                            <version>${ngsi.api.version}</version>-->
-<!--                            <packaging>pom</packaging>-->
-<!--                            <generatePom>false</generatePom>-->
-<!--                        </configuration>-->
-<!--                        <goals>-->
-<!--                            <goal>install-file</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                    <execution>-->
-<!--                        <id>hack-binary2</id>-->
-<!--                        <phase>validate</phase>-->
-<!--                        <configuration>-->
-<!--                            <file>${basedir}/libs/iotbroker.commons-${iotbroker.commons.version}.jar</file>-->
-<!--                            <pomFile>${basedir}/libs/iotbroker.commons-${iotbroker.commons.version}.pom</pomFile>-->
-<!--                            <repositoryLayout>default</repositoryLayout>-->
-<!--                            <groupId>eu.neclab.iotplatform</groupId>-->
-<!--                            <artifactId>iotbroker.commons</artifactId>-->
-<!--                            <version>${iotbroker.commons.version}</version>-->
-<!--                            <packaging>jar</packaging>-->
-<!--                            <generatePom>true</generatePom>-->
-<!--                        </configuration>-->
-<!--                        <goals>-->
-<!--                            <goal>install-file</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                    <execution>-->
-<!--                        <id>hack-binary3</id>-->
-<!--                        <phase>validate</phase>-->
-<!--                        <configuration>-->
-<!--                            <file>${basedir}/libs/iotbroker.client-${iotbroker.client.version}.jar</file>-->
-<!--                            <pomFile>${basedir}/libs/iotbroker.client-${iotbroker.client.version}.pom</pomFile>-->
-<!--                            <repositoryLayout>default</repositoryLayout>-->
-<!--                            <groupId>eu.neclab.iotplatform</groupId>-->
-<!--                            <artifactId>iotbroker.client</artifactId>-->
-<!--                            <version>${iotbroker.client.version}</version>-->
-<!--                            <packaging>jar</packaging>-->
-<!--                            <generatePom>true</generatePom>-->
-<!--                        </configuration>-->
-<!--                        <goals>-->
-<!--                            <goal>install-file</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                    <execution>-->
-<!--                        <id>hack-binary4</id>-->
-<!--                        <phase>validate</phase>-->
-<!--                        <configuration>-->
-<!--                            <file>${basedir}/libs/ngsi.api-${ngsi.api.version}.jar</file>-->
-<!--                            <pomFile>${basedir}/libs/ngsi.api-${ngsi.api.version}.pom</pomFile>-->
-<!--                            <repositoryLayout>default</repositoryLayout>-->
-<!--                            <groupId>eu.neclab.iotplatform</groupId>-->
-<!--                            <artifactId>ngsi.api</artifactId>-->
-<!--                            <version>${ngsi.api.version}</version>-->
-<!--                            <packaging>jar</packaging>-->
-<!--                            <generatePom>true</generatePom>-->
-<!--                        </configuration>-->
-<!--                        <goals>-->
-<!--                            <goal>install-file</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
 </project>

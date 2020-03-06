@@ -199,7 +199,7 @@ production_manual:
     - auto-deploy ensure_namespace
     - auto-deploy initialize_tiller
     - auto-deploy create_secret
-    - auto-deploy deploy rollout $ROLLOUT_PERCENTAGE
+    - auto-deploy deploy rollout $ROLLOUT_PERCENTAGE || echo "deployment should be done. Check the logs! All error are supressed"
     - auto-deploy scale stable $((100-ROLLOUT_PERCENTAGE))
     - auto-deploy delete canary
     - auto-deploy persist_environment_url
@@ -236,23 +236,23 @@ production_manual:
     variables:
       - $INCREMENTAL_ROLLOUT_MODE == "timed"
 
-timed rollout 10%:
-  <<: *timed_rollout_template
-  stage: incremental rollout 10%
-  variables:
-    ROLLOUT_PERCENTAGE: 10
-
-timed rollout 25%:
-  <<: *timed_rollout_template
-  stage: incremental rollout 25%
-  variables:
-    ROLLOUT_PERCENTAGE: 25
-
-timed rollout 50%:
-  <<: *timed_rollout_template
-  stage: incremental rollout 50%
-  variables:
-    ROLLOUT_PERCENTAGE: 50
+#timed rollout 10%:
+#  <<: *timed_rollout_template
+#  stage: incremental rollout 10%
+#  variables:
+#    ROLLOUT_PERCENTAGE: 10
+#
+#timed rollout 25%:
+#  <<: *timed_rollout_template
+#  stage: incremental rollout 25%
+#  variables:
+#    ROLLOUT_PERCENTAGE: 25
+#
+#timed rollout 50%:
+#  <<: *timed_rollout_template
+#  stage: incremental rollout 50%
+#  variables:
+#    ROLLOUT_PERCENTAGE: 50
 
 timed rollout 100%:
   <<: *timed_rollout_template
@@ -261,20 +261,20 @@ timed rollout 100%:
   variables:
     ROLLOUT_PERCENTAGE: 100
 
-rollout 10%:
-  <<: *manual_rollout_template
-  variables:
-    ROLLOUT_PERCENTAGE: 10
-
-rollout 25%:
-  <<: *manual_rollout_template
-  variables:
-    ROLLOUT_PERCENTAGE: 25
-
-rollout 50%:
-  <<: *manual_rollout_template
-  variables:
-    ROLLOUT_PERCENTAGE: 50
+#rollout 10%:
+#  <<: *manual_rollout_template
+#  variables:
+#    ROLLOUT_PERCENTAGE: 10
+#
+#rollout 25%:
+#  <<: *manual_rollout_template
+#  variables:
+#    ROLLOUT_PERCENTAGE: 25
+#
+#rollout 50%:
+#  <<: *manual_rollout_template
+#  variables:
+#    ROLLOUT_PERCENTAGE: 50
 
 rollout 100%:
   <<: *manual_rollout_template

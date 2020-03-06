@@ -1,57 +1,57 @@
 .auto-deploy:
   image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image:v0.10.0"
 
-review:
-  extends: .auto-deploy
-  stage: review
-  script:
-    - auto-deploy check_kube_domain
-    - auto-deploy download_chart
-    - auto-deploy ensure_namespace
-    - auto-deploy initialize_tiller
-    - auto-deploy create_secret
-    - auto-deploy deploy
-    - auto-deploy persist_environment_url
-  environment:
-    name: review/$CI_COMMIT_REF_NAME
-    url: http://$CI_PROJECT_ID-$CI_ENVIRONMENT_SLUG.$KUBE_INGRESS_BASE_DOMAIN
-    on_stop: stop_review
-  artifacts:
-    paths: [environment_url.txt]
-  only:
-    refs:
-      - branches
-      - tags
-    kubernetes: active
-  except:
-    refs:
-      - master
-    variables:
-      - $REVIEW_DISABLED
-
-stop_review:
-  extends: .auto-deploy
-  stage: cleanup
-  variables:
-    GIT_STRATEGY: none
-  script:
-    - auto-deploy initialize_tiller
-    - auto-deploy delete
-  environment:
-    name: review/$CI_COMMIT_REF_NAME
-    action: stop
-  when: manual
-  allow_failure: true
-  only:
-    refs:
-      - branches
-      - tags
-    kubernetes: active
-  except:
-    refs:
-      - master
-    variables:
-      - $REVIEW_DISABLED
+#review:
+#  extends: .auto-deploy
+#  stage: review
+#  script:
+#    - auto-deploy check_kube_domain
+#    - auto-deploy download_chart
+#    - auto-deploy ensure_namespace
+#    - auto-deploy initialize_tiller
+#    - auto-deploy create_secret
+#    - auto-deploy deploy
+#    - auto-deploy persist_environment_url
+#  environment:
+#    name: review/$CI_COMMIT_REF_NAME
+#    url: http://$CI_PROJECT_ID-$CI_ENVIRONMENT_SLUG.$KUBE_INGRESS_BASE_DOMAIN
+#    on_stop: stop_review
+#  artifacts:
+#    paths: [environment_url.txt]
+#  only:
+#    refs:
+#      - branches
+#      - tags
+#    kubernetes: active
+#  except:
+#    refs:
+#      - master
+#    variables:
+#      - $REVIEW_DISABLED
+#
+#stop_review:
+#  extends: .auto-deploy
+#  stage: cleanup
+#  variables:
+#    GIT_STRATEGY: none
+#  script:
+#    - auto-deploy initialize_tiller
+#    - auto-deploy delete
+#  environment:
+#    name: review/$CI_COMMIT_REF_NAME
+#    action: stop
+#  when: manual
+#  allow_failure: true
+#  only:
+#    refs:
+#      - branches
+#      - tags
+#    kubernetes: active
+#  except:
+#    refs:
+#      - master
+#    variables:
+#      - $REVIEW_DISABLED
 
 # Staging deploys are disabled by default since
 # continuous deployment to production is enabled by default
@@ -108,7 +108,7 @@ canary:
   extends: .auto-deploy
   stage: production
   script:
-#    - echo "KUBE_NAMESPACE ${KUBE_NAMESPACE}"
+    - echo "SERVER ${SERVER}"
     - kubectl config set-cluster k8s --server="${SERVER}"
     - kubectl config set clusters.k8s.certificate-authority-data ${CERTIFICATE_AUTHORITY_DATA}
     - kubectl config set-credentials gitlab --token="${USER_TOKEN}"
@@ -116,22 +116,42 @@ canary:
     - kubectl config use-context default
     - kubectl delete --all deployment --namespace ${KUBE_NAMESPACE}
     - kubectl delete --all service --namespace ${KUBE_NAMESPACE}
-    - echo "HELM_HOST $HELM_HOST"
-    - helm version
-    #- helm ls
-    #- helm init --kubeconfig kube_config --client-only
-    #- helm ls
-    #- echo "gitlab-registry-${CI_PROJECT_PATH_SLUG}"
+    #- echo "kubectl create secret -n $KUBE_NAMESPACE docker-registry gitlab-registry-${CI_PROJECT_PATH_SLUG} --docker-server=$CI_REGISTRY --docker-username=${CI_DEPLOY_USER:-$CI_REGISTRY_USER} --docker-password=${CI_DEPLOY_PASSWORD:-$CI_REGISTRY_PASSWORD} --docker-email=$GITLAB_USER_EMAIL -o yaml --dry-run | kubectl replace -n $KUBE_NAMESPACE --force -f"
     #- kubectl create secret -n "$KUBE_NAMESPACE" docker-registry "gitlab-registry-${CI_PROJECT_PATH_SLUG}" --docker-server="$CI_REGISTRY" --docker-username="${CI_DEPLOY_USER:-$CI_REGISTRY_USER}" --docker-password="${CI_DEPLOY_PASSWORD:-$CI_REGISTRY_PASSWORD}" --docker-email="$GITLAB_USER_EMAIL" -o yaml --dry-run | kubectl replace -n "$KUBE_NAMESPACE" --force -f -
+    #- kubectl create secret docker-registry regcred --docker-server=$CI_REGISTRY --docker-username=$CI_REGISTRY_USER --docker-password=$CI_REGISTRY_PASSWORD
+
+    - sed -i "s#<CERTIFICATE_AUTHORITY_DATA>#${CERTIFICATE_AUTHORITY_DATA}#g" kube_config
+    - sed -i "s#<SERVER>#${SERVER}#g" kube_config
+    - sed -i "s#<TOKEN>#${USER_TOKEN}#g" kube_config
+
+    - sed -i "s#helm upgrade --install#helm upgrade --install --force#g" /usr/local/bin/auto-deploy
+
+    #- export KUBECONFIG=kube_config
+    #- cat $KUBECONFIG
+    #- echo $HELM_HOST
+
     - auto-deploy check_kube_domain
-    - auto-deploy download_chart
+    #- auto-deploy download_chart
     - auto-deploy ensure_namespace
-    - auto-deploy initialize_tiller
     - auto-deploy create_secret
-    - auto-deploy deploy
+    #- auto-deploy initialize_tiller
+    - tiller -alsologtostderr &
+    #- export HELM_HOST=localhost:44134
+    #- helm init
+    #- helm version
+    #- helm ls
+    #    - helm help
+    #    - helm list
+    #    - helm history production
+    #    - helm status production
+    #    - helm test production
+    #- sleep 20000
+    - auto-deploy deploy production || echo "deployment should be done. Error ignored"
     - auto-deploy delete canary
     - auto-deploy delete rollout
     - auto-deploy persist_environment_url
+  #  variables:
+  #    CI_DEBUG_TRACE: "true"
   environment:
     name: production
     url: http://$CI_PROJECT_PATH_SLUG.$KUBE_INGRESS_BASE_DOMAIN
@@ -143,6 +163,7 @@ production:
   only:
     refs:
       - master
+      - remote_deployment
     kubernetes: active
   except:
     variables:

@@ -23,22 +23,6 @@ variables:
   CI_APPLICATION_TAG: ${CI_COMMIT_SHA}
 
 
-stages:
-  - build
-  - test
-  - deploy  # dummy stage to follow the template guidelines
-  - review
-  - dast
-  - staging
-  - canary
-  - production
-  - incremental rollout 10%
-  - incremental rollout 25%
-  - incremental rollout 50%
-  - incremental rollout 100%
-  - performance
-  - cleanup
-
 build:
   stage: build
   tags:
@@ -68,6 +52,22 @@ build:
 #  after_script:
 #    - cd $CI_PROJECT_DIR/orchestrator && make stop-containers
 
+
+stages:
+  - build
+  - test
+  - deploy  # dummy stage to follow the template guidelines
+  - review
+  - dast
+  - staging
+  - canary
+  - production
+#  - incremental rollout 10%
+#  - incremental rollout 25%
+#  - incremental rollout 50%
+  - incremental rollout 100%
+#  - performance
+#  - cleanup
 
 include:
   #- template: Jobs/Build.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Jobs/Build.gitlab-ci.yml

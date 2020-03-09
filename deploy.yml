@@ -161,7 +161,7 @@ canary:
 #    - helm status production
 #    - helm test production
     #- sleep 20000
-    - auto-deploy deploy ${KUBE_NAMESPACE} || echo "deployment should be done. Error ignored"
+    - auto-deploy deploy ${KUBE_NAMESPACE} #|| echo "deployment should be done. Error ignored"
     - auto-deploy delete canary
     - auto-deploy delete rollout
     - auto-deploy persist_environment_url

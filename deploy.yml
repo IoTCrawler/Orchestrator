@@ -1,65 +1,65 @@
 .auto-deploy:
   image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image:v0.10.0"
 
-review:
-  extends: .auto-deploy
-  stage: review
-  script:
-    - kubectl config set-cluster k8s --server="${SERVER}"
-    - kubectl config set clusters.k8s.certificate-authority-data ${CERTIFICATE_AUTHORITY_DATA}
-    - kubectl config set-credentials gitlab --token="${USER_TOKEN}"
-    - kubectl config set-context default --cluster=k8s --user=gitlab
-    - kubectl config use-context default
-    - kubectl delete --all deployment --namespace ${KUBE_NAMESPACE}
-    - kubectl delete --all service --namespace ${KUBE_NAMESPACE}
-    - auto-deploy check_kube_domain
-    - auto-deploy download_chart
-    - auto-deploy ensure_namespace
+#review:
+#  extends: .auto-deploy
+#  stage: review
+#  script:
+#    - kubectl config set-cluster k8s --server="${SERVER}"
+#    - kubectl config set clusters.k8s.certificate-authority-data ${CERTIFICATE_AUTHORITY_DATA}
+#    - kubectl config set-credentials gitlab --token="${USER_TOKEN}"
+#    - kubectl config set-context default --cluster=k8s --user=gitlab
+#    - kubectl config use-context default
+#    - kubectl delete --all deployment --namespace ${KUBE_NAMESPACE}
+#    - kubectl delete --all service --namespace ${KUBE_NAMESPACE}
+#    - auto-deploy check_kube_domain
+#    - auto-deploy download_chart
+#    - auto-deploy ensure_namespace
+##    - auto-deploy initialize_tiller
+#    - tiller -alsologtostderr &
+#    - auto-deploy create_secret
+#    - auto-deploy deploy
+#    - auto-deploy persist_environment_url
+#  environment:
+#    name: review/$CI_COMMIT_REF_NAME
+#    url: http://$CI_PROJECT_ID-$CI_ENVIRONMENT_SLUG.$KUBE_INGRESS_BASE_DOMAIN
+#    on_stop: stop_review
+#  artifacts:
+#    paths: [environment_url.txt]
+#  only:
+#    refs:
+#      - branches
+#      - tags
+#    kubernetes: active
+#  except:
+#    refs:
+#      - master
+#    variables:
+#      - $REVIEW_DISABLED
+#
+#stop_review:
+#  extends: .auto-deploy
+#  stage: cleanup
+#  variables:
+#    GIT_STRATEGY: none
+#  script:
 #    - auto-deploy initialize_tiller
-    - tiller -alsologtostderr &
-    - auto-deploy create_secret
-    - auto-deploy deploy
-    - auto-deploy persist_environment_url
-  environment:
-    name: review/$CI_COMMIT_REF_NAME
-    url: http://$CI_PROJECT_ID-$CI_ENVIRONMENT_SLUG.$KUBE_INGRESS_BASE_DOMAIN
-    on_stop: stop_review
-  artifacts:
-    paths: [environment_url.txt]
-  only:
-    refs:
-      - branches
-      - tags
-    kubernetes: active
-  except:
-    refs:
-      - master
-    variables:
-      - $REVIEW_DISABLED
-
-stop_review:
-  extends: .auto-deploy
-  stage: cleanup
-  variables:
-    GIT_STRATEGY: none
-  script:
-    - auto-deploy initialize_tiller
-    - auto-deploy delete
-  environment:
-    name: review/$CI_COMMIT_REF_NAME
-    action: stop
-  when: manual
-  allow_failure: true
-  only:
-    refs:
-      - branches
-      - tags
-    kubernetes: active
-  except:
-    refs:
-      - master
-    variables:
-      - $REVIEW_DISABLED
+#    - auto-deploy delete
+#  environment:
+#    name: review/$CI_COMMIT_REF_NAME
+#    action: stop
+#  when: manual
+#  allow_failure: true
+#  only:
+#    refs:
+#      - branches
+#      - tags
+#    kubernetes: active
+#  except:
+#    refs:
+#      - master
+#    variables:
+#      - $REVIEW_DISABLED
 
 # Staging deploys are disabled by default since
 # continuous deployment to production is enabled by default
@@ -89,8 +89,8 @@ staging:
     name: staging
     url: http://$CI_PROJECT_PATH_SLUG-staging.$KUBE_INGRESS_BASE_DOMAIN
   only:
-    refs:
-      - master
+#    refs:
+#      - master
     kubernetes: active
     variables:
       - $STAGING_ENABLED
@@ -114,8 +114,8 @@ canary:
     url: http://$CI_PROJECT_PATH_SLUG.$KUBE_INGRESS_BASE_DOMAIN
   when: manual
   only:
-    refs:
-      - master
+#    refs:
+#      - master
     kubernetes: active
     variables:
       - $CANARY_ENABLED
@@ -175,9 +175,9 @@ canary:
 production:
   <<: *production_template
   only:
-    refs:
-      - master
-      - remote_deployment
+#    refs:
+#      - master
+#      - remote_deployment
     kubernetes: active
   except:
     variables:
@@ -191,8 +191,8 @@ production_manual:
   when: manual
   allow_failure: false
   only:
-    refs:
-      - master
+#    refs:
+#      - master
     kubernetes: active
     variables:
       - $STAGING_ENABLED
@@ -228,8 +228,8 @@ production_manual:
   when: manual
   # This selectors are backward compatible mode with $INCREMENTAL_ROLLOUT_ENABLED (before 11.4)
   only:
-    refs:
-      - master
+#    refs:
+#      - master
     kubernetes: active
     variables:
       - $INCREMENTAL_ROLLOUT_MODE == "manual"
@@ -243,8 +243,8 @@ production_manual:
   when: delayed
   start_in: 5 minutes
   only:
-    refs:
-      - master
+#    refs:
+#      - master
     kubernetes: active
     variables:
       - $INCREMENTAL_ROLLOUT_MODE == "timed"

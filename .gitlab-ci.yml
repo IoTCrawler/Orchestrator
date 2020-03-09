@@ -78,26 +78,13 @@ build:
 #  after_script:
 #    - cd $CI_PROJECT_DIR/orchestrator && make stop-containers
 
-#deploy:
-#  stage: deploy
-#  image: dtzar/helm-kubectl
-#  script:
-#    - kubectl config set-cluster k8s --server="${SERVER}"
-#    - kubectl config set clusters.k8s.certificate-authority-data ${CERTIFICATE_AUTHORITY_DATA}
-#    - kubectl config set-credentials gitlab --token="${USER_TOKEN}"
-#    - kubectl config set-context default --cluster=k8s --user=gitlab
-#    - kubectl config use-context default
-#    - kubectl create secret -n "$KUBE_NAMESPACE" docker-registry "gitlab-registry-${CI_PROJECT_PATH_SLUG}" --docker-server="$CI_REGISTRY" --docker-username="${CI_DEPLOY_USER:-$CI_REGISTRY_USER}" --docker-password="${CI_DEPLOY_PASSWORD:-$CI_REGISTRY_PASSWORD}" --docker-email="$GITLAB_USER_EMAIL" -o yaml --dry-run | kubectl replace -n "$KUBE_NAMESPACE" --force -f -
-#    - sed -i "s#<CI_APPLICATION_REPOSITORY>#${CI_APPLICATION_REPOSITORY}#g" deployment.yaml
-#    - sed -i "s#<CI_APPLICATION_TAG>#$CI_APPLICATION_TAG#g" deployment.yaml
-#    - kubectl apply -f deployment.yaml --namespace ${KUBE_NAMESPACE}
 
 include:
   #- template: Jobs/Build.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Jobs/Build.gitlab-ci.yml
   #- template: Jobs/Test.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Jobs/Test.gitlab-ci.yml
   #- template: Jobs/Code-Quality.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Jobs/Code-Quality.gitlab-ci.yml
-  - template: Jobs/Deploy.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml
-  #- local: deploy.yml
+  #- template: Jobs/Deploy.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml
+  - local: deploy.yml
   #- template: Jobs/DAST-Default-Branch-Deploy.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Jobs/DAST-Default-Branch-Deploy.gitlab-ci.yml
   #- template: Jobs/Browser-Performance-Testing.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Jobs/Browser-Performance-Testing.gitlab-ci.yml
   - template: Security/DAST.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Security/DAST.gitlab-ci.yml

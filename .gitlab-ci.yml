@@ -16,11 +16,22 @@ variables:
 
   DOCKER_TLS_CERTDIR: ""  # https://gitlab.com/gitlab-org/gitlab-runner/issues/4501
 
-  #KUBE_NAMESPACE: orchestrator-local-production
+  IOTCRAWLER_RABBIT_HOST: rabbit
+  IOTCRAWLER_REDIS_HOST: redis
+  NGSILD_BROKER_URL: http://djane:3000/ngsi-ld/
+  RANKING_COMPONENT_URL: http://djane:3000/ngsi-ld/
+  IOT_BROKER_URL: http://iotbroker:8060/ngsi10
+  HTTP_SERVER_HOST: orchestrator
+  HTTP_SERVER_PORT: 3001
 
-  #KUBE_NAMESPACE: orchestrator-local-production
+#  CI_DEBUG_TRACE: "true"
   CI_APPLICATION_REPOSITORY: gitlab.iotcrawler.net:4567/orchestrator/orchestrator/${CI_COMMIT_REF_NAME}
   CI_APPLICATION_TAG: ${CI_COMMIT_SHA}
+
+  #HELM_HOST: localhost:44134
+  #KUBE_NAMESPACE: orchestrator-local-production  #defined for a project in a gitblab
+
+  HELM_UPGRADE_EXTRA_ARGS: --values chart/values.yaml
 
 stages:
   - build
@@ -38,7 +49,6 @@ stages:
   - performance
   - cleanup
 
-
 build:
   stage: build
   tags:
@@ -46,8 +56,8 @@ build:
   before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
-    - echo "building java from sources is skipped"
-    #- sh make.sh install
+    #- echo "building java from sources is skipped"
+    - sh make.sh install
     - cd ${CI_PROJECT_DIR}/com.agtinternational.iotcrawler.orchestrator && sh make.sh build-image && sh make.sh push-image
 
 #test:
@@ -68,7 +78,19 @@ build:
 #  after_script:
 #    - cd $CI_PROJECT_DIR/orchestrator && make stop-containers
 
-
+#deploy:
+#  stage: deploy
+#  image: dtzar/helm-kubectl
+#  script:
+#    - kubectl config set-cluster k8s --server="${SERVER}"
+#    - kubectl config set clusters.k8s.certificate-authority-data ${CERTIFICATE_AUTHORITY_DATA}
+#    - kubectl config set-credentials gitlab --token="${USER_TOKEN}"
+#    - kubectl config set-context default --cluster=k8s --user=gitlab
+#    - kubectl config use-context default
+#    - kubectl create secret -n "$KUBE_NAMESPACE" docker-registry "gitlab-registry-${CI_PROJECT_PATH_SLUG}" --docker-server="$CI_REGISTRY" --docker-username="${CI_DEPLOY_USER:-$CI_REGISTRY_USER}" --docker-password="${CI_DEPLOY_PASSWORD:-$CI_REGISTRY_PASSWORD}" --docker-email="$GITLAB_USER_EMAIL" -o yaml --dry-run | kubectl replace -n "$KUBE_NAMESPACE" --force -f -
+#    - sed -i "s#<CI_APPLICATION_REPOSITORY>#${CI_APPLICATION_REPOSITORY}#g" deployment.yaml
+#    - sed -i "s#<CI_APPLICATION_TAG>#$CI_APPLICATION_TAG#g" deployment.yaml
+#    - kubectl apply -f deployment.yaml --namespace ${KUBE_NAMESPACE}
 
 include:
   #- template: Jobs/Build.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Jobs/Build.gitlab-ci.yml
@@ -78,8 +100,8 @@ include:
   - local: deploy.yml
   #- template: Jobs/DAST-Default-Branch-Deploy.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Jobs/DAST-Default-Branch-Deploy.gitlab-ci.yml
   #- template: Jobs/Browser-Performance-Testing.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Jobs/Browser-Performance-Testing.gitlab-ci.yml
-  #- template: Security/DAST.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Security/DAST.gitlab-ci.yml
-  #- template: Security/Container-Scanning.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml
-  #- template: Security/Dependency-Scanning.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Security/Dependency-Scanning.gitlab-ci.yml
-  #- template: Security/License-Management.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Security/License-Management.gitlab-ci.yml
-  #- template: Security/SAST.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml
+  - template: Security/DAST.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Security/DAST.gitlab-ci.yml
+  - template: Security/Container-Scanning.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml
+  - template: Security/Dependency-Scanning.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Security/Dependency-Scanning.gitlab-ci.yml
+  - template: Security/License-Management.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Security/License-Management.gitlab-ci.yml
+  - template: Security/SAST.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml

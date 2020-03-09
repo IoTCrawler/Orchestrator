@@ -1,2 +1,3 @@
 .idea
-/com.agtinternational.iotcrawler.core/target
+target
+.iml

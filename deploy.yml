@@ -78,7 +78,7 @@ staging:
     #- auto-deploy initialize_tiller
     - tiller -alsologtostderr &
     - auto-deploy create_secret
-    - auto-deploy deploy ${KUBE_NAMESPACE} || echo "Please check the deployment. Any errors are ignored"
+    - auto-deploy deploy ${KUBE_NAMESPACE} || echo "Please check the deployment ${KUBE_NAMESPACE}. Any errors are ignored"
   environment:
     name: staging
     url: http://$CI_PROJECT_PATH_SLUG-staging.$KUBE_INGRESS_BASE_DOMAIN
@@ -124,8 +124,8 @@ canary:
     - kubectl config set-credentials gitlab --token="${USER_TOKEN}"
     - kubectl config set-context default --cluster=k8s --user=gitlab
     - kubectl config use-context default
-    - kubectl delete --all deployment --namespace ${KUBE_NAMESPACE}
-    - kubectl delete --all service --namespace ${KUBE_NAMESPACE}
+#    - kubectl delete --all deployment --namespace ${KUBE_NAMESPACE}
+#    - kubectl delete --all service --namespace ${KUBE_NAMESPACE}
 #    #- echo "kubectl create secret -n $KUBE_NAMESPACE docker-registry gitlab-registry-${CI_PROJECT_PATH_SLUG} --docker-server=$CI_REGISTRY --docker-username=${CI_DEPLOY_USER:-$CI_REGISTRY_USER} --docker-password=${CI_DEPLOY_PASSWORD:-$CI_REGISTRY_PASSWORD} --docker-email=$GITLAB_USER_EMAIL -o yaml --dry-run | kubectl replace -n $KUBE_NAMESPACE --force -f"
 #    #- kubectl create secret -n "$KUBE_NAMESPACE" docker-registry "gitlab-registry-${CI_PROJECT_PATH_SLUG}" --docker-server="$CI_REGISTRY" --docker-username="${CI_DEPLOY_USER:-$CI_REGISTRY_USER}" --docker-password="${CI_DEPLOY_PASSWORD:-$CI_REGISTRY_PASSWORD}" --docker-email="$GITLAB_USER_EMAIL" -o yaml --dry-run | kubectl replace -n "$KUBE_NAMESPACE" --force -f -
 #    #- kubectl create secret docker-registry regcred --docker-server=$CI_REGISTRY --docker-username=$CI_REGISTRY_USER --docker-password=$CI_REGISTRY_PASSWORD
@@ -156,7 +156,7 @@ canary:
     #    - helm status production
     #    - helm test production
     #- sleep 20000
-    - auto-deploy deploy production || echo "deployment should be done. Error ignored"
+    - auto-deploy deploy ${KUBE_NAMESPACE} || echo "deployment should be done. Error ignored"
     - auto-deploy delete canary
     - auto-deploy delete rollout
     - auto-deploy persist_environment_url

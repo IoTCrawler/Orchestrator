@@ -78,7 +78,7 @@ staging:
     #- auto-deploy initialize_tiller
     - tiller -alsologtostderr &
     - auto-deploy create_secret
-    - auto-deploy deploy || echo "deployment should be done. Error ignored"
+    - auto-deploy deploy ${KUBE_NAMESPACE} || echo "Please check the deployment. Any errors are ignored"
   environment:
     name: staging
     url: http://$CI_PROJECT_PATH_SLUG-staging.$KUBE_INGRESS_BASE_DOMAIN

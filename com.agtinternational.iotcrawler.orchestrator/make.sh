@@ -42,7 +42,7 @@ fi
 #fi
 
 if [ "$1" = "build-image" ]; then
-  mvn compile jib:dockerBuild
+  mvn clean compile jib:dockerBuild -U
 fi
 
 if [ "$1" = "push-image" ]; then
@@ -60,7 +60,7 @@ if [ "$1" = "push-image" ]; then
 #  fi
 # gitlab.iotcrawler.net:4567/orchestrator/orchestrator is already in variables (on in a gitlab)
   echo "# Pushing to registry: ${CI_APPLICATION_REPOSITORY}:$CI_APPLICATION_TAG"
-  docker tag ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG} ${CI_APPLICATION_TAG}
+  docker tag ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG} latest
   docker push "${CI_APPLICATION_REPOSITORY}:$CI_APPLICATION_TAG"
-	docker push "${CI_APPLICATION_REPOSITORY}:latest"
+	#docker push "${CI_APPLICATION_REPOSITORY}:latest"
 fi

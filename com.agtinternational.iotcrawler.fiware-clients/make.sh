@@ -13,7 +13,7 @@ fi
 
 if [ "$1" = "prepare-iotbroker" ]; then
 	#Fiware/clients: Preparing iot-broker
-	(if [ ! -d /tmp/iot.Aeron ]; then git clone git@gitlab.iotcrawler.net:orchestrator/iot.Aeron.git /tmp/iot.Aeron ; fi);
+	(if [ ! -d /tmp/iot.Aeron ]; then git clone https://gitlab+deploy-token-8:GcnYwtYSFLcAVsyKoUEZ@gitlab.iotcrawler.net/orchestrator/iot.Aeron.git /tmp/iot.Aeron ; fi);
 	cd /tmp/iot.Aeron/IoTbrokerParent && mvn install -DskipTests=true
 	cd /tmp/iot.Aeron/eu.neclab.iotplatform.ngsi.api && mvn install -DskipTests=true
 	cd /tmp/iot.Aeron/eu.neclab.iotplatform.iotbroker.commons && mvn install -DskipTests=true

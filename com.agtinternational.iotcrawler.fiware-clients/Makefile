@@ -14,7 +14,7 @@ prepare-scorpio:
 	cd ~/djane && docker build . -t iotcrawler/djane:1.0.0
 
 prepare-iotbroker:
-	#Fiware/clients: Preparing iot-broker
+	echo "#Fiware-clients: Preparing iot-broker"
 	(if [ ! -d /tmp/iot.Aeron ] || [ -n "$REBUILD_ALL" ]; then rm -rf /tmp/iot.Aeron && git clone https://gitlab+deploy-token-10:jCz86jEA8FPs3wpjhoN-@gitlab.iotcrawler.net/orchestrator/iot.Aeron.git /tmp/iot.Aeron ; fi);
 	cd /tmp/iot.Aeron/IoTbrokerParent && mvn install -DskipTests=true
 	cd /tmp/iot.Aeron/eu.neclab.iotplatform.ngsi.api && mvn install -DskipTests=true
@@ -25,7 +25,7 @@ install:
 	#Fiware/clients: Checking iot-broker dependency
 	(if [ ! -d ~/.m2/repository/eu/neclab/iotplatform/iotbroker.client ] || [ -n "$REBUILD_ALL" ]; then make prepare-iotbroker; fi);
 	#Fiware/clients: Checking fiware-models dependency
-	(if [ ! -d ~/.m2/repository/com/agtinternational/iotcrawler/fiware-models ] || [ -n "$REBUILD_ALL" ]; then cd ../fiware-models && make install; fi);
+	(if [ ! -d ~/.m2/repository/com/agtinternational/iotcrawler/fiware-models ]; then cd ../fiware-models && make install; fi);
 	#Fiware/clients: installing
 	mvn install -DskipTests=true
 

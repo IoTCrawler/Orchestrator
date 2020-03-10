@@ -11,9 +11,9 @@ if [ "$1" = "install" ]; then
 	echo "# Main: checking com/agtinternational/iotcrawler/fiware-models"
 	(if [ ! -d ~/.m2/repository/com/agtinternational/iotcrawler/fiware-models ] || [ -n "$REBUILD_ALL" ]; then cd ${CI_PROJECT_DIR}/com.agtinternational.iotcrawler.fiware-models && sh make.sh install; fi);
 	echo "# Main: checking com/agtinternational/iotcrawler/fiware-clients"
-	(if [ ! -d ~/.m2/repository/com/agtinternational/iotcrawler/fiware-clients ] || [ -n "$REBUILD_ALL" ]; then cd "${CI_PROJECT_DIR}/com.agtinternational.iotcrawler.fiware-clients" && sh make.sh install; fi);
+	(if [ ! -d ~/.m2/repository/com/agtinternational/iotcrawler/fiware-clients ] || [ -n "$REBUILD_ALL" ]; then cd ${CI_PROJECT_DIR}/com.agtinternational.iotcrawler.fiware-clients && sh make.sh install; fi);
   echo "# Main: checking com/agtinternational/iotcrawler/core"
-	(if [ ! -d ~/.m2/repository/com/agtinternational/iotcrawler/core ] || [ -n "$REBUILD_ALL" ]; then cd "${CI_PROJECT_DIR}/com.agtinternational.iotcrawler.core" && mvn install -DskipTests=true; fi);
+	(if [ ! -d ~/.m2/repository/com/agtinternational/iotcrawler/core ] || [ -n "$REBUILD_ALL" ]; then cd ${CI_PROJECT_DIR}/com.agtinternational.iotcrawler.core && mvn install -DskipTests=true; fi);
 	sh ${CI_PROJECT_DIR}/com.agtinternational.iotcrawler.orchestrator/make.sh install
 fi
 

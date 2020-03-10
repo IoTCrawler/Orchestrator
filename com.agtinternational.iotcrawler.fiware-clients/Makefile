@@ -23,9 +23,9 @@ prepare-iotbroker:
 
 install:
 	#Fiware/clients: Checking iot-broker dependency
-	(if [ ! -d ~/.m2/repository/eu/neclab/iotplatform/iotbroker.client ]; then make prepare-iotbroker; fi);
+	(if [ ! -d ~/.m2/repository/eu/neclab/iotplatform/iotbroker.client ] || [ -n "$REBUILD_ALL" ]; then make prepare-iotbroker; fi);
 	#Fiware/clients: Checking fiware-models dependency
-	(if [ ! -d ~/.m2/repository/com/agtinternational/iotcrawler/fiware-models ]; then cd ../fiware-models && make install; fi);
+	(if [ ! -d ~/.m2/repository/com/agtinternational/iotcrawler/fiware-models ] || [ -n "$REBUILD_ALL" ]; then cd ../fiware-models && make install; fi);
 	#Fiware/clients: installing
 	mvn install -DskipTests=true
 

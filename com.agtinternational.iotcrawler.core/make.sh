@@ -22,11 +22,11 @@ fi
 
 if [ "$1" = "install" ]; then
 		#Fiware/clients: Checking iot-broker dependency
-	(if [ ! -d ~/.m2/repository/eu/neclab/iotplatform/ngsi.api ]; then sh make.sh prepare-ngsi-api; fi);
+	(if [ ! -d ~/.m2/repository/eu/neclab/iotplatform/ngsi.api ] || [ -n "$REBUILD_ALL" ]; then sh make.sh prepare-ngsi-api; fi);
 	#Fiware/clients: Checking fiware-models dependency
-	(if [ ! -d ~/.m2/repository/com/agtinternational/iotcrawler/fiware-models ]; then cd ../com.agtinternational.iotcrawler.fiware-models && sh make.sh install; fi);
+	(if [ ! -d ~/.m2/repository/com/agtinternational/iotcrawler/fiware-models ] || [ -n "$REBUILD_ALL" ]; then cd ../com.agtinternational.iotcrawler.fiware-models && sh make.sh install; fi);
 	#Fiware/clients: Checking fiware-models dependency
-	(if [ ! -d ~/.m2/repository/com/agtinternational/iotcrawler/fiware-clients ]; then cd ../com.agtinternational.iotcrawler.fiware-clients && sh make.sh install; fi);
+	(if [ ! -d ~/.m2/repository/com/agtinternational/iotcrawler/fiware-clients ] || [ -n "$REBUILD_ALL" ]; then cd ../com.agtinternational.iotcrawler.fiware-clients && sh make.sh install; fi);
 	#Core models: installing
 	mvn install -DskipTests=true
 fi

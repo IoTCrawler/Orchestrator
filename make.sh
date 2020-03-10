@@ -16,3 +16,11 @@ if [ "$1" = "install" ]; then
 	(if [ ! -d ~/.m2/repository/com/agtinternational/iotcrawler/core ] || [ -n "$REBUILD_ALL" ]; then cd "${CI_PROJECT_DIR}/com.agtinternational.iotcrawler.core" && mvn install -DskipTests=true; fi);
 	sh ${CI_PROJECT_DIR}/com.agtinternational.iotcrawler.orchestrator/make.sh install
 fi
+
+if [ "$1" = "build-image" ]; then
+  cd ${CI_PROJECT_DIR}/com.agtinternational.iotcrawler.orchestrator && sh make.sh build-image
+fi
+
+if [ "$1" = "push-image" ]; then
+  cd ${CI_PROJECT_DIR}/com.agtinternational.iotcrawler.orchestrator && sh make.sh push-image
+fi

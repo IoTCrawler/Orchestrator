@@ -57,9 +57,9 @@ build:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
     #- echo "building java from sources is skipped"
-    - whoami
     - sh make.sh install
-    - cd ${CI_PROJECT_DIR}/com.agtinternational.iotcrawler.orchestrator && sh make.sh build-image && sh make.sh push-image
+    - sh make.sh build-image
+    - sh make.sh push-image
 
 #test:
 #  stage: test

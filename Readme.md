@@ -12,13 +12,15 @@ IoTCrawler Orchestrator component. Uses the following services:
 Build orchestrator and all supplementatry libraries
 
 ```
-make install
+sh make.sh install
+sh make.sh build-image
+sh make.sh push-image
 ```
 
 
-## Run
+## Configuration
 
-Prepare for running (prepare docker networks & djane image)
+See dependencies in docker-compose file. 
 
 ```shell
 make install-reqs

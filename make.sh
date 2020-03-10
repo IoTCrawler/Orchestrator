@@ -9,7 +9,7 @@ if [ "$1" = "install" ]; then
   echo "# Main: checking com/agtinternational/iotcrawler"
 	(if [ ! -d ~/.m2/repository/com/agtinternational/iotcrawler ] || [ -n "$REBUILD_ALL" ]; then cd "${CI_PROJECT_DIR}/IoTCrawler" && mvn install; fi);
 	echo "# Main: checking com/agtinternational/iotcrawler/fiware-models"
-	(if [ ! -d ~/.m2/repository/com/agtinternational/iotcrawler/fiware-models ] || [ -n "$REBUILD_ALL" ]; then cd "${CI_PROJECT_DIR}/com.agtinternational.iotcrawler.fiware-models" && sh make.sh install; fi);
+	(if [ ! -d ~/.m2/repository/com/agtinternational/iotcrawler/fiware-models ] || [ -n "$REBUILD_ALL" ]; then cd ${CI_PROJECT_DIR}/com.agtinternational.iotcrawler.fiware-models && sh make.sh install; fi);
 	echo "# Main: checking com/agtinternational/iotcrawler/fiware-clients"
 	(if [ ! -d ~/.m2/repository/com/agtinternational/iotcrawler/fiware-clients ] || [ -n "$REBUILD_ALL" ]; then cd "${CI_PROJECT_DIR}/com.agtinternational.iotcrawler.fiware-clients" && sh make.sh install; fi);
   echo "# Main: checking com/agtinternational/iotcrawler/core"

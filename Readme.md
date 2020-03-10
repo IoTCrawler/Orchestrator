@@ -21,14 +21,3 @@ sh make.sh push-image
 ## Configuration
 
 See dependencies in docker-compose file. 
-
-```shell
-make install-reqs
-```
-
-
-Run ngsi-ld broker, rabbitMQ, redis
-
-```shell
-make start
-```

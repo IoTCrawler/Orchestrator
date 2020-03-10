@@ -11,4 +11,5 @@ image:
   tag: latest
   pullPolicy: IfNotPresent
   secrets:
-    - name: gitlab-registry-root-orchestrator
+    #- name: gitlab-registry-root-orchestrator
+    - name: gitlab-registry

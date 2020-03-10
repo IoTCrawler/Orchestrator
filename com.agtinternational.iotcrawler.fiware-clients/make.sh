@@ -24,9 +24,9 @@ fi
 
 if [ "$1" = "install" ]; then
 		#Fiware/clients: Checking iot-broker dependency
-	(if [ ! -d ~/.m2/repository/eu/neclab/iotplatform/iotbroker.client ]; then sh make.sh prepare-iotbroker; fi);
+	(if [ ! -d ~/.m2/repository/eu/neclab/iotplatform/iotbroker.client ] || [ -n "$REBUILD_ALL" ]; then sh make.sh prepare-iotbroker; fi);
 	#Fiware/clients: Checking fiware-models dependency
-	(if [ ! -d ~/.m2/repository/com/agtinternational/iotcrawler/fiware-models ]; then cd ../com.agtinternational.iotcrawler.fiware-models && sh make.sh install; fi);
+	(if [ ! -d ~/.m2/repository/com/agtinternational/iotcrawler/fiware-models ] || [ -n "$REBUILD_ALL" ]; then cd ../com.agtinternational.iotcrawler.fiware-models && sh make.sh install && cd com.agtinternational.iotcrawler.fiware-clients; fi);
 	#Fiware/clients: installing
 	mvn install -DskipTests=true
 fi

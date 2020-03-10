@@ -9,10 +9,10 @@ fi
 
 if [ "$1" = "install" ]; then
     #Fiware/models: checking ngsi2 dependency
-	(if [ ! -d ~/.m2/repository/com/orange/fiware/ngsi2-client ]; then sh make.sh prepare-ngsi2-api; fi);
+	(if [ ! -d ~/.m2/repository/com/orange/fiware/ngsi2-client ] || [ -n "$REBUILD_ALL" ]; then sh make.sh prepare-ngsi2-api; fi);
 
   # Fiware-models: checking com/agtinternational/iotcrawler
-	(if [ ! -d ~/.m2/repository/com/agtinternational/iotcrawler ]; then cd "${CI_PROJECT_DIR}/IoTCrawler" && mvn install; fi);
+	(if [ ! -d ~/.m2/repository/com/agtinternational/iotcrawler ] || [ -n "$REBUILD_ALL" ]; then cd "${CI_PROJECT_DIR}/IoTCrawler" && mvn install; fi);
 	#Fiware/models: installing
 	mvn validate && mvn install -DskipTests=true
 fi

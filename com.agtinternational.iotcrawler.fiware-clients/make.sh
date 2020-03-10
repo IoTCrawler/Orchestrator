@@ -13,7 +13,7 @@ if [ "$1" = "prepare-djane" ]; then
 fi
 
 if [ "$1" = "prepare-iotbroker" ]; then
-	#Fiware/clients: Preparing iot-broker
+	echo "#Fiware/clients: Preparing iot-broker"
 
 	(if [ ! -d /tmp/iot.Aeron ]; then git clone https://gitlab+deploy-token-10:jCz86jEA8FPs3wpjhoN-@gitlab.iotcrawler.net/orchestrator/iot.Aeron.git /tmp/iot.Aeron ; fi);
 	cd /tmp/iot.Aeron/IoTbrokerParent && mvn install -DskipTests=true
@@ -23,11 +23,11 @@ if [ "$1" = "prepare-iotbroker" ]; then
 fi
 
 if [ "$1" = "install" ]; then
-		#Fiware/clients: Checking iot-broker dependency
+	echo "#Fiware/clients: Checking iot-broker dependency"
 	(if [ ! -d ~/.m2/repository/eu/neclab/iotplatform/iotbroker.client ] || [ -n "$REBUILD_ALL" ]; then sh make.sh prepare-iotbroker; fi);
-	#Fiware/clients: Checking fiware-models dependency
+	echo "#Fiware/clients: Checking fiware-models dependency"
 	(if [ ! -d ~/.m2/repository/com/agtinternational/iotcrawler/fiware-models ] || [ -n "$REBUILD_ALL" ]; then cd ../com.agtinternational.iotcrawler.fiware-models && sh make.sh install && cd com.agtinternational.iotcrawler.fiware-clients; fi);
-	#Fiware/clients: installing
+	echo "#Fiware/clients: installing"
 	mvn install -DskipTests=true
 fi
 #

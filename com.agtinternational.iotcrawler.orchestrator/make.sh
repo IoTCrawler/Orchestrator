@@ -14,7 +14,7 @@ if [ "$1" = "install" ]; then
 	#(if [ ! -d ~/.m2/repository/com/agtinternational/iotcrawler/core ]; then cd ${CI_PROJECT_DIR}/core && mvn install -DskipTests=true; fi);
 	cd ${CI_PROJECT_DIR}/com.agtinternational.iotcrawler.core && sh make.sh install
 	echo "# Orchestrator: Packaging orchestrator"
-	cd ${CI_PROJECT_DIR} && make package
+	cd ${CI_PROJECT_DIR}/com.agtinternational.iotcrawler.orchestrator && mvn clean install -DskipTests=true
 fi
 
 

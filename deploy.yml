@@ -72,13 +72,13 @@ staging:
   extends: .auto-deploy
   stage: staging
   script:
-#    - kubectl config set-cluster k8s --server="${SERVER}"
-#    - kubectl config set clusters.k8s.certificate-authority-data ${CERTIFICATE_AUTHORITY_DATA}
-#    - kubectl config set-credentials gitlab --token="${USER_TOKEN}"
-#    - kubectl config set-context default --cluster=k8s --user=gitlab
-#    - kubectl config use-context default
-#    - kubectl delete --all deployment --namespace ${KUBE_NAMESPACE}
-#    - kubectl delete --all service --namespace ${KUBE_NAMESPACE}
+    - kubectl config set-cluster k8s --server="${SERVER}"
+    - kubectl config set clusters.k8s.certificate-authority-data ${CERTIFICATE_AUTHORITY_DATA}
+    - kubectl config set-credentials gitlab --token="${USER_TOKEN}"
+    - kubectl config set-context default --cluster=k8s --user=gitlab
+    - kubectl config use-context default
+    - kubectl delete --all deployment --namespace ${KUBE_NAMESPACE}
+    - kubectl delete --all service --namespace ${KUBE_NAMESPACE}
 
     - auto-deploy check_kube_domain
     - auto-deploy download_chart
@@ -131,8 +131,8 @@ canary:
     - kubectl config set-credentials gitlab --token="${USER_TOKEN}"
     - kubectl config set-context default --cluster=k8s --user=gitlab
     - kubectl config use-context default
-#    - kubectl delete --all deployment --namespace ${KUBE_NAMESPACE}
-#    - kubectl delete --all service --namespace ${KUBE_NAMESPACE}
+    - kubectl delete --all deployment --namespace ${KUBE_NAMESPACE}
+    - kubectl delete --all service --namespace ${KUBE_NAMESPACE}
 #
 #    - sed -i "s#<CERTIFICATE_AUTHORITY_DATA>#${CERTIFICATE_AUTHORITY_DATA}#g" kube_config
 #    - sed -i "s#<SERVER>#${SERVER}#g" kube_config

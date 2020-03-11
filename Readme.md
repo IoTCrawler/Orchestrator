@@ -20,4 +20,6 @@ sh make.sh push-image
 
 ## Configuration
 
-See dependencies in docker-compose file. 
+Open docker-compose.yml and check/change the following:
+
+1) Orchestrator image URI - adjust the image name according to the latest one (outout)  

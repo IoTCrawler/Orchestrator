@@ -6,6 +6,8 @@ strategyType:
 enableSelector:
 deploymentApiVersion: apps/v1
 fullnameOverride: "production"
+namespace: orchestrator-3-staging
+address: 35.241.228.250.nip.io
 image:
   repository: $CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG
   tag: latest
@@ -13,3 +15,6 @@ image:
   secrets:
     - name: gitlab-registry-root-orchestrator
     - name: gitlab-registry
+application:
+  track: latest
+  tier: web

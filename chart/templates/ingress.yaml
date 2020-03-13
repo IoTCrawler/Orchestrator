@@ -1,26 +1,26 @@
-apiVersion: extensions/v1beta1
-kind: Ingress
+apiVersion: v1
+kind: Service
 metadata:
-  name: rabbit
+  name: ingress-nginx
+  namespace: ingress-nginx
   labels:
-    app: rabbit
-    service: rabbit
-    track: "{{ .Values.application.track }}"
-    tier: "{{ .Values.application.tier }}"
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
 spec:
-  rules:
-    - host: orchestrator-orchestrator.35.241.228.250.nip.io
-      http:
-        paths:
-        - path: "/"
-          backend:
-            serviceName: orchestrator
-            servicePort: 3001
-    - host: rabbit.orchestrator-orchestrator.35.241.228.250.nip.io
-      http:
-        paths:
-        - path: "/"
-          backend:
-            serviceName: rabbit
-            servicePort: 5672
+  type: LoadBalancer
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+      protocol: TCP
+    - name: https
+      port: 443
+      targetPort: 443
+      protocol: TCP
+    - name: proxied-tcp-5672
+      port: 5672
+      targetPort: 5672
+      protocol: TCP
+  selector:
+    app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx

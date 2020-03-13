@@ -6,7 +6,7 @@ strategyType:
 enableSelector:
 deploymentApiVersion: apps/v1
 fullnameOverride: "production"
-namespace: orchestrator-3-staging
+namespace: $KUBE_NAMESPACE
 address: 35.241.228.250.nip.io
 image:
   repository: $CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG

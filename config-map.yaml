@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: rabbit
-  namespace: "{{ .Values.namespace }}"
-data:
-  5672: "{{ .Values.namespace }}/rabbit:5672"

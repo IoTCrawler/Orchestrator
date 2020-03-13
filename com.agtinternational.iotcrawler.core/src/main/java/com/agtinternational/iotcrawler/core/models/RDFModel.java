@@ -383,7 +383,8 @@ public class RDFModel {
             }
 
             if(attrTypeUri==null)
-                throw new Exception("Type of " + attributeKey +" attribute is not declared as URI");
+                LOGGER.warn("Type of " + attributeKey +" attribute is not declared as URI. Impossible to add this property");
+                //throw new Exception("Type of " + attributeKey +" attribute is not declared as URI");
 
             //Property property = model.createProperty(attrTypeUri);
             /*
@@ -392,33 +393,35 @@ public class RDFModel {
                 for (String key2 : ((Relationship) attribute).getProperties().keySet())
             }
             */
-            if(attribute instanceof Iterable){
-                Iterator iterator = ((Iterable) attribute).iterator();
-                while(iterator.hasNext()) {
-                    Object attribute2 = iterator.next();
-                    Object value2 = getValueFromAttribute(attribute2);
-                    ret.addProperty(attrTypeUri, value2);
+            else {
+                if (attribute instanceof Iterable) {
+                    Iterator iterator = ((Iterable) attribute).iterator();
+                    while (iterator.hasNext()) {
+                        Object attribute2 = iterator.next();
+                        Object value2 = getValueFromAttribute(attribute2);
+                        ret.addProperty(attrTypeUri, value2);
+                    }
+                } else {
+                    Object value = getValueFromAttribute(attribute);
+                    ret.addProperty(attrTypeUri, value);
                 }
-            }else {
-                Object value = getValueFromAttribute(attribute);
-                ret.addProperty(attrTypeUri, value);
             }
 
         }
 
-        Map<String, Object> context = (Map)((EntityLD) entity).getContext();
-        if(context!=null)
-            for(String key: context.keySet()) {
-                Object value = context.get(key);
-                if(value instanceof String) { //works only if
-                    //model.setNsPrefix(key, value.toString());
-                }
-
-//                if(value instanceof Map) {
-//                    JsonObject jsonObject = EntityLD.mapToJson((Map) value);
-//                    model.setNsPrefix(key, jsonObject.toString());
+        Object context = ((EntityLD) entity).getContext();
+        //if(context instanceof Map)
+//            for(String key: context.keySet()) {
+//                Object value = context.get(key);
+//                if(value instanceof String) { //works only if
+//                    //model.setNsPrefix(key, value.toString());
 //                }
-            }
+//
+////                if(value instanceof Map) {
+////                    JsonObject jsonObject = EntityLD.mapToJson((Map) value);
+////                    model.setNsPrefix(key, jsonObject.toString());
+////                }
+//            }
 
         return ret;
     }

@@ -47,7 +47,7 @@ public class NgsiLD_MdrClient extends AbstractMetadataClient {
     private String brokerUrl;
     private String brokerHost;
     NgsiLDClient ngsiLDClient;
-    boolean cutURIs = true;
+    boolean cutURIs = false;
     //String serverUrl = "http://155.54.95.248:9090/ngsi-ld/";
 
     public NgsiLD_MdrClient(){

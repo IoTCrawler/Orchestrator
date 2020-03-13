@@ -54,14 +54,14 @@ public class OrchestratorTests /*extends EnvVariablesSetter*/ {
     private Logger LOGGER = LoggerFactory.getLogger(OrchestratorTests.class);
 
 
-    protected IotCrawlerClient orchestatorClient;
+    protected IotCrawlerClient client;
 
     @Before
     public void init(){
         EnvVariablesSetter.init();
-        orchestatorClient = new Orchestrator();
+        client = new Orchestrator();
         try {
-            orchestatorClient.init();
+            client.init();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -71,7 +71,7 @@ public class OrchestratorTests /*extends EnvVariablesSetter*/ {
     @Test
     public void orchestratorTest() throws Exception {
         LOGGER.info("orchestratorTest()");
-        orchestatorClient.run();
+        client.run();
 
         String test = "123";
     }
@@ -96,7 +96,7 @@ public class OrchestratorTests /*extends EnvVariablesSetter*/ {
         String label = "TestStream_"+System.currentTimeMillis();
         IoTStream stream1 = new IoTStream("http://purl.org/iot/ontology/iot-stream#"+label, label);
 
-        Boolean result = orchestatorClient.registerStream(stream1);
+        Boolean result = client.registerStream(stream1);
         Assert.isTrue(result);
         LOGGER.info("Stream was registered");
     }
@@ -107,7 +107,7 @@ public class OrchestratorTests /*extends EnvVariablesSetter*/ {
     public void getStreamsTest() throws Exception {
         LOGGER.info("getAllStreamsTest()");
 
-        List<IoTStream> streams = orchestatorClient.getStreams(null, null, 0,1);
+        List<IoTStream> streams = client.getStreams(null, null, 0,0);
         Assert.notNull(streams);
 
         LOGGER.info(streams.size()+" streams returned");
@@ -126,7 +126,7 @@ public class OrchestratorTests /*extends EnvVariablesSetter*/ {
         ranking.put("artificiality", 0.6);
         ranking.put("concordance", 0);
 
-        List<IoTStream> streams = orchestatorClient.getStreams(null, ranking, 0,0);
+        List<IoTStream> streams = client.getStreams(null, ranking, 0,0);
         Assert.notNull(streams);
 
         LOGGER.info(streams.size()+" streams returned");
@@ -141,7 +141,7 @@ public class OrchestratorTests /*extends EnvVariablesSetter*/ {
         for(String type: entityTypes) {
             byte[] iotStreamModelJson = Files.readAllBytes(Paths.get("samples/"+type+".json"));
             RDFModel entity = RDFModel.fromJson(iotStreamModelJson);
-            Boolean result = orchestatorClient.registerEntity(entity);
+            Boolean result = client.registerEntity(entity);
 
             Assert.isTrue(result);
             LOGGER.info("Entity {} was registered", type);
@@ -155,9 +155,9 @@ public class OrchestratorTests /*extends EnvVariablesSetter*/ {
     public void getEntitiesTest() throws Exception {
         LOGGER.info("getEntitiesTest()");
         //List<EntityLD>  streams = orchestrator.getEntities(IoTStream.getTypeUri(), 0);
-        List<EntityLD>  streams = orchestatorClient.getEntities(".*", null, null, 0,0);
-        Assert.notNull(streams);
-        LOGGER.info(streams.size()+" streams returned");
+        List<EntityLD>  entities = client.getEntities(".*", null, null, 0,0);
+        Assert.notNull(entities);
+        LOGGER.info(entities.size()+" entities returned");
     }
 
 
@@ -176,7 +176,7 @@ public class OrchestratorTests /*extends EnvVariablesSetter*/ {
         byte[] iotStreamModelJson = Files.readAllBytes(Paths.get("samples/IoTStream.json"));
         IoTStream ioTStream = IoTStream.fromJson(iotStreamModelJson);
 
-        List<IoTStream> streams = orchestatorClient.getStreamsById(new String[]{ioTStream.getURI()});
+        List<IoTStream> streams = client.getStreamsById(new String[]{ioTStream.getURI()});
         //List<IoTStream> streams = orchestrator.getStreams("SELECT ?s ?p ?o WHERE { ?s ?p ?o . FILTER (?s=<"+ioTStream.getURI()+">) . } ");
         Assert.notNull(streams);
         LOGGER.info(streams.size()+" streams returned");
@@ -195,8 +195,8 @@ public class OrchestratorTests /*extends EnvVariablesSetter*/ {
 
         String[] ids = new String[]{"iotc:Sensor_FIBARO+System+FGWPE%2FF+Wall+Plug+Gen5_CurrentEnergyUse"};
 
-        List<EntityLD> entities = orchestatorClient.getEntitiesById(ids, Sensor.getTypeUri());
-        List<Sensor> sensors = orchestatorClient.getEntitiesById(ids, Sensor.class);
+        List<EntityLD> entities = client.getEntitiesById(ids, Sensor.getTypeUri());
+        List<Sensor> sensors = client.getEntitiesById(ids, Sensor.class);
 
         Assert.notNull(entities );
         LOGGER.info(entities.size()+" entities returned");
@@ -207,7 +207,7 @@ public class OrchestratorTests /*extends EnvVariablesSetter*/ {
     @Order(9)
     public void getAllSensorsTest() throws Exception {
         LOGGER.info("getAllSensorsTest()");
-        List<Sensor> sensors = orchestatorClient.getSensors(null,0,0);
+        List<Sensor> sensors = client.getSensors(null,0,0);
         Assert.notNull(sensors);
         LOGGER.info(sensors.size()+" sensors returned");
     }
@@ -217,7 +217,7 @@ public class OrchestratorTests /*extends EnvVariablesSetter*/ {
     @Order(10)
     public void getAllPlatformsTest() throws Exception {
         LOGGER.info("getAllPlatformsTest()");
-        List<Platform> platforms = orchestatorClient.getPlatforms(null,0,0);
+        List<Platform> platforms = client.getPlatforms(null,0,0);
         Assert.notNull(platforms);
         LOGGER.info(platforms.size()+" platforms returned");
     }
@@ -230,7 +230,7 @@ public class OrchestratorTests /*extends EnvVariablesSetter*/ {
         JsonObject query = new JsonObject();
         query.addProperty(RDFS.label.getURI(), "Motion");
 
-        List<ObservableProperty> items = orchestatorClient.getObservableProperties(query.toString(),0,0);
+        List<ObservableProperty> items = client.getObservableProperties(query.toString(),0,0);
         Assert.notNull(items);
         LOGGER.info(items.size()+" ObservableProperties returned");
     }
@@ -245,7 +245,7 @@ public class OrchestratorTests /*extends EnvVariablesSetter*/ {
         query.addProperty("sosa:madeBySensor", "iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_MotionAlarmCancelationDelay");
         query.addProperty("http://www.w3.org/2000/01/rdf-schema#label","iotc:Stream_AEON+Labs+ZW100+MultiSensor+6_Brightness");
 
-        List<IoTStream> streams = orchestatorClient.getStreams(query.toString(), null, 0,0);
+        List<IoTStream> streams = client.getStreams(query.toString(), null, 0,0);
         String abc="213";
     }
 
@@ -256,7 +256,7 @@ public class OrchestratorTests /*extends EnvVariablesSetter*/ {
         LOGGER.info("getCustomEntityTest()");
         //String query = "{'sosa:madeBySensor' : ['iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_Temperature']}";
         String query = "{\"sosa:madeBySensor\":[\"iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_MotionAlarmCancelationDelay\",\"iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_Temperature\"]}";
-        List<EntityLD> models = orchestatorClient.getEntities(IoTStream.getTypeUri(), query, null, 0,0);
+        List<EntityLD> models = client.getEntities(IoTStream.getTypeUri(), query, null, 0,0);
         String abc="213";
     }
 
@@ -277,7 +277,7 @@ public class OrchestratorTests /*extends EnvVariablesSetter*/ {
 
         String[] attributes = new String[]{ "http://www.agtinternational.com/iotcrawler/ontologies/iotc#current_value" };
         NotifyCondition notifyCondition = new NotifyCondition(NotifyConditionEnum.ONCHANGE, Arrays.asList(attributes), null);
-        orchestatorClient.subscribeTo(entityUri, attributes, Arrays.asList(new NotifyCondition[]{ notifyCondition }), new Restriction(),
+        client.subscribeTo(entityUri, attributes, Arrays.asList(new NotifyCondition[]{ notifyCondition }), new Restriction(),
              new Function<StreamObservation, Void>() {
             @Override
             public Void apply(StreamObservation streamObservation){
@@ -296,7 +296,7 @@ public class OrchestratorTests /*extends EnvVariablesSetter*/ {
     @Test
     public void subscribeMultipleTest() throws Exception {
         LOGGER.info("subscribeMultipleTest()");
-        List<IoTStream> streams = orchestatorClient.getStreams(null, null,0,0);
+        List<IoTStream> streams = client.getStreams(null, null,0,0);
         for(IoTStream stream : streams) {
             //IoTStream iotObservationModel = IoTStream.fromJson(iotStreamModel);
             String[] attributes = new String[]{
@@ -305,7 +305,7 @@ public class OrchestratorTests /*extends EnvVariablesSetter*/ {
             };
 
             NotifyCondition notifyCondition = new NotifyCondition(NotifyConditionEnum.ONCHANGE, Arrays.asList(attributes), null);
-            orchestatorClient.subscribeTo(stream.getURI(), attributes, Arrays.asList(new NotifyCondition[]{notifyCondition}), new Restriction(),
+            client.subscribeTo(stream.getURI(), attributes, Arrays.asList(new NotifyCondition[]{notifyCondition}), new Restriction(),
                     new Function<StreamObservation, Void>() {
                         @Override
                         public Void apply(StreamObservation streamObservation) {
@@ -350,7 +350,7 @@ public class OrchestratorTests /*extends EnvVariablesSetter*/ {
         byte[] model = Files.readAllBytes(Paths.get("samples/Observation.json"));
 
         StreamObservation streamObservation = StreamObservation.fromJson(model);
-        orchestatorClient.pushObservationsToBroker(Arrays.asList(new StreamObservation[]{ streamObservation }));
+        client.pushObservationsToBroker(Arrays.asList(new StreamObservation[]{ streamObservation }));
         Assert.isTrue(true);
     }
 
@@ -359,7 +359,7 @@ public class OrchestratorTests /*extends EnvVariablesSetter*/ {
     @Ignore
     public void getObservationsTest() throws Exception {
         LOGGER.info("getObservationsTest()");
-        List<StreamObservation> list = orchestatorClient.getObservations("iotc:Stream_Z-Wave+Node+002%3A+FGWP102+Metered+Wall+Plug+Switch_Alarm+%28power%29",0,1);
+        List<StreamObservation> list = client.getObservations("iotc:Stream_Z-Wave+Node+002%3A+FGWP102+Metered+Wall+Plug+Switch_Alarm+%28power%29",0,1);
         //List<StreamObservation> list = orchestrator.getObservations(".*",1);
         String abc = "abc";
         Assert.isTrue(true);

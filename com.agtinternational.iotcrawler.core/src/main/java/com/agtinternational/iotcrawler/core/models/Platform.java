@@ -69,7 +69,7 @@ public class Platform extends RDFModel {
 
     public static String getTypeUri(){
         //return SosaPlatform.class.getSimpleName();
-        return sosaPrefix+":"+"Platform";
+        return SOSA.platform;
     }
 
     public static Platform fromJson(String jsonString){

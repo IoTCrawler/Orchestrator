@@ -64,7 +64,8 @@ public class Sensor extends RDFModel {
     }
 
     public static String getTypeUri(){
-        return sosaPrefix+":"+"Sensor";
+        return SOSA.sensor;
+        //return sosaPrefix+":"+"Sensor";
         //return Sensor.class.getSimpleName();
         //return "sosa:Sensor";
     }

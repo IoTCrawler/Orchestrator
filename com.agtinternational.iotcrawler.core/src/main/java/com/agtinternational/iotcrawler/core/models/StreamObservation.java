@@ -27,6 +27,7 @@ import org.apache.jena.rdf.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.agtinternational.iotcrawler.core.Constants.iotcNS;
 import static com.agtinternational.iotcrawler.core.Constants.iotcPrefix;
 
 
@@ -48,7 +49,7 @@ public class StreamObservation extends RDFModel {
     public static String getTypeUri(){
         //return StreamObservation.class.getSimpleName();
         //return "iotc:StreamObservation";
-        return iotcPrefix+":"+"StreamObservation";
+        return iotcNS+":"+"StreamObservation";
     }
 
 

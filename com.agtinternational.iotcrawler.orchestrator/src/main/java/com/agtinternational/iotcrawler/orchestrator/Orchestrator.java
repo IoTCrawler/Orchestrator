@@ -149,7 +149,10 @@ public class Orchestrator extends IotCrawlerClient {
 
         LOGGER.info("Connecting to RabbitMQ at {}", rabbitHost);
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost(rabbitHost);
+        String[] splitted = rabbitHost.split(":");
+        factory.setHost(splitted[0]);
+        if(splitted.length>1)
+            factory.setPort(Integer.parseInt(splitted[1]));
 
         int attempt = 0;
         while(connection==null) {

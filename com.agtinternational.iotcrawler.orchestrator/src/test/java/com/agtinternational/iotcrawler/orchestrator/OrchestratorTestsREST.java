@@ -21,26 +21,10 @@ package com.agtinternational.iotcrawler.orchestrator;
  */
 
 import com.agtinternational.iotcrawler.core.OrchestratorRESTClient;
-import com.agtinternational.iotcrawler.core.models.*;
-import com.agtinternational.iotcrawler.fiware.models.EntityLD;
-import com.agtinternational.iotcrawler.orchestrator.clients.NgsiLD_MdrClient;
-import com.google.gson.JsonObject;
-import eu.neclab.iotplatform.ngsi.api.datamodel.NotifyCondition;
-import eu.neclab.iotplatform.ngsi.api.datamodel.NotifyConditionEnum;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.jupiter.api.Order;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.Assert;
-
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static com.agtinternational.iotcrawler.orchestrator.Constants.IOTCRAWLER_ORCHESTRATOR_URL;
 
@@ -59,11 +43,11 @@ public class OrchestratorTestsREST extends OrchestratorTests {
     public void init() {
         EnvVariablesSetter.init();
         LOGGER.info("Initializing NGSI-LD client to {}",System.getenv().get(IOTCRAWLER_ORCHESTRATOR_URL));
-        orchestatorClient = new OrchestratorRESTClient(System.getenv().get(IOTCRAWLER_ORCHESTRATOR_URL));
+        client = new OrchestratorRESTClient(System.getenv().get(IOTCRAWLER_ORCHESTRATOR_URL));
 //        orchestrator = new Orchestrator();
         try {
 //            orchestrator.init();
-            orchestatorClient.init();
+            client.init();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -218,15 +202,12 @@ public class OrchestratorTestsREST extends OrchestratorTests {
 //        LOGGER.info(streams.size() + " entities returned");
 //    }
 //
-//    //@Ignore
-//    @Test
-//    @Order(9)
-//    public void getAllSensorsTest() throws Exception {
-//        LOGGER.info("getAllSensorsTest()");
-//        List<EntityLD> sensors = orchestratorRestClient.getEntities(Sensor.getTypeUri(), null, null, 0,0);
-//        Assert.notNull(sensors);
-//        LOGGER.info(sensors.size() + " sensors returned");
-//    }
+    //@Ignore
+    @Test
+    @Order(9)
+    public void getAllSensorsTest() throws Exception {
+        super.getAllSensorsTest();
+    }
 //
 //    //@Ignore
 //    @Test

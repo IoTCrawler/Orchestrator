@@ -14,7 +14,7 @@ if [ "$1" = "install" ]; then
 	(if [ ! -d ~/.m2/repository/com/agtinternational/iotcrawler/fiware-clients ] || [ -n "$REBUILD_ALL" ]; then cd "${CI_PROJECT_DIR}/com.agtinternational.iotcrawler.fiware-clients" && sh make.sh install && cd ..; fi);
   echo "# Main: checking com/agtinternational/iotcrawler/core"
 	(if [ ! -d ~/.m2/repository/com/agtinternational/iotcrawler/core ] || [ -n "$REBUILD_ALL" ]; then cd "${CI_PROJECT_DIR}/com.agtinternational.iotcrawler.core" && mvn install -DskipTests=true && cd ..; fi);
-	cd "${CI_PROJECT_DIR}/com.agtinternational.iotcrawler.orchestrator" && make.sh install && cd ..
+	cd "${CI_PROJECT_DIR}/com.agtinternational.iotcrawler.orchestrator" && sh make.sh install && cd ..
 fi
 
 if [ "$1" = "build-image" ]; then

@@ -44,6 +44,6 @@ spec:
             value: "http://155.54.95.248:9090/ngsi-ld/"
             #value: "http://metadata-repository-scorpiobroker.35.241.228.250.nip.io/ngsi-ld/"
           - name: HTTP_SERVER_HOST
-            value: "orchestrator.{{ .Values.namespace }}"
+            value: "orchestrator.{{ .Release.Namespace }}"
           - name: HTTP_SERVER_PORT
             value: "80"

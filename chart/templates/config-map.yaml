@@ -4,4 +4,4 @@ metadata:
   name: tcp-services
   namespace: ingress-nginx
 data:
-  5672: "orchestrator-3-staging/rabbit:5672"
+  5672: "orchestrator-3-production/rabbit:5672"

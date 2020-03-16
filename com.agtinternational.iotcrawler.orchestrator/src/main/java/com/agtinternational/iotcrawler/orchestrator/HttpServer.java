@@ -204,6 +204,23 @@ public class HttpServer {
         };
     }
 
+    public HttpHandler versionsHandler()  {
+        return new HttpHandler() {
+            @Override
+            public void handle(HttpExchange he) throws IOException {
+
+                String response =  (System.getenv().containsKey("VERSION")?System.getenv().get("VERSION"):"Not set");
+                he.sendResponseHeaders(200, response.length());
+
+                OutputStream os = he.getResponseBody();
+                os.write(response.getBytes());
+                os.close();
+
+            }
+        };
+    }
+
+
     public void start(){
         httpServer.start();
     }

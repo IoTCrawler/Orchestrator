@@ -37,6 +37,7 @@ import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang3.tuple.Pair;
 import eu.neclab.iotplatform.ngsi.api.datamodel.*;
 
+import org.apache.http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,6 +60,7 @@ public class Orchestrator extends IotCrawlerClient {
     String redisHost = "localhost";
     String notificationsEndpoint = "/notify";
     String ngsiEndpoint = "/ngsi-ld";
+    String versionEndpoint = "/version";
     boolean cutURIs = true;
 
     //AbstractMetadataClient metadataClient;
@@ -100,7 +102,11 @@ public class Orchestrator extends IotCrawlerClient {
         LOGGER.info("Initializing web server");
         httpServer = new HttpServer();
 
-        metadataClient = new NgsiLD_MdrClient((System.getenv().containsKey(RANKING_COMPONENT_URL)? System.getenv(RANKING_COMPONENT_URL): System.getenv(NGSILD_BROKER_URL)));
+        String brokerURL = (System.getenv().containsKey(RANKING_COMPONENT_URL)? System.getenv(RANKING_COMPONENT_URL): System.getenv(NGSILD_BROKER_URL));
+        if(brokerURL==null)
+            throw new Exception("Specify RANKING_COMPONENT_URL or NGSILD_BROKER_URL!");
+
+        metadataClient = new NgsiLD_MdrClient(brokerURL);
         LOGGER.info("Initialized NGSI-LD Client to {}", metadataClient.getBrokerHost());
 
         dataBrokerClient = new IotBrokerDataClient();
@@ -147,6 +153,19 @@ public class Orchestrator extends IotCrawlerClient {
         //redisConnection = redisClient.connect();
         //redisSyncCommands = redisConnection.sync();
 
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                initRabbitMQ();
+            }
+        }).start();
+
+                initHttpServer();
+        startHttpServer();
+    }
+
+    private void initRabbitMQ(){
         LOGGER.info("Connecting to RabbitMQ at {}", rabbitHost);
         ConnectionFactory factory = new ConnectionFactory();
         String[] splitted = rabbitHost.split(":");
@@ -158,11 +177,13 @@ public class Orchestrator extends IotCrawlerClient {
         while(connection==null) {
             attempt++;
             try {
+                if(attempt>0)
+                    Thread.sleep(5000);
                 LOGGER.debug("Trying to connect to rabbit (Attempt {} of {})", attempt, 12);
                 connection = factory.newConnection();
             } catch (Exception e) {
-                e.printStackTrace();
-                Thread.sleep(5000);
+                LOGGER.warn(e.getLocalizedMessage());
+                //e.printStackTrace();
             }
         }
 
@@ -194,13 +215,7 @@ public class Orchestrator extends IotCrawlerClient {
             }
             LOGGER.info(" [*] Waiting for RPC messages via from Rabbit");
         }
-
-
-        initHttpServer();
-        startHttpServer();
     }
-
-
 
     private void initHttpServer(){
         LOGGER.info("Initializing web server");
@@ -216,7 +231,9 @@ public class Orchestrator extends IotCrawlerClient {
 
         httpServer.addContext(notificationsEndpoint, notificationsHandlerFunction);
         httpServer.addContext(ngsiEndpoint, httpServer.proxyingHandler(metadataClient.getBrokerHost()));
+        httpServer.addContext(versionEndpoint,  httpServer.versionsHandler());
     }
+
 
 
     private Function<String, Void> notificationsHandlerFunction = new Function<String, Void>() {

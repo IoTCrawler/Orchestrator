@@ -77,9 +77,9 @@ staging:
     - kubectl config set-credentials gitlab --token="${USER_TOKEN}"
     - kubectl config set-context default --cluster=k8s --user=gitlab
     - kubectl config use-context default
-    - kubectl delete --all deployment --namespace ${KUBE_NAMESPACE} || echo ""
-    - kubectl delete --all service --namespace ${KUBE_NAMESPACE} || echo ""
-    - kubectl delete ingress orchestartor-ingress --namespace ${KUBE_NAMESPACE} || echo ""
+    #- kubectl delete --all deployment --namespace ${KUBE_NAMESPACE} || echo ""
+    #- kubectl delete --all service --namespace ${KUBE_NAMESPACE} || echo ""
+    #- kubectl delete ingress orchestartor-ingress --namespace ${KUBE_NAMESPACE} || echo ""
 
     - sed -i "s#helm upgrade --install#helm upgrade --install --force#g" /usr/local/bin/auto-deploy
 
@@ -135,9 +135,9 @@ canary:
     - kubectl config set-credentials gitlab --token="${USER_TOKEN}"
     - kubectl config set-context default --cluster=k8s --user=gitlab
     - kubectl config use-context default
-    - kubectl delete --all deployment --namespace ${KUBE_NAMESPACE} || echo ""
-    - kubectl delete --all service --namespace ${KUBE_NAMESPACE} || echo ""
-    - kubectl delete ingress orchestartor-ingress --namespace ${KUBE_NAMESPACE} || echo ""
+   # - kubectl delete --all deployment --namespace ${KUBE_NAMESPACE} || echo ""
+   # - kubectl delete --all service --namespace ${KUBE_NAMESPACE} || echo ""
+    #- kubectl delete ingress orchestartor-ingress --namespace ${KUBE_NAMESPACE} || echo ""
 #
 #    - sed -i "s#<CERTIFICATE_AUTHORITY_DATA>#${CERTIFICATE_AUTHORITY_DATA}#g" kube_config
 #    - sed -i "s#<SERVER>#${SERVER}#g" kube_config

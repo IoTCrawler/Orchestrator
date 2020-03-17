@@ -85,7 +85,8 @@ staging:
     - auto-deploy check_kube_domain
     - auto-deploy download_chart
     - auto-deploy ensure_namespace
-    - auto-deploy initialize_tiller
+    #- auto-deploy initialize_tiller
+    - tiller -alsologtostderr &
     - auto-deploy create_secret
     - auto-deploy deploy || echo "deployment should be done. Error ignored"
   environment:

@@ -79,6 +79,7 @@ staging:
     - kubectl config use-context default
     - kubectl delete --all deployment --namespace ${KUBE_NAMESPACE}
     - kubectl delete --all service --namespace ${KUBE_NAMESPACE}
+    - kubectl delete ingress orchestartor-ingress --namespace ${KUBE_NAMESPACE}
 
     - sed -i "s#helm upgrade --install#helm upgrade --install --force#g" /usr/local/bin/auto-deploy
 
@@ -136,6 +137,7 @@ canary:
     - kubectl config use-context default
     - kubectl delete --all deployment --namespace ${KUBE_NAMESPACE}
     - kubectl delete --all service --namespace ${KUBE_NAMESPACE}
+    - kubectl delete ingress orchestartor-ingress --namespace ${KUBE_NAMESPACE}
 #
 #    - sed -i "s#<CERTIFICATE_AUTHORITY_DATA>#${CERTIFICATE_AUTHORITY_DATA}#g" kube_config
 #    - sed -i "s#<SERVER>#${SERVER}#g" kube_config

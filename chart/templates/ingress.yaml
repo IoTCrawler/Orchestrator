@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: rabbit
+  name: orchestartor-ingress
 spec:
   rules:
     - host: orchestrator-orchestrator.35.241.228.250.nip.io

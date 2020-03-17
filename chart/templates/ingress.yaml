@@ -4,7 +4,7 @@ metadata:
   name: orchestartor-ingress
 spec:
   rules:
-    - host: orchestrator-orchestrator.35.241.228.250.nip.io
+    - host: orchestrator-{{.Release.Name}}.35.241.228.250.nip.io
       http:
         paths:
           - path: "/"

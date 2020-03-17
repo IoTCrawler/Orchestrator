@@ -1,4 +1,4 @@
-apiVersion: apps/v1
+/apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
@@ -34,13 +34,13 @@ spec:
         ports:
         - containerPort: 6379
         resources: {}
-        volumeMounts:
-        - mountPath: /data
-          name: redis-claim0
+#        volumeMounts:
+#        - mountPath: /data
+#          name: redis-claim0
       restartPolicy: Always
       serviceAccountName: ""
-      volumes:
-      - name: redis-claim0
-        persistentVolumeClaim:
-          claimName: redis-claim0
+#      volumes:
+#      - name: redis-claim0
+#        persistentVolumeClaim:
+#          claimName: redis-claim0
 status: {}

@@ -87,7 +87,7 @@ staging:
     - auto-deploy ensure_namespace
     - auto-deploy initialize_tiller
     - auto-deploy create_secret
-    - auto-deploy deploy ${KUBE_NAMESPACE} || echo "deployment should be done. Error ignored"
+    - auto-deploy deploy || echo "deployment should be done. Error ignored"
   environment:
     name: staging
     url: http://$CI_PROJECT_PATH_SLUG-staging.$KUBE_INGRESS_BASE_DOMAIN
@@ -163,7 +163,7 @@ canary:
 #    - helm status production
 #    - helm test production
     #- sleep 20000
-    - auto-deploy deploy ${KUBE_NAMESPACE} || echo "deployment should be done. Error ignored"
+    - auto-deploy deploy || echo "deployment should be done. Error ignored"
     - auto-deploy delete canary
     - auto-deploy delete rollout
     - auto-deploy persist_environment_url

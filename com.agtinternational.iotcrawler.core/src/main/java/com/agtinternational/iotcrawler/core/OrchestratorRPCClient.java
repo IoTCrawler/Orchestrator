@@ -70,7 +70,10 @@ public class OrchestratorRPCClient extends IotCrawlerClient implements AutoClose
             rabbitHost = System.getenv(IOTCRAWLER_RABBIT_HOST);
 
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost(rabbitHost);
+        String[] splitted = rabbitHost.split(":");
+        factory.setHost(splitted[0]);
+        if(splitted.length>1)
+            factory.setPort(Integer.parseInt(splitted[1]));
 
         parser = new JsonParser();
 

@@ -1,4 +1,4 @@
-/*-
+package com.agtinternational.iotcrawler.fiware.clients;/*-
  * #%L
  * fiware-clients
  * %%
@@ -34,8 +34,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.agtinternational.iotcrawler.fiware.clients.Constants.HTTP_REFERENSE_URL;
+
 public class HttpTestServer {
     private Logger LOGGER = LoggerFactory.getLogger(HttpTestServer.class);
+
     private int port = 3001;
 
     private com.sun.net.httpserver.HttpServer httpServer;
@@ -46,6 +49,10 @@ public class HttpTestServer {
         HttpTestServer testServer = new HttpTestServer();
         testServer.initHttpServer();
 
+    }
+
+    public static String getRefenceURL(){
+        return System.getenv(HTTP_REFERENSE_URL);
     }
 
     public void initHttpServer() throws IOException {

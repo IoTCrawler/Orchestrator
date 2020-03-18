@@ -23,6 +23,7 @@ import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import com.agtinternational.iotcrawler.fiware.models.NGSILD.Property;
 import com.agtinternational.iotcrawler.fiware.models.NGSILD.Relationship;
 import com.orange.ngsi2.model.*;
+import eu.neclab.iotplatform.iotbroker.commons.GenerateUniqueID;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
@@ -33,8 +34,10 @@ import org.springframework.core.annotation.Order;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Semaphore;
@@ -63,14 +66,12 @@ public class NgsiLDClientTest extends EnvVariablesSetter{
     public ExpectedException thrown = ExpectedException.none();
     //private HttpHeaders httpHeaders;
 
-    // docker run -d -t -p 1026:1026 fiware/orion-ld
-
     @Parameterized.Parameters
     public static Collection parameters() throws Exception {
         return Arrays.asList(new Object[][]{
                 //new Object[]{ createEntity() },
-                new Object[]{ readEntity("samples/Vehicle.json") },
-                //new Object[]{ readEntity("samples/IoTStream.json") },
+                //new Object[]{ readEntity("samples/Vehicle.json") },
+                new Object[]{ readEntity("samples/IoTStream.json") },
                 //new Object[]{ readEntity("samples/TemperatureSensor.json") }
                 //new Object[]{ readEntity("samples/ObservableProperty.json") }
         });
@@ -306,6 +307,56 @@ public class NgsiLDClientTest extends EnvVariablesSetter{
             Assert.fail("Failed to delete entity");
 
         LOGGER.info("Entity deleted");
+    }
+
+    //@Ignore
+    @Test
+    public void addSubscriptionTest() throws Exception {
+        Semaphore reqFinished = new Semaphore(0);
+        SubjectEntity subjectEntity = new SubjectEntity();
+        subjectEntity.setType(Optional.of(entity.getType()));
+
+        Condition condition = new Condition();
+//        condition.setAttributes(Collections.singletonList(entity.getAttributes().values()));
+//        condition.setExpression("q", "temperature>40");
+
+        SubjectSubscription subjectSubscription = new SubjectSubscription(Collections.singletonList(subjectEntity), condition);
+        List attributes =  Arrays.asList(entity.getAttributes().keySet());
+//        Arrays.asList(entity.getAttributes().keySet())
+//        attributes.add("temperature");
+//        attributes.add("humidity");
+        Notification notification = new Notification(attributes, new URL(HttpTestServer.getRefenceURL()));
+        notification.setThrottling(Optional.of(new Long(5)));
+        Subscription subscription = new Subscription();
+        subscription.setSubject(subjectSubscription);
+        subscription.setNotification(notification);
+        subscription.setExpires(Instant.parse("2035-04-05T14:00:00.20Z"));
+
+
+        ListenableFuture<String> req = ngsiLdClient.addSubscription(subscription);
+        final Boolean[] success = {false};
+        req.addCallback(new ListenableFutureCallback<String>() {
+            @Override
+            public void onSuccess(String id) {
+                success[0] = true;
+                Assert.assertNotNull(id);
+                reqFinished.release();
+            }
+
+            @Override
+            public void onFailure(Throwable throwable) {
+                success[0] = false;
+                throwable.printStackTrace();
+                reqFinished.release();
+            }
+
+        });
+        reqFinished.acquire();
+
+        if(success[0])
+            Assert.assertTrue("Subscription created", true);
+        else
+            Assert.fail("Failed to create subscription");
     }
 
     @Ignore

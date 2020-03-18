@@ -21,23 +21,25 @@ package com.agtinternational.iotcrawler.fiware.clients;
 import org.junit.Before;
 import org.junit.contrib.java.lang.system.EnvironmentVariables;
 
+import static com.agtinternational.iotcrawler.fiware.clients.Constants.HTTP_REFERENSE_URL;
 import static com.agtinternational.iotcrawler.fiware.clients.Constants.NGSILD_BROKER_URL;
 
 public class EnvVariablesSetter {
 
     public final EnvironmentVariables environmentVariables = new EnvironmentVariables();
 
+
     @Before
     public void init(){
-        //public static final String IoTCTripleStoreURI = "http://10.67.42.53:10035/repositories/IoTCrawler2/sparql";
+
         //public static final String defaultTripleStoreURI = "http://10.67.42.53:10035/repositories/KB/sparql";
 
         if(!System.getenv().containsKey(NGSILD_BROKER_URL))
-            environmentVariables.set(NGSILD_BROKER_URL, "http://metadata-repository-scorpiobroker.35.241.228.250.nip.io/ngsi-ld/");
+            environmentVariables.set(NGSILD_BROKER_URL, "http://localhost:3002/ngsi-ld/");
             //environmentVariables.set(NGSILD_BROKER_URL, "http://155.54.95.248:9090/ngsi-ld/");
             //environmentVariables.set(NGSILD_BROKER_URL, "http://djane:3002/ngsi-ld/");
 
-        //environmentVariables.set(NGSILD_BROKER_URL, "http://localhost:3001/ngsi-ld/");
+        environmentVariables.set(HTTP_REFERENSE_URL, "http://10.0.75.1:3001/notify");
         //environmentVariables.set(NGSILD_BROKER_URL, "http://localhost:3003/ngsi-ld/");
         //environmentVariables.set(NGSILD_BROKER_URL, "http://155.54.95.248:9090/ngsi-ld/");
         //environmentVariables.set(NGSILD_BROKER_URL, "http://localhost:9090/ngsi-ld/");

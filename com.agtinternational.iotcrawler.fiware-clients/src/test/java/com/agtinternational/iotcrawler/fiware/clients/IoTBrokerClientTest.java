@@ -49,7 +49,7 @@ public class IoTBrokerClientTest {
     //private final static String serverUrl = "http://localhost:8060/ngsi9";
     //private final static String serverUrl = "http://localhost:8065";
     private final static String serverUrl = "http://localhost:8060/ngsi10";
-    private final static String httpServerUrl = "http://10.67.1.41:3001/notify";
+
 
     Southbound iotBrokerClient;
     ContextElement sensor;
@@ -63,7 +63,7 @@ public class IoTBrokerClientTest {
         iotBrokerClient.setNgsi9url(serverUrl+"/");
         iotBrokerClient.setNgsi9RemoteUrl(serverUrl+"/");
         iotBrokerClient.setNgsi9rootPath("ngsi9");
-        iotBrokerClient.setNgsi10Reference(httpServerUrl);
+        iotBrokerClient.setNgsi10Reference(HttpTestServer.getRefenceURL());
         iotBrokerClient.setDefaultContentType("application/json");
 
         sensor = initSensor();
@@ -195,7 +195,7 @@ public class IoTBrokerClientTest {
         //ContextElement sensor = initSensor();
 
         CustomSubscribeContextRequest request = new CustomSubscribeContextRequest();
-        request.setReference(httpServerUrl);
+        request.setReference(HttpTestServer.getRefenceURL());
         request.setEntityIdList(Arrays.asList(sensor.getEntityId()));
         //request.setEntityIdList(Arrays.asList(new EntityId[]{ new EntityId(){{  setId(".*"); setIsPattern(true); }} }));
         request.setAttributeList(Arrays.asList(new String[]{ "noiseLevel" }));

@@ -22,5 +22,6 @@ package com.agtinternational.iotcrawler.fiware.clients;
 
 public class Constants {
     public static String NGSILD_BROKER_URL = "NGSILD_BROKER_URL";
+    public static String HTTP_REFERENSE_URL = "HTTP_REFERENCE_URL";
 
 }

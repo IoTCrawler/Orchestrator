@@ -22,6 +22,8 @@ package com.agtinternational.iotcrawler.fiware.clients;
 
 
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
+
+import com.agtinternational.iotcrawler.fiware.models.subscription.SubscriptionLD;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
@@ -29,8 +31,12 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.orange.ngsi2.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.task.AsyncListenableTaskExecutor;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.http.*;
+import org.springframework.http.client.AsyncClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsAsyncClientHttpRequestFactory;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.util.concurrent.ListenableFuture;
@@ -84,7 +90,13 @@ public class NgsiLDClient {
     }
 
     public NgsiLDClient(String baseURL){
-        this(new PatchedAsyncRestTemplate(new HttpComponentsAsyncClientHttpRequestFactory(), new NgsiLDRestTemplate()), baseURL);
+        this();
+        this.baseURL = baseURL;
+        //AsyncClientHttpRequestFactory requestFactory = new HttpComponentsAsyncClientHttpRequestFactory();
+        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
+        requestFactory.setTaskExecutor(new SimpleAsyncTaskExecutor());
+        this.asyncRestTemplate = new CustomAsyncRestTemplate(requestFactory, new NgsiLDRestTemplate());
+        //this(, baseURL);
     }
 
     /**
@@ -449,7 +461,7 @@ public class NgsiLDClient {
      * @param subscription the Subscription to add
      * @return subscription Id
      */
-    public ListenableFuture<String> addSubscription(Subscription subscription) {
+    public ListenableFuture<String> addSubscription(SubscriptionLD subscription) {
         ListenableFuture<ResponseEntity<Void>> s = request(HttpMethod.POST, UriComponentsBuilder.fromHttpUrl(baseURL).path("v1/subscriptions").toUriString(), subscription, Void.class);
         return new ListenableFutureAdapter<String, ResponseEntity<Void>>(s) {
             @Override

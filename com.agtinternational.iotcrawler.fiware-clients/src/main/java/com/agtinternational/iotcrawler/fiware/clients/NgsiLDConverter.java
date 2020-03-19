@@ -28,6 +28,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.orange.ngsi2.model.Attribute;
+import com.orange.ngsi2.model.Subscription;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
@@ -59,13 +60,13 @@ public class NgsiLDConverter extends AbstractHttpMessageConverter<Object> implem
     //@Override
     //public boolean  canRead(Type type, Class<?> contextClass, MediaType mediaType) {
     public boolean  canRead(Class<?> clazz, MediaType mediaType){
-        return true;// this.canRead(type.getClass(), mediaType);
+        return clazz.getClass().getCanonicalName().contains(EntityLD.class.getCanonicalName());// this.canRead(type.getClass(), mediaType);
     }
 
     //@Override
     //public boolean canWrite(Type type, Class<?> contextClass, MediaType mediaType) {
     public boolean canWrite(Class<?> clazz, MediaType mediaType){
-        return true; // this.canWrite(type.getClass(), mediaType);
+        return clazz.getClass().getCanonicalName().contains(EntityLD.class.getCanonicalName()); // this.canWrite(type.getClass(), mediaType);
     }
 
     @Override
@@ -129,8 +130,13 @@ public class NgsiLDConverter extends AbstractHttpMessageConverter<Object> implem
                 jsonObject.add("type", jsonObject.get("@type"));
                 jsonObject.remove("@type");
             }
+//        }else if(object instanceof Subscription){
+
+
         }else if(object instanceof Map){
             jsonObject = (JsonObject) Utils.objectToJson(object);
+        }else{
+            throw new NotImplementedException("Conversion not implemented for "+object.getClass());
         }
 
         String str = Utils.prettyPrint(jsonObject);

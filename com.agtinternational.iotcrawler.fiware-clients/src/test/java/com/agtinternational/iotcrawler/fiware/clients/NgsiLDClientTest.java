@@ -18,12 +18,15 @@
  * #L%
  */
 package com.agtinternational.iotcrawler.fiware.clients;
-import com.agtinternational.iotcrawler.fiware.clients.NgsiLDClient;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import com.agtinternational.iotcrawler.fiware.models.NGSILD.Property;
 import com.agtinternational.iotcrawler.fiware.models.NGSILD.Relationship;
+
+import com.agtinternational.iotcrawler.fiware.models.subscription.Endpoint;
+import com.agtinternational.iotcrawler.fiware.models.subscription.NotificationParams;
+import com.agtinternational.iotcrawler.fiware.models.subscription.SubscriptionLD;
 import com.orange.ngsi2.model.*;
-import eu.neclab.iotplatform.iotbroker.commons.GenerateUniqueID;
+import org.apache.http.entity.ContentType;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
@@ -184,7 +187,7 @@ public class NgsiLDClientTest extends EnvVariablesSetter{
     @Order(2)
     @Test
     public void getAllEntitiesTest() throws ExecutionException, InterruptedException {
-        Collection<String> types = Arrays.asList(new String[]{ ".*" });
+        Collection<String> types = Arrays.asList(new String[]{ entity.getType() });
         Paginated<EntityLD> entities = ngsiLdClient.getEntities(null, null, types, null, 0, 0, false).get();
         Assert.assertNotNull(entities.getItems());
         Assert.assertNotNull(entities.getItems().size()>0);
@@ -313,24 +316,46 @@ public class NgsiLDClientTest extends EnvVariablesSetter{
     @Test
     public void addSubscriptionTest() throws Exception {
         Semaphore reqFinished = new Semaphore(0);
-        SubjectEntity subjectEntity = new SubjectEntity();
-        subjectEntity.setType(Optional.of(entity.getType()));
 
-        Condition condition = new Condition();
-//        condition.setAttributes(Collections.singletonList(entity.getAttributes().values()));
-//        condition.setExpression("q", "temperature>40");
+        SubjectEntity subjectEntity = new SubjectEntity(){{ setId(Optional.of(entity.getId())); setType(Optional.of(entity.getType())); }};
 
-        SubjectSubscription subjectSubscription = new SubjectSubscription(Collections.singletonList(subjectEntity), condition);
-        List attributes =  Arrays.asList(entity.getAttributes().keySet());
-//        Arrays.asList(entity.getAttributes().keySet())
-//        attributes.add("temperature");
-//        attributes.add("humidity");
-        Notification notification = new Notification(attributes, new URL(HttpTestServer.getRefenceURL()));
-        notification.setThrottling(Optional.of(new Long(5)));
-        Subscription subscription = new Subscription();
-        subscription.setSubject(subjectSubscription);
-        subscription.setNotification(notification);
-        subscription.setExpires(Instant.parse("2035-04-05T14:00:00.20Z"));
+        Condition pressureCondition = new Condition();
+        pressureCondition.setAttributes(Arrays.asList(new String[]{ "temperature" }));
+
+        SubjectSubscription subjectSubscription = new SubjectSubscription(Arrays.asList(new SubjectEntity[]{ subjectEntity }), pressureCondition);
+
+        NotificationParams notification = new NotificationParams();
+        notification.setAttributes(Arrays.asList(new String[]{ "location" }));
+        notification.setEndpoint(new Endpoint(new URL(HttpTestServer.getRefenceURL()), ContentType.APPLICATION_JSON));
+        SubscriptionLD subscription = new SubscriptionLD(
+                UUID.randomUUID().toString(),
+                Arrays.asList(new SubjectEntity[]{ subjectEntity }),
+                notification,
+                null,
+                null);
+
+
+//        SubjectEntity subjectEntity = new SubjectEntity();
+//        subjectEntity.setId(Optional.of(entity.getId()));
+//        subjectEntity.setType(Optional.of(entity.getType()));
+//
+//        Condition condition = new Condition();
+////        condition.setAttributes(Collections.singletonList(entity.getAttributes().values()));
+////        condition.setExpression("q", "temperature>40");
+//
+//        SubjectSubscription subjectSubscription = new SubjectSubscription(Collections.singletonList(subjectEntity), condition);
+//        List attributes =  Arrays.asList(entity.getAttributes().keySet());
+////        Arrays.asList(entity.getAttributes().keySet())
+////        attributes.add("temperature");
+////        attributes.add("humidity");
+//        Notification notification = new Notification(attributes, new URL(HttpTestServer.getRefenceURL()));
+//        notification.setThrottling(Optional.of(new Long(5)));
+//        Subscription subscription = new Subscription();
+//        subscription.setId(UUID.randomUUID().toString());
+//
+//        subscription.setSubject(subjectSubscription);
+//        subscription.setNotification(notification);
+//        subscription.setExpires(Instant.parse("2035-04-05T14:00:00.20Z"));
 
 
         ListenableFuture<String> req = ngsiLdClient.addSubscription(subscription);

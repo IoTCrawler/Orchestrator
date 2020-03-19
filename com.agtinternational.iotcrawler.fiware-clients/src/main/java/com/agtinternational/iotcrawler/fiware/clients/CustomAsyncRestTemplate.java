@@ -30,9 +30,9 @@ import org.springframework.web.util.UriTemplate;
 import java.net.URI;
 import java.util.Map;
 
-public class PatchedAsyncRestTemplate extends AsyncRestTemplate {
+public class CustomAsyncRestTemplate extends AsyncRestTemplate {
 
-    public PatchedAsyncRestTemplate(AsyncClientHttpRequestFactory requestFactory, RestTemplate restTemplate) {
+    public CustomAsyncRestTemplate(AsyncClientHttpRequestFactory requestFactory, RestTemplate restTemplate) {
         super(requestFactory, restTemplate);
     }
 

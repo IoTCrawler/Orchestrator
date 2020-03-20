@@ -66,6 +66,7 @@ public class NgsiLDClient {
     private String baseURL;
 
     private NgsiLDClient() {
+        LOGGER.info("This product includes software developed by NEC Europe Ltd");
         // set default headers for Content-Type and Accept to application/JSON
         httpHeaders = new HttpHeaders();
         //Both headers required for DJANE broker

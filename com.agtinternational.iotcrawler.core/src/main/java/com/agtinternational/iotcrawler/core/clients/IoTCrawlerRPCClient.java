@@ -1,4 +1,4 @@
-package com.agtinternational.iotcrawler.core;
+package com.agtinternational.iotcrawler.core.clients;
 
 /*-
  * #%L
@@ -21,15 +21,20 @@ package com.agtinternational.iotcrawler.core;
  */
 
 //import com.agtinternational.iotcrawler.core.models.NGSI_LD.EntityLD;
+import com.agtinternational.iotcrawler.core.RabbitRpcClient;
+import com.agtinternational.iotcrawler.core.Utils;
 import com.agtinternational.iotcrawler.core.commands.*;
 import com.agtinternational.iotcrawler.core.interfaces.IotCrawlerClient;
 import com.agtinternational.iotcrawler.core.models.*;
 
+import com.agtinternational.iotcrawler.fiware.clients.NgsiLDClient;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
+import com.agtinternational.iotcrawler.fiware.models.subscription.SubscriptionLD;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.orange.ngsi2.model.Subscription;
 import com.rabbitmq.client.*;
 import eu.neclab.iotplatform.ngsi.api.datamodel.*;
 
@@ -51,23 +56,27 @@ import static com.agtinternational.iotcrawler.core.Constants.*;
 
 //ToDo: timeout for requests
 
-public class OrchestratorRPCClient extends IotCrawlerClient implements AutoCloseable {
-    private Logger LOGGER = LoggerFactory.getLogger(OrchestratorRPCClient.class);
+public class IoTCrawlerRPCClient extends IotCrawlerClient implements AutoCloseable {
+    private Logger LOGGER = LoggerFactory.getLogger(IoTCrawlerRPCClient.class);
 
     //Semaphore callFinishedMutex;
 
     Connection connection;
     Channel channel;
     JsonParser parser;
-    String rabbitHost = "localhost";
+
+    NgsiLDClient ngsiLDClient;
+
+    String rabbitHost;
     RabbitRpcClient rabbitRpcClient;
     Consumer consumer;
 
+    public IoTCrawlerRPCClient(String rabbitHost){
+        this.rabbitHost = rabbitHost;
+    }
+
     @Override
     public void init() throws Exception {
-
-        if(System.getenv().containsKey(IOTCRAWLER_RABBIT_HOST))
-            rabbitHost = System.getenv(IOTCRAWLER_RABBIT_HOST);
 
         ConnectionFactory factory = new ConnectionFactory();
         String[] splitted = rabbitHost.split(":");
@@ -272,17 +281,23 @@ public class OrchestratorRPCClient extends IotCrawlerClient implements AutoClose
     }
 
     @Override
+    public String subscribeTo(SubscriptionLD subscription, Function<StreamObservation, Void> onChange) throws Exception {
+        throw new NotImplementedException("");
+
+    }
+
+    @Override
     public List<EntityLD> getEntities(String entityType, String query, Map<String, Number> ranking, int offset, int limit) throws Exception {
         GetEntitiesCommand command = new GetEntitiesCommand(entityType, query, ranking, offset, limit);
         List<EntityLD> entities = execute(command);
         return entities;
     }
 
-    @Override
-    public Boolean registerEntity(RDFModel model) throws Exception {
-        RegisterEntityCommand command = new RegisterEntityCommand(model);
-        return execute(command);
-    }
+//    @Override
+//    public Boolean registerEntity(RDFModel model) throws Exception {
+//        RegisterEntityCommand command = new RegisterEntityCommand(model);
+//        return execute(command);
+//    }
 
     @Override
     public List<StreamObservation> getObservations(String streamId,int offset, int limit) throws Exception {
@@ -290,69 +305,70 @@ public class OrchestratorRPCClient extends IotCrawlerClient implements AutoClose
         return execute(command);
     }
 
-    @Override
-    public Boolean pushObservationsToBroker(List<StreamObservation> observations) throws Exception {
-        PushObservationsCommand command = new PushObservationsCommand(observations);
-        Boolean ret = execute(command);
-        LOGGER.info("Measuments pushed");
-        return ret;
-    }
+//    @Override
+//    public Boolean pushObservationsToBroker(List<StreamObservation> observations) throws Exception {
+//        PushObservationsCommand command = new PushObservationsCommand(observations);
+//        Boolean ret = execute(command);
+//        LOGGER.info("Measuments pushed");
+//        return ret;
+//    }
 
-    @Override
-    public String subscribeTo(String entityId, String[] attributes, List<NotifyCondition> notifyConditions, Restriction restriction, Function<StreamObservation, Void> onChange) throws Exception {
-
-        SubscribeToEntityCommand command = new SubscribeToEntityCommand(entityId, attributes, notifyConditions, restriction);
-        String subsciptionId = execute(command);
-        final String exchangeName = subsciptionId;
-
-        LOGGER.debug("Creating queue for the {}", exchangeName);
-        String queueName = null;
-        try {
-            queueName = channel.queueDeclare().getQueue();
-            channel.queueBind(queueName, exchangeName, "");
-
-        }catch (Exception e){
-            throw new Exception("Failed to create a queue for subscription to "+entityId, e.getCause());
-        }
-
-        String finalQueueName = queueName;
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String ctag = null;
-                String result2 = null;
-                LOGGER.debug("Subscribing to the queue {}", finalQueueName);
-                final BlockingQueue<String> response = new ArrayBlockingQueue<>(1);
-                try {
-                    ctag = channel.basicConsume(finalQueueName, true, (consumerTag, delivery) -> {
-                        if (delivery.getProperties().getCorrelationId().equals(subsciptionId)) {
-
-                            String body = new String(delivery.getBody());
-                            NotifyContextRequest notification = (NotifyContextRequest)NotifyContextRequest.parseStringToJson(body, NotifyContextRequest.class);
-                            String subscriptionId = notification.getSubscriptionId();
-                            List<ContextElementResponse> contextElementResponses = notification.getContextElementResponseList();
-                            ContextElementResponse contextElementResponse = contextElementResponses.get(0);
-                            ContextElement contextElement = contextElementResponse.getContextElement();
-                            StreamObservation streamObservation = StreamObservation.fromContextElement(contextElement);
-                            onChange.apply(streamObservation);
-                            String abc = "123";
-                            //callback.accept(new String(delivery.getBody()));
-
-                            //onChange.apply();
-                            //response.offer(new String(delivery.getBody(), "UTF-8"));
-                        }
-                    }, consumerTag -> {});
-                    result2 = response.take();
-                    channel.basicCancel(ctag);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    LOGGER.error("Failed to consume/cancel response: {}", e.getLocalizedMessage());
-                }
-            }
-        }).start();
-
-        return exchangeName;
-    }
+//    @Override
+//    public String subscribeTo(String entityId, String[] attributes, List<NotifyCondition> notifyConditions, Restriction restriction, Function<StreamObservation, Void> onChange) throws Exception {
+//
+//        SubscribeToEntityCommand command = new SubscribeToEntityCommand(entityId, attributes, notifyConditions, restriction);
+//        String subsciptionId = execute(command);
+//        final String exchangeName = subsciptionId;
+//
+//        LOGGER.debug("Creating queue for the {}", exchangeName);
+//        String queueName = null;
+//        try {
+//            queueName = channel.queueDeclare().getQueue();
+//            channel.queueBind(queueName, exchangeName, "");
+//
+//        }catch (Exception e){
+//            throw new Exception("Failed to create a queue for subscription to "+entityId, e.getCause());
+//        }
+//
+//        String finalQueueName = queueName;
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                String ctag = null;
+//                String result2 = null;
+//                LOGGER.debug("Subscribing to the queue {}", finalQueueName);
+//                final BlockingQueue<String> response = new ArrayBlockingQueue<>(1);
+//                try {
+//                    ctag = channel.basicConsume(finalQueueName, true, (consumerTag, delivery) -> {
+//                        if (delivery.getProperties().getCorrelationId().equals(subsciptionId)) {
+//
+//                            String body = new String(delivery.getBody());
+//                            NotifyContextRequest notification = (NotifyContextRequest)NotifyContextRequest.parseStringToJson(body, NotifyContextRequest.class);
+//                            String subscriptionId = notification.getSubscriptionId();
+//                            List<ContextElementResponse> contextElementResponses = notification.getContextElementResponseList();
+//                            ContextElementResponse contextElementResponse = contextElementResponses.get(0);
+//                            ContextElement contextElement = contextElementResponse.getContextElement();
+//
+//                            //StreamObservation streamObservation = StreamObservation.fromContextElement(contextElement);
+//                            //onChange.apply(streamObservation);
+//                            String abc = "123";
+//                            //callback.accept(new String(delivery.getBody()));
+//
+//                            //onChange.apply();
+//                            //response.offer(new String(delivery.getBody(), "UTF-8"));
+//                        }
+//                    }, consumerTag -> {});
+//                    result2 = response.take();
+//                    channel.basicCancel(ctag);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                    LOGGER.error("Failed to consume/cancel response: {}", e.getLocalizedMessage());
+//                }
+//            }
+//        }).start();
+//
+//        return exchangeName;
+//    }
 
     private <T> List<T> execute(GetEntitiesCommand command, Class<T> targetClass) throws Exception {
         List<EntityLD> entities = execute(command);

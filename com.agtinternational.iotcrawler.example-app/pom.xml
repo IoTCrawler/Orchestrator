@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.agtinternational.iotcrawler</groupId>
+    <artifactId>example-app</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+
+    <parent>
+        <groupId>com.agtinternational</groupId>
+        <artifactId>iotcrawler</artifactId>
+        <version>1.0.1</version>
+        <relativePath>../IoTCrawler</relativePath>
+    </parent>
+
+    <properties>
+
+        <ngsi2.client.version>0.1.0-SNAPSHOT</ngsi2.client.version>
+        <iotbroker.client.version>7.1-SNAPSHOT</iotbroker.client.version>
+
+        <iotcrawler.core.version>1.0.1</iotcrawler.core.version>
+        <fiware.models.version>1.0.1</fiware.models.version>
+    </properties>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>com.agtinternational.iotcrawler</groupId>
+            <artifactId>core</artifactId>
+            <version>${iotcrawler.core.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.agtinternational.iotcrawler</groupId>
+            <artifactId>fiware-models</artifactId>
+            <version>${fiware.models.version}</version>
+        </dependency>
+
+
+
+    </dependencies>
+
+    <build>
+<!--        <plugins>-->
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-compiler-plugin</artifactId>-->
+<!--                <version>3.5.1</version>-->
+<!--                <configuration>-->
+<!--                    <source>${maven.compiler.source}</source>-->
+<!--                    <target>${maven.compiler.target}</target>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-shade-plugin</artifactId>-->
+<!--                <version>2.4.3</version>-->
+<!--                <configuration>-->
+<!--                    &lt;!&ndash; filter all the META-INF files of other artifacts &ndash;&gt;-->
+<!--                    <filters>-->
+<!--                        <filter>-->
+<!--                            <artifact>*:*</artifact>-->
+<!--                            <excludes>-->
+<!--                                <exclude>META-INF/*.SF</exclude>-->
+<!--                                <exclude>META-INF/*.DSA</exclude>-->
+<!--                                <exclude>META-INF/*.RSA</exclude>-->
+<!--                            </excludes>-->
+<!--                        </filter>-->
+<!--                    </filters>-->
+<!--                    <transformers>-->
+<!--                        <transformer-->
+<!--                                implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">-->
+<!--                            <manifestEntries>-->
+<!--                                <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>-->
+<!--                                <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>-->
+<!--                            </manifestEntries>-->
+<!--                        </transformer>-->
+<!--                        <transformer-->
+<!--                                implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>-->
+<!--                    </transformers>-->
+<!--                </configuration>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <phase>package</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>shade</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
+
+<!--        </plugins>-->
+    </build>
+</project>

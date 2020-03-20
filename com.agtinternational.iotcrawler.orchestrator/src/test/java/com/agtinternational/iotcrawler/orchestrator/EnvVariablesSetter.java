@@ -20,7 +20,6 @@ package com.agtinternational.iotcrawler.orchestrator;
  * #L%
  */
 
-import org.junit.Before;
 import org.junit.contrib.java.lang.system.EnvironmentVariables;
 
 import static com.agtinternational.iotcrawler.core.Constants.IOTCRAWLER_RABBIT_HOST;
@@ -39,14 +38,13 @@ public class EnvVariablesSetter {
 
 
         if(!System.getenv().containsKey(IOTCRAWLER_ORCHESTRATOR_URL))
-            //environmentVariables.set(IOTCRAWLER_ORCHESTRATOR_URL, "http://orchestrator-orchestrator.35.241.228.250.nip.io/ngsi-ld/");
             environmentVariables.set(IOTCRAWLER_ORCHESTRATOR_URL, "http://localhost:3001/ngsi-ld/");
 
 
         if(!System.getenv().containsKey(IOTCRAWLER_RABBIT_HOST))
-            //environmentVariables.set(IOTCRAWLER_RABBIT_HOST, "localhost");
+            environmentVariables.set(IOTCRAWLER_RABBIT_HOST, "localhost:5672");
             //environmentVariables.set(IOTCRAWLER_RABBIT_HOST, "rabbit");
-            environmentVariables.set(IOTCRAWLER_RABBIT_HOST, "35.195.190.161:5672");
+
 
 
         if(!System.getenv().containsKey(IOTCRAWLER_REDIS_HOST))
@@ -57,7 +55,7 @@ public class EnvVariablesSetter {
 //        environmentVariables.set(Constants.TRIPLE_STORE_PASS, "xyzzy");
 
         if(!System.getenv().containsKey(NGSILD_BROKER_URL))
-            environmentVariables.set(NGSILD_BROKER_URL, "http://djane:3002/ngsi-ld/");
+            environmentVariables.set(NGSILD_BROKER_URL, "http://localhost:3002/ngsi-ld/");
 
 //        if(!System.getenv().containsKey(RANKING_COMPONENT_URI))
 //            environmentVariables.set(RANKING_COMPONENT_URI, "http://localhost:3003/ngsi-ld/");
@@ -71,11 +69,13 @@ public class EnvVariablesSetter {
             //environmentVariables.set(Constants.IOT_BROKER_URI, "http://10.67.1.107:8060/ngsi10");
             environmentVariables.set(IOT_BROKER_URL, "http://iotbroker:8060/ngsi10");
 
-        //if(!System.getenv().containsKey(HTTP_SERVER_HOST))
-        //    environmentVariables.set(HTTP_SERVER_HOST, "10.67.1.107");
 
         if(!System.getenv().containsKey(HTTP_SERVER_PORT))
             environmentVariables.set(HTTP_SERVER_PORT, "3001");
+
+        if(!System.getenv().containsKey(HTTP_REFERENCE_URL))
+            environmentVariables.set(HTTP_REFERENCE_URL, "http://10.67.1.107:"+System.getenv(HTTP_SERVER_PORT)+"/notify");
+
 
         //public static final String ContextBrokerEndpoint = "http://localhost:1026/";
 

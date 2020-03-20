@@ -23,6 +23,7 @@ package com.agtinternational.iotcrawler.orchestrator;
 import com.agtinternational.iotcrawler.core.Utils;
 import com.agtinternational.iotcrawler.core.interfaces.IotCrawlerClient;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
+import com.agtinternational.iotcrawler.fiware.models.subscription.SubscriptionLD;
 import com.agtinternational.iotcrawler.orchestrator.clients.IotBrokerDataClient;
 import com.agtinternational.iotcrawler.orchestrator.clients.NgsiLD_MdrClient;
 import com.agtinternational.iotcrawler.core.commands.*;
@@ -182,7 +183,7 @@ public class Orchestrator extends IotCrawlerClient {
                 LOGGER.debug("Trying to connect to rabbit (Attempt {} of {})", attempt, 12);
                 connection = factory.newConnection();
             } catch (Exception e) {
-                LOGGER.warn(e.getLocalizedMessage());
+                LOGGER.warn("Failed to connect to RABBIT:", e.getLocalizedMessage());
                 //e.printStackTrace();
             }
         }
@@ -374,7 +375,8 @@ public class Orchestrator extends IotCrawlerClient {
                 }
                 catch (Exception e){
                     exception = new Exception("Failed to get entities: "+e.getLocalizedMessage(), e);
-                    e.printStackTrace();
+                    LOGGER.error(exception.getLocalizedMessage());
+                    //exception.printStackTrace();
                 }
 
             if(entities!=null){
@@ -654,6 +656,12 @@ public class Orchestrator extends IotCrawlerClient {
         return Utils.convertEntitiesToTargetClass(entities, targetClass);
     }
 
+    @Override
+    public String subscribeTo(SubscriptionLD subscriptionLD, Function<StreamObservation, Void> function) throws Exception {
+
+        return metadataClient.subscribeTo(subscriptionLD);
+    }
+
 
     @Override
     public List<EntityLD> getEntities(String entityType, String query, Map<String, Number> ranking, int offset, int limit) throws Exception {
@@ -676,15 +684,15 @@ public class Orchestrator extends IotCrawlerClient {
 
 
     //  subscribing to a data client (IoT Broker, not to MDR)
-    @Override
-    public String subscribeTo(String entityId, String[] attributes, List<NotifyCondition> notifyConditions, Restriction restriction, Function<StreamObservation, Void> onChange) throws Exception {
-
-        String subscriptionId = subscribeTo(entityId, attributes, notifyConditions, restriction);
-        streamObservationHandlers.put(subscriptionId, onChange);
-//        if(!serverStarted)
-//            startHttpServer();
-        return subscriptionId;
-    }
+//    @Override
+//    public String subscribeTo(String entityId, String[] attributes, List<NotifyCondition> notifyConditions, Restriction restriction, Function<StreamObservation, Void> onChange) throws Exception {
+//
+//        String subscriptionId = subscribeTo(entityId, attributes, notifyConditions, restriction);
+//        streamObservationHandlers.put(subscriptionId, onChange);
+////        if(!serverStarted)
+////            startHttpServer();
+//        return subscriptionId;
+//    }
 
     private String subscribeTo(String entityId, String[] attributes, List<NotifyCondition> notifyConditions, Restriction restriction) throws Exception {
         List<String> attrs2 = new ArrayList<>();

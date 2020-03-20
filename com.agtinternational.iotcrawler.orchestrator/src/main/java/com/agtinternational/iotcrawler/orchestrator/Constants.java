@@ -34,7 +34,7 @@ public class Constants {
     public static final String IOT_BROKER_URL = "IOT_BROKER_URL";
     public static final String RANKING_COMPONENT_URL = "RANKING_COMPONENT_URL";
 
-    public static final String HTTP_SERVER_HOST = "HTTP_SERVER_HOST";
+    public static final String HTTP_REFERENCE_URL = "HTTP_SERVER_HOST";
     public static final String HTTP_SERVER_PORT = "HTTP_SERVER_PORT";
 
     public static final String sosaNS = "http://www.w3.org/ns/sosa/";

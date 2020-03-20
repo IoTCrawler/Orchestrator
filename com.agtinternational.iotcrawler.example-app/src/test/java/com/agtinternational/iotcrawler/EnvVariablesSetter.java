@@ -1,10 +1,10 @@
-package com.agtinternational.iotcrawler.core;
+package com.agtinternational.iotcrawler;
 
 /*-
  * #%L
- * core
+ * example-app
  * %%
- * Copyright (C) 2019 AGT International. Author Pavel Smirnov (psmirnov@agtinternational.com)
+ * Copyright (C) 2019 - 2020 AGT International. Author Pavel Smirnov (psmirnov@agtinternational.com)
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,18 +20,24 @@ package com.agtinternational.iotcrawler.core;
  * #L%
  */
 
+
+import com.agtinternational.iotcrawler.core.Constants;
 import org.junit.Before;
 import org.junit.contrib.java.lang.system.EnvironmentVariables;
+
+import static com.agtinternational.iotcrawler.core.Constants.IOTCRAWLER_ORCHESTRATOR_URL;
+
 
 public class EnvVariablesSetter {
 
     public final EnvironmentVariables environmentVariables = new EnvironmentVariables();
 
     @Before
-    public void init(){
+    public void init() throws Exception {
 
-        environmentVariables.set(Constants.IOTCRAWLER_RABBIT_HOST, "rabbit");
-        environmentVariables.set(Constants.IOTCRAWLER_ORCHESTRATOR_URL, "http://localhost:3001/ngsi-ld/");
+        if(!System.getenv().containsKey(IOTCRAWLER_ORCHESTRATOR_URL))
+            environmentVariables.set(IOTCRAWLER_ORCHESTRATOR_URL, "http://localhost:3001/ngsi-ld/");
 
+        environmentVariables.set(Constants.IOTCRAWLER_RABBIT_HOST, "35.195.190.161:5672");
     }
 }

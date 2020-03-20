@@ -16,7 +16,8 @@ services:
 #    networks:
 #      - iotcrawler
   djane:
-    image: gitlab.iotcrawler.net:4567/core/djane:1.0.1
+    #image: gitlab.iotcrawler.net:4567/core/djane
+    image: djane_djane
     ports:
       - "3002:3000"
     depends_on:

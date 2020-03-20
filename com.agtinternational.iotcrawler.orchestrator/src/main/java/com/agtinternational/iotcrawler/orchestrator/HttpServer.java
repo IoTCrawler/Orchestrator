@@ -53,7 +53,7 @@ public class HttpServer {
 
     public HttpServer(){
 
-        host = (System.getenv().containsKey(Constants.HTTP_SERVER_HOST)? System.getenv(Constants.HTTP_SERVER_HOST): "localhost");
+        host = (System.getenv().containsKey(Constants.HTTP_REFERENCE_URL)? System.getenv(Constants.HTTP_REFERENCE_URL): "localhost");
         port = (System.getenv().containsKey(Constants.HTTP_SERVER_PORT)? Integer.parseInt(System.getenv(Constants.HTTP_SERVER_PORT)): 3001);
         url = "http://"+host+":"+port;
 

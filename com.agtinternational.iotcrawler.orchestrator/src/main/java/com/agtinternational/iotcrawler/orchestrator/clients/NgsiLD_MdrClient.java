@@ -25,6 +25,7 @@ import com.agtinternational.iotcrawler.core.models.*;
 import com.agtinternational.iotcrawler.fiware.clients.NgsiLDClient;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 
+import com.agtinternational.iotcrawler.fiware.models.subscription.SubscriptionLD;
 import com.orange.ngsi2.model.Paginated;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.jena.rdf.model.Model;
@@ -63,6 +64,36 @@ public class NgsiLD_MdrClient extends AbstractMetadataClient {
 
     public String getBrokerHost() {
         return brokerHost;
+    }
+
+    @Override
+    public String subscribeTo(SubscriptionLD subscriptionLD) {
+        ListenableFuture<String> req = ngsiLDClient.addSubscription(subscriptionLD);
+
+        final String[] ret = { null };
+        Semaphore reqFinished = new Semaphore(0);
+        req.addCallback(new ListenableFutureCallback<String>() {
+            @Override
+            public void onSuccess(String id) {
+                ret[0] = id;
+                reqFinished.release();
+            }
+
+            @Override
+            public void onFailure(Throwable throwable) {
+                LOGGER.error("Failed to create subscription");
+                throwable.printStackTrace();
+                reqFinished.release();
+            }
+
+        });
+
+        try {
+            reqFinished.acquire();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return ret[0];
     }
 
     @Override

@@ -322,7 +322,7 @@ public class NgsiLDClientTest extends EnvVariablesSetter{
         Condition pressureCondition = new Condition();
         pressureCondition.setAttributes(Arrays.asList(new String[]{ "temperature" }));
 
-        SubjectSubscription subjectSubscription = new SubjectSubscription(Arrays.asList(new SubjectEntity[]{ subjectEntity }), pressureCondition);
+        //SubjectSubscription subjectSubscription = new SubjectSubscription(Arrays.asList(new SubjectEntity[]{ subjectEntity }), pressureCondition);
 
         NotificationParams notification = new NotificationParams();
         notification.setAttributes(Arrays.asList(new String[]{ "location" }));
@@ -357,7 +357,6 @@ public class NgsiLDClientTest extends EnvVariablesSetter{
 //        subscription.setNotification(notification);
 //        subscription.setExpires(Instant.parse("2035-04-05T14:00:00.20Z"));
 
-
         ListenableFuture<String> req = ngsiLdClient.addSubscription(subscription);
         final Boolean[] success = {false};
         req.addCallback(new ListenableFutureCallback<String>() {
@@ -377,6 +376,7 @@ public class NgsiLDClientTest extends EnvVariablesSetter{
 
         });
         reqFinished.acquire();
+
 
         if(success[0])
             Assert.assertTrue("Subscription created", true);

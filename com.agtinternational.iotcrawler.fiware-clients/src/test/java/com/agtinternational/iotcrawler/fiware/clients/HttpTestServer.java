@@ -34,7 +34,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.agtinternational.iotcrawler.fiware.clients.Constants.HTTP_REFERENSE_URL;
+import static com.agtinternational.iotcrawler.fiware.clients.Constants.HTTP_REFERENCE_URL;
 
 public class HttpTestServer {
     private Logger LOGGER = LoggerFactory.getLogger(HttpTestServer.class);
@@ -52,7 +52,7 @@ public class HttpTestServer {
     }
 
     public static String getRefenceURL(){
-        return System.getenv(HTTP_REFERENSE_URL);
+        return System.getenv(HTTP_REFERENCE_URL);
     }
 
     public void initHttpServer() throws IOException {

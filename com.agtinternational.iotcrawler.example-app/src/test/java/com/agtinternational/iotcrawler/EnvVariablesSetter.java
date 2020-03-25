@@ -22,7 +22,6 @@ package com.agtinternational.iotcrawler;
 
 
 import com.agtinternational.iotcrawler.core.Constants;
-import org.junit.Before;
 import org.junit.contrib.java.lang.system.EnvironmentVariables;
 
 import static com.agtinternational.iotcrawler.core.Constants.IOTCRAWLER_ORCHESTRATOR_URL;
@@ -30,14 +29,14 @@ import static com.agtinternational.iotcrawler.core.Constants.IOTCRAWLER_ORCHESTR
 
 public class EnvVariablesSetter {
 
-    public final EnvironmentVariables environmentVariables = new EnvironmentVariables();
+    public final static EnvironmentVariables environmentVariables = new EnvironmentVariables();
 
-    @Before
-    public void init() throws Exception {
+    public static void init() throws Exception {
 
         if(!System.getenv().containsKey(IOTCRAWLER_ORCHESTRATOR_URL))
             environmentVariables.set(IOTCRAWLER_ORCHESTRATOR_URL, "http://localhost:3001/ngsi-ld/");
 
-        environmentVariables.set(Constants.IOTCRAWLER_RABBIT_HOST, "35.195.190.161:5672");
+        environmentVariables.set(Constants.IOTCRAWLER_RABBIT_HOST, "localhost:5672");
+        //environmentVariables.set(Constants.IOTCRAWLER_RABBIT_HOST, "35.195.190.161:5672");
     }
 }

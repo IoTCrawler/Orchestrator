@@ -69,7 +69,7 @@ public class OrchestratorBenchmarkingLoader{
 
         int totalTasks = 0;
         for(int i=0; i<num_of_threads;i++){
-            final NgsiLD_MdrClient orchestratorRestClient = new NgsiLD_MdrClient(url);
+            final NgsiLD_MdrClient orchestratorRestClient = new NgsiLD_MdrClient(url, true);
 
             for(int j=0; j<tasks_per_thread; j++) {
                 final int k = totalTasks;

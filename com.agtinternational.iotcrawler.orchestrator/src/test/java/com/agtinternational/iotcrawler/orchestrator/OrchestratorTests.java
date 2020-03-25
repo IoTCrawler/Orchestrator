@@ -21,7 +21,10 @@ package com.agtinternational.iotcrawler.orchestrator;
  */
 
 
+import com.agtinternational.iotcrawler.core.Utils;
+import com.agtinternational.iotcrawler.core.clients.MdrRESTClient;
 import com.agtinternational.iotcrawler.core.interfaces.IotCrawlerClient;
+import com.agtinternational.iotcrawler.fiware.clients.NgsiLDClient;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 //import com.agtinternational.iotcrawler.orchestrator.clients.TripleStoreMDRClient;
 import com.agtinternational.iotcrawler.core.models.*;
@@ -45,6 +48,8 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
+import org.springframework.util.concurrent.ListenableFuture;
+import org.springframework.util.concurrent.ListenableFutureCallback;
 
 import java.net.URL;
 import java.nio.file.Files;
@@ -53,13 +58,14 @@ import java.util.*;
 import java.util.concurrent.Semaphore;
 import java.util.function.Function;
 
+import static com.agtinternational.iotcrawler.fiware.clients.Constants.NGSILD_BROKER_URL;
 import static com.agtinternational.iotcrawler.orchestrator.Constants.HTTP_REFERENCE_URL;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class OrchestratorTests {
 
     protected Logger LOGGER = LoggerFactory.getLogger(OrchestratorTests.class);
-
+    private boolean cutURLs = true;
 
     protected IotCrawlerClient client;
 
@@ -67,7 +73,7 @@ public class OrchestratorTests {
     public void init(){
         EnvVariablesSetter.init();
         if(client==null)
-            client = new Orchestrator();
+            client = new Orchestrator(cutURLs);
 
         try {
             client.init();
@@ -80,36 +86,38 @@ public class OrchestratorTests {
     @Test
     public void orchestratorTest() throws Exception {
         LOGGER.info("orchestratorTest()");
-        Orchestrator orchestrator = new Orchestrator();
-        orchestrator.init();
-        orchestrator.run();
+        client.run();
         String test = "123";
     }
 
 
-//    @Test
-//    @Order(2)
-//    @Ignore
-//    public void registerStreamTest() throws Exception {
-//        LOGGER.info("registerStreamTest()");
-//        //byte[] iotStreamModelJson = Files.readAllBytes(Paths.get("samples/IoTStream.json"));
-//
-////        IoTStream ioTStream = IoTStream.fromJson(iotStreamModelJson);
-////        ioTStream.setType(IoTStream.getTypeUri());
-//
-//        //byte[] iotStreamModelJson = Files.readAllBytes(Paths.get("samples/EntityFromBroker.json"));
-//        //EntityLD entityLD = EntityLD.fromJsonString(new String(iotStreamModelJson));
-//        //IoTStream ioTStream = IoTStream.fromEntity(entityLD);
-//
-//        //ioTStream.addProperty(RDFS.label, "label1");
-//
-//        String label = "TestStream_"+System.currentTimeMillis();
-//        IoTStream stream1 = new IoTStream("http://purl.org/iot/ontology/iot-stream#"+label, label);
-//
-//        Boolean result = client.registerStream(stream1);
-//        Assert.isTrue(result);
-//        LOGGER.info("Stream was registered");
-//    }
+    @Test
+    @Order(2)
+    public void registerStreamTest() throws Exception {
+        LOGGER.info("registerStreamTest()");
+        //byte[] iotStreamModelJson = Files.readAllBytes(Paths.get("samples/IoTStream.json"));
+
+//        IoTStream ioTStream = IoTStream.fromJson(iotStreamModelJson);
+//        ioTStream.setType(IoTStream.getTypeUri());
+
+        //byte[] iotStreamModelJson = Files.readAllBytes(Paths.get("samples/EntityFromBroker.json"));
+        //EntityLD entityLD = EntityLD.fromJsonString(new String(iotStreamModelJson));
+        //IoTStream ioTStream = IoTStream.fromEntity(entityLD);
+
+        //ioTStream.addProperty(RDFS.label, "label1");
+
+        String label = "TestStream_"+System.currentTimeMillis();
+        IoTStream stream1 = new IoTStream("http://purl.org/iot/ontology/iot-stream#"+label, label);
+        //if (cutURLs)
+            stream1.setType(Utils.cutURL(stream1.getTypeURI(), RDFModel.getNamespaces()));
+
+        MdrRESTClient ngsiLDClient = new MdrRESTClient((System.getenv().containsKey(NGSILD_BROKER_URL)? System.getenv(NGSILD_BROKER_URL): "http://localhost:3000/ngsi-ld/"));
+
+        boolean result = ngsiLDClient.registerEntity(stream1.toEntityLD(true));
+
+        Assert.isTrue(result);
+        LOGGER.info("Stream was registered");
+    }
 
 
     @Test

@@ -66,7 +66,7 @@ public class Orchestrator extends IotCrawlerClient {
 
     //AbstractMetadataClient metadataClient;
     NgsiLD_MdrClient metadataClient;
-    IotBrokerDataClient dataBrokerClient;
+    //IotBrokerDataClient dataBrokerClient;
     HttpServer httpServer;
 
     Semaphore httpServiceFinishedMutex = new Semaphore(0);
@@ -87,12 +87,12 @@ public class Orchestrator extends IotCrawlerClient {
     private Connection connection;
 
 
-    public Orchestrator() {
-
+    public Orchestrator(Boolean cutURIs) {
+        this.cutURIs = cutURIs;
     }
 
     public static void main(String[] args) throws Exception {
-        Orchestrator orchestrator = new Orchestrator();
+        Orchestrator orchestrator = new Orchestrator(false);
         orchestrator.init();
         orchestrator.run();
     }
@@ -107,11 +107,11 @@ public class Orchestrator extends IotCrawlerClient {
         if(brokerURL==null)
             throw new Exception("Specify RANKING_COMPONENT_URL or NGSILD_BROKER_URL!");
 
-        metadataClient = new NgsiLD_MdrClient(brokerURL);
+        metadataClient = new NgsiLD_MdrClient(brokerURL, this.cutURIs);
         LOGGER.info("Initialized NGSI-LD Client to {}", metadataClient.getBrokerHost());
 
-        dataBrokerClient = new IotBrokerDataClient();
-        LOGGER.info("Initialized IoTBroker Client to {}", dataBrokerClient.getIoTBrokerEndpoint());
+//        dataBrokerClient = new IotBrokerDataClient();
+//        LOGGER.info("Initialized IoTBroker Client to {}", dataBrokerClient.getIoTBrokerEndpoint());
 
         if (System.getenv().containsKey(IOTCRAWLER_RABBIT_HOST))
             rabbitHost = System.getenv(IOTCRAWLER_RABBIT_HOST);
@@ -329,194 +329,193 @@ public class Orchestrator extends IotCrawlerClient {
 
     public void receiveCommand(byte[] data, AMQP.BasicProperties properties){
 
-        String message = new String(data);
-        JsonObject messageObj = (JsonObject) jsonParser.parse(message);
-        String reply = null;
-
-        String command0 = messageObj.get("command").getAsString();
-
-        Exception exception = null;
-        //LOGGER.debug("receiveCommand "+command);
-
-        if(command0.equals(GetEntitiesCommand.class.getSimpleName())){
-            GetEntitiesCommand command = null;
-            try {
-                command = GetEntitiesCommand.fromJson(message);
-            }
-            catch (Exception e){
-                exception = new Exception("Failed to parse command from "+messageObj+": "+e.getLocalizedMessage(), e);
-            }
-
-            List<EntityLD> entities = null;
-            if(command!=null)
-                try {
-                    if(command.getIds()!=null) {
-                        //Class targetClass = Utils.getTargetClass(command.getTypeURI());
-                        entities = getEntitiesById(command.getIds(), command.getTypeURI());
-                    }else {
-                        String query = command.getQuery();
-                        int limit = command.getLimit();
-                        int offset = command.getOffset();
-                        Map<String, Number> ranking = command.getRanking();
-                        String typeURI = command.getTypeURI();
-
-                        if(command.getTargetClass()!=null) {
-                            Class targetClass = Class.forName(command.getTargetClass());
-                            //entities = getEntities(targetClass, query, ranking, offset, limit);
-                            String queryStr = resolveQuery(targetClass, query, ranking);
-                            String URL = Utils.getTypeURI(targetClass);
-                            String key = Utils.cutURL(URL, RDFModel.getNamespaces());
-                            entities = getEntities(key, queryStr, ranking,  offset, limit);
-                        }
-                        else
-                            entities = getEntities(typeURI, query, ranking, offset, limit);
-
-                    }
-                }
-                catch (Exception e){
-                    exception = new Exception("Failed to get entities: "+e.getLocalizedMessage(), e);
-                    LOGGER.error(exception.getLocalizedMessage());
-                    //exception.printStackTrace();
-                }
-
-            if(entities!=null){
-                JsonArray jsonArray = EntitiesToJson(entities);
-                reply = jsonArray.toString();
-            }
-
-        }else if(command0.equals(RegisterEntityCommand.class.getSimpleName())){
-            LOGGER.debug(message);
-            RegisterEntityCommand registerEntityCommand=null;
-            try {
-                registerEntityCommand = RegisterEntityCommand.fromJson(message);
-            }
-            catch (Exception e){
-                exception = new Exception("Failed to parse command from "+messageObj+": "+e.getLocalizedMessage(), e);
-                e.printStackTrace();
-            }
-            if(registerEntityCommand!=null)
-                try {
-                    Boolean result = registerEntity(registerEntityCommand.getModel());
-                    reply = "{ success: " + result + " }";
-                }
-                catch (Exception e){
-                    exception = new Exception("Failed to register entity: "+e.getLocalizedMessage(), e.getCause());
-                    e.printStackTrace();
-
-                }
-        }else if(command0.equals(GetObservationsCommand.class.getSimpleName())){
-
-            GetObservationsCommand command1 = null;
-            try {
-                command1 = GetObservationsCommand.fromJson(message);
-            }
-            catch (Exception e){
-                exception = new Exception("Failed to parse command from "+message+": "+e.getLocalizedMessage(), e.getCause());
-                e.printStackTrace();
-            }
-            if(command1!=null)
-                try {
-                    List<StreamObservation> result = getObservations(command1.getStreamId(), command1.getLimit());
-                    reply =  ObservationsToJson(result).toString();
-                }
-                catch (Exception e){
-                    exception = new Exception("Failed to get observations: "+e.getLocalizedMessage(), e);
-                    e.printStackTrace();
-                }
-        }else if(command0.equals(PushObservationsCommand.class.getSimpleName())){
-
-            PushObservationsCommand command1 = null;
-            try {
-                command1 = PushObservationsCommand.fromJson(message);
-            }
-            catch (Exception e){
-                exception = new Exception("Failed to parse command from json: "+ e.getLocalizedMessage(), e); //new Exception("Failed to parse "+command+" from json", e.getCause());
-            }
-            if(command1!=null)
-                try {
-                    Boolean result = pushObservationsToBroker(command1.getObservations());
-                    reply = "{ success: " + result + " }";
-                }
-                catch (Exception e){
-                    exception = new Exception("Failed to push observations: "+e.getLocalizedMessage(), e);
-                }
-        }else if(command0.equals(SubscribeToEntityCommand.class.getSimpleName())){
-            String arguments = messageObj.get("args").toString();
-            if(redisSyncCommands!=null && redisSyncCommands.hget("rpcSubscriptionRequests", arguments)!=null) {
-                String subcriptionId = redisSyncCommands.hget("rpcSubscriptionRequests", arguments);
-                LOGGER.debug("Subscription with requested arguments was found in redis ({}). Skipping new subscription", subcriptionId);
-                try {
-                    channel.exchangeDeclare(subcriptionId, "fanout");
-                }
-                catch (Exception e){
-                    exception = new Exception("Failed to register exchange for "+subcriptionId+":"+e.getLocalizedMessage(), e);
-                }
-
-                reply = "{ 'subscriptionId': '" +subcriptionId +"' }";
-            }else {
-                SubscribeToEntityCommand command1 = null;
-                try {
-                    command1 = SubscribeToEntityCommand.fromJson(message);
-                }
-                catch (Exception e){
-                    exception = new Exception("Failed to parse command from json: "+ e.getLocalizedMessage(), e); //new Exception("Failed to parse "+command+" from json", e.getCause());
-                }
-                String subscriptionId = null;
-
-                if(command1!=null) {
-                    try {
-                        subscriptionId = subscribeTo(command1.getEntityId(), command1.getAttributes(), command1.getNotifyConditions(), command1.getRestriction());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        exception = new Exception("Failed to create a subscription to " + command1.getEntityId() + ": " + e.getLocalizedMessage(), e);
-                    }
-                }
-                if(subscriptionId!=null) {
-                    try {
-                        final String exchangeName = subscriptionId;
-                        channel.exchangeDeclare(exchangeName, "fanout");
-
-                        //Function<String, Void> notifyCallback = createNotifyCallback(exchangeName);
-
-                        //rpcSubscriptions.add(subscriptionId);
-                        //rpcSubscriptionRequests.put(arguments, subscriptionId);
-
-                        //                    List<String> names = new ArrayList<>();
-                        //                    names.add(command1.getEntityId());
-                        //                    names.addAll(Arrays.asList(command1.getAttributes()));
-                        //                    String args = String.join("_", names);
-                        if (redisSyncCommands != null) {
-                            redisSyncCommands.hset("rpcSubscriptionIds", subscriptionId, subscriptionId);
-                            redisSyncCommands.hset("rpcSubscriptionRequests", arguments, subscriptionId);
-                        }
-                        //reply = "{ 'subscriptionId': '" + subscriptionId + "', 'queueName': '"+queueName+"' }";
-                        reply = "{ 'subscriptionId': '" + subscriptionId + "' }";
-                    } catch (Exception e) {
-                        exception = new Exception("Failed to register exchange for " + subscriptionId + ":" + e.getLocalizedMessage(), e);
-                    }
-                }
-            }
-        }else
-            exception = new Exception("No handler for the command: \""+command0+"\"");
-
-        if(exception!=null) {
-            exception.printStackTrace();
-            JsonObject replyObj = new JsonObject();
-            replyObj.addProperty("error", exception.getLocalizedMessage());
-            reply = replyObj.toString();
-        }
-        else if(reply==null) {
-            LOGGER.error("Reply is not defined");
-            reply = "{ error: \"Reply is not defined\"}";
-        }
-        LOGGER.debug("Publishing result to {}",properties.getReplyTo());
-        try {
-            channel.basicPublish("", properties.getReplyTo(), properties, reply.getBytes("UTF-8"));
-        }
-        catch (Exception e){
-            LOGGER.error("Failed to respond to RPC request", e.getLocalizedMessage());
-            e.getLocalizedMessage();
-        }
+//        String message = new String(data);
+//        JsonObject messageObj = (JsonObject) jsonParser.parse(message);
+//        String reply = null;
+//
+//        String command0 = messageObj.get("command").getAsString();
+//
+//        Exception exception = null;
+//        //LOGGER.debug("receiveCommand "+command);
+//
+//        if(command0.equals(GetEntitiesCommand.class.getSimpleName())){
+//            GetEntitiesCommand command = null;
+//            try {
+//                command = GetEntitiesCommand.fromJson(message);
+//            }
+//            catch (Exception e){
+//                exception = new Exception("Failed to parse command from "+messageObj+": "+e.getLocalizedMessage(), e);
+//            }
+//
+//            List<EntityLD> entities = null;
+//            if(command!=null)
+//                try {
+//                    if(command.getIds()!=null) {
+//                        //Class targetClass = Utils.getTargetClass(command.getTypeURI());
+//                        entities = getEntitiesById(command.getIds(), command.getTypeURI());
+//                    }else {
+//                        String query = command.getQuery();
+//                        int limit = command.getLimit();
+//                        int offset = command.getOffset();
+//                        Map<String, Number> ranking = command.getRanking();
+//                        String typeURI = command.getTypeURI();
+//
+//                        if(command.getTargetClass()!=null) {
+//                            Class targetClass = Class.forName(command.getTargetClass());
+//                            //entities = getEntities(targetClass, query, ranking, offset, limit);
+//                            String queryStr = resolveQuery(targetClass, query, ranking);
+//                            String URL = Utils.getTypeURI(targetClass);
+//                            String key = Utils.cutURL(URL, RDFModel.getNamespaces());
+//                            entities = getEntities(key, queryStr, ranking,  offset, limit);
+//                        }
+//                        else
+//                            entities = getEntities(typeURI, query, ranking, offset, limit);
+//
+//                    }
+//                }
+//                catch (Exception e){
+//                    exception = new Exception("Failed to get entities: "+e.getLocalizedMessage(), e);
+//                    LOGGER.error(exception.getLocalizedMessage());
+//                    //exception.printStackTrace();
+//                }
+//
+//            if(entities!=null){
+//                JsonArray jsonArray = EntitiesToJson(entities);
+//                reply = jsonArray.toString();
+//            }
+//
+//        }else if(command0.equals(RegisterEntityCommand.class.getSimpleName())){
+//            LOGGER.debug(message);
+//            RegisterEntityCommand registerEntityCommand=null;
+//            try {
+//                registerEntityCommand = RegisterEntityCommand.fromJson(message);
+//            }
+//            catch (Exception e){
+//                exception = new Exception("Failed to parse command from "+messageObj+": "+e.getLocalizedMessage(), e);
+//                e.printStackTrace();
+//            }
+//            if(registerEntityCommand!=null)
+//                try {
+//                    Boolean result = registerEntity(registerEntityCommand.getModel());
+//                    reply = "{ success: " + result + " }";
+//                }
+//                catch (Exception e){
+//                    exception = new Exception("Failed to register entity: "+e.getLocalizedMessage(), e.getCause());
+//                    e.printStackTrace();
+//
+//                }
+//        }else if(command0.equals(GetObservationsCommand.class.getSimpleName())){
+//
+//            GetObservationsCommand command1 = null;
+//            try {
+//                command1 = GetObservationsCommand.fromJson(message);
+//            }
+//            catch (Exception e){
+//                exception = new Exception("Failed to parse command from "+message+": "+e.getLocalizedMessage(), e.getCause());
+//                e.printStackTrace();
+//            }
+//            if(command1!=null)
+//                try {
+//                    List<StreamObservation> result = getObservations(command1.getStreamId(), command1.getLimit());
+//                    reply =  ObservationsToJson(result).toString();
+//                }
+//                catch (Exception e){
+//                    exception = new Exception("Failed to get observations: "+e.getLocalizedMessage(), e);
+//                    e.printStackTrace();
+//                }
+//        //}else if(command0.equals(PushObservationsCommand.class.getSimpleName())){
+//              PushObservationsCommand command1 = null;
+////            try {
+////                command1 = PushObservationsCommand.fromJson(message);
+////            }
+////            catch (Exception e){
+////                exception = new Exception("Failed to parse command from json: "+ e.getLocalizedMessage(), e); //new Exception("Failed to parse "+command+" from json", e.getCause());
+////            }
+////            if(command1!=null)
+////                try {
+////                    Boolean result = pushObservationsToBroker(command1.getObservations());
+////                    reply = "{ success: " + result + " }";
+////                }
+////                catch (Exception e){
+////                    exception = new Exception("Failed to push observations: "+e.getLocalizedMessage(), e);
+////                }
+//        }else if(command0.equals(SubscribeToEntityCommand.class.getSimpleName())){
+//            String arguments = messageObj.get("args").toString();
+//            if(redisSyncCommands!=null && redisSyncCommands.hget("rpcSubscriptionRequests", arguments)!=null) {
+//                String subcriptionId = redisSyncCommands.hget("rpcSubscriptionRequests", arguments);
+//                LOGGER.debug("Subscription with requested arguments was found in redis ({}). Skipping new subscription", subcriptionId);
+//                try {
+//                    channel.exchangeDeclare(subcriptionId, "fanout");
+//                }
+//                catch (Exception e){
+//                    exception = new Exception("Failed to register exchange for "+subcriptionId+":"+e.getLocalizedMessage(), e);
+//                }
+//
+//                reply = "{ 'subscriptionId': '" +subcriptionId +"' }";
+//            }else {
+//                SubscribeToEntityCommand command1 = null;
+//                try {
+//                    command1 = SubscribeToEntityCommand.fromJson(message);
+//                }
+//                catch (Exception e){
+//                    exception = new Exception("Failed to parse command from json: "+ e.getLocalizedMessage(), e); //new Exception("Failed to parse "+command+" from json", e.getCause());
+//                }
+//                String subscriptionId = null;
+//
+//                if(command1!=null) {
+//                    try {
+//                        subscriptionId = subscribeTo(command1.getEntityId(), command1.getAttributes(), command1.getNotifyConditions(), command1.getRestriction());
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                        exception = new Exception("Failed to create a subscription to " + command1.getEntityId() + ": " + e.getLocalizedMessage(), e);
+//                    }
+//                }
+//                if(subscriptionId!=null) {
+//                    try {
+//                        final String exchangeName = subscriptionId;
+//                        channel.exchangeDeclare(exchangeName, "fanout");
+//
+//                        //Function<String, Void> notifyCallback = createNotifyCallback(exchangeName);
+//
+//                        //rpcSubscriptions.add(subscriptionId);
+//                        //rpcSubscriptionRequests.put(arguments, subscriptionId);
+//
+//                        //                    List<String> names = new ArrayList<>();
+//                        //                    names.add(command1.getEntityId());
+//                        //                    names.addAll(Arrays.asList(command1.getAttributes()));
+//                        //                    String args = String.join("_", names);
+//                        if (redisSyncCommands != null) {
+//                            redisSyncCommands.hset("rpcSubscriptionIds", subscriptionId, subscriptionId);
+//                            redisSyncCommands.hset("rpcSubscriptionRequests", arguments, subscriptionId);
+//                        }
+//                        //reply = "{ 'subscriptionId': '" + subscriptionId + "', 'queueName': '"+queueName+"' }";
+//                        reply = "{ 'subscriptionId': '" + subscriptionId + "' }";
+//                    } catch (Exception e) {
+//                        exception = new Exception("Failed to register exchange for " + subscriptionId + ":" + e.getLocalizedMessage(), e);
+//                    }
+//                }
+//            }
+//        }else
+//            exception = new Exception("No handler for the command: \""+command0+"\"");
+//
+//        if(exception!=null) {
+//            exception.printStackTrace();
+//            JsonObject replyObj = new JsonObject();
+//            replyObj.addProperty("error", exception.getLocalizedMessage());
+//            reply = replyObj.toString();
+//        }
+//        else if(reply==null) {
+//            LOGGER.error("Reply is not defined");
+//            reply = "{ error: \"Reply is not defined\"}";
+//        }
+//        LOGGER.debug("Publishing result to {}",properties.getReplyTo());
+//        try {
+//            channel.basicPublish("", properties.getReplyTo(), properties, reply.getBytes("UTF-8"));
+//        }
+//        catch (Exception e){
+//            LOGGER.error("Failed to respond to RPC request", e.getLocalizedMessage());
+//            e.getLocalizedMessage();
+//        }
     }
 
     private JsonArray EntitiesToJson(List<EntityLD> entities){
@@ -694,22 +693,22 @@ public class Orchestrator extends IotCrawlerClient {
 //        return subscriptionId;
 //    }
 
-    private String subscribeTo(String entityId, String[] attributes, List<NotifyCondition> notifyConditions, Restriction restriction) throws Exception {
-        List<String> attrs2 = new ArrayList<>();
-        for(String attribute: attributes)
-            attrs2.add( URI.create(attribute).getFragment()!=null?URI.create(attribute).getFragment():attribute);
+//    private String subscribeTo(String entityId, String[] attributes, List<NotifyCondition> notifyConditions, Restriction restriction) throws Exception {
+//        List<String> attrs2 = new ArrayList<>();
+//        for(String attribute: attributes)
+//            attrs2.add( URI.create(attribute).getFragment()!=null?URI.create(attribute).getFragment():attribute);
+//
+//        String reference = httpServer.getUrl()+ ngsiEndpoint;
+//
+//        LOGGER.debug("Subscribing to ({}) with a reference {}", entityId, reference);
+//        String subscriptionId = dataBrokerClient.subscribeTo(entityId, attributes, reference, notifyConditions, restriction);
+//        return subscriptionId;
+//    }
 
-        String reference = httpServer.getUrl()+ ngsiEndpoint;
-
-        LOGGER.debug("Subscribing to ({}) with a reference {}", entityId, reference);
-        String subscriptionId = dataBrokerClient.subscribeTo(entityId, attributes, reference, notifyConditions, restriction);
-        return subscriptionId;
-    }
-
-    public Boolean pushObservationsToBroker(List<StreamObservation> observations) throws Exception {
-        Boolean ret = dataBrokerClient.pushObservations(observations);
-        return ret;
-    }
+//    public Boolean pushObservationsToBroker(List<StreamObservation> observations) throws Exception {
+//        Boolean ret = dataBrokerClient.pushObservations(observations);
+//        return ret;
+//    }
 
 //    @Override
 //    public List<StreamObservation> getObservations() throws Exception {
@@ -721,10 +720,10 @@ public class Orchestrator extends IotCrawlerClient {
 //        return null;
 //    }
 
-    public List<StreamObservation> getObservations(String streamId, int limit) throws Exception {
-        List<StreamObservation> ret = dataBrokerClient.getObservations(streamId, limit);
-        return ret;
-    }
+//    public List<StreamObservation> getObservations(String streamId, int limit) throws Exception {
+//        List<StreamObservation> ret = metadataClient.getObservations(streamId, limit);
+//        return ret;
+//    }
 
 //    public List<StreamObservation> getObservations(int limit) throws Exception {
 //

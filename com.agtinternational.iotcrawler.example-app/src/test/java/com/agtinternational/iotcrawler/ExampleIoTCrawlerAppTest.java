@@ -48,15 +48,15 @@ import java.util.function.Function;
 
 import static com.agtinternational.iotcrawler.core.Constants.IOTCRAWLER_ORCHESTRATOR_URL;
 
-public class ExampleIoTCrawlerAppTest extends EnvVariablesSetter {
+public class ExampleIoTCrawlerAppTest {
 
     Logger LOGGER = LoggerFactory.getLogger(ExampleIoTCrawlerAppTest.class);
     ExampleIoTCrawlerExampleApp app;
 
     @Before
     public void init() throws Exception {
-        super.init();
-        app = new ExampleIoTCrawlerExampleApp(IOTCRAWLER_ORCHESTRATOR_URL);
+        EnvVariablesSetter.init();
+        app = new ExampleIoTCrawlerExampleApp(System.getenv(IOTCRAWLER_ORCHESTRATOR_URL));
         app.init();
     }
 

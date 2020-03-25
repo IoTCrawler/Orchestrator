@@ -22,6 +22,7 @@
 
         <iotcrawler.core.version>1.0.1</iotcrawler.core.version>
         <fiware.models.version>1.0.1</fiware.models.version>
+        <fiware.clients.version>1.0.1</fiware.clients.version>
     </properties>
 
     <dependencies>
@@ -38,7 +39,11 @@
             <version>${fiware.models.version}</version>
         </dependency>
 
-
+        <dependency>
+            <groupId>com.agtinternational.iotcrawler</groupId>
+            <artifactId>fiware-clients</artifactId>
+            <version>${fiware.clients.version}</version>
+        </dependency>
 
     </dependencies>
 

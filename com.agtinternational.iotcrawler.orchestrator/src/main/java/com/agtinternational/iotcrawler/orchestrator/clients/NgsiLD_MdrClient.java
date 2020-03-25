@@ -51,13 +51,15 @@ public class NgsiLD_MdrClient extends AbstractMetadataClient {
     boolean cutURIs = false;
     //String serverUrl = "http://155.54.95.248:9090/ngsi-ld/";
 
-    public NgsiLD_MdrClient(){
-        this((System.getenv().containsKey(NGSILD_BROKER_URL)? System.getenv(NGSILD_BROKER_URL): "http://localhost:3000/ngsi-ld/"));
-    }
+//    public NgsiLD_MdrClient(){
+//        this((System.getenv().containsKey(NGSILD_BROKER_URL)? System.getenv(NGSILD_BROKER_URL): "http://localhost:3000/ngsi-ld/"));
+//    }
 
-    public NgsiLD_MdrClient(String brokerUrl){
+    public NgsiLD_MdrClient(String brokerUrl, Boolean cutURIs){
         brokerHost = brokerUrl.split("/ngsi-ld")[0];
-        LOGGER.debug("Initializing NgsiLD_MdrClient to {}", brokerUrl);
+        this.cutURIs = cutURIs;
+
+        LOGGER.debug("Initializing NgsiLD_MdrClient to {}. CurURIs={}", brokerUrl, cutURIs);
         ngsiLDClient = new NgsiLDClient(brokerUrl);
     }
 

@@ -63,18 +63,23 @@ public class EnvVariablesSetter {
             //environmentVariables.set(Constants.NGSILD_BROKER_URI, "http://localhost:3003/ngsi-ld/");
             //environmentVariables.set(Constants.NGSILD_BROKER_URI, "http://localhost:3000/ngsi-ld/");
             //environmentVariables.set(NGSILD_BROKER_URI, "http://localhost:9090/ngsi-ld/");
-            //environmentVariables.set(NGSILD_BROKER_URI, "http://155.54.95.248:9090/ngsi-ld/");
+            //environmentVariables.set(NGSILD_BROKER_URL, "http://155.54.95.248:9090/ngsi-ld/");
+        //environmentVariables.set(NGSILD_BROKER_URL, "http://155.54.95.171:9090/ngsi-ld/");
 
-        if(!System.getenv().containsKey(IOT_BROKER_URL))
-            //environmentVariables.set(Constants.IOT_BROKER_URI, "http://10.67.1.107:8060/ngsi10");
-            environmentVariables.set(IOT_BROKER_URL, "http://iotbroker:8060/ngsi10");
 
+//        if(!System.getenv().containsKey(IOT_BROKER_URL))
+//            //environmentVariables.set(Constants.IOT_BROKER_URI, "http://10.67.1.107:8060/ngsi10");
+//            environmentVariables.set(IOT_BROKER_URL, "http://iotbroker:8060/ngsi10");
+
+
+        if(!System.getenv().containsKey(HTTP_SERVER_HOST))
+            environmentVariables.set(HTTP_SERVER_HOST, "10.67.1.107");
 
         if(!System.getenv().containsKey(HTTP_SERVER_PORT))
             environmentVariables.set(HTTP_SERVER_PORT, "3001");
 
         if(!System.getenv().containsKey(HTTP_REFERENCE_URL))
-            environmentVariables.set(HTTP_REFERENCE_URL, "http://10.67.1.107:"+System.getenv(HTTP_SERVER_PORT)+"/notify");
+            environmentVariables.set(HTTP_REFERENCE_URL, "http://"+System.getenv(HTTP_SERVER_HOST)+":"+System.getenv(HTTP_SERVER_PORT)+"/notify");
 
 
         //public static final String ContextBrokerEndpoint = "http://localhost:1026/";

@@ -26,6 +26,8 @@ public class Constants {
     public static final String IOTCRAWLER_RABBIT_HOST = "IOTCRAWLER_RABBIT_HOST";
     public static final String IOTCRAWLER_REDIS_HOST = "IOTCRAWLER_REDIS_HOST";
     public static final String IOTCRAWLER_COMMANDS_EXCHANGE = "IOTCRAWLER_COMMANDS_EXCHANGE";
+
+    public static final String CUT_TYPE_URIS = "CUT_TYPE_URIS";
 //
 //    public static final String TRIPLE_STORE_URI = "TRIPLE_STORE_URI";
 //    public static final String TRIPLE_STORE_USER = "TRIPLE_STORE_USER";

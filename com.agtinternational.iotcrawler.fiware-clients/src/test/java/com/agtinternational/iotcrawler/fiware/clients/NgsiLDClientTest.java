@@ -148,6 +148,7 @@ public class NgsiLDClientTest extends EnvVariablesSetter{
         Semaphore reqFinished = new Semaphore(0);
 
         final Boolean[] success = {false};
+
         ListenableFuture<Void> req = ngsiLdClient.addEntity(entity);
         req.addCallback(new ListenableFutureCallback<Void>() {
             @Override
@@ -175,7 +176,10 @@ public class NgsiLDClientTest extends EnvVariablesSetter{
     @Order(2)
     @Test
     public void getByIdTest() throws ExecutionException, InterruptedException {
-        Collection<String> ids = Arrays.asList(new String[]{ entity.getId()  });
+        Collection<String> ids = Arrays.asList(new String[]{
+                "http://purl.org/iot/ontology/iot-stream#TestStream_1585318328275"
+                //entity.getId()
+        });
         Collection<String> types = Arrays.asList(new String[]{ entity.getType() });  //Scorpio requires type!
         Paginated<EntityLD> entities = ngsiLdClient.getEntities(ids, null, types, null, 0, 0, false).get();
         Assert.assertNotNull(entities.getItems());
@@ -187,7 +191,10 @@ public class NgsiLDClientTest extends EnvVariablesSetter{
     @Order(2)
     @Test
     public void getAllEntitiesTest() throws ExecutionException, InterruptedException {
-        Collection<String> types = Arrays.asList(new String[]{ entity.getType() });
+        Collection<String> types = Arrays.asList(new String[]{
+                entity.getType()
+                //"http://www.w3.org/ns/sosa/Sensor"
+        });
         Paginated<EntityLD> entities = ngsiLdClient.getEntities(null, null, types, null, 0, 0, false).get();
         Assert.assertNotNull(entities.getItems());
         Assert.assertNotNull(entities.getItems().size()>0);

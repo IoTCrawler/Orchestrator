@@ -22,7 +22,6 @@ package com.agtinternational.iotcrawler.fiware.clients;
 
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import com.agtinternational.iotcrawler.fiware.models.Utils;
-import com.sun.istack.Nullable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -82,6 +81,7 @@ public class NgsiLDRestTemplate extends RestTemplate implements RestOperations {
         messageConverters.add(new NgsiLDConverter());
         messageConverters.addAll(getMessageConverters());
         setMessageConverters(messageConverters);
+
         //headersExtractor
     }
 
@@ -163,13 +163,14 @@ public class NgsiLDRestTemplate extends RestTemplate implements RestOperations {
                 }
                 List<MediaType> allSupportedMediaTypes = new ArrayList<MediaType>();
                 for (HttpMessageConverter<?> converter : getMessageConverters()) {
-                    if(responseClass.getCanonicalName().contains(EntityLD.class.getCanonicalName()))
-                    {
-                        if(converter instanceof NgsiLDConverter) {
-                            allSupportedMediaTypes.addAll(getSupportedMediaTypes(converter));
-                            return;
-                        }
-                    }else if (responseClass != null) {
+//                    if(responseClass.getCanonicalName().contains(EntityLD.class.getCanonicalName()))
+//                    {
+//                        if(converter instanceof NgsiLDConverter) {
+//                            allSupportedMediaTypes.addAll(getSupportedMediaTypes(converter));
+//                            return;
+//                        }
+//                    }else
+                    if (responseClass != null) {
                         if (converter.canRead(responseClass, null)) {
                             allSupportedMediaTypes.addAll(getSupportedMediaTypes(converter));
                         }
@@ -252,7 +253,7 @@ public class NgsiLDRestTemplate extends RestTemplate implements RestOperations {
                 MediaType requestContentType = requestHeaders.getContentType();
 
                 for (HttpMessageConverter<?> messageConverter : getMessageConverters() ) {
-                    if (/*(requestBody instanceof EntityLD && messageConverter instanceof NgsiLDConverter) ||*/ messageConverter.canWrite(requestType, requestContentType)){
+                    if (messageConverter.canWrite(requestType, requestContentType)){
                         if (!requestHeaders.isEmpty()) {
                             httpRequest.getHeaders().putAll(requestHeaders);
                         }
@@ -271,7 +272,7 @@ public class NgsiLDRestTemplate extends RestTemplate implements RestOperations {
 
                         String jsonStr = httpRequest.getBody().toString();
 
-                        logger.info(jsonStr);
+                        logger.debug("Json: "+jsonStr);
                         return;
                     }
                 }

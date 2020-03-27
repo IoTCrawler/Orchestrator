@@ -17,22 +17,6 @@ package com.agtinternational.iotcrawler.fiware.clients;/*-
  * limitations under the License.
  * #L%
  */
-/*
- * Copyright (C) 2016 Orange
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *          http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed till in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
 
 import com.orange.ngsi2.client.Ngsi2Client;
 import com.orange.ngsi2.exception.Ngsi2Exception;

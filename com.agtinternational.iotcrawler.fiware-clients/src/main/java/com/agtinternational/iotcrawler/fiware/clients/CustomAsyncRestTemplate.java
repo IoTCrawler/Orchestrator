@@ -46,4 +46,5 @@ public class CustomAsyncRestTemplate extends AsyncRestTemplate {
         return this.doExecute(expanded, method, requestCallback, responseExtractor);
     }
 
+
 }

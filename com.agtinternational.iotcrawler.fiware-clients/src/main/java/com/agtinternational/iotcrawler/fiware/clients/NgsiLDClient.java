@@ -41,12 +41,14 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureAdapter;
+import org.springframework.util.concurrent.ListenableFutureCallback;
 import org.springframework.web.client.AsyncRestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URLEncoder;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Semaphore;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.MediaType.valueOf;
@@ -75,20 +77,20 @@ public class NgsiLDClient {
         httpHeaders.setAccept(Collections.singletonList(valueOf("*/*")));  //nec broker ignores the context
     }
 
-    /**
-     * Default constructor
-     * @param asyncRestTemplate CustomAsyncRestTemplate to handle requests
-     * @param baseURL base URL for the NGSIv2 service
-     */
-    public NgsiLDClient(AsyncRestTemplate asyncRestTemplate, String baseURL) {
-        this();
-        this.asyncRestTemplate = asyncRestTemplate;
-        this.baseURL = baseURL;
-
-        // Inject NGSI2 error handler and Java 8 support
-        injectNgsi2ErrorHandler();
-        injectJava8ObjectMapper();
-    }
+//    /**
+//     * Default constructor
+//     * @param asyncRestTemplate CustomAsyncRestTemplate to handle requests
+//     * @param baseURL base URL for the NGSIv2 service
+//     */
+//    public NgsiLDClient(AsyncRestTemplate asyncRestTemplate, String baseURL) {
+//        this();
+//        this.asyncRestTemplate = asyncRestTemplate;
+//        this.baseURL = baseURL;
+//
+//        // Inject NGSI2 error handler and Java 8 support
+//        injectNgsi2ErrorHandler();
+//        injectJava8ObjectMapper();
+//    }
 
     public NgsiLDClient(String baseURL){
         this();
@@ -113,6 +115,60 @@ public class NgsiLDClient {
                 return services;
             }
         };
+    }
+
+    public boolean addEntitySync(EntityLD entity){
+        final Boolean[] success = {false};
+        ListenableFuture<Void> req = addEntity(entity);
+        Semaphore reqFinished = new Semaphore(0);
+        req.addCallback(new ListenableFutureCallback<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                success[0] = true;
+                reqFinished.release();
+            }
+
+            @Override
+            public void onFailure(Throwable throwable) {
+                success[0] = false;
+                throwable.printStackTrace();
+                reqFinished.release();
+            }
+
+        });
+        try {
+            reqFinished.acquire();
+        } catch (InterruptedException e) {
+            LOGGER.error(e.getLocalizedMessage());
+        }
+        return success[0];
+    }
+
+    public boolean deleteEntitySync(String entityId, String type){
+        final Boolean[] success = {false};
+        ListenableFuture<Void> req = deleteEntity(entityId, type);
+        Semaphore reqFinished = new Semaphore(0);
+        req.addCallback(new ListenableFutureCallback<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                success[0] = true;
+                reqFinished.release();
+            }
+
+            @Override
+            public void onFailure(Throwable throwable) {
+                success[0] = false;
+                throwable.printStackTrace();
+                reqFinished.release();
+            }
+
+        });
+        try {
+            reqFinished.acquire();
+        } catch (InterruptedException e) {
+            LOGGER.error(e.getLocalizedMessage());
+        }
+        return success[0];
     }
 
     /*
@@ -157,6 +213,27 @@ public class NgsiLDClient {
                                                              Collection<String> orderBy,
                                                              int offset, int limit, boolean count) {
 
+        List<String> encodedIds = null;
+        if(ids!=null) {
+            encodedIds = new ArrayList<>();
+            Iterator<String> iterator = ids.iterator();
+            while (iterator.hasNext()) {
+                String type = iterator.next();
+                if (type.startsWith("http://"))
+                    type = URLEncoder.encode(type);
+                encodedIds.add(type);
+            }
+        }
+
+        List<String> encodedTypes = new ArrayList<>();
+        Iterator<String> iterator = types.iterator();
+        while(iterator.hasNext()) {
+           String type = iterator.next();
+           if(type.startsWith("http://"))
+               type = URLEncoder.encode(type);
+           encodedTypes.add(type);
+        }
+
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseURL);
 
         //if(ids.isEmpty())
@@ -164,9 +241,9 @@ public class NgsiLDClient {
 //        else
 //            builder.path("v1/entities/"+ids.toArray()[0]);
         builder.query(query);
-        addParam(builder, "id", ids);
+        addParam(builder, "id", encodedIds);
         addParam(builder, "idPattern", idPattern);
-        addParam(builder, "type", types);
+        addParam(builder, "type", encodedTypes);
         addParam(builder, "attrs", attrs);
         //addParam(builder, "", query);  //see below
 
@@ -182,9 +259,10 @@ public class NgsiLDClient {
         //these symbols would be encorded again in the AsyncHttpRequest, so need decode them back
         url = url.replace("%3D","=");
         url = url.replace("%253D","=");
-        url = url.replace("%2522","%22");
-        url = url.replace("%255B","%5B");
-        url = url.replace("%255D","%5D");
+        url = url.replace("%25","%");
+//        url = url.replace("%2522","%22");
+//        url = url.replace("%255B","%5B");
+//        url = url.replace("%255D","%5D");
 
         LOGGER.trace("Requesting {}", url);
         return adaptPaginated(request(HttpMethod.GET, url, null, EntityLD[].class), offset, limit);

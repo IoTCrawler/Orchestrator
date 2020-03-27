@@ -16,9 +16,8 @@
 
     <properties>
 
-        <ngsi2.client.version>0.1.0-SNAPSHOT</ngsi2.client.version>
+        <ngsi.api.version>0.1.0-SNAPSHOT</ngsi.api.version>
         <iotbroker.client.version>7.1-SNAPSHOT</iotbroker.client.version>
-
         <fiware.models.version>1.0.1</fiware.models.version>
     </properties>
 
@@ -38,12 +37,12 @@
             </exclusions>
         </dependency>
 
-        <dependency>
-            <groupId>com.orange.fiware</groupId>
-            <artifactId>ngsi2-client</artifactId>
-            <version>${ngsi2.client.version}</version>
-            <!--<scope>compile</scope>-->
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.orange.fiware</groupId>-->
+<!--            <artifactId>ngsi2-client</artifactId>-->
+<!--            <version>${ngsi2.client.version}</version>-->
+<!--            &lt;!&ndash;<scope>compile</scope>&ndash;&gt;-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>com.agtinternational.iotcrawler</groupId>
@@ -67,12 +66,18 @@
 
 
 
-        <!--<dependency>-->
-            <!--<groupId>eu.neclab.iotplatform</groupId>-->
-            <!--<artifactId>iotbroker.client</artifactId>-->
-            <!--<version>${iotbroker.version}</version>-->
-            <!--&lt;!&ndash;<scope></scope>&ndash;&gt;-->
-        <!--</dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>eu.neclab.iotplatform</groupId>-->
+<!--            <artifactId>iotbroker.client</artifactId>-->
+<!--            <version>${iotbroker.client.version}</version>-->
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.springframework</groupId>-->
+<!--                    <artifactId>org.springframework.core</artifactId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
+<!--            &lt;!&ndash;<scope></scope>&ndash;&gt;-->
+<!--        </dependency>-->
 
         <!-- https://mvnrepository.com/artifact/org.springframework/spring-web -->
         <dependency>
@@ -192,7 +197,7 @@
                 </exclusion>
             </exclusions>
 
-            <!--<scope>compile</scope>-->
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -217,24 +222,25 @@
                     <artifactId>org.springframework.jms</artifactId>
                 </exclusion>
             </exclusions>
+            <scope>test</scope>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>eu.neclab.iotplatform</groupId>-->
-<!--            <artifactId>ngsi.api</artifactId>-->
-<!--            <version>${ngsi.api.version}</version>-->
-<!--            <exclusions>-->
-<!--                <exclusion>-->
-<!--                    <groupId>org.springframework</groupId>-->
-<!--                    <artifactId>org.springframework.web</artifactId>-->
-<!--                </exclusion>-->
-<!--                <exclusion>-->
-<!--                    <groupId>org.springframework</groupId>-->
-<!--                    <artifactId>org.springframework.jms</artifactId>-->
-<!--                </exclusion>-->
-<!--            </exclusions>-->
-<!--            &lt;!&ndash;<scope>provided</scope>&ndash;&gt;-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>eu.neclab.iotplatform</groupId>
+            <artifactId>ngsi.api</artifactId>
+            <version>${iotbroker.client.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>org.springframework.web</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>org.springframework.jms</artifactId>
+                </exclusion>
+            </exclusions>
+            <!--<scope>provided</scope>-->
+        </dependency>
 
 
 

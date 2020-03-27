@@ -60,13 +60,13 @@ public class NgsiLDConverter extends AbstractHttpMessageConverter<Object> implem
     //@Override
     //public boolean  canRead(Type type, Class<?> contextClass, MediaType mediaType) {
     public boolean  canRead(Class<?> clazz, MediaType mediaType){
-        return clazz.getClass().getCanonicalName().contains(EntityLD.class.getCanonicalName());// this.canRead(type.getClass(), mediaType);
+        return clazz.getCanonicalName().contains(EntityLD.class.getCanonicalName());// this.canRead(type.getClass(), mediaType);
     }
 
     //@Override
     //public boolean canWrite(Type type, Class<?> contextClass, MediaType mediaType) {
     public boolean canWrite(Class<?> clazz, MediaType mediaType){
-        return clazz.getClass().getCanonicalName().contains(EntityLD.class.getCanonicalName()); // this.canWrite(type.getClass(), mediaType);
+        return clazz.getCanonicalName().contains(EntityLD.class.getCanonicalName()); // this.canWrite(type.getClass(), mediaType);
     }
 
     @Override
@@ -129,6 +129,11 @@ public class NgsiLDConverter extends AbstractHttpMessageConverter<Object> implem
             if(!jsonObject.has("type")) {
                 jsonObject.add("type", jsonObject.get("@type"));
                 jsonObject.remove("@type");
+            }
+
+            if(!jsonObject.has("context")) {
+                jsonObject.add("context", jsonObject.get("@context"));
+                jsonObject.remove("@context");
             }
 //        }else if(object instanceof Subscription){
 

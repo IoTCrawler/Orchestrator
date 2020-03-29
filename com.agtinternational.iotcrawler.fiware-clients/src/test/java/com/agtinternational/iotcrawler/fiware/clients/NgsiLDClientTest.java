@@ -177,10 +177,13 @@ public class NgsiLDClientTest extends EnvVariablesSetter{
     @Test
     public void getByIdTest() throws ExecutionException, InterruptedException {
         Collection<String> ids = Arrays.asList(new String[]{
-                "http://purl.org/iot/ontology/iot-stream#TestStream_1585318328275"
-                //entity.getId()
+                //"iotc%3AStream_AEON%2BLabs%2BZW100%2BMultiSensor%2B6_BatteryLevel"
+                entity.getId()
         });
-        Collection<String> types = Arrays.asList(new String[]{ entity.getType() });  //Scorpio requires type!
+        Collection<String> types = Arrays.asList(new String[]{
+                entity.getType()
+                //"iotc:IoTStream"
+        });  //Scorpio requires type!
         Paginated<EntityLD> entities = ngsiLdClient.getEntities(ids, null, types, null, 0, 0, false).get();
         Assert.assertNotNull(entities.getItems());
         Assert.assertNotNull(entities.getItems().size()>0);

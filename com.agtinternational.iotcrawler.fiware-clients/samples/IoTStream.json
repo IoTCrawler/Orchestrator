@@ -1,5 +1,5 @@
 {
-  "id": "iotc:Stream_AEON+Labs+ZW100+MultiSensor+6_BatteryLevel1",
+  "id": "iotc:Stream_AEON+Labs+ZW100+MultiSensor+6_BatteryLevel2",
   "type": "http://purl.org/iot/ontology/iot-stream#IoTStream",
   "@context": {
     "iotc": "http://purl.org/iot/ontology/iot-stream#",

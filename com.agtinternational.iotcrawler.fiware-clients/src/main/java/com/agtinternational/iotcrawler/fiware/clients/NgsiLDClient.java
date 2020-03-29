@@ -213,26 +213,26 @@ public class NgsiLDClient {
                                                              Collection<String> orderBy,
                                                              int offset, int limit, boolean count) {
 
-        List<String> encodedIds = null;
-        if(ids!=null) {
-            encodedIds = new ArrayList<>();
-            Iterator<String> iterator = ids.iterator();
-            while (iterator.hasNext()) {
-                String type = iterator.next();
-                if (type.startsWith("http://"))
-                    type = URLEncoder.encode(type);
-                encodedIds.add(type);
-            }
-        }
-
-        List<String> encodedTypes = new ArrayList<>();
-        Iterator<String> iterator = types.iterator();
-        while(iterator.hasNext()) {
-           String type = iterator.next();
-           if(type.startsWith("http://"))
-               type = URLEncoder.encode(type);
-           encodedTypes.add(type);
-        }
+//        List<String> encodedIds = null;
+//        if(ids!=null) {
+//            encodedIds = new ArrayList<>();
+//            Iterator<String> iterator = ids.iterator();
+//            while (iterator.hasNext()) {
+//                String id = iterator.next();
+//                //if (type.startsWith("http://"))
+//                    id = URLEncoder.encode(id);
+//                encodedIds.add(id);
+//            }
+//        }
+//
+//        List<String> encodedTypes = new ArrayList<>();
+//        Iterator<String> iterator = types.iterator();
+//        while(iterator.hasNext()) {
+//           String type = iterator.next();
+//           if(type.startsWith("http://"))
+//               type = URLEncoder.encode(type);
+//           encodedTypes.add(type);
+//        }
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseURL);
 
@@ -241,9 +241,9 @@ public class NgsiLDClient {
 //        else
 //            builder.path("v1/entities/"+ids.toArray()[0]);
         builder.query(query);
-        addParam(builder, "id", encodedIds);
+        addParam(builder, "id", ids);
         addParam(builder, "idPattern", idPattern);
-        addParam(builder, "type", encodedTypes);
+        addParam(builder, "type", types);
         addParam(builder, "attrs", attrs);
         //addParam(builder, "", query);  //see below
 
@@ -254,12 +254,13 @@ public class NgsiLDClient {
         if (count) {
             addParam(builder, "options", "count");
         }
-        String url = builder.toUriString();
+        String url = builder.build().encode().toUriString();
 
         //these symbols would be encorded again in the AsyncHttpRequest, so need decode them back
-        url = url.replace("%3D","=");
-        url = url.replace("%253D","=");
+
+//        url = url.replace("%253D","=");
         url = url.replace("%25","%");
+        url = url.replace("%3D","=");
 //        url = url.replace("%2522","%22");
 //        url = url.replace("%255B","%5B");
 //        url = url.replace("%255D","%5D");

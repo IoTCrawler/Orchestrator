@@ -6,7 +6,7 @@ set -e
 
 if [ "$1" = "install" ]; then
 
-  (if [ -n "$REBUILD_ALL" ]; then rm -rf ~/.m2/repository/com/agtinternational/iotcrawler; fi);
+  (if [ -n "$REBUILD_ALL" ]; then echo "rm -rf ~/.m2/repository/com/agtinternational/iotcrawler" && rm -rf ~/.m2/repository/com/agtinternational/iotcrawler; fi);
 
 	export CI_PROJECT_DIR=${CI_PROJECT_DIR:-$(pwd)}
   echo "# Main: checking com/agtinternational/iotcrawler"

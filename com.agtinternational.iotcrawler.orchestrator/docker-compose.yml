@@ -18,8 +18,9 @@ services:
   djane:
     #image: gitlab.iotcrawler.net:4567/core/djane
     image: djane_djane
+    command: '/bin/bash -c "./wait-for-it.sh mongo:27017 -t 30 -- npm run migrate && npm start"'
     ports:
-      - "3002:3000"
+      - "3000:3000"
     depends_on:
       - mongo
 #    networks:
@@ -27,8 +28,8 @@ services:
 
   mongo:
     image: mongo
-    #volumes:
-    #  - $PWD/data=/data/db
+    volumes:
+      - "/home/smirnp/.mongo/data:/data/db"
     ports:
       - "27017:27017"
 #    networks:

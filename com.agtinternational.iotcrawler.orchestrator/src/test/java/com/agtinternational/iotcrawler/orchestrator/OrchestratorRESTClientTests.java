@@ -22,13 +22,18 @@ package com.agtinternational.iotcrawler.orchestrator;
 
 import com.agtinternational.iotcrawler.core.clients.IoTCrawlerRESTClient;
 import com.agtinternational.iotcrawler.core.interfaces.IotCrawlerClient;
+import com.agtinternational.iotcrawler.core.models.IoTStream;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Order;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.Assert;
 
-import static com.agtinternational.iotcrawler.orchestrator.Constants.IOTCRAWLER_ORCHESTRATOR_URL;
+import java.util.List;
+
+import static com.agtinternational.iotcrawler.core.Constants.IOTCRAWLER_ORCHESTRATOR_URL;
+
 
 public class OrchestratorRESTClientTests extends OrchestratorTests {
 
@@ -64,6 +69,14 @@ public class OrchestratorRESTClientTests extends OrchestratorTests {
         super.getEntitiesTest();
     }
 
+    @Test
+    @Order(6)
+    public void getEntitiesWithConversionTest() throws Exception {
+        LOGGER.info("getEntitiesTest()");
+        List<IoTStream> entities = client.getEntities(IoTStream.class, null, null, 0,0);
+        Assert.notNull(entities);
+        LOGGER.info(entities.size()+" entities returned");
+    }
 
     //@Ignore
     @Test

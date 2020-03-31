@@ -1,0 +1,14 @@
+{
+  "id": "iotc:Stream_Short",
+  "type": "iotc:IoTStream",
+  "@context": {
+    "iotc": "http://purl.org/iot/ontology/iot-stream#",
+    "agt-smarthome": "http://www.agtinternational.com/ontologies/SmartHome#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "sosa": "http://www.w3.org/ns/sosa/"
+  },
+  "iotc:madeBySensor": {
+    "type": "Relationship",
+    "object": "iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_BatteryLevel"
+  }
+}

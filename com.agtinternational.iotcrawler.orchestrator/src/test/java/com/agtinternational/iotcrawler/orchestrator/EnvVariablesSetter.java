@@ -22,10 +22,10 @@ package com.agtinternational.iotcrawler.orchestrator;
 
 import org.junit.contrib.java.lang.system.EnvironmentVariables;
 
-import static com.agtinternational.iotcrawler.core.Constants.IOTCRAWLER_RABBIT_HOST;
-import static com.agtinternational.iotcrawler.core.Constants.IOTCRAWLER_REDIS_HOST;
+import static com.agtinternational.iotcrawler.core.Constants.*;
 import static com.agtinternational.iotcrawler.fiware.clients.Constants.NGSILD_BROKER_URL;
 import static com.agtinternational.iotcrawler.orchestrator.Constants.*;
+
 
 public class EnvVariablesSetter {
 
@@ -54,17 +54,12 @@ public class EnvVariablesSetter {
 //        environmentVariables.set(Constants.TRIPLE_STORE_USER, "test");
 //        environmentVariables.set(Constants.TRIPLE_STORE_PASS, "xyzzy");
 
+        environmentVariables.set(CUT_TYPE_URIS, "false");
         if(!System.getenv().containsKey(NGSILD_BROKER_URL))
-            environmentVariables.set(NGSILD_BROKER_URL, "http://localhost:3002/ngsi-ld/");
+            //environmentVariables.set(NGSILD_BROKER_URL, "http://localhost:3000/ngsi-ld/");
+                environmentVariables.set(NGSILD_BROKER_URL, "http://155.54.95.248:9090/ngsi-ld/");
+            //environmentVariables.set(NGSILD_BROKER_URL, "http://155.54.95.171:9090/ngsi-ld/");
 
-//        if(!System.getenv().containsKey(RANKING_COMPONENT_URI))
-//            environmentVariables.set(RANKING_COMPONENT_URI, "http://localhost:3003/ngsi-ld/");
-
-            //environmentVariables.set(Constants.NGSILD_BROKER_URI, "http://localhost:3003/ngsi-ld/");
-            //environmentVariables.set(Constants.NGSILD_BROKER_URI, "http://localhost:3000/ngsi-ld/");
-            //environmentVariables.set(NGSILD_BROKER_URI, "http://localhost:9090/ngsi-ld/");
-            //environmentVariables.set(NGSILD_BROKER_URL, "http://155.54.95.248:9090/ngsi-ld/");
-        //environmentVariables.set(NGSILD_BROKER_URL, "http://155.54.95.171:9090/ngsi-ld/");
 
 
 //        if(!System.getenv().containsKey(IOT_BROKER_URL))

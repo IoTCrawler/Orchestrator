@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
-import org.springframework.web.client.HttpClientErrorException;
+//import org.springframework.web.client.HttpClientErrorException;
 
 import javax.management.InstanceAlreadyExistsException;
 import java.util.*;
@@ -161,13 +161,15 @@ public class NgsiLD_MdrClient extends AbstractMetadataClient {
 
                 @Override
                 public void onFailure(Throwable throwable) {
-                    if(throwable instanceof HttpClientErrorException && ((HttpClientErrorException) throwable).getStatusCode().value()==409) {
-                        Exception exception1 = new InstanceAlreadyExistsException();
-                        LOGGER.debug("Entity {} already exists", entity.getId());
-                    }else{
-                        Exception e = new Exception("Failed to add entity "+ entity.getId()+": "+ throwable.getLocalizedMessage());
-                        exception.add(e);
-                    }
+//                    if(throwable instanceof HttpClientErrorException && ((HttpClientErrorException) throwable).getStatusCode().value()==409) {
+//                        Exception exception1 = new InstanceAlreadyExistsException();
+//                        LOGGER.debug("Entity {} already exists", entity.getId());
+//                    }else{
+//                        Exception e = new Exception("Failed to add entity "+ entity.getId()+": "+ throwable.getLocalizedMessage());
+//                        exception.add(e);
+//                    }
+                    Exception e = new Exception("Failed to add entity "+ entity.getId()+": "+ throwable.getLocalizedMessage());
+                    exception.add(e);
                     ret.add(false);
                     reqFinished.release();
                 }

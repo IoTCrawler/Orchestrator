@@ -118,7 +118,7 @@ public class EntityLD /*extends Entity*/ {
                     JsonObject jsonObject1 = Utils.attributeToJson((Attribute)iterator.next());
                     ((JsonArray) jsonObjectAttr).add(jsonObject1);
                 }
-            }else
+            }else if(attribute!=null)
                  throw new NotImplementedException(attribute.getClass().getName()+" not implemented ");
             //attributeToJson()
             //JsonObject attributeJson = new JsonObject();

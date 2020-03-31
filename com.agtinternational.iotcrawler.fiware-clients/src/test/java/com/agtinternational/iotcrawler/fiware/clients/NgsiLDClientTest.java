@@ -22,6 +22,7 @@ import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import com.agtinternational.iotcrawler.fiware.models.NGSILD.Property;
 import com.agtinternational.iotcrawler.fiware.models.NGSILD.Relationship;
 
+import com.agtinternational.iotcrawler.fiware.models.Utils;
 import com.agtinternational.iotcrawler.fiware.models.subscription.Endpoint;
 import com.agtinternational.iotcrawler.fiware.models.subscription.NotificationParams;
 import com.agtinternational.iotcrawler.fiware.models.subscription.SubscriptionLD;
@@ -37,8 +38,11 @@ import org.springframework.core.annotation.Order;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.*;
@@ -57,7 +61,7 @@ import static org.junit.Assert.assertNotNull;
 @RunWith(Parameterized.class)
 public class NgsiLDClientTest extends EnvVariablesSetter{
 
-    private Logger LOGGER = LoggerFactory.getLogger(NgsiLDClientTest.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(NgsiLDClientTest.class);
 
     String serverUrl;
 
@@ -71,17 +75,38 @@ public class NgsiLDClientTest extends EnvVariablesSetter{
 
     @Parameterized.Parameters
     public static Collection parameters() throws Exception {
-        return Arrays.asList(new Object[][]{
-                //new Object[]{ createEntity() },
-                //new Object[]{ readEntity("samples/Vehicle.json") },
-                new Object[]{ readEntity("samples/IoTStream.json") },
-                //new Object[]{ readEntity("samples/TemperatureSensor.json") }
-                //new Object[]{ readEntity("samples/ObservableProperty.json") }
-        });
+
+        List<Object[]> objects = new ArrayList<>();
+        File folder = new File("samples");
+        if(folder.exists()) {
+            //try {
+                Files.list(folder.toPath()).forEach(file->{
+                    try {
+                        EntityLD entity = readEntity(file);
+                        objects.add(new Object[]{ entity });
+                    } catch (Exception e) {
+                        LOGGER.error("Faield to parse {}", file.toString());
+                        e.printStackTrace();
+                    }
+
+                });
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+        }
+        return objects;
+//        return Arrays.asList(new Object[][]{
+//                //new Object[]{ createEntity() },
+//                //new Object[]{ readEntity("samples/Vehicle.json") },
+//                new Object[]{ readEntity("samples/IoTStream.json") },
+//                //new Object[]{ readEntity("samples/TemperatureSensor.json") }
+//                //new Object[]{ readEntity("samples/ObservableProperty.json") }
+//        });
     }
 
     public NgsiLDClientTest(EntityLD entityLD){
         this.entity = entityLD;
+
     }
 
     @Before
@@ -102,11 +127,12 @@ public class NgsiLDClientTest extends EnvVariablesSetter{
         //entity = createEntity();
         if(entity==null) {
             try {
-                entity = readEntity("samples/Vehicle.json");
+                entity = readEntity(Paths.get("samples/Vehicle.json"));
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+        LOGGER.info(entity.getId());
         //accomulatorServerUrl = new URL(accumulatorServerUrl);
     }
 
@@ -135,9 +161,9 @@ public class NgsiLDClientTest extends EnvVariablesSetter{
         return ent;
     }
 
-    private static EntityLD readEntity(String path) throws Exception {
+    private static EntityLD readEntity(Path path) throws Exception {
 
-        byte[] entityJson = Files.readAllBytes(Paths.get(path));
+        byte[] entityJson = Files.readAllBytes(path);
         EntityLD entityLD = EntityLD.fromJsonString(new String(entityJson));
         return entityLD;
     }
@@ -145,77 +171,51 @@ public class NgsiLDClientTest extends EnvVariablesSetter{
     @Order(1)
     @Test
     public void addEntityTest() throws Exception {
-        Semaphore reqFinished = new Semaphore(0);
 
-        final Boolean[] success = {false};
-
-        ListenableFuture<Void> req = ngsiLdClient.addEntity(entity);
-        req.addCallback(new ListenableFutureCallback<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                success[0] = true;
-                reqFinished.release();
-            }
-
-            @Override
-            public void onFailure(Throwable throwable) {
-                success[0] = false;
-                throwable.printStackTrace();
-                reqFinished.release();
-            }
-
-        });
-        reqFinished.acquire();
-        if(success[0])
-            Assert.assertTrue("Entity added", true);
-        else
-            Assert.fail("Failed to add entity");
+        ngsiLdClient.deleteEntitySync(entity.getId(), entity.getType());
+        Boolean success = ngsiLdClient.addEntitySync(entity);
+        Assert.assertTrue(success);
         LOGGER.info("Entity added");
     }
 
-    @Order(2)
-    @Test
-    public void getByIdTest() throws ExecutionException, InterruptedException {
-        Collection<String> ids = Arrays.asList(new String[]{
-                //"iotc%3AStream_AEON%2BLabs%2BZW100%2BMultiSensor%2B6_BatteryLevel"
-                entity.getId()
-        });
-        Collection<String> types = Arrays.asList(new String[]{
-                entity.getType()
-                //"iotc:IoTStream"
-        });  //Scorpio requires type!
-        Paginated<EntityLD> entities = ngsiLdClient.getEntities(ids, null, types, null, 0, 0, false).get();
-        Assert.assertNotNull(entities.getItems());
-        Assert.assertNotNull(entities.getItems().size()>0);
-        //Assert.assertTrue(entities.getItems().get(0).toJsonObject().equals(entity.toJsonObject()));
-        String test="123";
-    }
 
     @Order(2)
     @Test
-    public void getAllEntitiesTest() throws ExecutionException, InterruptedException {
+    public void getEntitiesByTypeTest() throws ExecutionException, InterruptedException {
         Collection<String> types = Arrays.asList(new String[]{
                 entity.getType()
                 //"http://www.w3.org/ns/sosa/Sensor"
         });
         Paginated<EntityLD> entities = ngsiLdClient.getEntities(null, null, types, null, 0, 0, false).get();
         Assert.assertNotNull(entities.getItems());
-        Assert.assertNotNull(entities.getItems().size()>0);
+        Assert.assertTrue(entities.getItems().size()>0);
+        entities.getItems().stream().forEach(e->{
+            LOGGER.info(Utils.prettyPrint(e.toJsonObject()));
+        });
         //Assert.assertTrue(entities.getItems().get(0).toJsonObject().equals(entity.toJsonObject()));
     }
 
-    @Order(2)
+    @Order(3)
     @Test
-    public void getByTypeTest() throws ExecutionException, InterruptedException {
-        Collection<String> types = Arrays.asList(new String[]{ entity.getType() });
-        //Collection<String> types = Arrays.asList(new String[]{ ".*" });
-        Paginated<EntityLD> entities = ngsiLdClient.getEntities(null, null, types, null, 0, 0, false).get();
+    public void getEntityByIdTest() throws ExecutionException, InterruptedException {
+        Collection<String> ids = Arrays.asList(new String[]{
+                //"iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_Temperature"
+                entity.getId()
+        });
+        Collection<String> types = Arrays.asList(new String[]{
+                entity.getType()
+                //"sosa:Sensor"
+        });  //Scorpio requires type!
+        Paginated<EntityLD> entities = ngsiLdClient.getEntities(ids, null, types, null, 0, 0, false).get();
         Assert.assertNotNull(entities.getItems());
-        Assert.assertNotNull(entities.getItems().size()>0);
+        Assert.assertTrue(entities.getItems().size()>0);
+        LOGGER.info(Utils.prettyPrint(entities.getItems().get(0).toJsonObject()));
         //Assert.assertTrue(entities.getItems().get(0).toJsonObject().equals(entity.toJsonObject()));
+        String test="123";
     }
 
-    @Order(2)
+
+    @Order(3)
     @Test
     public void getAttributesTest() throws ExecutionException, InterruptedException {
         Collection<String> types = Arrays.asList(new String[]{ entity.getType() });
@@ -228,7 +228,7 @@ public class NgsiLDClientTest extends EnvVariablesSetter{
 
 
 
-    @Order(3)
+    @Order(4)
     @Test
     public void getByAttributeValueTest() throws ExecutionException, InterruptedException {
         Collection<String> types = Arrays.asList(new String[]{ entity.getType() });
@@ -241,7 +241,7 @@ public class NgsiLDClientTest extends EnvVariablesSetter{
         String test="123";
     }
 
-    @Order(3)
+    @Order(5)
     @Test
     public void geoQueryTest() throws ExecutionException, InterruptedException {
         Collection<String> types = Arrays.asList(new String[]{ "http://example.org/pleyades/WeatherbitSensor" });

@@ -22,7 +22,6 @@ package com.agtinternational.iotcrawler.orchestrator;
 
 
 import com.agtinternational.iotcrawler.core.Utils;
-import com.agtinternational.iotcrawler.core.clients.MdrRESTClient;
 import com.agtinternational.iotcrawler.core.interfaces.IotCrawlerClient;
 import com.agtinternational.iotcrawler.fiware.clients.NgsiLDClient;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
@@ -58,6 +57,7 @@ import java.util.*;
 import java.util.concurrent.Semaphore;
 import java.util.function.Function;
 
+import static com.agtinternational.iotcrawler.core.Constants.CUT_TYPE_URIS;
 import static com.agtinternational.iotcrawler.fiware.clients.Constants.NGSILD_BROKER_URL;
 import static com.agtinternational.iotcrawler.orchestrator.Constants.HTTP_REFERENCE_URL;
 
@@ -65,15 +65,16 @@ import static com.agtinternational.iotcrawler.orchestrator.Constants.HTTP_REFERE
 public class OrchestratorTests {
 
     protected Logger LOGGER = LoggerFactory.getLogger(OrchestratorTests.class);
-    private boolean cutURLs = true;
 
     protected IotCrawlerClient client;
+    Boolean cutURIs;
 
     @Before
     public void init(){
         EnvVariablesSetter.init();
+        cutURIs = (System.getenv().containsKey(CUT_TYPE_URIS)?Boolean.parseBoolean(System.getenv(CUT_TYPE_URIS)):false);
         if(client==null)
-            client = new Orchestrator(cutURLs);
+            client = new Orchestrator(cutURIs);
 
         try {
             client.init();
@@ -84,8 +85,8 @@ public class OrchestratorTests {
 
     @Ignore
     @Test
-    public void orchestratorTest() throws Exception {
-        LOGGER.info("orchestratorTest()");
+    public void runOrchestrator() throws Exception {
+        LOGGER.info("Running orchestrator in test mode");
         client.run();
         String test = "123";
     }
@@ -108,12 +109,11 @@ public class OrchestratorTests {
 
         String label = "TestStream_"+System.currentTimeMillis();
         IoTStream stream1 = new IoTStream("http://purl.org/iot/ontology/iot-stream#"+label, label);
-        //if (cutURLs)
-            stream1.setType(Utils.cutURL(stream1.getTypeURI(), RDFModel.getNamespaces()));
 
-        MdrRESTClient ngsiLDClient = new MdrRESTClient((System.getenv().containsKey(NGSILD_BROKER_URL)? System.getenv(NGSILD_BROKER_URL): "http://localhost:3000/ngsi-ld/"));
-
-        boolean result = ngsiLDClient.registerEntity(stream1.toEntityLD(true));
+        NgsiLDClient ngsiLDClient = new NgsiLDClient(System.getenv(NGSILD_BROKER_URL));
+        EntityLD entityLD = stream1.toEntityLD(cutURIs);
+        entityLD.setContext(null);
+        boolean result = ngsiLDClient.addEntitySync(entityLD);
 
         Assert.isTrue(result);
         LOGGER.info("Stream was registered");
@@ -150,30 +150,13 @@ public class OrchestratorTests {
         LOGGER.info(streams.size()+" streams returned");
     }
 
-//    @Test
-//    @Order(5)
-//    @Ignore
-//    public void registerEntitiesTest() throws Exception {
-//        LOGGER.info("registerEntityTest()");
-//        String[] entityTypes = new String[]{ "IoTStream", "Sensor", "Platform" };
-//        for(String type: entityTypes) {
-//            byte[] iotStreamModelJson = Files.readAllBytes(Paths.get("samples/"+type+".json"));
-//            RDFModel entity = RDFModel.fromJson(iotStreamModelJson);
-//            Boolean result = client.registerEntity(entity);
-//
-//            Assert.isTrue(result);
-//            LOGGER.info("Entity {} was registered", type);
-//        }
-//    }
-
 
     //@Ignore
     @Test
     @Order(6)
     public void getEntitiesTest() throws Exception {
         LOGGER.info("getEntitiesTest()");
-        //List<EntityLD>  streams = orchestrator.getEntities(IoTStream.getTypeUri(), 0);
-        List<EntityLD>  entities = client.getEntities(".*", null, null, 0,0);
+        List<EntityLD>  entities = client.getEntities(IoTStream.getTypeUri(), null, null, 0,0);
         Assert.notNull(entities);
         LOGGER.info(entities.size()+" entities returned");
     }
@@ -211,10 +194,10 @@ public class OrchestratorTests {
 //        .subject("urn:ngsi-ld:Vehicle:A188")
 //        .build();
 
-        String[] ids = new String[]{"iotc:Sensor_FIBARO+System+FGWPE%2FF+Wall+Plug+Gen5_CurrentEnergyUse"};
+        String[] ids = new String[]{"iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_BatteryLevel"};
 
-        List<EntityLD> entities = client.getEntitiesById(ids, Sensor.getTypeUri());
-        List<Sensor> sensors = client.getEntitiesById(ids, Sensor.class);
+        List<EntityLD> entities = client.getEntitiesById(ids, IoTStream.getTypeUri());
+        //List<Sensor> sensors = client.getEntitiesById(ids, Sensor.class);
 
         Assert.notNull(entities );
         LOGGER.info(entities.size()+" entities returned");

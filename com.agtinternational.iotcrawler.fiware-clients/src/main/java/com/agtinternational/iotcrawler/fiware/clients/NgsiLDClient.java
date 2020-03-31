@@ -254,7 +254,8 @@ public class NgsiLDClient {
         if (count) {
             addParam(builder, "options", "count");
         }
-        String url = builder.build().encode().toUriString();
+        //String url = builder.build().encode().toUriString(); //djane requires encoded IDs
+        String url = builder.build().toUriString();
 
         //these symbols would be encorded again in the AsyncHttpRequest, so need decode them back
 

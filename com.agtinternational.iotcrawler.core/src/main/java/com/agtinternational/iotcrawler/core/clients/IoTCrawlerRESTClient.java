@@ -95,8 +95,8 @@ public class IoTCrawlerRESTClient extends IotCrawlerClient implements AutoClosea
     @Override
     public List<IoTStream> getStreams(String query, Map<String, Number> ranking, int offset, int limit) throws Exception {
         String type = IoTStream.getTypeUri();
-        if(cutURLs)
-            type = Utils.cutURL(IoTStream.getTypeUri(), RDFModel.getNamespaces());
+        if(cutURLs && type.startsWith("http://"))
+            type = Utils.cutURL(type, RDFModel.getNamespaces());
        Paginated<EntityLD> paginated = client.getEntities(null, null, Arrays.asList(type),  null, query,null, null,  offset, limit, false).get();
        List<EntityLD> entities = paginated.getItems();
        List<IoTStream> ret =  Utils.convertEntitiesToTargetClass(entities, IoTStream.class);
@@ -107,8 +107,8 @@ public class IoTCrawlerRESTClient extends IotCrawlerClient implements AutoClosea
     @Override
     public List<Sensor> getSensors(String query, int offset, int limit) throws Exception {
         String type = Sensor.getTypeUri();
-        if(cutURLs)
-            type = Utils.cutURL(IoTStream.getTypeUri(), RDFModel.getNamespaces());
+        if(cutURLs && type.startsWith("http://"))
+            type = Utils.cutURL(type, RDFModel.getNamespaces());
         Paginated<EntityLD> paginated = client.getEntities(null, null, Arrays.asList(type),  null, query,null, null,  offset, limit, false).get();
         List<EntityLD> entities = paginated.getItems();
         List<Sensor> ret =  Utils.convertEntitiesToTargetClass(entities, Sensor.class);
@@ -120,8 +120,8 @@ public class IoTCrawlerRESTClient extends IotCrawlerClient implements AutoClosea
     @Override
     public List<Platform> getPlatforms(String query, int offset, int limit) throws Exception {
         String type = Platform.getTypeUri();
-        if(cutURLs)
-            type = Utils.cutURL(IoTStream.getTypeUri(), RDFModel.getNamespaces());
+        if(cutURLs && type.startsWith("http://"))
+            type = Utils.cutURL(type, RDFModel.getNamespaces());
         Paginated<EntityLD> paginated = client.getEntities(null, null, Arrays.asList(type),  null, query,null, null,  offset, limit, false).get();
         List<EntityLD> entities = paginated.getItems();
         List<Platform> ret =  Utils.convertEntitiesToTargetClass(entities, Platform.class);
@@ -131,8 +131,8 @@ public class IoTCrawlerRESTClient extends IotCrawlerClient implements AutoClosea
     @Override
     public List<ObservableProperty> getObservableProperties(String query, int offset, int limit) throws Exception {
         String type = ObservableProperty.getTypeUri();
-        if(cutURLs)
-            type = Utils.cutURL(IoTStream.getTypeUri(), RDFModel.getNamespaces());
+        if(cutURLs && type.startsWith("http://"))
+            type = Utils.cutURL(type, RDFModel.getNamespaces());
         Paginated<EntityLD> paginated = client.getEntities(null, null, Arrays.asList(type),  null, query,null, null,  offset, limit, false).get();
         List<EntityLD> entities = paginated.getItems();
         List<ObservableProperty> ret =  Utils.convertEntitiesToTargetClass(entities, ObservableProperty.class);
@@ -149,8 +149,8 @@ public class IoTCrawlerRESTClient extends IotCrawlerClient implements AutoClosea
     @Override
     public List<EntityLD> getEntitiesById(String[] ids, String entityType) throws Exception {
         String type = entityType;
-        if(cutURLs)
-            type = Utils.cutURL(IoTStream.getTypeUri(), RDFModel.getNamespaces());
+        if(cutURLs && type.startsWith("http://"))
+            type = Utils.cutURL(type, RDFModel.getNamespaces());
         Paginated<EntityLD> paginated = client.getEntities(Arrays.asList(ids), null, Arrays.asList(type),  null, null,null, null, 0, 0, false).get();
         List<EntityLD> entities = paginated.getItems();
 
@@ -168,8 +168,8 @@ public class IoTCrawlerRESTClient extends IotCrawlerClient implements AutoClosea
     @Override
     public <T> List<T> getEntities(Class<T> targetClass, String query, Map<String, Number> ranking, int offset, int limit) throws Exception {
         String type = Utils.getTypeURI(targetClass);
-        if(cutURLs)
-            type = Utils.cutURL(IoTStream.getTypeUri(), RDFModel.getNamespaces());
+        if(cutURLs && type.startsWith("http://"))
+            type = Utils.cutURL(type, RDFModel.getNamespaces());
         Paginated<EntityLD> paginated = client.getEntities(null, null, Arrays.asList(type),  null, query,null, null, offset, limit, false).get();
         List<EntityLD> entities0 = paginated.getItems();
 
@@ -180,8 +180,8 @@ public class IoTCrawlerRESTClient extends IotCrawlerClient implements AutoClosea
     @Override
     public List<EntityLD> getEntities(String entityType, String query, Map<String, Number> ranking, int offset, int limit) throws Exception {
         String type = entityType;
-        if(cutURLs)
-            type = Utils.cutURL(IoTStream.getTypeUri(), RDFModel.getNamespaces());
+        if(cutURLs && type.startsWith("http://"))
+            type = Utils.cutURL(type, RDFModel.getNamespaces());
         Paginated<EntityLD> paginated = client.getEntities(null, null, Arrays.asList(type),  null, query,null, null, offset, limit, false).get();
         List<EntityLD> entities = paginated.getItems();
 

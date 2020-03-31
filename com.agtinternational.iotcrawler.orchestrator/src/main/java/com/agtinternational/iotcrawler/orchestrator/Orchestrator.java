@@ -92,7 +92,8 @@ public class Orchestrator extends IotCrawlerClient {
     }
 
     public static void main(String[] args) throws Exception {
-        Orchestrator orchestrator = new Orchestrator(false);
+        Boolean cutURIs = (System.getenv().containsKey(CUT_TYPE_URIS)?Boolean.parseBoolean(System.getenv(CUT_TYPE_URIS)):false);
+        Orchestrator orchestrator = new Orchestrator(cutURIs);
         orchestrator.init();
         orchestrator.run();
     }

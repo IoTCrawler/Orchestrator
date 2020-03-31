@@ -193,6 +193,35 @@ public class NgsiLDClient {
         return getEntities(ids, idPattern, types, attrs, null, null, null, offset, limit, count);
     }
 
+    public Paginated<EntityLD> getEntitiesSync(Collection<String> ids, String idPattern,
+                                                             Collection<String> types, Collection<String> attrs,
+                                                             int offset, int limit, boolean count) {
+
+        final List<Paginated<EntityLD>> ret = new ArrayList<>();
+        ListenableFuture<Paginated<EntityLD>> req = getEntities(ids, idPattern, types, attrs, null, null, null, offset, limit, count);
+        Semaphore reqFinished = new Semaphore(0);
+        req.addCallback(new ListenableFutureCallback<Paginated<EntityLD>>() {
+
+            @Override
+            public void onSuccess(Paginated<EntityLD> entityLDPaginated) {
+                ret.add(entityLDPaginated);
+            }
+
+            @Override
+            public void onFailure(Throwable throwable) {
+                LOGGER.error("Failed to get entities: {}", throwable.getLocalizedMessage());
+                throwable.printStackTrace();
+            }
+        });
+
+        try {
+            reqFinished.acquire();
+        } catch (InterruptedException e) {
+            LOGGER.error(e.getLocalizedMessage());
+        }
+        return ret.get(0);
+    }
+
     /**
      * Retrieve a list of Entities
      * @param ids an optional list of entity IDs (cannot be used with idPatterns)

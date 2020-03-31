@@ -31,9 +31,11 @@ import org.apache.commons.lang.NotImplementedException;
 import org.apache.jena.rdf.model.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
+
+//import org.springframework.util.concurrent.ListenableFuture;
+//import org.springframework.util.concurrent.ListenableFutureCallback;
 //import org.springframework.web.client.HttpClientErrorException;
 
 import javax.management.InstanceAlreadyExistsException;
@@ -110,7 +112,7 @@ public class NgsiLD_MdrClient extends AbstractMetadataClient {
 
         String[] types = new String[]{type};
         Paginated<EntityLD> paginated = null;
-        paginated = ngsiLDClient.getEntities( (ids!=null?Arrays.asList(ids):null), null, Arrays.asList(types), null, 0, 0, false).get();
+        paginated = ngsiLDClient.getEntitiesSync((ids!=null?Arrays.asList(ids):null), null, Arrays.asList(types), null, 0, 0, false);
         return (List<EntityLD>)paginated.getItems();
     }
 

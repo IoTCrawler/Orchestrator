@@ -56,10 +56,7 @@ build:
   before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
-    #- echo "building java from sources is skipped"
-    - sh make.sh install
-    - sh make.sh build-image
-    - sh make.sh push-image
+    - sh make.sh install && sh make.sh build-image && sh make.sh push-image
 
 #test:
 #  stage: test

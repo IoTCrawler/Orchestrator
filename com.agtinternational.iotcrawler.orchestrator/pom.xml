@@ -11,7 +11,7 @@
     <parent>
         <groupId>com.agtinternational</groupId>
         <artifactId>iotcrawler</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2</version>
         <relativePath>../IoTCrawler</relativePath>
     </parent>
 
@@ -24,7 +24,7 @@
         <junit.version>5.5.2</junit.version>
         <fiware.clients.version>1.0.1</fiware.clients.version>
         <fiware.models.version>1.0.1</fiware.models.version>
-        <iotcrawler.core.version>1.0.1</iotcrawler.core.version>
+        <iotcrawler.core.version>1.0.2</iotcrawler.core.version>
         <iotbroker.client.version>7.1-SNAPSHOT</iotbroker.client.version>
 <!--        <git.commit.id>git.commit.id</git.commit.id>-->
 <!--        <git.dirty>git.dirty</git.dirty>-->

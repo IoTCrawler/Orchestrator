@@ -401,6 +401,7 @@ public class RDFModel {
                         Object value2 = getValueFromAttribute(attribute2);
                         ret.addProperty(attrTypeUri, value2);
                     }
+                    String test = "123";
                 } else {
                     Object value = getValueFromAttribute(attribute);
                     ret.addProperty(attrTypeUri, value);
@@ -433,7 +434,11 @@ public class RDFModel {
         if(attribute instanceof Attribute)
             return ((Attribute) attribute).getValue();
 
-        throw new NotImplementedException(attribute.getClass().getSimpleName());
+        return attribute;
+//        if(attribute instanceof String)
+//            return attribute.toString();
+//
+//        throw new NotImplementedException(attribute.getClass().getSimpleName());
     }
 
     public static RDFModel fromJson(byte[] json){

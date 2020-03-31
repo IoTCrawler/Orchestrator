@@ -59,12 +59,12 @@ public class Platform extends RDFModel {
     }
 
     public String location(){
-        String ret = (String)getAttribute(iotcNS + "Location");
+        String ret = (String)getAttribute(geoNS + "Point");
         return ret;
     }
 
     public void location(Object value){
-        addProperty(iotcNS + "Location", value);
+        addProperty(geoNS + "Point", value);
     }
 
     public static String getTypeUri(){

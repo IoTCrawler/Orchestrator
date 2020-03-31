@@ -24,6 +24,7 @@ import static com.agtinternational.iotcrawler.core.Constants.sosaNS;
 
 public class SOSA {
 
+    public static String madeObservation = sosaNS+"madeObservation";
     public static String madeBySensor = sosaNS+"madeBySensor";
 
     public static String hosts = sosaNS+"hosts";

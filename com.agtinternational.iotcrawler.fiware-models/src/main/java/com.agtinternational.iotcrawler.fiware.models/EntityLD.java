@@ -108,39 +108,13 @@ public class EntityLD /*extends Entity*/ {
         for(String key: attributeMap.keySet()) {
 
             Object attribute = attributeMap.get(key);
-            JsonElement jsonObjectAttr=null;
-            if(attribute instanceof Attribute) {
-                jsonObjectAttr = Utils.attributeToJson((Attribute) attribute);
-            }else if(attribute instanceof Iterable){
-                jsonObjectAttr = new JsonArray();
-                Iterator iterator = ((Iterable) attribute).iterator();
-                while (iterator.hasNext()){
-                    JsonObject jsonObject1 = Utils.attributeToJson((Attribute)iterator.next());
-                    ((JsonArray) jsonObjectAttr).add(jsonObject1);
-                }
-            }else if(attribute!=null)
-                 throw new NotImplementedException(attribute.getClass().getName()+" not implemented ");
-            //attributeToJson()
-            //JsonObject attributeJson = new JsonObject();
-            //attributeJson.addProperty("type", attribute.getType().get());
-            //attributeJson.addProperty("object", attribute.getObject());
+            JsonElement jsonObjectAttr = Utils.objectToJson(attribute);
             jsonObject.add(key, jsonObjectAttr);
         }
         return jsonObject;
     }
 
-    private static JsonArray listToJson(List listObject){
-        JsonArray contextJson = new JsonArray();
-        for(Object item : listObject){
-            if(item instanceof String)
-                ((JsonArray) contextJson).add((String)item);
-            else if(item instanceof Number)
-                ((JsonArray) contextJson).add((Number) item);
-            else
-                throw new NotImplementedException(item.getClass().getName()+" not implemented ");
-        }
-        return contextJson;
-    }
+
 
 
 

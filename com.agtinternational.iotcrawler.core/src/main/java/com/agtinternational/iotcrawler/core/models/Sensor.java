@@ -24,9 +24,6 @@ import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.vocabulary.RDFS;
 
-import static com.agtinternational.iotcrawler.core.Constants.sosaNS;
-import static com.agtinternational.iotcrawler.core.Constants.sosaPrefix;
-
 public class Sensor extends RDFModel {
 
 
@@ -43,6 +40,15 @@ public class Sensor extends RDFModel {
     public Sensor(String uri, String label){
         this(uri);
         addProperty(RDFS.label, label);
+    }
+
+    public void madeObservation(Object value){
+        addProperty(SOSA.madeObservation, value);
+    }
+
+    public Object madeObservation(){
+        Object ret = getAttribute(SOSA.madeObservation);
+        return ret;
     }
 
     public void observes(Object value){

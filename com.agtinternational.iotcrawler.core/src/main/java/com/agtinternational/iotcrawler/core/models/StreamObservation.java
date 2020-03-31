@@ -52,6 +52,14 @@ public class StreamObservation extends RDFModel {
         return iotcNS+":"+"StreamObservation";
     }
 
+    public void madeBySensor(Object value){
+        addProperty(SOSA.madeBySensor, value);
+    }
+
+    public Object madeBySensor(){
+        Object ret = getAttribute(SOSA.madeBySensor);
+        return ret;
+    }
 
     public static StreamObservation fromEntity(EntityLD entity) throws Exception {
         entity.setType(getTypeUri());

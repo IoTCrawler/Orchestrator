@@ -82,10 +82,32 @@ public class Utils {
 //            throw new NotImplementedException(value.getClass().getName());
 //    }
 
+    private static JsonArray iterableToJson(Iterable iterable){
+        JsonArray ret = new JsonArray();
+        Iterator iterator = iterable.iterator();
+        while (iterator.hasNext()){
+            Object item = iterator.next();
+            JsonElement toAdd = objectToJson(item);
+//            if(item instanceof Attribute)
+//                toAdd = Utils.attributeToJson((Attribute) item);
+//            if(item instanceof String)
+//                toAdd = new JsonPrimitive((String)item);
+//            else if(item instanceof Number)
+//                toAdd = new JsonPrimitive((Number) item);
+//            else
+//                throw new NotImplementedException(item.getClass().getName()+" not implemented ");
+            ret.add(toAdd);
+        }
+        return ret;
+    }
+
     public static JsonElement objectToJson(Object object){
 
         if(object.getClass().isArray())
             object = Arrays.asList((Object[])object);
+
+        if(object instanceof Attribute)
+            return Utils.attributeToJson((Attribute) object);
 
         if(object instanceof Property)
             return Utils.attributeToJson((Attribute) object);
@@ -111,17 +133,18 @@ public class Utils {
         }
 
         if(object instanceof Iterable){
-            Iterator iterator = ((Iterable)object).iterator();
-            JsonArray jsonArray = new JsonArray();
-            while(iterator.hasNext()){
-                Object value = iterator.next();
-                JsonElement jsonElement = objectToJson(value);
-                jsonArray.add(jsonElement);
-            }
+            JsonArray jsonArray = iterableToJson((Iterable)object);
+//            Iterator iterator = ((Iterable)object).iterator();
+//            JsonArray jsonArray = new JsonArray();
+//            while(iterator.hasNext()){
+//                Object value = iterator.next();
+//                JsonElement jsonElement = objectToJson(value);
+//                jsonArray.add(jsonElement);
+//            }
             return jsonArray;
         }
 
-        throw new NotImplementedException("");
+        throw new NotImplementedException(object.getClass().getCanonicalName());
 
     }
 

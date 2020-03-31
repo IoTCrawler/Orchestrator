@@ -52,7 +52,7 @@ public class IoTStream extends RDFModel {
     }
 
     public static String getTypeUri(){
-        return iotcNS+"IoTStream";
+        return iotcNS+"IotStream";
         //return iotcPrefix+":"+"iot-stream";//IoTStream.class.getSimpleName();
     }
 
@@ -76,8 +76,8 @@ public class IoTStream extends RDFModel {
 //        return new ObservableProperty("http://Uri");
 //    }
 
-    public Object madeBySensor(){
-        return getAttribute(SOSA.madeBySensor);
+    public Object generatedBy(){
+        return getAttribute(iotcNS+"generatedBy");
     }
 
 

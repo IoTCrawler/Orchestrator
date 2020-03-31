@@ -40,18 +40,13 @@ public class Constants {
 
     public static final String sosaNS = "http://www.w3.org/ns/sosa/";
     public static final String sosaPrefix = "sosa";
-//    public static final String platformURI = sosaNS+"Platform";
-//    public static final String sensorURI = sosaNS+"Sensor";
-//    public static final String madeBySensor = sosaNS +"madeBySensor";
-//    public static final String observablePropertyURI = sosaNS+"ObservableProperty";
-
-    //public static final String iotStreamURIshort = "iotc:IoTStream";
 
     public static final String iotcNS = "http://purl.org/iot/ontology/iot-stream#";
-    public static final String iotcPrefix = "iotc";
-//    public static final String iotStreamURI = iotcNS +"IoTStream";
-//    public static final String observationURI = iotcNS +"StreamObservation";
-//    public static final String belongsTo = iotcNS +"belongsTo";
+    public static final String iotcPrefix = "iot-stream";
+
+    public static final String geoNS = "https://www.w3.org/2003/01/geo/";
+    public static final String geoPrefix = "geo";
+
 
 
 

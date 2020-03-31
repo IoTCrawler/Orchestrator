@@ -25,7 +25,6 @@ import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import com.google.gson.*;
 import org.apache.commons.io.Charsets;
 import org.apache.jena.rdf.model.*;
-import org.apache.jena.rdf.model.impl.ModelCom;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.slf4j.Logger;
@@ -240,10 +239,10 @@ public class Utils {
                 jsonObject.add(SOSA.observes, value);
             }
 
-            if(SOSA.madeBySensor.toLowerCase().endsWith(key.toLowerCase())) {
+            if(SOSA.madeObservation.toLowerCase().endsWith(key.toLowerCase())) {
                 JsonElement value = jsonObject.get(key);
                 jsonObject.remove(key);
-                jsonObject.add(SOSA.madeBySensor, value);
+                jsonObject.add(SOSA.madeObservation, value);
             }
         }
         return jsonObject;

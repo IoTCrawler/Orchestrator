@@ -85,10 +85,12 @@ public class ModelTests {
 
         //byte[] entityModelJson = Files.readAllBytes(Paths.get("samples/Entity.json"));
 
-        byte[] entityModelJson = Files.readAllBytes(Paths.get("samples/EntityFromBroker.json"));
+        byte[] entityModelJson = Files.readAllBytes(Paths.get("samples/IoTStream.json"));
         EntityLD entityLD = EntityLD.fromJsonString(new String(entityModelJson));
 
         IoTStream ioTStream = IoTStream.fromEntity(entityLD);
+
+        JsonObject entityLDJson = entityLD.toJsonObject();
 
         String iotStreamJson = ioTStream.toJsonLDString();
         Files.write(Paths.get("target","IoTStream2.json"), iotStreamJson.getBytes());
@@ -99,7 +101,8 @@ public class ModelTests {
         String entityLDJson2 = Utils.prettyPrint(entityLD2.toJsonObject());
         Files.write(Paths.get("target","Entity2.json"), entityLDJson2.getBytes());
 
-        org.junit.Assert.assertEquals(entityLD.toJsonObject().toString(), entityLD2.toJsonObject().toString());
+        JsonObject entityLDJson3 = entityLD2.toJsonObject();
+        org.junit.Assert.assertEquals(entityLDJson.toString(), entityLDJson3.toString());
 
 
     }

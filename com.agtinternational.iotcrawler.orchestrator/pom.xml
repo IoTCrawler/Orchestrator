@@ -5,13 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.agtinternational.iotcrawler</groupId>
     <artifactId>orchestrator</artifactId>
-    <version>1.0.9</version>
+    <version>1.0.2</version>
     <packaging>jar</packaging>
 
     <parent>
         <groupId>com.agtinternational</groupId>
         <artifactId>iotcrawler</artifactId>
-        <version>1.0.2</version>
+        <version>1.0.1</version>
         <relativePath>../IoTCrawler</relativePath>
     </parent>
 

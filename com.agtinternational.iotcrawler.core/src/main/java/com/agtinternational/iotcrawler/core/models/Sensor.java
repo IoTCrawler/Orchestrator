@@ -20,9 +20,12 @@ package com.agtinternational.iotcrawler.core.models;
  * #L%
  */
 
+import com.agtinternational.iotcrawler.core.Utils;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.vocabulary.RDFS;
+
+import static com.agtinternational.iotcrawler.core.Constants.geoNS;
 
 public class Sensor extends RDFModel {
 
@@ -60,6 +63,15 @@ public class Sensor extends RDFModel {
         return ret;
     }
 
+    public String location(){
+        String ret = (String)getAttribute(geoNS + "Point");
+        return ret;
+    }
+
+    public void location(Object value){
+        addProperty(geoNS + "Point", value);
+    }
+
     public void isHostedBy(Object value){
         addProperty(SOSA.isHostedBy, value);
     }
@@ -74,6 +86,12 @@ public class Sensor extends RDFModel {
         //return sosaPrefix+":"+"Sensor";
         //return Sensor.class.getSimpleName();
         //return "sosa:Sensor";
+    }
+
+    public static String getTypeUri(Boolean cutURI){
+        if(cutURI)
+            return Utils.cutURL(getTypeUri(), namespaces);
+        return getTypeUri();
     }
 
     public static Sensor fromEntity(EntityLD entity) throws Exception {

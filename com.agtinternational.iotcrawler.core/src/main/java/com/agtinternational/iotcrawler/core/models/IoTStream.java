@@ -21,6 +21,7 @@ package com.agtinternational.iotcrawler.core.models;
  */
 
 //import com.agtinternational.iotcrawler.core.LinkFilter;
+import com.agtinternational.iotcrawler.core.Utils;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.vocabulary.RDFS;
@@ -51,9 +52,16 @@ public class IoTStream extends RDFModel {
         super(uri, getTypeUri(), model);
     }
 
+
     public static String getTypeUri(){
         return iotcNS+"IotStream";
         //return iotcPrefix+":"+"iot-stream";//IoTStream.class.getSimpleName();
+    }
+
+    public static String getTypeUri(Boolean cutURI){
+        if(cutURI)
+            return Utils.cutURL(getTypeUri(), namespaces);
+        return getTypeUri();
     }
 
     public static IoTStream fromEntity(EntityLD entity) throws Exception {

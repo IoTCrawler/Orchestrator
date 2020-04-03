@@ -41,8 +41,7 @@ import java.net.URI;
 import java.net.URLDecoder;
 import java.util.*;
 
-import static com.agtinternational.iotcrawler.core.Constants.iotcNS;
-import static com.agtinternational.iotcrawler.core.Constants.sosaNS;
+import static com.agtinternational.iotcrawler.core.Constants.*;
 
 
 public class RDFModel {
@@ -56,8 +55,8 @@ public class RDFModel {
 
     static
     {
-        namespaces.put("sosa", sosaNS);
-        namespaces.put("iotc", iotcNS);
+        namespaces.put(sosaPrefix, sosaNS);
+        namespaces.put(iotcPrefix, iotcNS);
         namespaces.put("rdfs", RDFS.getURI());
     }
 

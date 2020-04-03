@@ -23,7 +23,7 @@ package com.agtinternational.iotcrawler.orchestrator;
 import com.agtinternational.iotcrawler.core.Utils;
 import com.agtinternational.iotcrawler.core.interfaces.IotCrawlerClient;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
-import com.agtinternational.iotcrawler.fiware.models.subscription.SubscriptionLD;
+import com.agtinternational.iotcrawler.fiware.models.subscription.Subscription;
 //import com.agtinternational.iotcrawler.orchestrator.clients.IotBrokerDataClient;
 import com.agtinternational.iotcrawler.orchestrator.clients.NgsiLD_MdrClient;
 import com.agtinternational.iotcrawler.core.commands.*;
@@ -657,9 +657,9 @@ public class Orchestrator extends IotCrawlerClient {
     }
 
     @Override
-    public String subscribeTo(SubscriptionLD subscriptionLD, Function<StreamObservation, Void> function) throws Exception {
+    public String subscribeTo(Subscription subscription, Function<StreamObservation, Void> function) throws Exception {
 
-        return metadataClient.subscribeTo(subscriptionLD);
+        return metadataClient.subscribeTo(subscription);
     }
 
 

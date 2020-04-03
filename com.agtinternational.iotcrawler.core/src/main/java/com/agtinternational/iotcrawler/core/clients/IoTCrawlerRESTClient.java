@@ -27,7 +27,7 @@ import com.agtinternational.iotcrawler.core.models.*;
 import com.agtinternational.iotcrawler.fiware.clients.CustomSubscribeContextRequest;
 import com.agtinternational.iotcrawler.fiware.clients.NgsiLDClient;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
-import com.agtinternational.iotcrawler.fiware.models.subscription.SubscriptionLD;
+import com.agtinternational.iotcrawler.fiware.models.subscription.Subscription;
 import com.google.gson.JsonParser;
 import com.orange.ngsi2.model.*;
 import eu.neclab.iotplatform.ngsi.api.datamodel.*;
@@ -210,7 +210,7 @@ public class IoTCrawlerRESTClient extends IotCrawlerClient implements AutoClosea
 //    }
 
     @Override
-    public String subscribeTo(SubscriptionLD subscription, Function<StreamObservation, Void> onChange) throws Exception {
+    public String subscribeTo(Subscription subscription, Function<StreamObservation, Void> onChange) throws Exception {
 
 
         Semaphore reqFinished = new Semaphore(0);

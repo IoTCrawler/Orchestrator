@@ -20,6 +20,7 @@ package com.agtinternational.iotcrawler.core.models;
  * #L%
  */
 
+import com.agtinternational.iotcrawler.core.Utils;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
@@ -61,6 +62,11 @@ public class ObservableProperty extends RDFModel {
 
     public static String getTypeUri() {
         return SOSA.observableProperty;
+    }
+    public static String getTypeUri(Boolean cutURI){
+        if(cutURI)
+            return Utils.cutURL(getTypeUri(), namespaces);
+        return getTypeUri();
     }
 
     public static ObservableProperty fromEntity(EntityLD entity) throws Exception {

@@ -20,6 +20,7 @@ package com.agtinternational.iotcrawler.core.models;
  * #L%
  */
 
+import com.agtinternational.iotcrawler.core.Utils;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import com.google.gson.JsonObject;
 import eu.neclab.iotplatform.ngsi.api.datamodel.ContextElement;
@@ -52,8 +53,32 @@ public class StreamObservation extends RDFModel {
         return iotcNS+":"+"StreamObservation";
     }
 
+    public static String getTypeUri(Boolean cutURI){
+        if(cutURI)
+            return Utils.cutURL(getTypeUri(), namespaces);
+        return getTypeUri();
+    }
+
     public void madeBySensor(Object value){
         addProperty(SOSA.madeBySensor, value);
+    }
+
+    public Object hasResult(){
+        Object ret = getAttribute(SOSA.hasResult);
+        return ret;
+    }
+
+    public void resultTime(Object value){
+        addProperty(SOSA.resultTime, value);
+    }
+
+    public Object resultTime(){
+        Object ret = getAttribute(SOSA.resultTime);
+        return ret;
+    }
+
+    public void hasResult(Object value){
+        addProperty(SOSA.hasResult, value);
     }
 
     public Object madeBySensor(){

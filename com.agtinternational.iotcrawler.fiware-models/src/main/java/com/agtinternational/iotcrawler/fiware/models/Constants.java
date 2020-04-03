@@ -1,4 +1,4 @@
-package com.agtinternational.iotcrawler.fiware.models.subscription;
+package com.agtinternational.iotcrawler.fiware.models;
 
 /*-
  * #%L
@@ -20,34 +20,7 @@ package com.agtinternational.iotcrawler.fiware.models.subscription;
  * #L%
  */
 
-import org.apache.http.entity.ContentType;
+public class Constants {
 
-import java.net.URI;
-import java.net.URL;
-
-public class Endpoint {
-
-    URL uri;
-    String accept;
-
-    public Endpoint(URL uri, ContentType accept) {
-        this.uri = uri;
-        this.accept = accept.getMimeType();
-    }
-
-    public URL getUri() {
-        return uri;
-    }
-
-    public void setUri(URL uri) {
-        this.uri = uri;
-    }
-
-    public String getAccept() {
-        return accept;
-    }
-
-    public void setAccept(String accept) {
-        this.accept = accept;
-    }
+    public static final String NGDSI_LD_NS = "http://uri.etsi.org/ngsi-ld/";
 }

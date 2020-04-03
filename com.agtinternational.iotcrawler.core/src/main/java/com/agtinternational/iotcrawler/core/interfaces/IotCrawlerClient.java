@@ -24,8 +24,8 @@ package com.agtinternational.iotcrawler.core.interfaces;
 import com.agtinternational.iotcrawler.core.Utils;
 import com.agtinternational.iotcrawler.core.models.*;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
-import com.agtinternational.iotcrawler.fiware.models.subscription.SubscriptionLD;
-import com.orange.ngsi2.model.Subscription;
+import com.agtinternational.iotcrawler.fiware.models.subscription.Subscription;
+
 import eu.neclab.iotplatform.ngsi.api.datamodel.NotifyCondition;
 import eu.neclab.iotplatform.ngsi.api.datamodel.Restriction;
 
@@ -89,5 +89,5 @@ public abstract class IotCrawlerClient implements Component {
 //    public abstract Boolean registerEntity(RDFModel model) throws Exception;
     //public abstract Boolean pushObservationsToBroker(List<StreamObservation> observations) throws Exception;
     //public abstract String subscribeTo(String streamId, String[] attributes, List<NotifyCondition> notifyConditions, Restriction restriction, Function<StreamObservation, Void> onChange) throws Exception;
-    public abstract String subscribeTo(SubscriptionLD subscription, Function<StreamObservation, Void> onChange) throws Exception;
+    public abstract String subscribeTo(Subscription subscription, Function<StreamObservation, Void> onChange) throws Exception;
 }

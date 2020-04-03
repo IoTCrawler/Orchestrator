@@ -20,34 +20,46 @@ package com.agtinternational.iotcrawler.fiware.models.subscription;
  * #L%
  */
 
-import org.apache.http.entity.ContentType;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
-import java.net.URI;
-import java.net.URL;
+import java.util.Optional;
 
-public class Endpoint {
+public class EntityInfo {
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    String id;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    String idPattern;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    String type;
 
-    URL uri;
-    String accept;
-
-    public Endpoint(URL uri, ContentType accept) {
-        this.uri = uri;
-        this.accept = accept.getMimeType();
+    public EntityInfo() {
     }
 
-    public URL getUri() {
-        return uri;
+    public EntityInfo(String id) {
+        this.id = id;
     }
 
-    public void setUri(URL uri) {
-        this.uri = uri;
+    public String getId() {
+        return this.id;
     }
 
-    public String getAccept() {
-        return accept;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public void setAccept(String accept) {
-        this.accept = accept;
+    public String getIdPattern() {
+        return this.idPattern;
+    }
+
+    public void setIdPattern(String idPattern) {
+        this.idPattern = idPattern;
+    }
+
+    public String getType() {
+        return this.type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

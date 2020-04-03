@@ -37,4 +37,6 @@ public class SOSA {
     public static String sensor = sosaNS+"Sensor";
     public static String observableProperty = sosaNS+"ObservableProperty";
 
+    public static String hasResult = sosaNS+"hasResult";
+    public static String resultTime = sosaNS+"resultTime";
 }

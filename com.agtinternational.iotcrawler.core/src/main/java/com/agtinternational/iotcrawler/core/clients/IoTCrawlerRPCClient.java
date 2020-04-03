@@ -29,12 +29,12 @@ import com.agtinternational.iotcrawler.core.models.*;
 
 import com.agtinternational.iotcrawler.fiware.clients.NgsiLDClient;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
-import com.agtinternational.iotcrawler.fiware.models.subscription.SubscriptionLD;
+import com.agtinternational.iotcrawler.fiware.models.subscription.Subscription;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.orange.ngsi2.model.Subscription;
+
 import com.rabbitmq.client.*;
 import eu.neclab.iotplatform.ngsi.api.datamodel.*;
 
@@ -281,7 +281,7 @@ public class IoTCrawlerRPCClient extends IotCrawlerClient implements AutoCloseab
     }
 
     @Override
-    public String subscribeTo(SubscriptionLD subscription, Function<StreamObservation, Void> onChange) throws Exception {
+    public String subscribeTo(Subscription subscription, Function<StreamObservation, Void> onChange) throws Exception {
         throw new NotImplementedException("");
 
     }

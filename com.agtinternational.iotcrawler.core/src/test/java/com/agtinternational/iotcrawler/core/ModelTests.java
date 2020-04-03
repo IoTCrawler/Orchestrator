@@ -28,6 +28,7 @@ import eu.neclab.iotplatform.ngsi.api.datamodel.ContextAttribute;
 import eu.neclab.iotplatform.ngsi.api.datamodel.ContextElement;
 import eu.neclab.iotplatform.ngsi.api.datamodel.ContextMetadata;
 import eu.neclab.iotplatform.ngsi.api.datamodel.EntityId;
+import org.apache.jena.atlas.lib.DateTimeUtils;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -84,7 +85,7 @@ public class ModelTests {
     public void iotStreamFromEntityTest() throws Exception {
 
         //byte[] entityModelJson = Files.readAllBytes(Paths.get("samples/Entity.json"));
-
+        String abc = IoTStream.getTypeUri(true);
         byte[] entityModelJson = Files.readAllBytes(Paths.get("samples/IoTStream.json"));
         EntityLD entityLD = EntityLD.fromJsonString(new String(entityModelJson));
 
@@ -114,7 +115,9 @@ public class ModelTests {
         //StreamObservation streamObservation = StreamObservation.fromJson(json);
 
         StreamObservation streamObservation = new StreamObservation("iotc:Stream_Z-Wave+Node+003%3A+FGWP102+Meter+Living+Space_Electric+meter+%28watts%29");
-        streamObservation.addProperty("iotc:state", 45);
+        streamObservation.madeBySensor("iotc:Sensor_Z-Wave+Node+003%3A+FGWP102+Meter+Living+Space_Sensor+%28power%29");
+        streamObservation.hasResult(45);
+        streamObservation.resultTime(DateTimeUtils.nowAsString());
 
         String jsonLDString = streamObservation.toJsonLDString();
         StreamObservation streamObservation2 = StreamObservation.fromJson(jsonLDString);

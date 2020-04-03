@@ -20,6 +20,7 @@ package com.agtinternational.iotcrawler.core.models;
  * #L%
  */
 
+import com.agtinternational.iotcrawler.core.Utils;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.vocabulary.RDFS;
@@ -70,6 +71,12 @@ public class Platform extends RDFModel {
     public static String getTypeUri(){
         //return SosaPlatform.class.getSimpleName();
         return SOSA.platform;
+    }
+
+    public static String getTypeUri(Boolean cutURI){
+        if(cutURI)
+            return Utils.cutURL(getTypeUri(), namespaces);
+        return getTypeUri();
     }
 
     public static Platform fromJson(String jsonString){

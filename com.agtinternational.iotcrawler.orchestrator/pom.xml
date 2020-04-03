@@ -31,42 +31,42 @@
 <!--        <git.closest.tag.commit.count></git.closest.tag.commit.count>-->
     </properties>
 
-    <repositories>
-        <repository>
-            <id>maven.aksw.internal</id>
-            <name>University Leipzig, AKSW Maven2 Repository</name>
-            <url>http://maven.aksw.org/repository/internal</url>
-        </repository>
-        <repository>
-            <id>maven.aksw.snapshots</id>
-            <name>University Leipzig, AKSW Maven2 Repository</name>
-            <url>http://maven.aksw.org/repository/snapshots</url>
-        </repository>
-    </repositories>
+<!--    <repositories>-->
+<!--        <repository>-->
+<!--            <id>maven.aksw.internal</id>-->
+<!--            <name>University Leipzig, AKSW Maven2 Repository</name>-->
+<!--            <url>http://maven.aksw.org/repository/internal</url>-->
+<!--        </repository>-->
+<!--        <repository>-->
+<!--            <id>maven.aksw.snapshots</id>-->
+<!--            <name>University Leipzig, AKSW Maven2 Repository</name>-->
+<!--            <url>http://maven.aksw.org/repository/snapshots</url>-->
+<!--        </repository>-->
+<!--    </repositories>-->
 
 
     <dependencies>
 
-        <dependency>
-            <groupId>org.hobbit</groupId>
-            <artifactId>core</artifactId>
-            <version>1.0.18</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.jena</groupId>
-                    <artifactId>jena-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.jena</groupId>
-                    <artifactId>jena-shaded-guava</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.jena</groupId>
-                    <artifactId>jena-arq</artifactId>
-                </exclusion>
-            </exclusions>
-            <scope>test</scope>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.hobbit</groupId>-->
+<!--            <artifactId>core</artifactId>-->
+<!--            <version>1.0.18</version>-->
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.apache.jena</groupId>-->
+<!--                    <artifactId>jena-core</artifactId>-->
+<!--                </exclusion>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.apache.jena</groupId>-->
+<!--                    <artifactId>jena-shaded-guava</artifactId>-->
+<!--                </exclusion>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.apache.jena</groupId>-->
+<!--                    <artifactId>jena-arq</artifactId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>com.agtinternational.iotcrawler</groupId>
@@ -302,7 +302,7 @@
     </dependencies>
 
     <build>
-        <finalName>${git.branch}:${git.commit.id}</finalName>
+        <finalName>orchestrator_${git.branch}:${git.commit.id}</finalName>
         <testSourceDirectory>orchestrator/src/test/java</testSourceDirectory>
         <plugins>
 

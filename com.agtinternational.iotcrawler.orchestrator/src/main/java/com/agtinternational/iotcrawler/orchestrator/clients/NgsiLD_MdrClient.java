@@ -25,7 +25,7 @@ import com.agtinternational.iotcrawler.core.models.*;
 import com.agtinternational.iotcrawler.fiware.clients.NgsiLDClient;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 
-import com.agtinternational.iotcrawler.fiware.models.subscription.SubscriptionLD;
+import com.agtinternational.iotcrawler.fiware.models.subscription.Subscription;
 import com.orange.ngsi2.model.Paginated;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.jena.rdf.model.Model;
@@ -71,8 +71,8 @@ public class NgsiLD_MdrClient extends AbstractMetadataClient {
     }
 
     @Override
-    public String subscribeTo(SubscriptionLD subscriptionLD) {
-        ListenableFuture<String> req = ngsiLDClient.addSubscription(subscriptionLD);
+    public String subscribeTo(Subscription subscription) {
+        ListenableFuture<String> req = ngsiLDClient.addSubscription(subscription);
 
         final String[] ret = { null };
         Semaphore reqFinished = new Semaphore(0);

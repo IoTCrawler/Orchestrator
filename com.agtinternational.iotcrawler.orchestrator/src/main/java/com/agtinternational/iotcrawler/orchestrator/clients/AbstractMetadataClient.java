@@ -22,7 +22,7 @@ package com.agtinternational.iotcrawler.orchestrator.clients;
 
 import com.agtinternational.iotcrawler.core.models.RDFModel;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
-import com.agtinternational.iotcrawler.fiware.models.subscription.SubscriptionLD;
+import com.agtinternational.iotcrawler.fiware.models.subscription.Subscription;
 import com.google.gson.JsonObject;
 import org.apache.jena.rdf.model.Model;
 
@@ -44,7 +44,7 @@ public abstract class AbstractMetadataClient {
 
     public abstract String getBrokerHost();
 
-    public abstract String subscribeTo(SubscriptionLD subscriptionLD);
+    public abstract String subscribeTo(Subscription subscription);
 
     //public abstract List<EntityLD> getEntities(String query);
     //public abstract <T> List<T> getEntities(String[] ids, Class<T> targetClass) throws Exception;

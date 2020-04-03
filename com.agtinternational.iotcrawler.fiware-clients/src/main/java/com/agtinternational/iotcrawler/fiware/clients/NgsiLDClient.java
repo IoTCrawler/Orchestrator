@@ -23,7 +23,7 @@ package com.agtinternational.iotcrawler.fiware.clients;
 
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 
-import com.agtinternational.iotcrawler.fiware.models.subscription.SubscriptionLD;
+import com.agtinternational.iotcrawler.fiware.models.subscription.Subscription;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
@@ -142,6 +142,35 @@ public class NgsiLDClient {
             LOGGER.error(e.getLocalizedMessage());
         }
         return success[0];
+    }
+
+    public boolean updateEntitySync(String entityId, Map<String, Attribute> attributes, boolean append){
+        ListenableFuture<Void> req = updateEntity(entityId, attributes, append);
+        final Boolean[] success = {false};
+        Semaphore reqFinished = new Semaphore(0);
+        req.addCallback(new ListenableFutureCallback<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                System.out.println("Entity updated");
+                success[0] = true;
+                reqFinished.release();
+            }
+
+            @Override
+            public void onFailure(Throwable throwable) {
+                success[0] = false;
+                throwable.printStackTrace();
+                reqFinished.release();
+            }
+
+        });
+        try {
+            reqFinished.acquire();
+        } catch (InterruptedException e) {
+            LOGGER.error(e.getLocalizedMessage());
+        }
+        return success[0];
+
     }
 
     public boolean deleteEntitySync(String entityId, String type){
@@ -326,15 +355,15 @@ public class NgsiLDClient {
     /**
      * Update existing or append some attributes to an entity
      * @param entityId the entity ID
-     * @param type optional entity type to avoid ambiguity when multiple entities have the same ID, null or zero-length for empty
+     *
      * @param attributes the attributes to update or to append
      * @param append if true, will only allow to append new attributes
      * @return the listener to notify of completion
      */
-    public ListenableFuture<Void> updateEntity(String entityId, String type, Map<String, Object> attributes, boolean append) {
+    public ListenableFuture<Void> updateEntity(String entityId, Map<String, Attribute> attributes, boolean append) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseURL);
         builder.path("v1/entities/{entityId}/attrs");
-        addParam(builder, "type", type);
+        //addParam(builder, "type", type);
         if (append) {
             addParam(builder, "options", "append");
         }
@@ -571,7 +600,7 @@ public class NgsiLDClient {
      * @param subscription the Subscription to add
      * @return subscription Id
      */
-    public ListenableFuture<String> addSubscription(SubscriptionLD subscription) {
+    public ListenableFuture<String> addSubscription(Subscription subscription) {
         ListenableFuture<ResponseEntity<Void>> s = request(HttpMethod.POST, UriComponentsBuilder.fromHttpUrl(baseURL).path("v1/subscriptions").toUriString(), subscription, Void.class);
         return new ListenableFutureAdapter<String, ResponseEntity<Void>>(s) {
             @Override

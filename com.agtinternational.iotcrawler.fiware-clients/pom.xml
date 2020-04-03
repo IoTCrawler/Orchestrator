@@ -22,6 +22,7 @@
     </properties>
 
 
+
     <dependencies>
 
         <dependency>
@@ -170,6 +171,7 @@
             <groupId>eu.neclab.iotplatform</groupId>
             <artifactId>iotbroker.commons</artifactId>
             <version>${iotbroker.client.version}</version>
+
             <exclusions>
                 <exclusion>
                     <groupId>org.springframework</groupId>

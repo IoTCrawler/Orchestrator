@@ -24,8 +24,9 @@ import com.agtinternational.iotcrawler.fiware.models.NGSILD.Relationship;
 
 import com.agtinternational.iotcrawler.fiware.models.Utils;
 import com.agtinternational.iotcrawler.fiware.models.subscription.Endpoint;
+import com.agtinternational.iotcrawler.fiware.models.subscription.EntityInfo;
 import com.agtinternational.iotcrawler.fiware.models.subscription.NotificationParams;
-import com.agtinternational.iotcrawler.fiware.models.subscription.SubscriptionLD;
+import com.agtinternational.iotcrawler.fiware.models.subscription.Subscription;
 import com.orange.ngsi2.model.*;
 import org.apache.http.entity.ContentType;
 import org.junit.*;
@@ -190,7 +191,12 @@ public class NgsiLDClientTest extends EnvVariablesSetter{
         Assert.assertNotNull(entities.getItems());
         Assert.assertTrue(entities.getItems().size()>0);
         entities.getItems().stream().forEach(e->{
-            LOGGER.info(Utils.prettyPrint(e.toJsonObject()));
+            try {
+                LOGGER.info(Utils.prettyPrint(e.toJsonObject()));
+            }
+            catch (Exception e2){
+                LOGGER.warn("trouble with outputting result {}: {}", e.getId(), e2.getLocalizedMessage());
+            }
         });
         //Assert.assertTrue(entities.getItems().get(0).toJsonObject().equals(entity.toJsonObject()));
     }
@@ -209,7 +215,14 @@ public class NgsiLDClientTest extends EnvVariablesSetter{
         Paginated<EntityLD> entities = ngsiLdClient.getEntities(ids, null, types, null, 0, 0, false).get();
         Assert.assertNotNull(entities.getItems());
         Assert.assertTrue(entities.getItems().size()>0);
-        LOGGER.info(Utils.prettyPrint(entities.getItems().get(0).toJsonObject()));
+        entities.getItems().stream().forEach(e->{
+            try {
+                LOGGER.info(Utils.prettyPrint(e.toJsonObject()));
+            }
+            catch (Exception e2){
+                LOGGER.warn("trouble with outputting result {}: {}", e.getId(), e2.getLocalizedMessage());
+            }
+        });
         //Assert.assertTrue(entities.getItems().get(0).toJsonObject().equals(entity.toJsonObject()));
         String test="123";
     }
@@ -259,29 +272,12 @@ public class NgsiLDClientTest extends EnvVariablesSetter{
     @Order(6)
     @Test
     public void updateEntityTest() throws ExecutionException, InterruptedException {
-        Semaphore reqFinished = new Semaphore(0);
 
-        ListenableFuture<Void> req = ngsiLdClient.updateEntity(entity.getId(), entity.getType(), new HashMap<>((Map)entity.getAttributes()), false);
-        final Boolean[] success = {false};
-        req.addCallback(new ListenableFutureCallback<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                System.out.println("Entity updated");
-                success[0] = true;
-                reqFinished.release();
-            }
+        Map<String, Attribute> newAttributes = entity.getAttributes();
+        newAttributes.put(newAttributes.keySet().iterator().next().toString()+"#"+System.nanoTime(), newAttributes.values().iterator().next());
 
-            @Override
-            public void onFailure(Throwable throwable) {
-                success[0] = false;
-                throwable.printStackTrace();
-                reqFinished.release();
-            }
-
-        });
-        reqFinished.acquire();
-
-        if(success[0])
+        boolean success = ngsiLdClient.updateEntitySync(entity.getId(), newAttributes , false);
+        if(success)
             Assert.assertTrue("Entity updated", true);
         else
             Assert.fail("Failed to update entity");
@@ -292,29 +288,9 @@ public class NgsiLDClientTest extends EnvVariablesSetter{
 
     @Order(7)
     @Test
-    public void deleteEntityTest() throws ExecutionException, InterruptedException {
-        Semaphore reqFinished = new Semaphore(0);
-
-        ListenableFuture<Void> req = ngsiLdClient.deleteEntity(entity.getId(), entity.getType());
-        final Boolean[] success = {false};
-        req.addCallback(new ListenableFutureCallback<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                success[0] = true;
-                reqFinished.release();
-            }
-
-            @Override
-            public void onFailure(Throwable throwable) {
-                success[0] = false;
-                throwable.printStackTrace();
-                reqFinished.release();
-            }
-
-        });
-        reqFinished.acquire();
-
-        if(success[0])
+    public void deleteEntityTest(){
+        boolean success = ngsiLdClient.deleteEntitySync(entity.getId(), entity.getType());
+        if(success)
             Assert.assertTrue("Entity deleted", true);
         else
             Assert.fail("Failed to delete entity");
@@ -327,19 +303,23 @@ public class NgsiLDClientTest extends EnvVariablesSetter{
     public void addSubscriptionTest() throws Exception {
         Semaphore reqFinished = new Semaphore(0);
 
-        SubjectEntity subjectEntity = new SubjectEntity(){{ setId(Optional.of(entity.getId())); setType(Optional.of(entity.getType())); }};
+        EntityInfo entityInfo = new EntityInfo(){{ setId(entity.getId()); setType(entity.getType()); }};
 
-        Condition pressureCondition = new Condition();
-        pressureCondition.setAttributes(Arrays.asList(new String[]{ "temperature" }));
+        List<String> watchedAttributes = Arrays.asList(new String[]{ "temperature" });
+
+        //Condition pressureCondition = new Condition();
+        //pressureCondition.setAttributes(Arrays.asList(new String[]{ "temperature" }));
 
         //SubjectSubscription subjectSubscription = new SubjectSubscription(Arrays.asList(new SubjectEntity[]{ subjectEntity }), pressureCondition);
 
         NotificationParams notification = new NotificationParams();
         notification.setAttributes(Arrays.asList(new String[]{ "location" }));
         notification.setEndpoint(new Endpoint(new URL(HttpTestServer.getRefenceURL()), ContentType.APPLICATION_JSON));
-        SubscriptionLD subscription = new SubscriptionLD(
+
+        Subscription subscription = new Subscription(
                 UUID.randomUUID().toString(),
-                Arrays.asList(new SubjectEntity[]{ subjectEntity }),
+                Arrays.asList(new EntityInfo[]{ entityInfo }),
+                watchedAttributes,
                 notification,
                 null,
                 null);

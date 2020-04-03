@@ -66,7 +66,9 @@ public class NgsiLDConverter extends AbstractHttpMessageConverter<Object> implem
     //@Override
     //public boolean canWrite(Type type, Class<?> contextClass, MediaType mediaType) {
     public boolean canWrite(Class<?> clazz, MediaType mediaType){
-        return clazz.getCanonicalName().contains(EntityLD.class.getCanonicalName()); // this.canWrite(type.getClass(), mediaType);
+        if(clazz.getCanonicalName().contains(EntityLD.class.getCanonicalName()) || clazz.getCanonicalName().contains(HashMap.class.getCanonicalName()))
+            return true; // this.canWrite(type.getClass(), mediaType);
+        return false;
     }
 
     @Override

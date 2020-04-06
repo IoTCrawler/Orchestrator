@@ -77,6 +77,11 @@ public class EntityLD /*extends Entity*/ {
         return attributes;
     }
 
+    public Attribute getAttribute(String name){
+        Attribute ret = attributes.get(name);
+        return ret;
+    }
+
     public void setContext(Map<String, Object> context) {
         this.context = context;
     }

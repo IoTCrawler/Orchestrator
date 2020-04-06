@@ -1,0 +1,29 @@
+{
+  "id": "urn:ngsi-ld:Sensor:B4:E6:2D:8A:20:DD",
+  "type": "http://www.w3.org/ns/sosa/Sensor/Sensor",
+  "http://www.w3.org/ns/sosa/Sensor/madeObservation#1": {
+    "type": "Relationship",
+    "object": "urn:ngsi-ld:StreamObservation:B4:E6:2D:8A:20:DD:IAQ"
+  },
+  "http://www.w3.org/ns/sosa/Sensor/madeObservation#2": {
+    "type": "Relationship",
+    "object": "urn:ngsi-ld:StreamObservation:B4:E6:2D:8A:20:DD:Temperature"
+  },
+  "http://www.w3.org/ns/sosa/Sensor/madeObservation#3": {
+    "type": "Relationship",
+    "object": "urn:ngsi-ld:StreamObservation:B4:E6:2D:8A:20:DD:Humidity"
+  },
+  "location": {
+    "type": "GeoProperty",
+    "value": {
+      "type": "Point",
+      "coordinates": [
+        52.28267,
+        8.023755
+      ]
+    }
+  },
+  "@context": [
+    "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"
+  ]
+}

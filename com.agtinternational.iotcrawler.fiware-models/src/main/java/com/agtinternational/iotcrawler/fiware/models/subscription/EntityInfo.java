@@ -35,8 +35,9 @@ public class EntityInfo {
     public EntityInfo() {
     }
 
-    public EntityInfo(String id) {
+    public EntityInfo(String id, String type) {
         this.id = id;
+        this.type = type;
     }
 
     public String getId() {

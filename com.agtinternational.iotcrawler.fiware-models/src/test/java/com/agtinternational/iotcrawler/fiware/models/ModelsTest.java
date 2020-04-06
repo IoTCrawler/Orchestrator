@@ -44,7 +44,9 @@ public class ModelsTest {
                 //new Object[]{ readEntity("samples/VehicleLD.json") },
                 //new Object[]{ readEntity("samples/TemperatureSensorLD.json") },
                 //new Object[]{ readEntity("samples/IoTStreamLD.json") }
-                new Object[]{ readEntity("samples/PlatformLD.json") }
+                //new Object[]{ readEntity("samples/PlatformLD.json") }
+                new Object[]{ readEntity("samples/MultiplePropertyValuesEntity.json") }
+
         });
     }
 

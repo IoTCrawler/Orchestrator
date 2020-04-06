@@ -81,9 +81,13 @@ public class StreamObservation extends RDFModel {
         addProperty(SOSA.hasResult, value);
     }
 
-    public Object madeBySensor(){
-        Object ret = getAttribute(SOSA.madeBySensor);
+    public Object belongsTo(){
+        Object ret = getAttribute(iotcNS+"belongsTo");
         return ret;
+    }
+
+    public void belongsTo(Object value){
+        addProperty(iotcNS+"belongsTo", value);
     }
 
     public static StreamObservation fromEntity(EntityLD entity) throws Exception {

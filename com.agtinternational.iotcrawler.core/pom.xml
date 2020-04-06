@@ -21,7 +21,6 @@
         <slf4j.version>1.7.15</slf4j.version>
         <junit.version>4.11</junit.version>
 
-        <hobbit.sdk.version>1.1.18</hobbit.sdk.version>
         <ngsi2.client.version>0.1.2-SNAPSHOT</ngsi2.client.version>
 
         <fiware.models.version>1.0.1</fiware.models.version>
@@ -29,19 +28,6 @@
     </properties>
 
 
-
-    <repositories>
-        <repository>
-            <id>maven.aksw.internal</id>
-            <name>University Leipzig, AKSW Maven2 Repository</name>
-            <url>http://maven.aksw.org/repository/internal</url>
-        </repository>
-        <repository>
-            <id>maven.aksw.snapshots</id>
-            <name>University Leipzig, AKSW Maven2 Repository</name>
-            <url>http://maven.aksw.org/repository/snapshots</url>
-        </repository>
-    </repositories>
 
 
     <dependencies>
@@ -71,25 +57,25 @@
             <!--<scope>provided</scope>-->
         </dependency>
 
-        <dependency>
-            <groupId>org.hobbit</groupId>
-            <artifactId>core</artifactId>
-            <version>1.0.18</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.jena</groupId>
-                    <artifactId>jena-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.jena</groupId>
-                    <artifactId>jena-shaded-guava</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.jena</groupId>
-                    <artifactId>jena-arq</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.hobbit</groupId>-->
+<!--            <artifactId>core</artifactId>-->
+<!--            <version>1.0.18</version>-->
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.apache.jena</groupId>-->
+<!--                    <artifactId>jena-core</artifactId>-->
+<!--                </exclusion>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.apache.jena</groupId>-->
+<!--                    <artifactId>jena-shaded-guava</artifactId>-->
+<!--                </exclusion>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.apache.jena</groupId>-->
+<!--                    <artifactId>jena-arq</artifactId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>org.aksw.jena-sparql-api</groupId>
@@ -160,7 +146,6 @@
         <version>4.5.7</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.rabbitmq/amqp-client -->
         <dependency>
             <groupId>com.rabbitmq</groupId>
             <artifactId>amqp-client</artifactId>

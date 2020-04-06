@@ -45,14 +45,14 @@ public class Sensor extends RDFModel {
         addProperty(RDFS.label, label);
     }
 
-    public void madeObservation(Object value){
-        addProperty(SOSA.madeObservation, value);
-    }
-
-    public Object madeObservation(){
-        Object ret = getAttribute(SOSA.madeObservation);
-        return ret;
-    }
+//    public void madeObservation(Object value){
+//        addProperty(SOSA.madeObservation, value);
+//    }
+//
+//    public Object madeObservation(){
+//        Object ret = getAttribute(SOSA.madeObservation);
+//        return ret;
+//    }
 
     public void observes(Object value){
         addProperty(SOSA.observes, value);

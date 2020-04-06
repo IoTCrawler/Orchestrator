@@ -88,6 +88,24 @@ public class IoTStream extends RDFModel {
         return getAttribute(iotcNS+"generatedBy");
     }
 
+    public void generatedBy(Object value){
+         addProperty(iotcNS+"generatedBy", value);
+    }
 
+    public Object isDerivedFrom(){
+        return getAttribute(iotcNS+"isDerivedFrom");
+    }
 
+    public void isDerivedFrom(Object value){
+        addProperty(iotcNS+"isDerivedFrom", value);
+    }
+
+    public void observes(Object value){
+        addProperty(SOSA.observes, value);
+    }
+
+    public Object observes(){
+        Object ret = getAttribute(SOSA.observes);
+        return ret;
+    }
 }

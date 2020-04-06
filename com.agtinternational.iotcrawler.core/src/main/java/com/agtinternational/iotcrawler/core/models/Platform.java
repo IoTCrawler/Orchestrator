@@ -26,6 +26,7 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.vocabulary.RDFS;
 
 import static com.agtinternational.iotcrawler.core.Constants.*;
+import static com.agtinternational.iotcrawler.core.models.SOSA.isHostedBy;
 
 
 public class Platform extends RDFModel {
@@ -99,4 +100,5 @@ public class Platform extends RDFModel {
 //        SosaPlatform ret = new SosaPlatform(uri, jsonObject.get("Hostname").getAsString());
 //        return ret;
 //    }
+
 }

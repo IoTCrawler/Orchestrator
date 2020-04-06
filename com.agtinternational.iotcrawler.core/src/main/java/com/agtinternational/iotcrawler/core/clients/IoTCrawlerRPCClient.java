@@ -20,8 +20,7 @@ package com.agtinternational.iotcrawler.core.clients;
  * #L%
  */
 
-//import com.agtinternational.iotcrawler.core.models.NGSI_LD.EntityLD;
-import com.agtinternational.iotcrawler.core.RabbitRpcClient;
+import com.agtinternational.iotcrawler.core.RabbitMQRpcClient;
 import com.agtinternational.iotcrawler.core.Utils;
 import com.agtinternational.iotcrawler.core.commands.*;
 import com.agtinternational.iotcrawler.core.interfaces.IotCrawlerClient;
@@ -36,7 +35,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import com.rabbitmq.client.*;
-import eu.neclab.iotplatform.ngsi.api.datamodel.*;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
@@ -46,12 +44,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 import java.util.function.Function;
 
-import static com.agtinternational.iotcrawler.core.Constants.IOTCRAWLER_COMMANDS_EXCHANGE;
-import static com.agtinternational.iotcrawler.core.Constants.*;
+import static com.agtinternational.iotcrawler.core.Constants.IOTCRAWLER_NOTIFICATIONS_EXCHANGE;
 
 
 //ToDo: timeout for requests
@@ -68,7 +63,7 @@ public class IoTCrawlerRPCClient extends IotCrawlerClient implements AutoCloseab
     NgsiLDClient ngsiLDClient;
 
     String rabbitHost;
-    RabbitRpcClient rabbitRpcClient;
+    RabbitMQRpcClient rabbitRpcClient;
     Consumer consumer;
 
     public IoTCrawlerRPCClient(String rabbitHost){
@@ -114,14 +109,14 @@ public class IoTCrawlerRPCClient extends IotCrawlerClient implements AutoCloseab
 
             try {
                 if(attempt>0) {
-                    LOGGER.debug("Trying to create exchange {}", IOTCRAWLER_COMMANDS_EXCHANGE);
-                    channel.exchangeDeclare(IOTCRAWLER_COMMANDS_EXCHANGE, "fanout", false, true, null);
+                    LOGGER.debug("Trying to create exchange {}", IOTCRAWLER_NOTIFICATIONS_EXCHANGE);
+                    channel.exchangeDeclare(IOTCRAWLER_NOTIFICATIONS_EXCHANGE, "fanout", false, true, null);
                 }
 
-                LOGGER.debug("Trying to bind the queue {} to exchange {}", queueName, IOTCRAWLER_COMMANDS_EXCHANGE);
-                channel.queueBind(queueName, IOTCRAWLER_COMMANDS_EXCHANGE, "");
+                LOGGER.debug("Trying to bind the queue {} to exchange {}", queueName, IOTCRAWLER_NOTIFICATIONS_EXCHANGE);
+                channel.queueBind(queueName, IOTCRAWLER_NOTIFICATIONS_EXCHANGE, "");
                 LOGGER.debug("Initing RabbitRpcClient");
-                rabbitRpcClient = RabbitRpcClient.create(connection, IOTCRAWLER_COMMANDS_EXCHANGE);
+                rabbitRpcClient = RabbitMQRpcClient.create(connection, IOTCRAWLER_NOTIFICATIONS_EXCHANGE);
                 rabbitRpcClient.setMaxWaitingTime(30000);
             } catch (IOException e) {
 
@@ -259,8 +254,8 @@ public class IoTCrawlerRPCClient extends IotCrawlerClient implements AutoCloseab
 
 
     @Override
-    public List<EntityLD> getEntitiesById(String[] ids, String entityType) throws Exception {
-        GetEntitiesCommand command = new GetEntitiesCommand(ids, entityType, 0, 0);
+    public List<EntityLD> getEntitiesById(String[] ids) throws Exception {
+        GetEntitiesCommand command = new GetEntitiesCommand(ids, 0, 0);
         List<EntityLD> entities = execute(command);
         return entities;
     }
@@ -388,7 +383,7 @@ public class IoTCrawlerRPCClient extends IotCrawlerClient implements AutoCloseab
         }
         LOGGER.debug("Waiting response from orchestrator");
 
-        byte[] response = rabbitRpcClient.request(IOTCRAWLER_COMMANDS_EXCHANGE, json.getBytes());
+        byte[] response = rabbitRpcClient.request(IOTCRAWLER_NOTIFICATIONS_EXCHANGE, json.getBytes());
         if(response==null)
             throw new Exception("Null response received");
         JsonArray result = (JsonArray) parseResponse(new String(response));
@@ -410,7 +405,7 @@ public class IoTCrawlerRPCClient extends IotCrawlerClient implements AutoCloseab
 
         List<Exception> exceptions = new ArrayList<>();
         LOGGER.debug("Waiting response from orchestrator");
-        byte[] response = rabbitRpcClient.request(IOTCRAWLER_COMMANDS_EXCHANGE, command.toJson().getBytes());
+        byte[] response = rabbitRpcClient.request(IOTCRAWLER_NOTIFICATIONS_EXCHANGE, command.toJson().getBytes());
         if(response==null)
             throw new Exception("Null response received");
         parseResponse(new String(response));
@@ -421,7 +416,7 @@ public class IoTCrawlerRPCClient extends IotCrawlerClient implements AutoCloseab
         List<String> ret = new ArrayList<>();
         List<Exception> exceptions = new ArrayList<>();
         LOGGER.debug("Waiting response from orchestrator");
-        byte[] response = rabbitRpcClient.request(IOTCRAWLER_COMMANDS_EXCHANGE, command.toJson().getBytes());
+        byte[] response = rabbitRpcClient.request(IOTCRAWLER_NOTIFICATIONS_EXCHANGE, command.toJson().getBytes());
 
         if(response==null)
             throw new Exception("Null response received");
@@ -435,7 +430,7 @@ public class IoTCrawlerRPCClient extends IotCrawlerClient implements AutoCloseab
     private Boolean execute(PushObservationsCommand command) throws Exception{
         List<Exception> exceptions = new ArrayList<>();
         LOGGER.debug("Waiting response from orchestrator");
-        byte[] response = rabbitRpcClient.request(IOTCRAWLER_COMMANDS_EXCHANGE, command.toJson().getBytes());
+        byte[] response = rabbitRpcClient.request(IOTCRAWLER_NOTIFICATIONS_EXCHANGE, command.toJson().getBytes());
         if(response==null)
             throw new Exception("Null response received");
         parseResponse(new String(response));
@@ -453,7 +448,7 @@ public class IoTCrawlerRPCClient extends IotCrawlerClient implements AutoCloseab
             e.printStackTrace();
         }
         LOGGER.debug("Waiting response from orchestrator");
-        byte[] response = rabbitRpcClient.request(IOTCRAWLER_COMMANDS_EXCHANGE, json.getBytes());
+        byte[] response = rabbitRpcClient.request(IOTCRAWLER_NOTIFICATIONS_EXCHANGE, json.getBytes());
         if(response==null)
             throw new Exception("Null response received");
 

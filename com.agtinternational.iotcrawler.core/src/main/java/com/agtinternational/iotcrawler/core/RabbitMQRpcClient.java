@@ -20,25 +20,6 @@ package com.agtinternational.iotcrawler.core;
  * #L%
  */
 
-
-/**
- * This file is part of HOBBIT core. https://github.com/hobbit-project/core
- *
- * core is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * core is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with core.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.HashMap;
@@ -48,8 +29,7 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.apache.commons.io.IOUtils;
-import org.hobbit.core.data.RabbitQueue;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,43 +41,26 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 
-/**
- * This class implements a thread safe client that can process several RPC calls
- * in parallel.
- *
- * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
- * Modifications: request methods which allows to publish into exchange
- *
- */
-public class RabbitRpcClient implements Closeable {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RabbitRpcClient.class);
+public class RabbitMQRpcClient implements Closeable {
 
-    /**
-     * The default maximum amount of time in millisecond the client is waiting
-     * for a response = {@value #DEFAULT_MAX_WAITING_TIME}ms.
-     */
-    private static final long DEFAULT_MAX_WAITING_TIME = 600000;
+    private static final Logger LOGGER = LoggerFactory.getLogger(RabbitMQRpcClient.class);
 
-    private static final int DEFAULT_MAX_WAITING_ATTEMPTS = 10;
+    Channel responseChannel;
+    Channel requestChannel;
+    String responseQueueName;
+    String requestQueueName;
+
+    Semaphore requestMapMutex = new Semaphore(1);
+
+    Map<String, RabbitMQRpcClient.RabbitRpcRequest> currentRequests = new HashMap<String, RabbitMQRpcClient.RabbitRpcRequest>();
+
+    long maxWaitingTime = 600000;
+    int maxWaitingAttempts = 10;
 
 
-
-    /**
-     * Creates a StorageServiceClient using the given RabbitMQ
-     * {@link Connection}.
-     *
-     * @param connection
-     *            RabbitMQ connection used for the communication
-     * @param requestQueueName
-     *            name of the queue to which the requests should be sent
-     * @return a StorageServiceClient instance
-     * @throws IOException
-     *             if a problem occurs during the creation of the queues or the
-     *             consumer.
-     */
-    public static RabbitRpcClient create(Connection connection, String requestQueueName) throws IOException {
-        RabbitRpcClient client = new RabbitRpcClient();
+    public static RabbitMQRpcClient create(Connection connection, String requestQueueName) throws IOException {
+        RabbitMQRpcClient client = new RabbitMQRpcClient();
         try {
             client.init(connection, requestQueueName);
             return client;
@@ -107,76 +70,37 @@ public class RabbitRpcClient implements Closeable {
         }
     }
 
-    /**
-     * Constructor.
-     */
-    protected RabbitRpcClient() {
+
+    protected RabbitMQRpcClient() {
     }
 
     /**
      * Queue used for the request.
      */
-    private RabbitQueue requestQueue;
-    /**
-     * Queue used for the responses.
-     */
-    private RabbitQueue responseQueue;
-    /**
-     * Mutex for managing access to the {@link #currentRequests} object.
-     */
-    private Semaphore requestMapMutex = new Semaphore(1);
-    /**
-     * Mapping of correlation Ids to their {@link RabbitRpcClient.RabbitRpcRequest} instances.
-     */
-    private Map<String, RabbitRpcClient.RabbitRpcRequest> currentRequests = new HashMap<String, RabbitRpcClient.RabbitRpcRequest>();
-    /**
-     * The maximum amount of time in millisecond the client is waiting for a
-     * response. The default value is defined by
-     * {@link #DEFAULT_MAX_WAITING_TIME}.
-     */
-    private long maxWaitingTime = DEFAULT_MAX_WAITING_TIME;
 
-    private int maxWaitingAttempts = DEFAULT_MAX_WAITING_ATTEMPTS;
-
-    /**
-     * Initializes the client by declaring a request queue using the given
-     * connection and queue name as well as a second queue and a consumer for
-     * retrieving responses.
-     *
-     * @param connection
-     *            the RabbitMQ connection that is used for creating queues
-     * @param requestQueueName
-     *            the name of the queue
-     * @throws IOException
-     *             if a communication problem during the creation of the
-     *             channel, the queue or the internal consumer occurs
-     */
     protected void init(Connection connection, String requestQueueName) throws IOException {
-        Channel tempChannel = connection.createChannel();
-        tempChannel.queueDeclare(requestQueueName, false, false, true, null);
-        requestQueue = new RabbitQueue(tempChannel, requestQueueName);
-        tempChannel = connection.createChannel();
-        responseQueue = new RabbitQueue(tempChannel, tempChannel.queueDeclare().getQueue());
-        responseQueue.channel.basicQos(1);
-        RabbitRpcClient.RabbitRpcClientConsumer consumer = new RabbitRpcClient.RabbitRpcClientConsumer(responseQueue.channel, this);
-        responseQueue.channel.basicConsume(responseQueue.name, true, consumer);
+        this.requestQueueName = requestQueueName;
+
+        requestChannel = connection.createChannel();
+        requestChannel.queueDeclare(requestQueueName, false, false, true, null);
+
+        responseChannel = connection.createChannel();
+        responseQueueName = responseChannel.queueDeclare().getQueue();
+        //responseQueue = new RabbitQueue(tempChannel, tempChannel.queueDeclare().getQueue());
+
+        responseChannel.basicQos(1);
+        RabbitMQRpcClient.RabbitRpcClientConsumer consumer = new RabbitMQRpcClient.RabbitRpcClientConsumer(responseChannel, this);
+        responseChannel.basicConsume(responseQueueName, true, consumer);
     }
 
-    /**
-     * Sends the request, i.e., the given data, and blocks until the response is
-     * received.
-     *
-     * @param data
-     *            the data of the request
-     * @return the response or null if an error occurs.
-     */
+
     public byte[] request(byte[] data) {
         return request(null, data);
     }
 
     public byte[] request(String exchangeName, byte[] data) {
         byte[] response = null;
-        RabbitRpcClient.RabbitRpcRequest request = new RabbitRpcClient.RabbitRpcRequest();
+        RabbitMQRpcClient.RabbitRpcRequest request = new RabbitMQRpcClient.RabbitRpcRequest();
 
 
         int attempt=0;
@@ -185,15 +109,15 @@ public class RabbitRpcClient implements Closeable {
             try {
                 String corrId = java.util.UUID.randomUUID().toString();
 
-                BasicProperties props = new BasicProperties.Builder().correlationId(corrId).deliveryMode(2).replyTo(responseQueue.name).build();
+                BasicProperties props = new BasicProperties.Builder().correlationId(corrId).deliveryMode(2).replyTo(responseQueueName).build();
                 requestMapMutex.acquire();
                 currentRequests.put(corrId, request);
                 requestMapMutex.release();
 
                 if(exchangeName!=null)
-                    requestQueue.channel.basicPublish(exchangeName, "", props, data);
+                    requestChannel.basicPublish(exchangeName, "", props, data);
                 else
-                    requestQueue.channel.basicPublish("", requestQueue.name, props, data);
+                    requestChannel.basicPublish("", requestQueueName, props, data);
             } catch (Exception e) {
                 LOGGER.error("Failed to publish query to queue.", e);
             }
@@ -213,17 +137,7 @@ public class RabbitRpcClient implements Closeable {
         return response;
     }
 
-    /**
-     * Processes the response with the given correlation Id and byte array by
-     * searching for a matching request and setting the response if it could be
-     * found. If there is no request with the same correlation Id, nothing is
-     * done.
-     *
-     * @param corrId
-     *            correlation Id of the response
-     * @param body
-     *            data of the response
-     */
+
     protected void processResponseForRequest(String corrId, byte[] body) {
         if (currentRequests.containsKey(corrId)) {
             try {
@@ -253,14 +167,22 @@ public class RabbitRpcClient implements Closeable {
 
     @Override
     public void close() throws IOException {
-        IOUtils.closeQuietly(requestQueue);
-        IOUtils.closeQuietly(responseQueue);
+        try {
+            requestChannel.close();
+        } catch (TimeoutException e) {
+            LOGGER.error("Failed to close request channel: {}",e.getLocalizedMessage());
+        }
+        try {
+            responseChannel.close();
+        } catch (TimeoutException e) {
+            LOGGER.error("Failed to close response channel: {}",e.getLocalizedMessage());
+        }
     }
 
     /**
      * Internal implementation of a Consumer that receives messages on the reply
      * queue and calls
-     * {@link RabbitRpcClient#processResponseForRequest(String, byte[])} of its
+     * {@link RabbitMQRpcClient#processResponseForRequest(String, byte[])} of its
      * {@link #client}.
      *
      * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
@@ -271,7 +193,7 @@ public class RabbitRpcClient implements Closeable {
         /**
          * The client for which this instance is acting as consumer.
          */
-        private RabbitRpcClient client;
+        private RabbitMQRpcClient client;
 
         /**
          * Constructor.
@@ -281,7 +203,7 @@ public class RabbitRpcClient implements Closeable {
          * @param client
          *            the client for which this instance is acting as consumer
          */
-        public RabbitRpcClientConsumer(Channel channel, RabbitRpcClient client) {
+        public RabbitRpcClientConsumer(Channel channel, RabbitMQRpcClient client) {
             super(channel);
             this.client = client;
         }

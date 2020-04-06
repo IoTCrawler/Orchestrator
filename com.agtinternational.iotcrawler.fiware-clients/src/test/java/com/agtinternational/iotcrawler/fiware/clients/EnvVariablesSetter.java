@@ -35,9 +35,10 @@ public class EnvVariablesSetter {
         //public static final String defaultTripleStoreURI = "http://10.67.42.53:10035/repositories/KB/sparql";
 
         if(!System.getenv().containsKey(NGSILD_BROKER_URL))
+            environmentVariables.set(NGSILD_BROKER_URL, "http://10.67.1.107:9090/ngsi-ld/");
             //environmentVariables.set(NGSILD_BROKER_URL, "http://localhost:3000/ngsi-ld/");
             //environmentVariables.set(NGSILD_BROKER_URL, "http://155.54.95.248:9090/ngsi-ld/");
-            environmentVariables.set(NGSILD_BROKER_URL, "http://155.54.95.171:9090/ngsi-ld/");
+            //environmentVariables.set(NGSILD_BROKER_URL, "http://155.54.95.171:9090/ngsi-ld/");
 
 
         environmentVariables.set(HTTP_REFERENCE_URL, "http://10.0.75.1:3001/notify");

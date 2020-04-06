@@ -24,9 +24,7 @@ package com.agtinternational.iotcrawler.fiware.clients;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import com.agtinternational.iotcrawler.fiware.models.Utils;
 import com.github.jsonldjava.utils.JsonUtils;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import com.orange.ngsi2.model.Attribute;
 import com.orange.ngsi2.model.Subscription;
 import org.apache.commons.io.IOUtils;
@@ -133,10 +131,22 @@ public class NgsiLDConverter extends AbstractHttpMessageConverter<Object> implem
                 jsonObject.remove("@type");
             }
 
-            if(!jsonObject.has("context")) {
-                jsonObject.add("context", jsonObject.get("@context"));
-                jsonObject.remove("@context");
-            }
+//            if(jsonObject.has("@context")) {
+//                Object context = jsonObject.get("@context");
+//                if (!(context instanceof JsonArray)){
+//                    JsonArray jsonArray = new JsonArray();
+//                    jsonArray.add(NGSILD.CORE_CONTEXT);
+//                    jsonArray.add( (JsonObject)context );
+//                    jsonObject.add("@context", jsonArray);
+//                }else if(((JsonArray)context).contains(new JsonPrimitive(NGSILD.CORE_CONTEXT))){
+//                    ((JsonArray)context).add(new JsonPrimitive(NGSILD.CORE_CONTEXT));
+//                    jsonObject.add("@context", (JsonArray)context);
+//                }
+//
+//                //jsonObject.add("@context", context);
+//                //jsonObject.add("context", jsonObject.get("@context"));
+//                //jsonObject.remove("@context");
+//            }
 //        }else if(object instanceof Subscription){
 
 

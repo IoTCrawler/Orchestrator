@@ -72,7 +72,8 @@ public class NgsiLDClient {
         // set default headers for Content-Type and Accept to application/JSON
         httpHeaders = new HttpHeaders();
         //Both headers required for DJANE broker
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        //httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        httpHeaders.setContentType(MediaType.valueOf("application/ld+json"));
         //httpHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         httpHeaders.setAccept(Collections.singletonList(valueOf("*/*")));  //nec broker ignores the context
     }
@@ -282,15 +283,16 @@ public class NgsiLDClient {
 //                encodedIds.add(id);
 //            }
 //        }
-//
-//        List<String> encodedTypes = new ArrayList<>();
-//        Iterator<String> iterator = types.iterator();
-//        while(iterator.hasNext()) {
-//           String type = iterator.next();
-//           if(type.startsWith("http://"))
-//               type = URLEncoder.encode(type);
-//           encodedTypes.add(type);
-//        }
+
+        List<String> encodedTypes = new ArrayList<>();
+        Iterator<String> iterator = types.iterator();
+        while(iterator.hasNext()) {
+           String type = iterator.next();
+           if(type.startsWith("http://"))
+               type = type.replace("#","%23");
+               //type = URLEncoder.encode(type);
+           encodedTypes.add(type);
+        }
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseURL);
 
@@ -301,7 +303,7 @@ public class NgsiLDClient {
         builder.query(query);
         addParam(builder, "id", ids);
         addParam(builder, "idPattern", idPattern);
-        addParam(builder, "type", types);
+        addParam(builder, "type", encodedTypes);
         addParam(builder, "attrs", attrs);
         //addParam(builder, "", query);  //see below
 
@@ -609,6 +611,31 @@ public class NgsiLDClient {
             }
         };
     }
+
+    public String addSubscriptionSync(Subscription subscription) throws Exception {
+        Semaphore reqFinished = new Semaphore(0);
+        ListenableFuture<String> req = addSubscription(subscription);
+        final String[] result = { null };
+        req.addCallback(new ListenableFutureCallback<String>() {
+            @Override
+            public void onSuccess(String id) {
+                result[0] = id;
+                reqFinished.release();
+            }
+
+            @Override
+            public void onFailure(Throwable throwable) {
+                LOGGER.error("Failed to add subscription");
+                throwable.printStackTrace();
+                reqFinished.release();
+            }
+
+        });
+        reqFinished.acquire();
+        return result[0];
+    }
+
+
 
     /**
      * Get a Subscription by subscription ID

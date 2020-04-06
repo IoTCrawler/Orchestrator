@@ -173,7 +173,12 @@ public class NgsiLDClientTest extends EnvVariablesSetter{
     @Test
     public void addEntityTest() throws Exception {
 
-        ngsiLdClient.deleteEntitySync(entity.getId(), entity.getType());
+        try {
+            ngsiLdClient.deleteEntitySync(entity.getId(), entity.getType());
+        }
+        catch (Exception e){
+            //LOGGER.warn("Nothing to delete" e.getLocalizedMessage());
+        }
         Boolean success = ngsiLdClient.addEntitySync(entity);
         Assert.assertTrue(success);
         LOGGER.info("Entity added");
@@ -208,11 +213,11 @@ public class NgsiLDClientTest extends EnvVariablesSetter{
                 //"iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_Temperature"
                 entity.getId()
         });
-        Collection<String> types = Arrays.asList(new String[]{
-                entity.getType()
-                //"sosa:Sensor"
-        });  //Scorpio requires type!
-        Paginated<EntityLD> entities = ngsiLdClient.getEntities(ids, null, types, null, 0, 0, false).get();
+//        Collection<String> types = Arrays.asList(new String[]{
+//                entity.getType()
+//                //"sosa:Sensor"
+//        });  //Scorpio requires type!
+        Paginated<EntityLD> entities = ngsiLdClient.getEntities(ids, null, null, null, 0, 0, false).get();
         Assert.assertNotNull(entities.getItems());
         Assert.assertTrue(entities.getItems().size()>0);
         entities.getItems().stream().forEach(e->{
@@ -298,19 +303,13 @@ public class NgsiLDClientTest extends EnvVariablesSetter{
         LOGGER.info("Entity deleted");
     }
 
+
     //@Ignore
     @Test
     public void addSubscriptionTest() throws Exception {
-        Semaphore reqFinished = new Semaphore(0);
 
-        EntityInfo entityInfo = new EntityInfo(){{ setId(entity.getId()); setType(entity.getType()); }};
 
-        List<String> watchedAttributes = Arrays.asList(new String[]{ "temperature" });
-
-        //Condition pressureCondition = new Condition();
-        //pressureCondition.setAttributes(Arrays.asList(new String[]{ "temperature" }));
-
-        //SubjectSubscription subjectSubscription = new SubjectSubscription(Arrays.asList(new SubjectEntity[]{ subjectEntity }), pressureCondition);
+        EntityInfo entityInfo = new EntityInfo(entity.getId(), entity.getType());
 
         NotificationParams notification = new NotificationParams();
         notification.setAttributes(Arrays.asList(new String[]{ "location" }));
@@ -319,59 +318,15 @@ public class NgsiLDClientTest extends EnvVariablesSetter{
         Subscription subscription = new Subscription(
                 UUID.randomUUID().toString(),
                 Arrays.asList(new EntityInfo[]{ entityInfo }),
-                watchedAttributes,
+                Arrays.asList(new String[]{ "temperature" }),
                 notification,
                 null,
                 null);
 
 
-//        SubjectEntity subjectEntity = new SubjectEntity();
-//        subjectEntity.setId(Optional.of(entity.getId()));
-//        subjectEntity.setType(Optional.of(entity.getType()));
-//
-//        Condition condition = new Condition();
-////        condition.setAttributes(Collections.singletonList(entity.getAttributes().values()));
-////        condition.setExpression("q", "temperature>40");
-//
-//        SubjectSubscription subjectSubscription = new SubjectSubscription(Collections.singletonList(subjectEntity), condition);
-//        List attributes =  Arrays.asList(entity.getAttributes().keySet());
-////        Arrays.asList(entity.getAttributes().keySet())
-////        attributes.add("temperature");
-////        attributes.add("humidity");
-//        Notification notification = new Notification(attributes, new URL(HttpTestServer.getRefenceURL()));
-//        notification.setThrottling(Optional.of(new Long(5)));
-//        Subscription subscription = new Subscription();
-//        subscription.setId(UUID.randomUUID().toString());
-//
-//        subscription.setSubject(subjectSubscription);
-//        subscription.setNotification(notification);
-//        subscription.setExpires(Instant.parse("2035-04-05T14:00:00.20Z"));
-
-        ListenableFuture<String> req = ngsiLdClient.addSubscription(subscription);
-        final Boolean[] success = {false};
-        req.addCallback(new ListenableFutureCallback<String>() {
-            @Override
-            public void onSuccess(String id) {
-                success[0] = true;
-                Assert.assertNotNull(id);
-                reqFinished.release();
-            }
-
-            @Override
-            public void onFailure(Throwable throwable) {
-                success[0] = false;
-                throwable.printStackTrace();
-                reqFinished.release();
-            }
-
-        });
-        reqFinished.acquire();
-
-
-        if(success[0])
-            Assert.assertTrue("Subscription created", true);
-        else
-            Assert.fail("Failed to create subscription");
+        String subscriptionId = ngsiLdClient.addSubscriptionSync(subscription);
+        Assert.assertNotNull(subscriptionId);
+        LOGGER.info("Subscription created");
     }
 
     @Ignore

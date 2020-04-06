@@ -24,6 +24,7 @@ package com.agtinternational.iotcrawler.fiware.clients;
 
 public class NGSILD {
     //public static String NS = "http://uri.etsi.org/ngsi-ld/";
+    public static String CORE_CONTEXT ="https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld";
     public static String NS = "";
     public static String value = NS+"hasValue";
     public static String Property = NS+"Property";

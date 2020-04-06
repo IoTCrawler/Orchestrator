@@ -174,7 +174,7 @@ public class NgsiLDClientTest extends EnvVariablesSetter{
     public void addEntityTest() throws Exception {
 
         try {
-            ngsiLdClient.deleteEntitySync(entity.getId(), entity.getType());
+            ngsiLdClient.deleteEntitySync(entity.getId());
         }
         catch (Exception e){
             //LOGGER.warn("Nothing to delete" e.getLocalizedMessage());
@@ -278,10 +278,10 @@ public class NgsiLDClientTest extends EnvVariablesSetter{
     @Test
     public void updateEntityTest() throws ExecutionException, InterruptedException {
 
-        Map<String, Attribute> newAttributes = entity.getAttributes();
-        newAttributes.put(newAttributes.keySet().iterator().next().toString()+"#"+System.nanoTime(), newAttributes.values().iterator().next());
+        Map<String, Attribute> attributes = entity.getAttributes();
+        entity.addAttribute(attributes.keySet().iterator().next().toString()+"#"+System.nanoTime(), (Attribute)attributes.values().iterator().next());
 
-        boolean success = ngsiLdClient.updateEntitySync(entity.getId(), newAttributes , false);
+        boolean success = ngsiLdClient.updateEntitySync(entity , false);
         if(success)
             Assert.assertTrue("Entity updated", true);
         else
@@ -294,7 +294,7 @@ public class NgsiLDClientTest extends EnvVariablesSetter{
     @Order(7)
     @Test
     public void deleteEntityTest(){
-        boolean success = ngsiLdClient.deleteEntitySync(entity.getId(), entity.getType());
+        boolean success = ngsiLdClient.deleteEntitySync(entity.getId());
         if(success)
             Assert.assertTrue("Entity deleted", true);
         else

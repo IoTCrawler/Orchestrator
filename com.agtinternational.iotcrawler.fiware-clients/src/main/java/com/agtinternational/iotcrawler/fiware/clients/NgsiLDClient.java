@@ -145,8 +145,8 @@ public class NgsiLDClient {
         return success[0];
     }
 
-    public boolean updateEntitySync(String entityId, Map<String, Attribute> attributes, boolean append){
-        ListenableFuture<Void> req = updateEntity(entityId, attributes, append);
+    public boolean updateEntitySync(EntityLD entityLD, boolean append){
+        ListenableFuture<Void> req = updateEntity(entityLD, append);
         final Boolean[] success = {false};
         Semaphore reqFinished = new Semaphore(0);
         req.addCallback(new ListenableFutureCallback<Void>() {
@@ -174,9 +174,9 @@ public class NgsiLDClient {
 
     }
 
-    public boolean deleteEntitySync(String entityId, String type){
+    public boolean deleteEntitySync(String entityId){
         final Boolean[] success = {false};
-        ListenableFuture<Void> req = deleteEntity(entityId, type);
+        ListenableFuture<Void> req = deleteEntity(entityId);
         Semaphore reqFinished = new Semaphore(0);
         req.addCallback(new ListenableFutureCallback<Void>() {
             @Override
@@ -284,36 +284,41 @@ public class NgsiLDClient {
 //            }
 //        }
 
-        List<String> encodedTypes = new ArrayList<>();
-        Iterator<String> iterator = types.iterator();
-        while(iterator.hasNext()) {
-           String type = iterator.next();
-           if(type.startsWith("http://"))
-               type = type.replace("#","%23");
-               //type = URLEncoder.encode(type);
-           encodedTypes.add(type);
+        List<String> encodedTypes = null;
+        if(types!=null) {
+            encodedTypes = new ArrayList<>();
+            Iterator<String> iterator = types.iterator();
+            while (iterator.hasNext()) {
+                String type = iterator.next();
+                if (type.startsWith("http://"))
+                    type = type.replace("#", "%23");
+                //type = URLEncoder.encode(type);
+                encodedTypes.add(type);
+            }
         }
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseURL);
 
-        //if(ids.isEmpty())
+        if(ids!=null)
+            builder.path("v1/entities/"+ids.toArray()[0]);
+        else {
             builder.path("v1/entities");
-//        else
-//            builder.path("v1/entities/"+ids.toArray()[0]);
-        builder.query(query);
-        addParam(builder, "id", ids);
-        addParam(builder, "idPattern", idPattern);
-        addParam(builder, "type", encodedTypes);
-        addParam(builder, "attrs", attrs);
-        //addParam(builder, "", query);  //see below
+            builder.query(query);
+            addParam(builder, "id", ids);
+            addParam(builder, "idPattern", idPattern);
+            addParam(builder, "type", encodedTypes);
+            addParam(builder, "attrs", attrs);
+            //addParam(builder, "", query);  //see below
 
-        addParam(builder, "attrs", attrs);
-        addGeoQueryParams(builder, geoQuery);
-        addParam(builder, "orderBy", orderBy);
-        addPaginationParams(builder, offset, limit);
-        if (count) {
-            addParam(builder, "options", "count");
+            addParam(builder, "attrs", attrs);
+            addGeoQueryParams(builder, geoQuery);
+            addParam(builder, "orderBy", orderBy);
+            addPaginationParams(builder, offset, limit);
+            if (count) {
+                addParam(builder, "options", "count");
+            }
         }
+
         //String url = builder.build().encode().toUriString(); //djane requires encoded IDs
         String url = builder.build().toUriString();
 
@@ -354,22 +359,17 @@ public class NgsiLDClient {
         return adapt(request(HttpMethod.GET, builder.buildAndExpand(entityId).toUriString(), null, Entity.class));
     }
 
-    /**
-     * Update existing or append some attributes to an entity
-     * @param entityId the entity ID
-     *
-     * @param attributes the attributes to update or to append
-     * @param append if true, will only allow to append new attributes
-     * @return the listener to notify of completion
-     */
-    public ListenableFuture<Void> updateEntity(String entityId, Map<String, Attribute> attributes, boolean append) {
+
+    public ListenableFuture<Void> updateEntity(EntityLD entity, boolean append) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseURL);
         builder.path("v1/entities/{entityId}/attrs");
         //addParam(builder, "type", type);
         if (append) {
             addParam(builder, "options", "append");
         }
-        return adapt(request(HttpMethod.POST, builder.buildAndExpand(entityId).toUriString(), attributes, Void.class));
+        Map attributes = entity.getAttributes();
+        attributes.put("@context", entity.getContext());
+        return adapt(request(HttpMethod.POST, builder.buildAndExpand(entity.getId()).toUriString(), attributes, Void.class));
     }
 
     /**
@@ -386,16 +386,11 @@ public class NgsiLDClient {
         return adapt(request(HttpMethod.PUT, builder.buildAndExpand(entityId).toUriString(), attributes, Void.class));
     }
 
-    /**
-     * Delete an entity
-     * @param entityId the entity ID
-     * @param type optional entity type to avoid ambiguity when multiple entities have the same ID, null or zero-length for empty
-     * @return the listener to notify of completion
-     */
-    public ListenableFuture<Void> deleteEntity(String entityId, String type) {
+
+    public ListenableFuture<Void> deleteEntity(String entityId) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseURL);
         builder.path("v1/entities/{entityId}");
-        addParam(builder, "type", type);
+        //addParam(builder, "type", type);
         return adapt(request(HttpMethod.DELETE, builder.buildAndExpand(entityId).toUriString(), null, Void.class));
     }
 

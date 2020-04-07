@@ -31,6 +31,7 @@ public class IotStream {
     public static String StreamObservation = NS+"StreamObservation";
 
     public static String generatedBy = NS+"generatedBy";
+    public static String observes = NS +"observes";
     public static String belongsTo = NS+"belongsTo";
     public static String derivedFrom = NS+"derivedFrom";
 

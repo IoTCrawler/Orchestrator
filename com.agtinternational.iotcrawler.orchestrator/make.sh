@@ -41,7 +41,7 @@ fi
 #fi
 
 if [ "$1" = "build-image" ]; then
-  mvn clean compile jib:dockerBuild -U
+  mvn clean compile jib:dockerBuild -U -Dlicense.skipAddThirdParty=true
 fi
 
 if [ "$1" = "push-image" ]; then

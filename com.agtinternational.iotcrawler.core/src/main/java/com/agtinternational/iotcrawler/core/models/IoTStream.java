@@ -99,7 +99,7 @@ public class IoTStream extends RDFModel {
     }
 
     public void observes(Object value){
-        addProperty(SOSA.observes, value);
+        addProperty(IotStream.observes, value);
     }
 
     public Object observes(){

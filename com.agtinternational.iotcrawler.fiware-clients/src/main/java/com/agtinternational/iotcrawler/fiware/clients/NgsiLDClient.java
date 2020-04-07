@@ -118,10 +118,11 @@ public class NgsiLDClient {
         };
     }
 
-    public boolean addEntitySync(EntityLD entity){
+    public boolean addEntitySync(EntityLD entity) throws Exception {
         final Boolean[] success = {false};
         ListenableFuture<Void> req = addEntity(entity);
         Semaphore reqFinished = new Semaphore(0);
+        List<Exception> errors = new ArrayList<>();
         req.addCallback(new ListenableFutureCallback<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -132,7 +133,7 @@ public class NgsiLDClient {
             @Override
             public void onFailure(Throwable throwable) {
                 success[0] = false;
-                throwable.printStackTrace();
+                errors.add(new Exception(throwable));
                 reqFinished.release();
             }
 
@@ -142,13 +143,18 @@ public class NgsiLDClient {
         } catch (InterruptedException e) {
             LOGGER.error(e.getLocalizedMessage());
         }
+
+        if(!errors.isEmpty())
+            throw errors.get(0);
+
         return success[0];
     }
 
-    public boolean updateEntitySync(EntityLD entityLD, boolean append){
+    public boolean updateEntitySync(EntityLD entityLD, boolean append) throws Exception {
         ListenableFuture<Void> req = updateEntity(entityLD, append);
         final Boolean[] success = {false};
         Semaphore reqFinished = new Semaphore(0);
+        List<Exception> errors = new ArrayList<>();
         req.addCallback(new ListenableFutureCallback<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -160,7 +166,7 @@ public class NgsiLDClient {
             @Override
             public void onFailure(Throwable throwable) {
                 success[0] = false;
-                throwable.printStackTrace();
+                errors.add(new Exception(throwable));
                 reqFinished.release();
             }
 
@@ -170,14 +176,18 @@ public class NgsiLDClient {
         } catch (InterruptedException e) {
             LOGGER.error(e.getLocalizedMessage());
         }
+        if(!errors.isEmpty())
+            throw errors.get(0);
+
         return success[0];
 
     }
 
-    public boolean deleteEntitySync(String entityId){
+    public boolean deleteEntitySync(String entityId) throws Exception {
         final Boolean[] success = {false};
         ListenableFuture<Void> req = deleteEntity(entityId);
         Semaphore reqFinished = new Semaphore(0);
+        List<Exception> errors = new ArrayList<>();
         req.addCallback(new ListenableFutureCallback<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -188,7 +198,7 @@ public class NgsiLDClient {
             @Override
             public void onFailure(Throwable throwable) {
                 success[0] = false;
-                throwable.printStackTrace();
+                errors.add(new Exception(throwable));
                 reqFinished.release();
             }
 
@@ -198,6 +208,8 @@ public class NgsiLDClient {
         } catch (InterruptedException e) {
             LOGGER.error(e.getLocalizedMessage());
         }
+        if(!errors.isEmpty())
+            throw errors.get(0);
         return success[0];
     }
 
@@ -225,11 +237,12 @@ public class NgsiLDClient {
 
     public Paginated<EntityLD> getEntitiesSync(Collection<String> ids, String idPattern,
                                                              Collection<String> types, Collection<String> attrs,
-                                                             int offset, int limit, boolean count) {
+                                                             int offset, int limit, boolean count) throws Exception {
 
         final List<Paginated<EntityLD>> ret = new ArrayList<>();
         ListenableFuture<Paginated<EntityLD>> req = getEntities(ids, idPattern, types, attrs, null, null, null, offset, limit, count);
         Semaphore reqFinished = new Semaphore(0);
+        List<Exception> errors = new ArrayList<>();
         req.addCallback(new ListenableFutureCallback<Paginated<EntityLD>>() {
 
             @Override
@@ -242,7 +255,7 @@ public class NgsiLDClient {
             @Override
             public void onFailure(Throwable throwable) {
                 LOGGER.error("Failed to get entities: {}", throwable.getLocalizedMessage());
-                throwable.printStackTrace();
+                errors.add(new Exception(throwable));
                 reqFinished.release();
             }
         });
@@ -252,7 +265,12 @@ public class NgsiLDClient {
         } catch (InterruptedException e) {
             LOGGER.error(e.getLocalizedMessage());
         }
-        return ret.get(0);
+        if(errors.size()>0)
+            throw errors.get(0);
+
+        if (ret.size()>0)
+            return ret.get(0);
+        return null;
     }
 
     /**
@@ -614,6 +632,7 @@ public class NgsiLDClient {
         Semaphore reqFinished = new Semaphore(0);
         ListenableFuture<String> req = addSubscription(subscription);
         final String[] result = { null };
+        List<Exception> errors = new ArrayList<>();
         req.addCallback(new ListenableFutureCallback<String>() {
             @Override
             public void onSuccess(String id) {
@@ -624,12 +643,16 @@ public class NgsiLDClient {
             @Override
             public void onFailure(Throwable throwable) {
                 LOGGER.error("Failed to add subscription");
-                throwable.printStackTrace();
+                errors.add(new Exception(throwable));
                 reqFinished.release();
             }
 
         });
         reqFinished.acquire();
+        
+        if (errors.size()>0)
+            throw errors.get(0);
+
         return result[0];
     }
 

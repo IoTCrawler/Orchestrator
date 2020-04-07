@@ -124,16 +124,9 @@
                     <licenseName>apache_v2</licenseName>
                 </configuration>
                 <executions>
-
-<!--                    <execution>-->
-<!--                        <id>download-licenses</id>-->
-<!--                        <goals>-->
-<!--                            <goal>download-licenses</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-
                     <execution>
                         <id>download-licenses</id>
+                        <phase>none</phase>
                         <goals>
 <!--                            <goal>aggregate-download-licenses</goal>-->
                             <goal>download-licenses</goal>
@@ -148,7 +141,7 @@
                         <goals>
                             <goal>update-file-header</goal>
                         </goals>
-                        <phase>process-sources</phase>
+                        <phase>none</phase>
                         <configuration>
                             <licenseName>apache_v2</licenseName>
                             <roots>

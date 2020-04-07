@@ -184,6 +184,31 @@ public class ModelTests {
         byte[] json = Files.readAllBytes(Paths.get("samples/Platform.json"));
         Platform sosaPlatform = Platform.fromJson(json);
 
+        //RDFModel[] array = new RDFModel[]{ new RDFModel("http://sensor1"), new RDFModel("http://sensor2") } ;
+        //sosaPlatform.hosts(array);
+
+        JsonObject jsonObject1 = sosaPlatform.toJsonObject();
+        System.out.println(Utils.prettyPrint(jsonObject1));
+
+        System.out.println("--------------------------------------");
+
+        EntityLD entityLD = sosaPlatform.toEntityLD(true);
+        JsonObject jsonObject2 = entityLD.toJsonObject();
+        System.out.println(Utils.prettyPrint(jsonObject2));
+
+        Platform platform = Platform.fromEntity(entityLD);
+
+        //Assert.assertEquals(jsonObject1, jsonObject2);
+        String abc = "abc";
+    }
+
+    @Test
+    @Ignore
+    public void test3() throws Exception {
+
+        byte[] json = Files.readAllBytes(Paths.get("samples/Platform.json"));
+        Platform sosaPlatform = Platform.fromJson(json);
+
         RDFModel[] array = new RDFModel[]{ new RDFModel("http://sensor1"), new RDFModel("http://sensor2") } ;
         sosaPlatform.hosts(array);
 

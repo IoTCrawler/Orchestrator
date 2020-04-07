@@ -357,6 +357,19 @@ public class RDFModel {
             Object attribute = entity.getAttributes().get(attributeKey);
             String attrTypeUri = null;
 
+            String[] gridSplitted = attributeKey.split("#");
+            if(gridSplitted.length>1){
+                try {
+                    int parsed = Integer.parseInt(gridSplitted[gridSplitted.length - 1]);
+                    List<String> list = Arrays.asList(gridSplitted);
+                    attributeKey = String.join("#", list.subList(0, list.size()-1));
+                    String abc = "123";
+                }
+                catch (Exception e){
+
+                }
+            }
+
             String[] keySplitted = attributeKey.split(":");
             if(keySplitted.length==2) {
                 String nsKey = keySplitted[0];
@@ -514,6 +527,7 @@ public class RDFModel {
         if(cutURIs)
             type = Utils.cutURL(type, namespaces);
 
+        HashMap<String, Integer> propertiesCounter = new HashMap<>();
         StmtIterator iterator = this.model.listStatements();
         Map<String, Attribute> attributes = new HashMap<String, Attribute>();
         while (iterator.hasNext()) {
@@ -528,25 +542,10 @@ public class RDFModel {
 
             if(statement.getObject().isResource()){
                 attribute = new Relationship();
-                //attribute.setType();
-                //attValues.add(statement.getObject().asResource().getURI());
                 ((Relationship) attribute).setObject(statement.getObject().asResource().getURI());
-                //Statement typeStatement = statement.getObject().asResource().getProperty(RDF.type);
-                //attribute.setType(Optional.of(typeStatement.getSubject().getURI()));
             }else if (statement.getObject().isLiteral()){
                 attribute  = new com.agtinternational.iotcrawler.fiware.models.NGSILD.Property();
-                //attValues.add(statement.getObject().asResource().getURI());
                 attribute.setValue(statement.getObject().asLiteral().toString());
-                //attribute.setType(Optional.of(statement.getObject().asLiteral().getDatatypeURI()));
-//                    Literal literal = statement.getLiteral();
-//                    //List<ContextMetadata> metadata = new ArrayList<ContextMetadata>();//{{ add(new ContextMetadata("units", URI.create("units"), "dB")); }};
-//                    //List<ContextMetadata> metadata = null;
-//                    //ContextAttribute contextAttribute = new ContextAttribute(pair.getKey(), URI.create("float"), String.valueOf(System.nanoTime()), metadata);
-//                    attribute.setType(Optional.of(literal.getDatatypeURI()));
-//                    attribute.setValue(literal.getString());
-////                ContextAttribute contextAttribute = new ContextAttribute(statement.getPredicate().getLocalName(), URI.create(literal.getDatatypeURI()), literal.getString(), metadata);
-////                contextAttributeList.add(contextAttribute);
-//                    attributes.put(statement.getPredicate().getLocalName(), attribute);
             }else{
                 throw new NotImplementedException("");
 
@@ -561,21 +560,37 @@ public class RDFModel {
 //                    String abc = "123";
             //}
             //attributes.put(statement.getPredicate().getLocalName(), attribute);
-            if(attributes.containsKey(attrName)) {
-                 Attribute property =  attributes.get(attrName);
-                 Object value = property.getValue();
-                 if (value instanceof List)
-                     ((List)(value)).add(attribute.getValue());
-                 else{
-                     List list = new ArrayList();
-                     list.add(value);
-                     list.add(attribute.getValue());
-                     property.setValue(list);
-                     //attributes.put(attrName, list);
-                     //LOGGER.warn("List insertion not implemented for attributes. Skipping {}", attrName);
-                 }
+            if(attributes.containsKey(attrName)){ // handling multiple values
+                 String newAttName = attrName+"#"+ (propertiesCounter.get(attrName)+1);
+                Attribute attribute2 = null;
+                if(statement.getObject().isResource()){
+                    attribute2 = new Relationship();
+                    ((Relationship) attribute2).setObject(statement.getObject().asResource().getURI());
+                }else if (statement.getObject().isLiteral()){
+                    attribute2  = new com.agtinternational.iotcrawler.fiware.models.NGSILD.Property();
+                    attribute2.setValue(statement.getObject().asLiteral().toString());
+                }else{
+                    throw new NotImplementedException("");
+
+                }
+
+                 //Attribute property =  attributes.get(attrName);
+                 //Object value = property.getValue();
+//                 if (value instanceof List)
+//                     ((List)(value)).add(attribute.getValue());
+//                 else{
+//                     List list = new ArrayList();
+//                     list.add(value);
+//                     list.add(attribute.getValue());
+//                     property.setValue(list);
+//                 }
+                attributes.put(newAttName, attribute2);
             }else
                 attributes.put(attrName, attribute);
+
+            int count = (propertiesCounter.containsKey(attrName)?propertiesCounter.get(attrName):0);
+            count++;
+            propertiesCounter.put(attrName, count);
             //attributes.put(attrName, attValues);
 
         }

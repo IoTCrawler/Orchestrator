@@ -206,13 +206,15 @@ public class NgsiLDClientTest extends EnvVariablesSetter{
         //Assert.assertTrue(entities.getItems().get(0).toJsonObject().equals(entity.toJsonObject()));
     }
 
+
     @Order(3)
     @Test
     public void getEntityByIdTest() throws ExecutionException, InterruptedException {
         Collection<String> ids = Arrays.asList(new String[]{
-                //"iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_Temperature"
+                //"urn:ngsi-ld:MultiSensor_AEON_Labs_ZW100_MultiSensor_6"
                 entity.getId()
         });
+
 //        Collection<String> types = Arrays.asList(new String[]{
 //                entity.getType()
 //                //"sosa:Sensor"

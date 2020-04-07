@@ -21,13 +21,10 @@ package com.agtinternational.iotcrawler.core.models;
  */
 
 import com.agtinternational.iotcrawler.core.Utils;
+import com.agtinternational.iotcrawler.core.ontologies.SOSA;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.vocabulary.RDFS;
-
-import static com.agtinternational.iotcrawler.core.Constants.sosaNS;
-import static com.agtinternational.iotcrawler.core.Constants.sosaPrefix;
 
 
 public class ObservableProperty extends RDFModel {

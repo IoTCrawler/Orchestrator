@@ -147,11 +147,11 @@ public class IoTCrawlerRESTClient extends IotCrawlerClient implements AutoClosea
 
 
     @Override
-    public List<EntityLD> getEntitiesById(String[] ids) throws Exception {
+    public List<EntityLD> getEntityById(String id) throws Exception {
         //String type = entityType;
 //        if(cutURLs && type.startsWith("http://"))
 //            type = Utils.cutURL(type, RDFModel.getNamespaces());
-        Paginated<EntityLD> paginated = client.getEntities(Arrays.asList(ids), null, null,  null, null,null, null, 0, 0, false).get();
+        Paginated<EntityLD> paginated = client.getEntitiesSync(Arrays.asList(new String[]{ id }), null, null,  null, 0,0,false);
         List<EntityLD> entities = paginated.getItems();
 
         return entities;

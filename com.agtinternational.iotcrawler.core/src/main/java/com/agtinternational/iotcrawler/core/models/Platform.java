@@ -21,12 +21,13 @@ package com.agtinternational.iotcrawler.core.models;
  */
 
 import com.agtinternational.iotcrawler.core.Utils;
+import com.agtinternational.iotcrawler.core.ontologies.Geo;
+import com.agtinternational.iotcrawler.core.ontologies.SOSA;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.vocabulary.RDFS;
 
 import static com.agtinternational.iotcrawler.core.Constants.*;
-import static com.agtinternational.iotcrawler.core.models.SOSA.isHostedBy;
 
 
 public class Platform extends RDFModel {
@@ -61,12 +62,12 @@ public class Platform extends RDFModel {
     }
 
     public String location(){
-        String ret = (String)getAttribute(geoNS + "Point");
+        String ret = (String)getAttribute(Geo.Point);
         return ret;
     }
 
     public void location(Object value){
-        addProperty(geoNS + "Point", value);
+        addProperty(Geo.Point, value);
     }
 
     public static String getTypeUri(){

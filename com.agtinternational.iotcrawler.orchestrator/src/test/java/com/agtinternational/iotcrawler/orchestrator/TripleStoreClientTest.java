@@ -20,6 +20,7 @@ package com.agtinternational.iotcrawler.orchestrator;
  * #L%
  */
 
+import com.agtinternational.iotcrawler.core.ontologies.IotStream;
 import com.agtinternational.iotcrawler.orchestrator.clients.TripleStoreClient;
 import com.agtinternational.iotcrawler.core.models.*;
 import org.apache.jena.atlas.web.auth.SimpleAuthenticator;
@@ -34,7 +35,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
-import static com.agtinternational.iotcrawler.core.Constants.iotcNS;
+
 
 public class TripleStoreClientTest {
 
@@ -65,11 +66,11 @@ public class TripleStoreClientTest {
 
     @Test
     public void insertModelTest() throws Exception {
-        IoTStream ioTStream = new IoTStream(iotcNS+"#testStream");
-        ioTStream.addProperty(iotcNS+"#protocol", "dhcp");
+        IoTStream ioTStream = new IoTStream( IotStream.NS+"#testStream");
+        ioTStream.addProperty(IotStream.NS+"#protocol", "dhcp");
         tripleStoreClient.insertModel(ioTStream.getModel());
 
-        Model ret = tripleStoreClient.queryModel(URI.create(iotcNS+"#testStream"));
+        Model ret = tripleStoreClient.queryModel(URI.create(IotStream.NS+"#testStream"));
         String abc = "abc";
     }
 
@@ -77,7 +78,7 @@ public class TripleStoreClientTest {
     public void queryModelTest() throws Exception {
         //IoTStream ioTStream = new IoTStream(agtIoTC+"#testStream");
         //List<Pair<RDFNode, RDFNode>> ret = tripleStoreClient.queryAllTriplesOfAResource(agtIoTC+"#testStream");
-        Model ret = tripleStoreClient.queryModel(URI.create(iotcNS+"#testStream"));
+        Model ret = tripleStoreClient.queryModel(URI.create(IotStream.NS+"#testStream"));
         String abc = "abc";
     }
 

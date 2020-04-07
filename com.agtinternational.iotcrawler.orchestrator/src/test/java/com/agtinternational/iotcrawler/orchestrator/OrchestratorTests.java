@@ -28,8 +28,9 @@ import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 //import com.agtinternational.iotcrawler.orchestrator.clients.TripleStoreMDRClient;
 import com.agtinternational.iotcrawler.core.models.*;
 import com.agtinternational.iotcrawler.fiware.models.subscription.Endpoint;
+import com.agtinternational.iotcrawler.fiware.models.subscription.EntityInfo;
 import com.agtinternational.iotcrawler.fiware.models.subscription.NotificationParams;
-import com.agtinternational.iotcrawler.fiware.models.subscription.SubscriptionLD;
+import com.agtinternational.iotcrawler.fiware.models.subscription.Subscription;
 import com.google.gson.JsonObject;
 import com.orange.ngsi2.model.Condition;
 import com.orange.ngsi2.model.SubjectEntity;
@@ -68,10 +69,12 @@ public class OrchestratorTests {
 
     protected IotCrawlerClient client;
     Boolean cutURIs;
+    NgsiLDClient ngsiLDClient;
 
     @Before
     public void init(){
         EnvVariablesSetter.init();
+
         cutURIs = (System.getenv().containsKey(CUT_TYPE_URIS)?Boolean.parseBoolean(System.getenv(CUT_TYPE_URIS)):false);
         if(client==null)
             client = new Orchestrator(cutURIs);
@@ -81,6 +84,8 @@ public class OrchestratorTests {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        ngsiLDClient = new NgsiLDClient(System.getenv(NGSILD_BROKER_URL));
     }
 
     @Ignore
@@ -110,7 +115,7 @@ public class OrchestratorTests {
         String label = "TestStream_"+System.currentTimeMillis();
         IoTStream stream1 = new IoTStream("http://purl.org/iot/ontology/iot-stream#"+label, label);
 
-        NgsiLDClient ngsiLDClient = new NgsiLDClient(System.getenv(NGSILD_BROKER_URL));
+
         EntityLD entityLD = stream1.toEntityLD(cutURIs);
         entityLD.setContext(null);
         boolean result = ngsiLDClient.addEntitySync(entityLD);
@@ -119,6 +124,17 @@ public class OrchestratorTests {
         LOGGER.info("Stream was registered");
     }
 
+    @Ignore
+    @Test
+    public void deleteStream(){
+        boolean success = ngsiLDClient.deleteEntitySync("test:testUri2");
+        if(success)
+            org.junit.Assert.assertTrue("Entity deleted", true);
+        else
+            org.junit.Assert.fail("Failed to delete entity");
+
+        LOGGER.info("Entity deleted");
+    }
 
     @Test
     @Order(3)
@@ -177,7 +193,7 @@ public class OrchestratorTests {
         byte[] iotStreamModelJson = Files.readAllBytes(Paths.get("samples/IoTStream.json"));
         IoTStream ioTStream = IoTStream.fromJson(iotStreamModelJson);
 
-        List<IoTStream> streams = client.getStreamsById(new String[]{ioTStream.getURI()});
+        List<IoTStream> streams = client.getStreamById(ioTStream.getURI());
         //List<IoTStream> streams = orchestrator.getStreams("SELECT ?s ?p ?o WHERE { ?s ?p ?o . FILTER (?s=<"+ioTStream.getURI()+">) . } ");
         Assert.notNull(streams);
         LOGGER.info(streams.size()+" streams returned");
@@ -194,9 +210,9 @@ public class OrchestratorTests {
 //        .subject("urn:ngsi-ld:Vehicle:A188")
 //        .build();
 
-        String[] ids = new String[]{"iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_BatteryLevel"};
+        String id = "urn:ngsi-ld:MultiSensor_AEON_Labs_ZW100_MultiSensor_6";
 
-        List<EntityLD> entities = client.getEntitiesById(ids, IoTStream.getTypeUri());
+        List<EntityLD> entities = client.getEntityById(id);
         //List<Sensor> sensors = client.getEntitiesById(ids, Sensor.class);
 
         Assert.notNull(entities );
@@ -286,24 +302,38 @@ public class OrchestratorTests {
         //SubjectSubscription subjectSubscription = new SubjectSubscription(Arrays.asList(new SubjectEntity[]{ subjectEntity }), pressureCondition);
 
 
+        List<String> watchedAttributes = Arrays.asList(new String[]{ "temperature" });
+
+        //Condition pressureCondition = new Condition();
+        //pressureCondition.setAttributes(Arrays.asList(new String[]{ "temperature" }));
+
+        //SubjectSubscription subjectSubscription = new SubjectSubscription(Arrays.asList(new SubjectEntity[]{ subjectEntity }), pressureCondition);
+
+
+
+        EntityInfo entityInfo = new EntityInfo(ioTStream.getURI(), ioTStream.getTypeURI());
+
         NotificationParams notification = new NotificationParams();
         notification.setAttributes(Arrays.asList(new String[]{ "location" }));
         notification.setEndpoint(new Endpoint(new URL(System.getenv(HTTP_REFERENCE_URL)), ContentType.APPLICATION_JSON));
-        SubscriptionLD subscription = new SubscriptionLD(
+
+        Subscription subscription = new Subscription(
                 UUID.randomUUID().toString(),
-                Arrays.asList(new SubjectEntity[]{ subjectEntity }),
+                Arrays.asList(new EntityInfo[]{ entityInfo }),
+                Arrays.asList(new String[]{ "temperature" }),
                 notification,
                 null,
                 null);
-        String id = client.subscribeTo(subscription, new Function<StreamObservation, Void>() {
+
+
+        String subscriptionId = client.subscribeTo(subscription, new Function<StreamObservation, Void>() {
             @Override
             public Void apply(StreamObservation streamObservation) {
-                Map<String, List<Object>> properties = streamObservation.getProperties();
                 return null;
             }
         });
-        Assert.notNull(id);
-        LOGGER.info("Subscription succeeded {}", id);
+        org.junit.Assert.assertNotNull(subscriptionId);
+        LOGGER.info("Subscription created");
     }
 
 

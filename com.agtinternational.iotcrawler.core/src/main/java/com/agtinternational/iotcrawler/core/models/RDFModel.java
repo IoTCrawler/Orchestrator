@@ -21,6 +21,8 @@ package com.agtinternational.iotcrawler.core.models;
  */
 
 import com.agtinternational.iotcrawler.core.Utils;
+import com.agtinternational.iotcrawler.core.ontologies.IotStream;
+import com.agtinternational.iotcrawler.core.ontologies.SOSA;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import com.agtinternational.iotcrawler.fiware.models.NGSILD.Relationship;
 import com.google.gson.*;
@@ -55,8 +57,8 @@ public class RDFModel {
 
     static
     {
-        namespaces.put(sosaPrefix, sosaNS);
-        namespaces.put(iotcPrefix, iotcNS);
+        namespaces.put(SOSA.Prefix, SOSA.NS);
+        namespaces.put(IotStream.Prefix, IotStream.NS);
         namespaces.put("rdfs", RDFS.getURI());
     }
 

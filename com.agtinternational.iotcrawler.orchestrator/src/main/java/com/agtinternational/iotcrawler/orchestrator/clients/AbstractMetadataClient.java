@@ -39,7 +39,7 @@ public abstract class AbstractMetadataClient {
     public abstract List<String> getEntityURIs(String query);
 
     //public abstract List<EntityLD> getEntities(String[] ids) throws Exception;
-    public abstract List<EntityLD> getEntitiesById(String[] ids, String typeURI) throws Exception;
+    public abstract List<EntityLD> getEntityById(String id) throws Exception;
     public abstract List<EntityLD> getEntities(String type, String query, Map<String, Number> ranking, int offset, int limit) throws Exception;
 
     public abstract String getBrokerHost();

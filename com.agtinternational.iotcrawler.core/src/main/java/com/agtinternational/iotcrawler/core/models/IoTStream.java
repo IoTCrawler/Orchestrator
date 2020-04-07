@@ -22,14 +22,12 @@ package com.agtinternational.iotcrawler.core.models;
 
 //import com.agtinternational.iotcrawler.core.LinkFilter;
 import com.agtinternational.iotcrawler.core.Utils;
+import com.agtinternational.iotcrawler.core.ontologies.IotStream;
+import com.agtinternational.iotcrawler.core.ontologies.SOSA;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.vocabulary.RDFS;
 
-import java.net.URI;
-import java.util.List;
-
-import static com.agtinternational.iotcrawler.core.Constants.*;
 
 public class IoTStream extends RDFModel {
 
@@ -54,7 +52,7 @@ public class IoTStream extends RDFModel {
 
 
     public static String getTypeUri(){
-        return iotcNS+"IotStream";
+        return IotStream.IotStream;
         //return iotcPrefix+":"+"iot-stream";//IoTStream.class.getSimpleName();
     }
 
@@ -85,19 +83,19 @@ public class IoTStream extends RDFModel {
 //    }
 
     public Object generatedBy(){
-        return getAttribute(iotcNS+"generatedBy");
+        return getAttribute(IotStream.generatedBy);
     }
 
     public void generatedBy(Object value){
-         addProperty(iotcNS+"generatedBy", value);
+         addProperty(IotStream.generatedBy, value);
     }
 
     public Object isDerivedFrom(){
-        return getAttribute(iotcNS+"isDerivedFrom");
+        return getAttribute(IotStream.derivedFrom);
     }
 
     public void isDerivedFrom(Object value){
-        addProperty(iotcNS+"isDerivedFrom", value);
+        addProperty(IotStream.derivedFrom, value);
     }
 
     public void observes(Object value){
@@ -108,4 +106,13 @@ public class IoTStream extends RDFModel {
         Object ret = getAttribute(SOSA.observes);
         return ret;
     }
+
+//    public void observes(Object value){
+//        addProperty(SOSA.observes, value);
+//    }
+//
+//    public Object observes(){
+//        Object ret = getAttribute(SOSA.observes);
+//        return ret;
+//    }
 }

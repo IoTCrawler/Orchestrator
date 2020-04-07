@@ -90,7 +90,7 @@ public class EntityLD /*extends Entity*/ {
         return context;
     }
 
-    public void addAttribute(String name, Property value){
+    public void addAttribute(String name, Attribute value){
         attributes.put(name, value);
     }
 

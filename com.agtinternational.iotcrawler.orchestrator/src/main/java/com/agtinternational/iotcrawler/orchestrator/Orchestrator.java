@@ -26,7 +26,6 @@ import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import com.agtinternational.iotcrawler.fiware.models.subscription.Subscription;
 //import com.agtinternational.iotcrawler.orchestrator.clients.IotBrokerDataClient;
 import com.agtinternational.iotcrawler.orchestrator.clients.NgsiLD_MdrClient;
-import com.agtinternational.iotcrawler.core.commands.*;
 import com.agtinternational.iotcrawler.core.models.*;
 import com.google.gson.*;
 import com.lambdaworks.redis.RedisClient;
@@ -38,13 +37,11 @@ import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang3.tuple.Pair;
 import eu.neclab.iotplatform.ngsi.api.datamodel.*;
 
-import org.apache.http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.lang.reflect.Method;
-import java.net.URI;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 import java.util.function.Function;
@@ -104,9 +101,10 @@ public class Orchestrator extends IotCrawlerClient {
         LOGGER.info("Initializing web server");
         httpServer = new HttpServer();
 
+        if(!System.getenv().containsKey(RANKING_COMPONENT_URL))
+            LOGGER.warn("RANKING_COMPONENT_URL is not specified");
+
         String brokerURL = (System.getenv().containsKey(RANKING_COMPONENT_URL)? System.getenv(RANKING_COMPONENT_URL): System.getenv(NGSILD_BROKER_URL));
-        if(brokerURL==null)
-            throw new Exception("Specify RANKING_COMPONENT_URL or NGSILD_BROKER_URL!");
 
         metadataClient = new NgsiLD_MdrClient(brokerURL, this.cutURIs);
         LOGGER.info("Initialized NGSI-LD Client to {}", metadataClient.getBrokerHost());
@@ -189,34 +187,34 @@ public class Orchestrator extends IotCrawlerClient {
             }
         }
 
-        if(connection!=null) {
-
-            String queueName = null;
-            try {
-                channel = connection.createChannel();
-                channel.exchangeDeclare(IOTCRAWLER_COMMANDS_EXCHANGE, "fanout");
-            } catch (Exception e) {
-                e.printStackTrace();
-                LOGGER.warn("Failed to declare command exchange");
-            }
-
-            try{
-                queueName = channel.queueDeclare().getQueue();
-                channel.queueBind(queueName, IOTCRAWLER_COMMANDS_EXCHANGE, "");
-
-                Consumer consumer = new DefaultConsumer(channel) {
-                    @Override
-                    public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) {
-                        receiveCommand(body, properties);
-                    }
-                };
-                channel.basicConsume(queueName, true, consumer);
-            } catch (Exception e) {
-                e.printStackTrace();
-                LOGGER.error("Failed to create rabbit channel/consumer");
-            }
-            LOGGER.info(" [*] Waiting for RPC messages via from Rabbit");
-        }
+//        if(connection!=null) {
+//
+//            String queueName = null;
+//            try {
+//                channel = connection.createChannel();
+//                channel.exchangeDeclare(IOTCRAWLER_COMMANDS_EXCHANGE, "fanout");
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                LOGGER.warn("Failed to declare command exchange");
+//            }
+//
+//            try{
+//                queueName = channel.queueDeclare().getQueue();
+//                channel.queueBind(queueName, IOTCRAWLER_COMMANDS_EXCHANGE, "");
+//
+//                Consumer consumer = new DefaultConsumer(channel) {
+//                    @Override
+//                    public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) {
+//                        receiveCommand(body, properties);
+//                    }
+//                };
+//                channel.basicConsume(queueName, true, consumer);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                LOGGER.error("Failed to create rabbit channel/consumer");
+//            }
+//            LOGGER.info(" [*] Waiting for RPC messages via from Rabbit");
+//        }
     }
 
     private void initHttpServer(){
@@ -590,8 +588,8 @@ public class Orchestrator extends IotCrawlerClient {
     }
 
     @Override
-    public List<EntityLD> getEntitiesById(String[] ids, String targetClass) throws Exception {
-        return metadataClient.getEntitiesById(ids, targetClass);
+    public List<EntityLD> getEntityById(String id) throws Exception {
+        return metadataClient.getEntityById(id);
     }
 
     //Function for resolving json-based queires (graphGL ones?)

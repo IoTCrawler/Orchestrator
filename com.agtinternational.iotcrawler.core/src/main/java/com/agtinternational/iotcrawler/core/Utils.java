@@ -21,6 +21,7 @@ package com.agtinternational.iotcrawler.core;
  */
 
 import com.agtinternational.iotcrawler.core.models.*;
+import com.agtinternational.iotcrawler.core.ontologies.SOSA;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import com.google.gson.*;
 import org.apache.commons.io.Charsets;

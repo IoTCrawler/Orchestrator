@@ -254,8 +254,8 @@ public class IoTCrawlerRPCClient extends IotCrawlerClient implements AutoCloseab
 
 
     @Override
-    public List<EntityLD> getEntitiesById(String[] ids) throws Exception {
-        GetEntitiesCommand command = new GetEntitiesCommand(ids, 0, 0);
+    public List<EntityLD> getEntityById(String id) throws Exception {
+        GetEntitiesCommand command = new GetEntitiesCommand(id, 0, 0);
         List<EntityLD> entities = execute(command);
         return entities;
     }

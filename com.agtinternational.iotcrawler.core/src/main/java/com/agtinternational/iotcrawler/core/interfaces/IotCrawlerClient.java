@@ -36,8 +36,8 @@ import java.util.function.Function;
 public abstract class IotCrawlerClient implements Component {
 
     /////////////////////////////////////Streams
-    public List<IoTStream> getStreamsById(String[] ids) throws Exception{
-        return getEntitiesById(ids, IoTStream.class);
+    public List<IoTStream> getStreamById(String id) throws Exception{
+        return getEntityById(id, IoTStream.class);
     }
 
     public List<IoTStream> getStreams(String query, Map<String, Number> ranking, int offset, int limit) throws Exception{
@@ -69,8 +69,8 @@ public abstract class IotCrawlerClient implements Component {
 
     public abstract List<String> getEntityURIs(String query, int offset, int limit) throws Exception;
 
-    public <T> List<T> getEntitiesById(String[] ids, Class<T> targetClass) throws Exception{
-        List<EntityLD> entities = getEntitiesById(ids/*, Utils.getTypeURI(targetClass)*/);
+    public <T> List<T> getEntityById(String id, Class<T> targetClass) throws Exception{
+        List<EntityLD> entities = getEntityById(id);
         return Utils.convertEntitiesToTargetClass(entities, targetClass);
     }
 
@@ -80,7 +80,7 @@ public abstract class IotCrawlerClient implements Component {
 //    }
 
     //public abstract List<EntityLD> getEntitiesById(String[] ids, String entityType) throws Exception;
-    public abstract List<EntityLD> getEntitiesById(String[] ids) throws Exception;
+    public abstract List<EntityLD> getEntityById(String id) throws Exception;
     public abstract List<EntityLD> getEntities(String entityType, String query, Map<String, Number> ranking, int offset, int limit) throws Exception;
     public abstract  <T> List<T> getEntities(Class<T> targetClass, String query,  Map<String, Number> ranking, int offset, int limit) throws Exception;
 

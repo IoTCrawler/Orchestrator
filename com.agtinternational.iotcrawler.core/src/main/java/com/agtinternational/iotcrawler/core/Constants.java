@@ -38,14 +38,9 @@ public class Constants {
 //    public static final String HTTP_SERVER_HOST = "HTTP_SERVER_HOST";
 //    public static final String HTTP_SERVER_PORT = "HTTP_SERVER_PORT";
 
-    public static final String sosaNS = "http://www.w3.org/ns/sosa/";
-    public static final String sosaPrefix = "sosa";
 
-    public static final String iotcNS = "http://purl.org/iot/ontology/iot-stream#";
-    public static final String iotcPrefix = "iot-stream";
 
-    public static final String geoNS = "https://www.w3.org/2003/01/geo/";
-    public static final String geoPrefix = "geo";
+
 
 
 

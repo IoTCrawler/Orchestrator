@@ -234,13 +234,16 @@ public class NgsiLDClient {
 
             @Override
             public void onSuccess(Paginated<EntityLD> entityLDPaginated) {
+
                 ret.add(entityLDPaginated);
+                reqFinished.release();
             }
 
             @Override
             public void onFailure(Throwable throwable) {
                 LOGGER.error("Failed to get entities: {}", throwable.getLocalizedMessage());
                 throwable.printStackTrace();
+                reqFinished.release();
             }
         });
 

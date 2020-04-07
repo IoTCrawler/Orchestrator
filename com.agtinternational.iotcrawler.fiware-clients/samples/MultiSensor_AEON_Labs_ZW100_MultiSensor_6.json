@@ -1,0 +1,19 @@
+{
+  "id": "urn:ngsi-ld:MultiSensor_AEON_Labs_ZW100_MultiSensor_6",
+  "type": "http://www.w3.org/ns/sosa/Sensor",
+  "http://www.agtinternational.com/ontologies/SmartHome#type": {
+    "type": "Property",
+    "value": "http://www.agtinternational.com/ontologies/devices#MultiSensor"
+  },
+  "http://www.w3.org/2000/01/rdf-schema#label": {
+    "type": "Property",
+    "value": "AEON Labs ZW100 MultiSensor 6"
+  },
+  "http://www.w3.org/ns/sosa/isHostedBy": {
+    "type": "Relationship",
+    "object": "urn:ngsi-ld:Platform_homee_00055110D732"
+  },
+  "@context": [
+    "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"
+  ]
+}

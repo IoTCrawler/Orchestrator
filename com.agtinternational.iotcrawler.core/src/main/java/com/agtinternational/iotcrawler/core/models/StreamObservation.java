@@ -21,6 +21,8 @@ package com.agtinternational.iotcrawler.core.models;
  */
 
 import com.agtinternational.iotcrawler.core.Utils;
+import com.agtinternational.iotcrawler.core.ontologies.IotStream;
+import com.agtinternational.iotcrawler.core.ontologies.SOSA;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import com.google.gson.JsonObject;
 import eu.neclab.iotplatform.ngsi.api.datamodel.ContextElement;
@@ -28,8 +30,6 @@ import org.apache.jena.rdf.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.agtinternational.iotcrawler.core.Constants.iotcNS;
-import static com.agtinternational.iotcrawler.core.Constants.iotcPrefix;
 
 
 public class StreamObservation extends RDFModel {
@@ -50,7 +50,7 @@ public class StreamObservation extends RDFModel {
     public static String getTypeUri(){
         //return StreamObservation.class.getSimpleName();
         //return "iotc:StreamObservation";
-        return iotcNS+":"+"StreamObservation";
+        return IotStream.StreamObservation;
     }
 
     public static String getTypeUri(Boolean cutURI){
@@ -82,12 +82,12 @@ public class StreamObservation extends RDFModel {
     }
 
     public Object belongsTo(){
-        Object ret = getAttribute(iotcNS+"belongsTo");
+        Object ret = getAttribute(IotStream.belongsTo);
         return ret;
     }
 
     public void belongsTo(Object value){
-        addProperty(iotcNS+"belongsTo", value);
+        addProperty(IotStream.belongsTo, value);
     }
 
     public static StreamObservation fromEntity(EntityLD entity) throws Exception {

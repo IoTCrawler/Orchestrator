@@ -70,6 +70,11 @@ public class NgsiLDConverter extends AbstractHttpMessageConverter<Object> implem
     }
 
     @Override
+    public boolean canWrite(Type type, Class<?> aClass, MediaType mediaType) {
+        return canWrite(aClass,mediaType);
+    }
+
+    @Override
     protected boolean supports(Class<?> clazz) {
         return true;// Entity.class == clazz;
     }
@@ -171,6 +176,7 @@ public class NgsiLDConverter extends AbstractHttpMessageConverter<Object> implem
     public Object read(Type type, Class<?> contextClass, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
         return super.read(contextClass,inputMessage);
     }
+
 
 
 

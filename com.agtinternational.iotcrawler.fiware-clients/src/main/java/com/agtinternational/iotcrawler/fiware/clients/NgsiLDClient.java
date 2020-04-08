@@ -95,6 +95,7 @@ public class NgsiLDClient {
 
     public NgsiLDClient(String baseURL){
         this();
+
         this.baseURL = baseURL;
         //AsyncClientHttpRequestFactory requestFactory = new HttpComponentsAsyncClientHttpRequestFactory();
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();

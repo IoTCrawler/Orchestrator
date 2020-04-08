@@ -126,7 +126,7 @@ public class OrchestratorTests {
 
     @Ignore
     @Test
-    public void deleteStream(){
+    public void deleteStream() throws Exception {
         boolean success = ngsiLDClient.deleteEntitySync("test:testUri2");
         if(success)
             org.junit.Assert.assertTrue("Entity deleted", true);

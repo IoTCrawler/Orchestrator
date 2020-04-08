@@ -97,13 +97,13 @@ public class NgsiLDRestTemplate extends RestTemplate implements RestOperations {
 //        return new ResponseEntityResponseExtractor<>(responseType);
 //    }
 
-    protected <T> RequestCallback httpEntityCallback(Object requestBody) {
-        return new HttpEntityRequestCallback(requestBody);
-    }
-
-    protected <T> RequestCallback httpEntityCallback(Object requestBody, Type responseType) {
-        return new HttpEntityRequestCallback(requestBody, responseType);
-    }
+//    protected <T> RequestCallback httpEntityCallback(Object requestBody) {
+//        return new HttpEntityRequestCallback(requestBody);
+//    }
+//
+//    protected <T> RequestCallback httpEntityCallback(Object requestBody, Type responseType) {
+//        return new HttpEntityRequestCallback(requestBody, responseType);
+//    }
 
 //    private class ResponseEntityResponseExtractor<T> implements ResponseExtractor<ResponseEntity<T>> {
 //
@@ -197,7 +197,7 @@ public class NgsiLDRestTemplate extends RestTemplate implements RestOperations {
             List<MediaType> supportedMediaTypes = messageConverter.getSupportedMediaTypes();
             List<MediaType> result = new ArrayList<MediaType>(supportedMediaTypes.size());
             for (MediaType supportedMediaType : supportedMediaTypes) {
-                if (supportedMediaType.getCharSet() != null) {
+                if (supportedMediaType.getCharset() != null) {
                     supportedMediaType =
                             new MediaType(supportedMediaType.getType(), supportedMediaType.getSubtype());
                 }

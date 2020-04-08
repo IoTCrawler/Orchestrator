@@ -23,12 +23,16 @@
     "type" : "Property",
     "value" : "http://elite.polito.it/ontologies/dogont.owl#Kitchen"
   },
-  "sosa:hosts" : {
+  "sosa:hosts#1" : {
     "type" : "Relationship",
-    "object" : [
-      "iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_SoftwareRevision",
-      "iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_RelativeHumidity",
-      "iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_MotionAlarmCancelationDelay"
-    ]
+    "object" : "iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_SoftwareRevision"
+  },
+  "sosa:hosts#2" : {
+    "type" : "Relationship",
+    "object" : "iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_RelativeHumidity"
+  },
+  "sosa:hosts#3" : {
+    "type" : "Relationship",
+    "object" : "iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_MotionAlarmCancelationDelay"
   }
 }

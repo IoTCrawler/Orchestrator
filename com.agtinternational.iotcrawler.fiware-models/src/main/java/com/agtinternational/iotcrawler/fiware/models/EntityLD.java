@@ -25,6 +25,7 @@ import com.google.gson.*;
 import com.orange.ngsi2.model.Attribute;
 import org.apache.commons.lang3.NotImplementedException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.w3c.dom.Attr;
 
 import java.util.*;
 
@@ -78,7 +79,27 @@ public class EntityLD /*extends Entity*/ {
     }
 
     public Attribute getAttribute(String name){
-        Attribute ret = attributes.get(name);
+        //List<Attribute> attrList = new ArrayList<>();
+        Attribute ret = null;
+        for(String key: attributes.keySet()) {
+            Attribute att = attributes.get(key);
+            if(key.startsWith(name)) {
+                if(ret!=null) {
+                   List values = null;
+                   if(!(ret.getValue() instanceof List)) {
+                       values = new ArrayList();
+                       values.add(ret.getValue());
+                   }else
+                       values = (List)ret.getValue();
+                   values.add(att.getValue());
+                   ret.setValue(values);
+                }else
+                    ret = att;
+                //Attribute attribute = attributes.get(name);
+                //attrList.add(attribute);
+            }
+        }
+
         return ret;
     }
 

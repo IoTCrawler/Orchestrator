@@ -44,8 +44,8 @@ public class ModelsTest {
                 //new Object[]{ readEntity("samples/VehicleLD.json") },
                 //new Object[]{ readEntity("samples/TemperatureSensorLD.json") },
                 //new Object[]{ readEntity("samples/IoTStreamLD.json") }
-                //new Object[]{ readEntity("samples/PlatformLD.json") }
-                new Object[]{ readEntity("samples/MultiplePropertyValuesEntity.json") }
+                new Object[]{ readEntity("samples/PlatformLD.json") }
+                //new Object[]{ readEntity("samples/MultiplePropertyValuesEntity.json") }
 
         });
     }
@@ -64,7 +64,7 @@ public class ModelsTest {
     @Test
     //JsonString->EntityLD->JsonString2->Entity2==Entity
     public void fromJsonStringTest() throws Exception {
-
+       //entity.getAttribute("sosa:hosts");
         String JsonString2 = Utils.prettyPrint(entity.toJsonObject());
         Files.write(Paths.get("target",Utils.getFragment(entity.getId()+".json")), JsonString2.getBytes());
 

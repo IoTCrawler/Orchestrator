@@ -33,9 +33,12 @@ import com.lambdaworks.redis.api.StatefulRedisConnection;
 import com.lambdaworks.redis.api.sync.RedisCommands;
 import com.rabbitmq.client.*;
 
+import eu.neclab.iotplatform.ngsi.api.datamodel.ContextElement;
+import eu.neclab.iotplatform.ngsi.api.datamodel.ContextElementResponse;
+import eu.neclab.iotplatform.ngsi.api.datamodel.NotifyContextRequest;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang3.tuple.Pair;
-import eu.neclab.iotplatform.ngsi.api.datamodel.*;
+//import eu.neclab.iotplatform.ngsi.api.datamodel.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

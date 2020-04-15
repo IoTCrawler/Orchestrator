@@ -80,21 +80,31 @@ public class EntityLD /*extends Entity*/ {
 
     public Attribute getAttribute(String name){
         //List<Attribute> attrList = new ArrayList<>();
+
         Attribute ret = null;
+
+
+
         for(String key: attributes.keySet()) {
-            Attribute att = attributes.get(key);
-            if(key.startsWith(name)) {
-                if(ret!=null) {
+            if(key.startsWith(name)){
+                Attribute origAtt = attributes.get(key);
+
+                if(ret!=null){
                    List values = null;
                    if(!(ret.getValue() instanceof List)) {
                        values = new ArrayList();
                        values.add(ret.getValue());
                    }else
                        values = (List)ret.getValue();
-                   values.add(att.getValue());
+
+                   values.add(origAtt.getValue());
                    ret.setValue(values);
-                }else
-                    ret = att;
+                }else {
+                    ret = new Attribute();
+                    ret.setValue(origAtt.getValue());
+                    ret.setMetadata(origAtt.getMetadata());
+                    ret.setType(origAtt.getType());
+                }
                 //Attribute attribute = attributes.get(name);
                 //attrList.add(attribute);
             }

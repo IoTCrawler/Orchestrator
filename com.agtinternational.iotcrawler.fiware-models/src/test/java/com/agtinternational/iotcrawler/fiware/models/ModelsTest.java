@@ -21,6 +21,7 @@ package com.agtinternational.iotcrawler.fiware.models;
  */
 
 import com.google.gson.JsonObject;
+import com.orange.ngsi2.model.Attribute;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -64,7 +65,9 @@ public class ModelsTest {
     @Test
     //JsonString->EntityLD->JsonString2->Entity2==Entity
     public void fromJsonStringTest() throws Exception {
-       //entity.getAttribute("sosa:hosts");
+        Attribute attribute = entity.getAttribute("sosa:hosts");
+        Attribute attribute2 = entity.getAttribute("sosa:hosts");
+        Attribute attribute3 = entity.getAttribute("sosa:hosts");
         String JsonString2 = Utils.prettyPrint(entity.toJsonObject());
         Files.write(Paths.get("target",Utils.getFragment(entity.getId()+".json")), JsonString2.getBytes());
 

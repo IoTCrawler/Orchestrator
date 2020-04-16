@@ -39,32 +39,29 @@ public class CustomAsyncRestTemplate extends AsyncRestTemplate {
 
     public <T> ListenableFuture<T> execute(String url, HttpMethod method, AsyncRequestCallback requestCallback, ResponseExtractor<T> responseExtractor, Object... urlVariables) throws RestClientException {
         URI expanded=null;
-//        try {
-//            expanded = URI.create(url);
-//        }
-//        catch (Exception e){
-        URI aaaurl = new UriTemplate(url).expand(urlVariables);
-        String query = aaaurl.getQuery()+(aaaurl.getFragment()!=null?"#"+aaaurl.getFragment():"");
-        query = query.replace("%22","\"");
-
-//                URI(String scheme,
-//                        String userInfo, String host, int port,
-//                String path, String query, String fragment)
-
         try {
-            expanded = new URI(aaaurl.getScheme(),
-                    aaaurl.getUserInfo(),
-                    aaaurl.getHost(),
-                    aaaurl.getPort(),
-                    aaaurl.getPath(),
-                    query,
-                    null);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
+            expanded = URI.create(url.replace("#","%23"));
         }
+        catch (Exception e){
+            URI aaaurl = new UriTemplate(url).expand(urlVariables);
+            String query = aaaurl.getQuery()+(aaaurl.getFragment()!=null?"#"+aaaurl.getFragment():"");
+            query = query.replace("%22","\"");
+            query = query.replace("#","%23");
+
+            try {
+                expanded = new URI(aaaurl.getScheme(),
+                        aaaurl.getUserInfo(),
+                        aaaurl.getHost(),
+                        aaaurl.getPort(),
+                        aaaurl.getPath(),
+                        query,
+                        null);
+            } catch (URISyntaxException e2) {
+                e2.printStackTrace();
+            }
 
 
-        //}
+        }
         return this.doExecute(expanded, method, requestCallback, responseExtractor);
     }
 

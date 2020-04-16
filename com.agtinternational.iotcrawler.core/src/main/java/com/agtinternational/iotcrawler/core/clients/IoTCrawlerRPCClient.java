@@ -165,7 +165,7 @@ public class IoTCrawlerRPCClient extends IotCrawlerClient implements AutoCloseab
 
 
     @Override
-    public List<IoTStream> getStreams(Map<String, String> query, Map<String, Number> ranking, int offset, int limit) throws Exception {
+    public List<IoTStream> getStreams(Map<String, Object> query, Map<String, Number> ranking, int offset, int limit) throws Exception {
         List<IoTStream> ret = new ArrayList<>();
         throw new NotImplementedException("");
 //        GetEntitiesCommand command = new GetEntitiesCommand(IoTStream.getTypeUri(), query, ranking, offset, limit);
@@ -186,7 +186,7 @@ public class IoTCrawlerRPCClient extends IotCrawlerClient implements AutoCloseab
 
 
     @Override
-    public List<Sensor> getSensors(Map<String, String> query, int offset, int limit) throws Exception {
+    public List<Sensor> getSensors(Map<String, Object> query, int offset, int limit) throws Exception {
         List<Sensor> ret = new ArrayList<>();
         throw new NotImplementedException("");
 //        GetEntitiesCommand command = new GetEntitiesCommand(Sensor.getTypeUri(), query, null, offset, limit);
@@ -208,7 +208,7 @@ public class IoTCrawlerRPCClient extends IotCrawlerClient implements AutoCloseab
 
 
     @Override
-    public List<Platform> getPlatforms(Map<String, String> query, int offset, int limit) throws Exception {
+    public List<Platform> getPlatforms(Map<String, Object> query, int offset, int limit) throws Exception {
         List<Platform> ret = new ArrayList<>();
         throw new NotImplementedException("");
 
@@ -229,7 +229,7 @@ public class IoTCrawlerRPCClient extends IotCrawlerClient implements AutoCloseab
     }
 
     @Override
-    public List<ObservableProperty> getObservableProperties(Map<String, String> query, int offset, int limit) throws Exception {
+    public List<ObservableProperty> getObservableProperties(Map<String, Object> query, int offset, int limit) throws Exception {
         List<ObservableProperty> ret = new ArrayList<>();
         throw new NotImplementedException("");
 
@@ -250,7 +250,7 @@ public class IoTCrawlerRPCClient extends IotCrawlerClient implements AutoCloseab
 
 
     @Override
-    public List<String> getEntityURIs(Map<String, String> query, int offset, int limit) {
+    public List<String> getEntityURIs(Map<String, Object> query, int offset, int limit) {
         throw new NotImplementedException("Not implemented");
     }
 
@@ -264,14 +264,14 @@ public class IoTCrawlerRPCClient extends IotCrawlerClient implements AutoCloseab
 
 
 //    @Override
-//    public List<EntityLD> getEntities(String entityType, Map<String, String> query, int offset, int limit) throws Exception {
+//    public List<EntityLD> getEntities(String entityType, Map<String, Object> query, int offset, int limit) throws Exception {
 //        GetEntitiesCommand command = new GetEntitiesCommand(entityType, query, offset, limit);
 //        List<EntityLD> entities = execute(command);
 //        return entities;
 //    }
 
     @Override
-    public <T> List<T> getEntities(Class<T> targetClass, Map<String, String> query, Map<String, Number> ranking, int offset, int limit) throws Exception {
+    public <T> List<T> getEntities(Class<T> targetClass, Map<String, Object> query, Map<String, Number> ranking, int offset, int limit) throws Exception {
         throw new NotImplementedException("");
 //        GetEntitiesCommand command = new GetEntitiesCommand(targetClass, query, null, offset, limit);
 //        List<T> entities = execute(command, targetClass);
@@ -285,7 +285,7 @@ public class IoTCrawlerRPCClient extends IotCrawlerClient implements AutoCloseab
     }
 
     @Override
-    public List<EntityLD> getEntities(String entityType, Map<String, String> query, Map<String, Number> ranking, int offset, int limit) throws Exception {
+    public List<EntityLD> getEntities(String entityType, Map<String, Object> query, Map<String, Number> ranking, int offset, int limit) throws Exception {
         throw new NotImplementedException("");
 //        GetEntitiesCommand command = new GetEntitiesCommand(entityType, query, ranking, offset, limit);
 //        List<EntityLD> entities = execute(command);

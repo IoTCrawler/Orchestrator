@@ -61,7 +61,7 @@ import static org.junit.Assert.assertNotNull;
  * Tests for Ngsi2Client
  */
 @RunWith(Parameterized.class)
-public class NgsiLDClientTest extends EnvVariablesSetter{
+public class NgsiLDClientTest{
 
     private static Logger LOGGER = LoggerFactory.getLogger(NgsiLDClientTest.class);
 
@@ -113,7 +113,7 @@ public class NgsiLDClientTest extends EnvVariablesSetter{
 
     @Before
     public void init(){
-        super.init();
+        EnvVariablesSetter.init();
         
         if (System.getenv().containsKey(NGSILD_BROKER_URL))
             serverUrl = System.getenv(NGSILD_BROKER_URL);

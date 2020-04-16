@@ -415,8 +415,9 @@ public class NgsiLDClient {
      * @return the listener to notify of completion
      */
     public ListenableFuture<Void> addEntity(EntityLD entity) throws Exception {
-        //List<ListenableFuture<Void>> ret = new ArrayList<>();
+
         ListenableFuture<Void> ret = adapt(request(HttpMethod.POST, UriComponentsBuilder.fromHttpUrl(baseURL).path("v1/entities/").toUriString(), entity, Void.class));
+        //Additional logic getting added entity back
         List<Exception> exceptions = new ArrayList<>();
         ret.addCallback(new ListenableFutureCallback<Void>() {
             @Override

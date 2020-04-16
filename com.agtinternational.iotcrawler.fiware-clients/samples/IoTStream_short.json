@@ -1,6 +1,6 @@
 {
   "id": "iotc:Stream:Short1",
-  "type": "iotc:IoTStream",
+  "type": "http://purl.org/iot/ontology/iot-stream#IotStream",
   "@context": [
     "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"
   ],

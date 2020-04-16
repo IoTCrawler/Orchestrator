@@ -244,7 +244,7 @@ public class OrchestratorTests {
     @Order(11)
     public void getAllObservablePropertiesTest() throws Exception {
         LOGGER.info("getAllObservablePropertiesTest()");
-        Map<String,String> query = new HashMap<>();
+        Map<String,Object> query = new HashMap<>();
         query.put(RDFS.label.getURI(), "Motion");
 
         List<ObservableProperty> items = client.getObservableProperties(query,0,0);
@@ -258,7 +258,7 @@ public class OrchestratorTests {
     public void getByQueryTest() throws Exception {
         LOGGER.info("getByQueryTest()");
         //List<EntityLD> streams = orchestrator.getEntities("Vehicle", "brandName.value=Mercedes");
-        Map<String,String> query = new HashMap<>();
+        Map<String,Object> query = new HashMap<>();
         query.put("sosa:madeBySensor", "iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_MotionAlarmCancelationDelay");
         query.put("http://www.w3.org/2000/01/rdf-schema#label","iotc:Stream_AEON+Labs+ZW100+MultiSensor+6_Brightness");
 
@@ -272,7 +272,7 @@ public class OrchestratorTests {
     public void getCustomEntityTest() throws Exception {
         LOGGER.info("getCustomEntityTest()");
         //String query = "{'sosa:madeBySensor' : ['iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_Temperature']}";
-        Map<String, String> query = new HashMap<>();
+        Map<String, Object> query = new HashMap<>();
         query.put("sosa:madeBySensor", "iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_MotionAlarmCancelationDelay");
                 //"{\"sosa:madeBySensor\":[\"iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_MotionAlarmCancelationDelay\",\"iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_Temperature\"]}";
         List<EntityLD> models = client.getEntities(IoTStream.getTypeUri(), query, null, 0,0);

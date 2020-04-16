@@ -42,8 +42,6 @@ import javax.management.InstanceAlreadyExistsException;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
-import static com.agtinternational.iotcrawler.fiware.clients.Constants.NGSILD_BROKER_URL;
-
 
 public class NgsiLD_MdrClient extends AbstractMetadataClient {
     private Logger LOGGER = LoggerFactory.getLogger(this.getClass());
@@ -101,7 +99,7 @@ public class NgsiLD_MdrClient extends AbstractMetadataClient {
     }
 
     @Override
-    public List<String> getEntityURIs(Map<String,String> query) {
+    public List<String> getEntityURIs(Map<String,Object> query) {
         throw new NotImplementedException();
     }
 
@@ -113,12 +111,12 @@ public class NgsiLD_MdrClient extends AbstractMetadataClient {
 //        String[] types = new String[]{type};
         String[] types = null;
         Paginated<EntityLD> paginated = null;
-        paginated = ngsiLDClient.getEntitiesSync(Arrays.asList(new String[]{ id }), null, null, null, 0, 0, false);
+        paginated = ngsiLDClient.getEntitiesSync(Arrays.asList(new String[]{ id }), null, null, null, null,null, null,0, 0, false);
         return (List<EntityLD>)paginated.getItems();
     }
 
     @Override
-    public List<EntityLD> getEntities(String type, Map<String,String> query, Map<String, Number> ranking, int offset, int limit) throws Exception {
+    public List<EntityLD> getEntities(String type, Map<String, Object> query, Map<String, Number> ranking, int offset, int limit) throws Exception {
 
         if(cutURIs)
             type = Utils.cutURL(type, RDFModel.getNamespaces());
@@ -132,7 +130,7 @@ public class NgsiLD_MdrClient extends AbstractMetadataClient {
         
 
         Paginated<EntityLD> paginated = null;
-        paginated = ngsiLDClient.getEntities(null, null, Arrays.asList(types), null, query,null, null, offset, limit, false).get();
+        paginated = ngsiLDClient.getEntitiesSync(null, null, Arrays.asList(types), null, query, null, null, offset, limit, false);
         return (List<EntityLD>)paginated.getItems();
     }
 

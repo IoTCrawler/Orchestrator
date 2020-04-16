@@ -650,7 +650,7 @@ public class Orchestrator extends IotCrawlerClient {
     }
 
     @Override
-    public <T> List<T> getEntities(Class<T> targetClass, Map<String,String> query, Map<String, Number> ranking,  int offset, int limit) throws Exception {
+    public <T> List<T> getEntities(Class<T> targetClass, Map<String,Object> query, Map<String, Number> ranking,  int offset, int limit) throws Exception {
 
         //Map<String,String> queryStr = resolveQuery(targetClass, query, ranking);
         List<EntityLD> entities = getEntities(Utils.getTypeURI(targetClass), query, ranking,  offset, limit);
@@ -665,7 +665,7 @@ public class Orchestrator extends IotCrawlerClient {
 
 
     @Override
-    public List<EntityLD> getEntities(String entityType, Map<String,String> query, Map<String, Number> ranking, int offset, int limit) throws Exception {
+    public List<EntityLD> getEntities(String entityType, Map<String,Object> query, Map<String, Number> ranking, int offset, int limit) throws Exception {
         List<EntityLD> ret = metadataClient.getEntities(entityType, query, ranking, offset, limit);
         return ret;
     }
@@ -678,7 +678,7 @@ public class Orchestrator extends IotCrawlerClient {
     }
 
     @Override
-    public List<String> getEntityURIs(Map<String,String> query, int offset, int limit) {
+    public List<String> getEntityURIs(Map<String,Object> query, int offset, int limit) {
         return metadataClient.getEntityURIs(query);
     }
 

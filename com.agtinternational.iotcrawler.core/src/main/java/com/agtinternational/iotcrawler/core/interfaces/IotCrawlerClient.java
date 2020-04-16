@@ -40,34 +40,34 @@ public abstract class IotCrawlerClient implements Component {
         return getEntityById(id, IoTStream.class);
     }
 
-    public List<IoTStream> getStreams(String query, Map<String, Number> ranking, int offset, int limit) throws Exception{
+    public List<IoTStream> getStreams(Map<String, Object> query, Map<String, Number> ranking, int offset, int limit) throws Exception{
         return getEntities(IoTStream.class, query, ranking, offset, limit);
     }
 
 
     /////////////////////////////////////Sensors
-    public List<Sensor> getSensors(String query, int offset, int limit) throws Exception{
+    public List<Sensor> getSensors(Map<String, Object> query, int offset, int limit) throws Exception{
         return getEntities(Sensor.class, query, null, offset, limit);
     }
 
     /////////////////////////////////////Platforms
-    public List<Platform> getPlatforms(String query, int offset, int limit) throws Exception{
+    public List<Platform> getPlatforms(Map<String, Object> query, int offset, int limit) throws Exception{
         return getEntities(Platform.class, query, null, offset, limit);
     }
 
     /////////////////////////////////////Properties
-    public List<ObservableProperty> getObservableProperties(String query, int offset, int limit) throws Exception{
+    public List<ObservableProperty> getObservableProperties(Map<String, Object> query, int offset, int limit) throws Exception{
         return getEntities(ObservableProperty.class, query, null, offset, limit);
     }
 
 
     /////////////////////////////////////Observations
-    public List<StreamObservation> getObservations(String streamId,  int offset, int limit) throws Exception{
-        return getEntities(StreamObservation.class, streamId, null, offset, limit);
+    public List<StreamObservation> getObservations(Map<String, Object> query,  int offset, int limit) throws Exception{
+        return getEntities(StreamObservation.class, query, null, offset, limit);
     }
 
 
-    public abstract List<String> getEntityURIs(String query, int offset, int limit) throws Exception;
+    public abstract List<String> getEntityURIs(Map<String, Object> query, int offset, int limit) throws Exception;
 
     public <T> List<T> getEntityById(String id, Class<T> targetClass) throws Exception{
         List<EntityLD> entities = getEntityById(id);
@@ -81,8 +81,8 @@ public abstract class IotCrawlerClient implements Component {
 
     //public abstract List<EntityLD> getEntitiesById(String[] ids, String entityType) throws Exception;
     public abstract List<EntityLD> getEntityById(String id) throws Exception;
-    public abstract List<EntityLD> getEntities(String entityType, String query, Map<String, Number> ranking, int offset, int limit) throws Exception;
-    public abstract  <T> List<T> getEntities(Class<T> targetClass, String query,  Map<String, Number> ranking, int offset, int limit) throws Exception;
+    public abstract List<EntityLD> getEntities(String entityType, Map<String, Object> query, Map<String, Number> ranking, int offset, int limit) throws Exception;
+    public abstract  <T> List<T> getEntities(Class<T> targetClass, Map<String, Object> query,  Map<String, Number> ranking, int offset, int limit) throws Exception;
 
 
 //    public Boolean registerStream(IoTStream ioTStream) throws Exception { return registerEntity(ioTStream); }

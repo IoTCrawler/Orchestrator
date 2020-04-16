@@ -28,6 +28,7 @@ import org.springframework.web.client.*;
 import org.springframework.web.util.UriTemplate;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Map;
 
 public class CustomAsyncRestTemplate extends AsyncRestTemplate {
@@ -37,13 +38,33 @@ public class CustomAsyncRestTemplate extends AsyncRestTemplate {
     }
 
     public <T> ListenableFuture<T> execute(String url, HttpMethod method, AsyncRequestCallback requestCallback, ResponseExtractor<T> responseExtractor, Object... urlVariables) throws RestClientException {
-        URI expanded;
+        URI expanded=null;
+//        try {
+//            expanded = URI.create(url);
+//        }
+//        catch (Exception e){
+        URI aaaurl = new UriTemplate(url).expand(urlVariables);
+        String query = aaaurl.getQuery()+(aaaurl.getFragment()!=null?"#"+aaaurl.getFragment():"");
+        query = query.replace("%22","\"");
+
+//                URI(String scheme,
+//                        String userInfo, String host, int port,
+//                String path, String query, String fragment)
+
         try {
-            expanded = URI.create(url);
+            expanded = new URI(aaaurl.getScheme(),
+                    aaaurl.getUserInfo(),
+                    aaaurl.getHost(),
+                    aaaurl.getPort(),
+                    aaaurl.getPath(),
+                    query,
+                    null);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
         }
-        catch (Exception e){
-            expanded = new UriTemplate(url).expand(urlVariables);
-        }
+
+
+        //}
         return this.doExecute(expanded, method, requestCallback, responseExtractor);
     }
 

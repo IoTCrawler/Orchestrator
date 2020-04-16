@@ -1,6 +1,6 @@
 {
   "id": "urn:ngsi-ld:Sensor:B4:E6:2D:8A:20:DD",
-  "type": "http://www.w3.org/ns/sosa/Sensor/Sensor",
+  "type": "http://www.w3.org/ns/sosa/Sensor",
   "http://www.w3.org/ns/sosa/Sensor/madeObservation#1": {
     "type": "Relationship",
     "object": "urn:ngsi-ld:StreamObservation:B4:E6:2D:8A:20:DD:IAQ"

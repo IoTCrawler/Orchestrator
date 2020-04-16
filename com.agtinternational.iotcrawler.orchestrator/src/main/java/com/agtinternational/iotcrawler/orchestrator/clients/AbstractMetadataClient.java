@@ -36,11 +36,11 @@ public abstract class AbstractMetadataClient {
     public abstract Boolean registerEntity(RDFModel entitiy) throws Exception;
     public abstract Boolean registerEntity(String uri, Model entitiy) throws Exception;
 
-    public abstract List<String> getEntityURIs(String query);
+    public abstract List<String> getEntityURIs(Map<String,String> query);
 
     //public abstract List<EntityLD> getEntities(String[] ids) throws Exception;
     public abstract List<EntityLD> getEntityById(String id) throws Exception;
-    public abstract List<EntityLD> getEntities(String type, String query, Map<String, Number> ranking, int offset, int limit) throws Exception;
+    public abstract List<EntityLD> getEntities(String type, Map<String,String> query, Map<String, Number> ranking, int offset, int limit) throws Exception;
 
     public abstract String getBrokerHost();
 

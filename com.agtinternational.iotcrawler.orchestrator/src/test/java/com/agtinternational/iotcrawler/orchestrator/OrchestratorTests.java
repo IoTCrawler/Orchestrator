@@ -244,10 +244,10 @@ public class OrchestratorTests {
     @Order(11)
     public void getAllObservablePropertiesTest() throws Exception {
         LOGGER.info("getAllObservablePropertiesTest()");
-        JsonObject query = new JsonObject();
-        query.addProperty(RDFS.label.getURI(), "Motion");
+        Map<String,String> query = new HashMap<>();
+        query.put(RDFS.label.getURI(), "Motion");
 
-        List<ObservableProperty> items = client.getObservableProperties(query.toString(),0,0);
+        List<ObservableProperty> items = client.getObservableProperties(query,0,0);
         Assert.notNull(items);
         LOGGER.info(items.size()+" ObservableProperties returned");
     }
@@ -258,11 +258,11 @@ public class OrchestratorTests {
     public void getByQueryTest() throws Exception {
         LOGGER.info("getByQueryTest()");
         //List<EntityLD> streams = orchestrator.getEntities("Vehicle", "brandName.value=Mercedes");
-        JsonObject query = new JsonObject();
-        query.addProperty("sosa:madeBySensor", "iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_MotionAlarmCancelationDelay");
-        query.addProperty("http://www.w3.org/2000/01/rdf-schema#label","iotc:Stream_AEON+Labs+ZW100+MultiSensor+6_Brightness");
+        Map<String,String> query = new HashMap<>();
+        query.put("sosa:madeBySensor", "iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_MotionAlarmCancelationDelay");
+        query.put("http://www.w3.org/2000/01/rdf-schema#label","iotc:Stream_AEON+Labs+ZW100+MultiSensor+6_Brightness");
 
-        List<IoTStream> streams = client.getStreams(query.toString(), null, 0,0);
+        List<IoTStream> streams = client.getStreams(query, null, 0,0);
         String abc="213";
     }
 
@@ -272,7 +272,9 @@ public class OrchestratorTests {
     public void getCustomEntityTest() throws Exception {
         LOGGER.info("getCustomEntityTest()");
         //String query = "{'sosa:madeBySensor' : ['iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_Temperature']}";
-        String query = "{\"sosa:madeBySensor\":[\"iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_MotionAlarmCancelationDelay\",\"iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_Temperature\"]}";
+        Map<String, String> query = new HashMap<>();
+        query.put("sosa:madeBySensor", "iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_MotionAlarmCancelationDelay");
+                //"{\"sosa:madeBySensor\":[\"iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_MotionAlarmCancelationDelay\",\"iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_Temperature\"]}";
         List<EntityLD> models = client.getEntities(IoTStream.getTypeUri(), query, null, 0,0);
         String abc="213";
     }
@@ -404,7 +406,8 @@ public class OrchestratorTests {
     @Ignore
     public void getObservationsTest() throws Exception {
         LOGGER.info("getObservationsTest()");
-        List<StreamObservation> list = client.getObservations("iotc:Stream_Z-Wave+Node+002%3A+FGWP102+Metered+Wall+Plug+Switch_Alarm+%28power%29",0,1);
+        //"iotc:Stream_Z-Wave+Node+002%3A+FGWP102+Metered+Wall+Plug+Switch_Alarm+%28power%29"
+        List<StreamObservation> list = client.getObservations(null,0,1);
         //List<StreamObservation> list = orchestrator.getObservations(".*",1);
         String abc = "abc";
         Assert.isTrue(true);

@@ -263,17 +263,19 @@ public class NgsiLDClient {
      */
     public ListenableFuture<Paginated<EntityLD>> getEntities(Collection<String> ids, String idPattern,
                                                            Collection<String> types, Collection<String> attrs,
-                                                           int offset, int limit, boolean count) {
+                                                           int offset, int limit, boolean count) throws Exception {
 
         return getEntities(ids, idPattern, types, attrs, null, null, null, offset, limit, count);
     }
 
     public Paginated<EntityLD> getEntitiesSync(Collection<String> ids, String idPattern,
-                                                             Collection<String> types, Collection<String> attrs,
-                                                             int offset, int limit, boolean count) throws Exception {
+                                               Collection<String> types, Collection<String> attrs,
+                                               Map<String,Object> query, GeoQuery geoQuery,
+                                               Collection<String> orderBy,
+                                               int offset, int limit, boolean count) throws Exception {
 
 
-        ListenableFuture<Paginated<EntityLD>> req = getEntities(ids, idPattern, types, attrs, null, null, null, offset, limit, count);
+        ListenableFuture<Paginated<EntityLD>> req = getEntities(ids, idPattern, types, attrs, query, geoQuery, orderBy, offset, limit, count);
         Semaphore reqFinished = new Semaphore(0);
         final List<Paginated<EntityLD>> ret = new ArrayList<>();
         List<Exception> errors = new ArrayList<>();
@@ -323,9 +325,9 @@ public class NgsiLDClient {
      */
     public ListenableFuture<Paginated<EntityLD>> getEntities(Collection<String> ids, String idPattern,
                                                              Collection<String> types, Collection<String> attrs,
-                                                             String query, GeoQuery geoQuery,
+                                                             Map<String,Object> query, GeoQuery geoQuery,
                                                              Collection<String> orderBy,
-                                                             int offset, int limit, boolean count) {
+                                                             int offset, int limit, boolean count) throws Exception {
 
 //        List<String> encodedIds = null;
 //        if(ids!=null) {
@@ -359,8 +361,21 @@ public class NgsiLDClient {
         else {
             builder.path("v1/entities");
             //builder.query(query);
+            if(query!=null) {
 
-            addParam(builder, "q", query);
+                StringBuilder q = new StringBuilder();
+                for (String key: query.keySet()){
+                    Object value = query.get(key);
+                    if(value instanceof String)
+                        q.append(key+"=="+query.get(key)+"");
+                        //String query = "q=brandName==\"Mercedes\"";  //Scorpio
+                        //String query = "brandName.value=Mercedes";   //djane
+                    else
+                        throw new Exception("Query map allows only string values for now!");
+                }
+
+                addParam(builder, "q", q.toString());
+            }
 
             addParam(builder, "id", ids);
             addParam(builder, "idPattern", idPattern);
@@ -385,6 +400,7 @@ public class NgsiLDClient {
 //        url = url.replace("%253D","=");
         url = url.replace("%25","%");
         url = url.replace("%3D","=");
+        url = url.replace("%22","\"");
 //        url = url.replace("%2522","%22");
 //        url = url.replace("%255B","%5B");
 //        url = url.replace("%255D","%5D");

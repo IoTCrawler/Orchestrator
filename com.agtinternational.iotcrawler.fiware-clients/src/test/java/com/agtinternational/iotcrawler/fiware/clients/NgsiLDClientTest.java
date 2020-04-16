@@ -196,7 +196,7 @@ public class NgsiLDClientTest extends EnvVariablesSetter{
 
     @Order(2)
     @Test
-    public void getEntitiesByTypeTest() throws ExecutionException, InterruptedException {
+    public void getEntitiesByTypeTest() throws Exception {
         Collection<String> types = Arrays.asList(new String[]{
                 entity.getType()
                 //"http://www.w3.org/ns/sosa/Sensor"
@@ -218,7 +218,7 @@ public class NgsiLDClientTest extends EnvVariablesSetter{
 
     @Order(3)
     @Test
-    public void getEntityByIdTest() throws ExecutionException, InterruptedException {
+    public void getEntityByIdTest() throws Exception {
         Collection<String> ids = Arrays.asList(new String[]{
                 //"urn:ngsi-ld:MultiSensor_AEON_Labs_ZW100_MultiSensor_6"
                 entity.getId()
@@ -246,7 +246,7 @@ public class NgsiLDClientTest extends EnvVariablesSetter{
 
     @Order(3)
     @Test
-    public void getAttributesTest() throws ExecutionException, InterruptedException {
+    public void getAttributesTest() throws Exception {
         Collection<String> types = Arrays.asList(new String[]{ entity.getType() });
         Collection<String> attributes = Arrays.asList(new String[]{ entity.getAttributes().keySet().iterator().next() });
         Paginated<EntityLD> entities = ngsiLdClient.getEntities(null, null, types, attributes, 0, 0, false).get();
@@ -264,14 +264,18 @@ public class NgsiLDClientTest extends EnvVariablesSetter{
 
     @Order(4)
     @Test
-    public void getByAttributeValueTest() throws ExecutionException, InterruptedException {
+    public void getByAttributeValueTest() throws Exception {
         Collection<String> types = Arrays.asList(new String[]{ entity.getType() });
         String attName = entity.getAttributes().keySet().iterator().next();
-        String value = entity.getAttribute(attName).getValue().toString();
-        String query = attName+"==\""+value+"\"";
-        //String query = "q=brandName==\"Mercedes\"";  //Scorpio
-        //String query = "brandName.value=Mercedes";   //djane
-        Paginated<EntityLD> entities = ngsiLdClient.getEntities(null, null, types, null,query,null, null, 0, 0, false).get();
+        Attribute attribute = entity.getAttributes().values().iterator().next();
+        String value = attribute.getValue().toString();
+        if(!(attribute instanceof Relationship))
+            value = "\""+value+"\"";
+        Map query = new HashMap<String, String>();
+        query.put(attName, value);
+
+
+        Paginated<EntityLD> entities = ngsiLdClient.getEntitiesSync(null, null, types, null, query, null, null,0, 0, false);
         Assert.assertNotNull(entities.getItems());
         Assert.assertTrue(entities.getItems().size()>0);
         entities.getItems().stream().forEach(e->{
@@ -287,7 +291,7 @@ public class NgsiLDClientTest extends EnvVariablesSetter{
 
     @Order(5)
     @Test
-    public void geoQueryTest() throws ExecutionException, InterruptedException {
+    public void geoQueryTest() throws Exception {
         Collection<String> types = Arrays.asList(new String[]{ "http://example.org/pleyades/WeatherbitSensor" });
         List<Coordinate> coordinates = new ArrayList<>();
         coordinates.add(new Coordinate(-1.173032, 38.024519));

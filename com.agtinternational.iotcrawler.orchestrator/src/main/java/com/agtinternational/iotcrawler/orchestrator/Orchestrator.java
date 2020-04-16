@@ -356,7 +356,7 @@ public class Orchestrator extends IotCrawlerClient {
 //                        //Class targetClass = Utils.getTargetClass(command.getTypeURI());
 //                        entities = getEntitiesById(command.getIds(), command.getTypeURI());
 //                    }else {
-//                        String query = command.getQuery();
+//                        Map<String,String> query = command.getQuery();
 //                        int limit = command.getLimit();
 //                        int offset = command.getOffset();
 //                        Map<String, Number> ranking = command.getRanking();
@@ -365,7 +365,7 @@ public class Orchestrator extends IotCrawlerClient {
 //                        if(command.getTargetClass()!=null) {
 //                            Class targetClass = Class.forName(command.getTargetClass());
 //                            //entities = getEntities(targetClass, query, ranking, offset, limit);
-//                            String queryStr = resolveQuery(targetClass, query, ranking);
+//                            Map<String,String> queryStr = resolveQuery(targetClass, query, ranking);
 //                            String URL = Utils.getTypeURI(targetClass);
 //                            String key = Utils.cutURL(URL, RDFModel.getNamespaces());
 //                            entities = getEntities(key, queryStr, ranking,  offset, limit);
@@ -596,64 +596,64 @@ public class Orchestrator extends IotCrawlerClient {
     }
 
     //Function for resolving json-based queires (graphGL ones?)
-    public String resolveQuery(Class targetClass, String query, Map<String, Number> ranking){
-
-        List<String> pairs = new ArrayList<>();
-        if(query!=null) {
-            JsonObject jsonQuery = Utils.parseJsonQuery(query);
-            for (String key : jsonQuery.keySet()) {
-                Object value = jsonQuery.get(key);
-                if (value instanceof JsonPrimitive)
-                    value = ((JsonPrimitive) value).getAsString();
-                else if (value instanceof JsonArray) {
-                    List<String> values = new ArrayList<>();
-                    for (JsonElement element : ((JsonArray) value)) {
-                        values.add(element.getAsString());
-                    }
-                    value = String.join(",", values);
-                } else
-                    throw new NotImplementedException();
-
-                key = resolveURI(key);
-                String[] splitted = key.split(":");
-
-                Method method = null;
-                try {
-                    method = RDFModel.class.getDeclaredMethod(splitted[splitted.length-1]);
-                }
-                catch (Exception e){
-
-                }
-
-                if(method==null)
-                    try {
-                        method = targetClass.getDeclaredMethod(splitted[splitted.length-1]);
-                    }
-                    catch (Exception e){
-
-                    }
-
-                if(method!=null){
-                    Class returnType = method.getReturnType();
-                    if(returnType==String.class || returnType==Number.class || returnType==Boolean.class)
-                        key+=".value";
-                    else
-                        key+=".object";
-                }
-
-                pairs.add(key + "=" + value.toString());
-            }
-        }
-
-        String queryStr = (pairs.size()>0 ? String.join("&", pairs): null);
-        return queryStr;
+    public String resolveQuery(Class targetClass, Map<String,String> query, Map<String, Number> ranking){
+        throw new NotImplementedException();
+//        List<String> pairs = new ArrayList<>();
+//        if(query!=null) {
+//            JsonObject jsonQuery = Utils.parseJsonQuery(query);
+//            for (String key : jsonQuery.keySet()) {
+//                Object value = jsonQuery.get(key);
+//                if (value instanceof JsonPrimitive)
+//                    value = ((JsonPrimitive) value).getAsString();
+//                else if (value instanceof JsonArray) {
+//                    List<String> values = new ArrayList<>();
+//                    for (JsonElement element : ((JsonArray) value)) {
+//                        values.add(element.getAsString());
+//                    }
+//                    value = String.join(",", values);
+//                } else
+//                    throw new NotImplementedException();
+//
+//                key = resolveURI(key);
+//                String[] splitted = key.split(":");
+//
+//                Method method = null;
+//                try {
+//                    method = RDFModel.class.getDeclaredMethod(splitted[splitted.length-1]);
+//                }
+//                catch (Exception e){
+//
+//                }
+//
+//                if(method==null)
+//                    try {
+//                        method = targetClass.getDeclaredMethod(splitted[splitted.length-1]);
+//                    }
+//                    catch (Exception e){
+//
+//                    }
+//
+//                if(method!=null){
+//                    Class returnType = method.getReturnType();
+//                    if(returnType==String.class || returnType==Number.class || returnType==Boolean.class)
+//                        key+=".value";
+//                    else
+//                        key+=".object";
+//                }
+//
+//                pairs.add(key + "=" + value.toString());
+//            }
+//        }
+//
+//        Map<String,String> queryStr = (pairs.size()>0 ? String.join("&", pairs): null);
+//        return queryStr;
     }
 
     @Override
-    public <T> List<T> getEntities(Class<T> targetClass, String query, Map<String, Number> ranking,  int offset, int limit) throws Exception {
+    public <T> List<T> getEntities(Class<T> targetClass, Map<String,String> query, Map<String, Number> ranking,  int offset, int limit) throws Exception {
 
-        String queryStr = resolveQuery(targetClass, query, ranking);
-        List<EntityLD> entities = getEntities(Utils.getTypeURI(targetClass), queryStr, ranking,  offset, limit);
+        //Map<String,String> queryStr = resolveQuery(targetClass, query, ranking);
+        List<EntityLD> entities = getEntities(Utils.getTypeURI(targetClass), query, ranking,  offset, limit);
         return Utils.convertEntitiesToTargetClass(entities, targetClass);
     }
 
@@ -665,7 +665,7 @@ public class Orchestrator extends IotCrawlerClient {
 
 
     @Override
-    public List<EntityLD> getEntities(String entityType, String query, Map<String, Number> ranking, int offset, int limit) throws Exception {
+    public List<EntityLD> getEntities(String entityType, Map<String,String> query, Map<String, Number> ranking, int offset, int limit) throws Exception {
         List<EntityLD> ret = metadataClient.getEntities(entityType, query, ranking, offset, limit);
         return ret;
     }
@@ -678,7 +678,7 @@ public class Orchestrator extends IotCrawlerClient {
     }
 
     @Override
-    public List<String> getEntityURIs(String query, int offset, int limit) {
+    public List<String> getEntityURIs(Map<String,String> query, int offset, int limit) {
         return metadataClient.getEntityURIs(query);
     }
 

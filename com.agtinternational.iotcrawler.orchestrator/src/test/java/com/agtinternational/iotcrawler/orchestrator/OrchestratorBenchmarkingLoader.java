@@ -93,7 +93,7 @@ public class OrchestratorBenchmarkingLoader{
             }
         }
 
-        LOGGER.info("NumThreads: {}; Tasks per thread: {} Tasks total: {}", num_of_threads, tasks_per_thread, totalTasks);
+        //LOGGER.info("NumThreads: {}; Tasks per thread: {} Tasks total: {}", num_of_threads, tasks_per_thread, totalTasks);
 
         long totalLat = 0;
         long totalThroughtput = 0;
@@ -107,7 +107,7 @@ public class OrchestratorBenchmarkingLoader{
             long avgLatency = waitingTime / vars.size();
             double throughtput = Math.round(totalTasks/(runtime/1000.0));
 
-            LOGGER.info("Exp {} done. {} metrics in {} ms. Waiting time: {}; Throughtput: {} tasks/s; Avg latency is {}", i, vars.size(), runtime, waitingTime, throughtput, avgLatency);
+            //LOGGER.info("Exp {} done. {} metrics in {} ms. Waiting time: {}; Throughtput: {} tasks/s; Avg latency is {}", i, vars.size(), runtime, waitingTime, throughtput, avgLatency);
 
             if(i>1) {//skipping first 2 runs because of rest
                 totalLat += avgLatency;
@@ -118,6 +118,6 @@ public class OrchestratorBenchmarkingLoader{
             //Thread.sleep(3000);
         }
 
-        LOGGER.info("{} Experiments done. Throughtput: {} tasks/s; Latency: {} ms", experiments-2, totalThroughtput/(experiments-2), totalLat/(experiments-2));
+        //LOGGER.info("{} Experiments done. Throughtput: {} tasks/s; Latency: {} ms", experiments-2, totalThroughtput/(experiments-2), totalLat/(experiments-2));
     }
 }

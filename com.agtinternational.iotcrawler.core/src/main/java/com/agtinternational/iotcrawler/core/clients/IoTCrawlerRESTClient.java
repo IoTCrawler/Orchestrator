@@ -93,7 +93,7 @@ public class IoTCrawlerRESTClient extends IotCrawlerClient implements AutoClosea
 
 
     @Override
-    public List<IoTStream> getStreams(String query, Map<String, Number> ranking, int offset, int limit) throws Exception {
+    public List<IoTStream> getStreams(Map<String, String> query, Map<String, Number> ranking, int offset, int limit) throws Exception {
         String type = IoTStream.getTypeUri();
         if(cutURLs && type.startsWith("http://"))
             type = Utils.cutURL(type, RDFModel.getNamespaces());
@@ -105,7 +105,7 @@ public class IoTCrawlerRESTClient extends IotCrawlerClient implements AutoClosea
 
 
     @Override
-    public List<Sensor> getSensors(String query, int offset, int limit) throws Exception {
+    public List<Sensor> getSensors(Map<String, String> query, int offset, int limit) throws Exception {
         String type = Sensor.getTypeUri();
         if(cutURLs && type.startsWith("http://"))
             type = Utils.cutURL(type, RDFModel.getNamespaces());
@@ -118,7 +118,7 @@ public class IoTCrawlerRESTClient extends IotCrawlerClient implements AutoClosea
 
 
     @Override
-    public List<Platform> getPlatforms(String query, int offset, int limit) throws Exception {
+    public List<Platform> getPlatforms(Map<String, String> query, int offset, int limit) throws Exception {
         String type = Platform.getTypeUri();
         if(cutURLs && type.startsWith("http://"))
             type = Utils.cutURL(type, RDFModel.getNamespaces());
@@ -129,7 +129,7 @@ public class IoTCrawlerRESTClient extends IotCrawlerClient implements AutoClosea
     }
 
     @Override
-    public List<ObservableProperty> getObservableProperties(String query, int offset, int limit) throws Exception {
+    public List<ObservableProperty> getObservableProperties(Map<String, String> query, int offset, int limit) throws Exception {
         String type = ObservableProperty.getTypeUri();
         if(cutURLs && type.startsWith("http://"))
             type = Utils.cutURL(type, RDFModel.getNamespaces());
@@ -141,7 +141,7 @@ public class IoTCrawlerRESTClient extends IotCrawlerClient implements AutoClosea
 
 
     @Override
-    public List<String> getEntityURIs(String query, int offset, int limit) {
+    public List<String> getEntityURIs(Map<String, String> query, int offset, int limit) {
         throw new NotImplementedException("Not implemented");
     }
 
@@ -159,14 +159,14 @@ public class IoTCrawlerRESTClient extends IotCrawlerClient implements AutoClosea
 
 
 //    @Override
-//    public List<EntityLD> getEntities(String entityType, String query, int offset, int limit) throws Exception {
+//    public List<EntityLD> getEntities(String entityType, Map<String, String> query, int offset, int limit) throws Exception {
 //        GetEntitiesCommand command = new GetEntitiesCommand(entityType, query, offset, limit);
 //        List<EntityLD> entities = execute(command);
 //        return entities;
 //    }
 
     @Override
-    public <T> List<T> getEntities(Class<T> targetClass, String query, Map<String, Number> ranking, int offset, int limit) throws Exception {
+    public <T> List<T> getEntities(Class<T> targetClass, Map<String, String> query, Map<String, Number> ranking, int offset, int limit) throws Exception {
         String type = Utils.getTypeURI(targetClass);
         if(cutURLs && type.startsWith("http://"))
             type = Utils.cutURL(type, RDFModel.getNamespaces());
@@ -178,7 +178,7 @@ public class IoTCrawlerRESTClient extends IotCrawlerClient implements AutoClosea
     }
 
     @Override
-    public List<EntityLD> getEntities(String entityType, String query, Map<String, Number> ranking, int offset, int limit) throws Exception {
+    public List<EntityLD> getEntities(String entityType, Map<String, String> query, Map<String, Number> ranking, int offset, int limit) throws Exception {
         String type = entityType;
         if(cutURLs && type.startsWith("http://"))
             type = Utils.cutURL(type, RDFModel.getNamespaces());
@@ -195,11 +195,11 @@ public class IoTCrawlerRESTClient extends IotCrawlerClient implements AutoClosea
 //
 //    }
 
-    @Override
-    public List<StreamObservation> getObservations(String streamId,int offset, int limit) throws Exception {
-        //GetObservationsCommand command = new GetObservationsCommand(streamId, offset, limit);
-        throw new NotImplementedException("");
-    }
+//    @Override
+//    public List<StreamObservation> getObservations(String streamId,int offset, int limit) throws Exception {
+//        //GetObservationsCommand command = new GetObservationsCommand(streamId, offset, limit);
+//        throw new NotImplementedException("");
+//    }
 
 //    @Override
 //    public Boolean pushObservationsToBroker(List<StreamObservation> observations) throws Exception {

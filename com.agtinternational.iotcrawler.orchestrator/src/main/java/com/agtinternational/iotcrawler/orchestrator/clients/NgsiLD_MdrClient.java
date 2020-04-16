@@ -101,7 +101,7 @@ public class NgsiLD_MdrClient extends AbstractMetadataClient {
     }
 
     @Override
-    public List<String> getEntityURIs(String query) {
+    public List<String> getEntityURIs(Map<String,String> query) {
         throw new NotImplementedException();
     }
 
@@ -118,19 +118,18 @@ public class NgsiLD_MdrClient extends AbstractMetadataClient {
     }
 
     @Override
-    public List<EntityLD> getEntities(String type, String query, Map<String, Number> ranking, int offset, int limit) throws Exception {
+    public List<EntityLD> getEntities(String type, Map<String,String> query, Map<String, Number> ranking, int offset, int limit) throws Exception {
 
         if(cutURIs)
             type = Utils.cutURL(type, RDFModel.getNamespaces());
 
         String[] types = new String[]{  type };
 
-        List<String> pairs = (query!=null?Arrays.asList(query.split("&")):new ArrayList<>());
 
         if(ranking!=null)
             for(String key: ranking.keySet())
-                pairs.add("rankWeights["+key+"]="+ ranking.get(key).toString());
-        query = String.join("&", pairs);
+                query.put("rankWeights["+key+"]", ranking.get(key).toString());
+        
 
         Paginated<EntityLD> paginated = null;
         paginated = ngsiLDClient.getEntities(null, null, Arrays.asList(types), null, query,null, null, offset, limit, false).get();

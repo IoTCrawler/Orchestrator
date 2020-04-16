@@ -38,6 +38,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.io.File;
 import java.io.IOException;
@@ -174,14 +175,22 @@ public class NgsiLDClientTest extends EnvVariablesSetter{
     public void addEntityTest() throws Exception {
 
         try {
-            ngsiLdClient.deleteEntitySync(entity.getId());
+            Paginated<EntityLD> entities = ngsiLdClient.getEntities(Arrays.asList(new String[]{entity.getId()}), null, null, null, 0, 0, false).get();
+            if (!entities.getItems().isEmpty())
+                deleteEntityTest();
         }
-        catch (Throwable e){
-            //LOGGER.warn("Nothing to delete" e.getLocalizedMessage());
+        catch (Exception e){
+            if(e.getCause() instanceof HttpClientErrorException.NotFound)
+                LOGGER.info("No entity existed before found");
+            else e.printStackTrace();
         }
+
         Boolean success = ngsiLdClient.addEntitySync(entity);
         Assert.assertTrue(success);
-        LOGGER.info("Entity added");
+        LOGGER.info("Entity is expected to be added. Trying to get it");
+
+        getEntityByIdTest();
+
     }
 
 
@@ -239,25 +248,40 @@ public class NgsiLDClientTest extends EnvVariablesSetter{
     @Test
     public void getAttributesTest() throws ExecutionException, InterruptedException {
         Collection<String> types = Arrays.asList(new String[]{ entity.getType() });
-        Collection<String> attributes = Arrays.asList(new String[]{ "brandName" });
+        Collection<String> attributes = Arrays.asList(new String[]{ entity.getAttributes().keySet().iterator().next() });
         Paginated<EntityLD> entities = ngsiLdClient.getEntities(null, null, types, attributes, 0, 0, false).get();
         Assert.assertNotNull(entities.getItems());
-        Assert.assertNotNull(entities.getItems().size()>0);
-        //Assert.assertTrue(entities.getItems().get(0).toJsonObject().equals(entity.toJsonObject()));
+        Assert.assertTrue(entities.getItems().size()>0);
+        entities.getItems().stream().forEach(e->{
+            try {
+                LOGGER.info(Utils.prettyPrint(e.toJsonObject()));
+            }
+            catch (Exception e2){
+                LOGGER.warn("trouble with outputting result {}: {}", e.getId(), e2.getLocalizedMessage());
+            }
+        });
     }
-
-
 
     @Order(4)
     @Test
     public void getByAttributeValueTest() throws ExecutionException, InterruptedException {
         Collection<String> types = Arrays.asList(new String[]{ entity.getType() });
+        String attName = entity.getAttributes().keySet().iterator().next();
+        String value = entity.getAttribute(attName).getValue().toString();
+        String query = attName+"==\""+value+"\"";
         //String query = "q=brandName==\"Mercedes\"";  //Scorpio
-        String query = "brandName.value=Mercedes";   //djane
+        //String query = "brandName.value=Mercedes";   //djane
         Paginated<EntityLD> entities = ngsiLdClient.getEntities(null, null, types, null,query,null, null, 0, 0, false).get();
         Assert.assertNotNull(entities.getItems());
-        Assert.assertNotNull(entities.getItems().size()>0);
-        //Assert.assertTrue(entities.getItems().get(0).toJsonObject().equals(entity.toJsonObject()));
+        Assert.assertTrue(entities.getItems().size()>0);
+        entities.getItems().stream().forEach(e->{
+            try {
+                LOGGER.info(Utils.prettyPrint(e.toJsonObject()));
+            }
+            catch (Exception e2){
+                LOGGER.warn("trouble with outputting result {}: {}", e.getId(), e2.getLocalizedMessage());
+            }
+        });
         String test="123";
     }
 
@@ -281,7 +305,7 @@ public class NgsiLDClientTest extends EnvVariablesSetter{
     public void updateEntityTest() throws Exception {
 
         Map<String, Attribute> attributes = entity.getAttributes();
-        entity.addAttribute(attributes.keySet().iterator().next().toString()+"#"+System.nanoTime(), (Attribute)attributes.values().iterator().next());
+        entity.addAttribute(attributes.keySet().iterator().next().toString(), (Attribute)attributes.values().iterator().next());
 
         boolean success = ngsiLdClient.updateEntitySync(entity , false);
         if(success)

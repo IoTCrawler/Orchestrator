@@ -37,7 +37,13 @@ public class CustomAsyncRestTemplate extends AsyncRestTemplate {
     }
 
     public <T> ListenableFuture<T> execute(String url, HttpMethod method, AsyncRequestCallback requestCallback, ResponseExtractor<T> responseExtractor, Object... urlVariables) throws RestClientException {
-        URI expanded = URI.create(url);//(new UriTemplate(url)).expand(urlVariables);
+        URI expanded;
+        try {
+            expanded = URI.create(url);
+        }
+        catch (Exception e){
+            expanded = new UriTemplate(url).expand(urlVariables);
+        }
         return this.doExecute(expanded, method, requestCallback, responseExtractor);
     }
 

@@ -151,6 +151,38 @@ public class NgsiLDClient {
         return success[0];
     }
 
+    public EntityLD getEntitySync(String entityId, String type, Collection<String> attrs) throws Exception {
+
+        ListenableFuture<EntityLD> req = getEntity(entityId, type, attrs);
+        Semaphore reqFinished = new Semaphore(0);
+        final List<EntityLD> ret = new ArrayList<>();
+        List<Exception> errors = new ArrayList<>();
+        req.addCallback(new ListenableFutureCallback<EntityLD>() {
+            @Override
+            public void onSuccess(EntityLD entity) {
+                ret.add(entity);
+                reqFinished.release();
+            }
+
+            @Override
+            public void onFailure(Throwable throwable) {
+                errors.add(new Exception(throwable));
+                reqFinished.release();
+            }
+
+        });
+        try {
+            reqFinished.acquire();
+        } catch (InterruptedException e) {
+            LOGGER.error(e.getLocalizedMessage());
+        }
+
+        if(!errors.isEmpty())
+            throw errors.get(0);
+
+        return ret.get(0);
+    }
+
     public boolean updateEntitySync(EntityLD entityLD, boolean append) throws Exception {
         ListenableFuture<Void> req = updateEntity(entityLD, append);
         final Boolean[] success = {false};
@@ -240,9 +272,10 @@ public class NgsiLDClient {
                                                              Collection<String> types, Collection<String> attrs,
                                                              int offset, int limit, boolean count) throws Exception {
 
-        final List<Paginated<EntityLD>> ret = new ArrayList<>();
+
         ListenableFuture<Paginated<EntityLD>> req = getEntities(ids, idPattern, types, attrs, null, null, null, offset, limit, count);
         Semaphore reqFinished = new Semaphore(0);
+        final List<Paginated<EntityLD>> ret = new ArrayList<>();
         List<Exception> errors = new ArrayList<>();
         req.addCallback(new ListenableFutureCallback<Paginated<EntityLD>>() {
 
@@ -325,7 +358,10 @@ public class NgsiLDClient {
             builder.path("v1/entities/"+ids.toArray()[0]);
         else {
             builder.path("v1/entities");
-            builder.query(query);
+            //builder.query(query);
+
+            addParam(builder, "q", query);
+
             addParam(builder, "id", ids);
             addParam(builder, "idPattern", idPattern);
             addParam(builder, "type", encodedTypes);
@@ -362,8 +398,39 @@ public class NgsiLDClient {
      * @param entity the Entity to add
      * @return the listener to notify of completion
      */
-    public ListenableFuture<Void> addEntity(EntityLD entity) {
-        return adapt(request(HttpMethod.POST, UriComponentsBuilder.fromHttpUrl(baseURL).path("v1/entities/").toUriString(), entity, Void.class));
+    public ListenableFuture<Void> addEntity(EntityLD entity) throws Exception {
+        //List<ListenableFuture<Void>> ret = new ArrayList<>();
+        ListenableFuture<Void> ret = adapt(request(HttpMethod.POST, UriComponentsBuilder.fromHttpUrl(baseURL).path("v1/entities/").toUriString(), entity, Void.class));
+        List<Exception> exceptions = new ArrayList<>();
+        ret.addCallback(new ListenableFutureCallback<Void>() {
+            @Override
+            public void onFailure(Throwable throwable) {
+                exceptions.add(new Exception(throwable));
+            }
+
+            @Override
+            public void onSuccess(Void aVoid) {
+                LOGGER.debug("Entity is expected to be added. Trying to get  back");
+                ListenableFuture<EntityLD> ret2 = getEntity(entity.getId(),null,null);
+                ret2.addCallback(new ListenableFutureCallback<EntityLD>() {
+                    @Override
+                    public void onFailure(Throwable throwable) {
+                        exceptions.add(new Exception("Failed to get added back", throwable));
+                        ret.cancel(true);
+                    }
+
+                    @Override
+                    public void onSuccess(EntityLD entityLD) {
+
+                    }
+                });
+            }
+        });
+
+        if(!exceptions.isEmpty())
+            throw exceptions.get(0);
+
+        return ret;
     }
 
     /**
@@ -373,12 +440,12 @@ public class NgsiLDClient {
      * @param attrs the list of attributes to retreive for this entity, null or empty means all attributes
      * @return the entity
      */
-    public ListenableFuture<Entity> getEntity(String entityId, String type, Collection<String> attrs) {
+    public ListenableFuture<EntityLD> getEntity(String entityId, String type, Collection<String> attrs) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseURL);
         builder.path("v1/entities/{entityId}");
         addParam(builder, "type", type);
         addParam(builder, "attrs", attrs);
-        return adapt(request(HttpMethod.GET, builder.buildAndExpand(entityId).toUriString(), null, Entity.class));
+        return adapt(request(HttpMethod.GET, builder.buildAndExpand(entityId).toUriString(), null, EntityLD.class));
     }
 
 

@@ -163,6 +163,8 @@ public class NgsiLDConverter extends AbstractHttpMessageConverter<Object> implem
 
         String str = Utils.prettyPrint(jsonObject);
 
+        LOGGER.debug(str);
+
         StreamUtils.copy((byte[])str.getBytes(), outputMessage.getBody());
     }
 

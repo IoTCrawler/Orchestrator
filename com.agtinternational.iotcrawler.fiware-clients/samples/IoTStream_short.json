@@ -1,5 +1,5 @@
 {
-  "id": "iotc:Stream_Short",
+  "id": "iotc:Stream:Short",
   "type": "iotc:IoTStream",
   "@context": {
     "iotc": "http://purl.org/iot/ontology/iot-stream#",

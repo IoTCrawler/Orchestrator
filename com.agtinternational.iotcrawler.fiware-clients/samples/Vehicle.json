@@ -15,7 +15,6 @@
     }
   },
   "@context": {
-    "brandName":"http://example.org/vehicle/brandName",
     "commonTerms":"http://example.org/ngsi-ld/commonTerms.jsonld",
     "vehicle":"http://example.org/ngsi-ld/vehicle.jsonld",
     "parking":"http://example.org/ngsi-ld/parking.jsonld"

@@ -69,7 +69,7 @@ public class ModelsTest {
         Attribute attribute2 = entity.getAttribute("sosa:hosts");
         Attribute attribute3 = entity.getAttribute("sosa:hosts");
         String JsonString2 = Utils.prettyPrint(entity.toJsonObject());
-        Files.write(Paths.get("target",Utils.getFragment(entity.getId()+".json")), JsonString2.getBytes());
+        //Files.write(Paths.get("target",Utils.getFragment(entity.getId()+".json")), JsonString2.getBytes());
 
         EntityLD entityLD2 = EntityLD.fromJsonString(JsonString2);
 

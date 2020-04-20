@@ -83,10 +83,8 @@ public class EntityLD /*extends Entity*/ {
 
         Attribute ret = null;
 
-
-
         for(String key: attributes.keySet()) {
-            if(key.startsWith(name)){
+            if(key.equals(name) || key.startsWith(name+"#")){
                 Attribute origAtt = attributes.get(key);
 
                 if(ret!=null){

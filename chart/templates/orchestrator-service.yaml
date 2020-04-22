@@ -6,8 +6,8 @@ metadata:
     kompose.version: 1.21.0 (992df58d8)
   creationTimestamp: null
   labels:
-    io.kompose.service: orchestrator
-  name: orchestrator
+    io.kompose.service: {{ .Values.gitlab.env }}
+  name: {{ .Values.gitlab.env }}
 spec:
   ports:
   - name: "3001"
@@ -17,6 +17,6 @@ spec:
     port: 80
     targetPort: 80
   selector:
-    io.kompose.service: orchestrator
+    io.kompose.service: {{ .Values.gitlab.env }}
 status:
   loadBalancer: {}

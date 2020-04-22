@@ -1,7 +1,7 @@
 .auto-deploy:
   image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image:v0.10.0"
-  #variables:
-    #CI_DEBUG_TRACE: "true"
+    #variables:
+  #CI_DEBUG_TRACE: "true"
 #review:
 #  extends: .auto-deploy
 #  stage: review
@@ -77,25 +77,29 @@ staging:
     - kubectl config set-credentials gitlab --token="${USER_TOKEN}"
     - kubectl config set-context default --cluster=k8s --user=gitlab
     - kubectl config use-context default
-    - kubectl delete --all deployment --namespace ${KUBE_NAMESPACE} || echo ""
-    - kubectl delete --all service --namespace ${KUBE_NAMESPACE} || echo ""
-    - kubectl delete ingress orchestartor-ingress --namespace ${KUBE_NAMESPACE} || echo ""
+
+    #    - echo "kubectl delete --all deployment --namespace ${KUBE_NAMESPACE}"
+    #    - kubectl delete --all deployment --namespace ${KUBE_NAMESPACE} || echo ""
+    #    - kubectl delete --all service --namespace ${KUBE_NAMESPACE} || echo ""
 
     #- sed -i "s#helm upgrade --install#helm upgrade --install --force#g" /usr/local/bin/auto-deploy
+    #- cat /usr/local/bin/auto-deploy
 
     - auto-deploy check_kube_domain
     - auto-deploy download_chart
     - auto-deploy ensure_namespace
     #- auto-deploy initialize_tiller
     - tiller -alsologtostderr &
+    - auto-deploy delete
     - auto-deploy create_secret
-    - auto-deploy deploy || echo "deployment should be done. Error ignored"
+    - auto-deploy deploy
+    - echo ${CI_ENVIRONMENT_URL}
   environment:
-    name: staging
+    name: ${CI_PROJECT_NAME}-${CI_BUILD_STAGE}
     url: http://$CI_PROJECT_PATH_SLUG-staging.$KUBE_INGRESS_BASE_DOMAIN
   only:
-#    refs:
-#      - master
+    #    refs:
+    #      - master
     kubernetes: active
     variables:
       - $STAGING_ENABLED
@@ -115,12 +119,12 @@ canary:
     - auto-deploy create_secret
     - auto-deploy deploy canary
   environment:
-    name: production
+    name: ${CI_PROJECT_NAME}-${CI_BUILD_STAGE}
     url: http://$CI_PROJECT_PATH_SLUG.$KUBE_INGRESS_BASE_DOMAIN
   when: manual
   only:
-#    refs:
-#      - master
+    #    refs:
+    #      - master
     kubernetes: active
     variables:
       - $CANARY_ENABLED
@@ -129,19 +133,18 @@ canary:
   extends: .auto-deploy
   stage: production
   script:
-    - echo "SERVER ${SERVER}"
     - kubectl config set-cluster k8s --server="${SERVER}"
     - kubectl config set clusters.k8s.certificate-authority-data ${CERTIFICATE_AUTHORITY_DATA}
     - kubectl config set-credentials gitlab --token="${USER_TOKEN}"
     - kubectl config set-context default --cluster=k8s --user=gitlab
     - kubectl config use-context default
-   # - kubectl delete --all deployment --namespace ${KUBE_NAMESPACE} || echo ""
-   # - kubectl delete --all service --namespace ${KUBE_NAMESPACE} || echo ""
+    # - kubectl delete --all deployment --namespace ${KUBE_NAMESPACE} || echo ""
+    # - kubectl delete --all service --namespace ${KUBE_NAMESPACE} || echo ""
     #- kubectl delete ingress orchestartor-ingress --namespace ${KUBE_NAMESPACE} || echo ""
-#
-#    - sed -i "s#<CERTIFICATE_AUTHORITY_DATA>#${CERTIFICATE_AUTHORITY_DATA}#g" kube_config
-#    - sed -i "s#<SERVER>#${SERVER}#g" kube_config
-#    - sed -i "s#<TOKEN>#${USER_TOKEN}#g" kube_config
+    #
+    #    - sed -i "s#<CERTIFICATE_AUTHORITY_DATA>#${CERTIFICATE_AUTHORITY_DATA}#g" kube_config
+    #    - sed -i "s#<SERVER>#${SERVER}#g" kube_config
+    #    - sed -i "s#<TOKEN>#${USER_TOKEN}#g" kube_config
 
     #- sed -i "s#helm upgrade --install#helm upgrade --install --force#g" /usr/local/bin/auto-deploy
 
@@ -150,40 +153,35 @@ canary:
     #- cat $KUBECONFIG
     #- echo $HELM_HOST
 
+
     - auto-deploy check_kube_domain
-    #- auto-deploy download_chart
+    - auto-deploy download_chart
     - auto-deploy ensure_namespace
-    - auto-deploy create_secret
     #- auto-deploy initialize_tiller
     - tiller -alsologtostderr &
-    #- export HELM_HOST=localhost:44134
-    #- helm init
-    #- helm version
-    #- helm ls
-#    - helm help
-#    - helm list
-#    - helm history production
-#    - helm status production
-#    - helm test production
-    #- sleep 20000
-    - auto-deploy deploy || echo "deployment should be done. Error ignored"
+    - auto-deploy delete
+    - auto-deploy create_secret
+    - auto-deploy deploy
     - auto-deploy delete canary
     - auto-deploy delete rollout
     - auto-deploy persist_environment_url
-#  variables:
-#    CI_DEBUG_TRACE: "true"
+    - echo $CI_ENVIRONMENT_URL
+  #  variables:
+  #    CI_DEBUG_TRACE: "true"
   environment:
-    name: production
+    name: ${CI_PROJECT_NAME}-${CI_BUILD_STAGE}
     url: http://$CI_PROJECT_PATH_SLUG.$KUBE_INGRESS_BASE_DOMAIN
   artifacts:
     paths: [environment_url.txt]
 
+
+
 production:
   <<: *production_template
   only:
-#    refs:
-#      - master
-#      - remote_deployment
+    #    refs:
+    #      - master
+    #      - remote_deployment
     kubernetes: active
   except:
     variables:
@@ -197,8 +195,8 @@ production_manual:
   when: manual
   allow_failure: false
   only:
-#    refs:
-#      - master
+    #    refs:
+    #      - master
     kubernetes: active
     variables:
       - $STAGING_ENABLED
@@ -234,8 +232,8 @@ production_manual:
   when: manual
   # This selectors are backward compatible mode with $INCREMENTAL_ROLLOUT_ENABLED (before 11.4)
   only:
-#    refs:
-#      - master
+    #    refs:
+    #      - master
     kubernetes: active
     variables:
       - $INCREMENTAL_ROLLOUT_MODE == "manual"
@@ -249,8 +247,8 @@ production_manual:
   when: delayed
   start_in: 5 minutes
   only:
-#    refs:
-#      - master
+    #    refs:
+    #      - master
     kubernetes: active
     variables:
       - $INCREMENTAL_ROLLOUT_MODE == "timed"

@@ -7,7 +7,7 @@ metadata:
   creationTimestamp: null
   labels:
     io.kompose.service: mongo
-  name: {{ .Values.gitlab.env }}
+  name: "mongo-{{ .Values.gitlab.env }}"
 spec:
   replicas: 1
   selector:

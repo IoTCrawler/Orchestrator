@@ -45,8 +45,9 @@ public class CustomAsyncRestTemplate extends AsyncRestTemplate {
         catch (Exception e){
             URI aaaurl = new UriTemplate(url).expand(urlVariables);
             String query = aaaurl.getQuery()+(aaaurl.getFragment()!=null?"#"+aaaurl.getFragment():"");
+            query = query.replace("%25","%");
             query = query.replace("%22","\"");
-            query = query.replace("#","%23");
+            //query = query.replace("#","%23");
 
             try {
                 expanded = new URI(aaaurl.getScheme(),

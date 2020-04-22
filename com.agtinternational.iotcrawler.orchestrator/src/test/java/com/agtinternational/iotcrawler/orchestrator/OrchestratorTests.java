@@ -88,15 +88,6 @@ public class OrchestratorTests {
         ngsiLDClient = new NgsiLDClient(System.getenv(NGSILD_BROKER_URL));
     }
 
-    @Ignore
-    @Test
-    public void runOrchestrator() throws Exception {
-        LOGGER.info("Running orchestrator in test mode");
-        client.run();
-        String test = "123";
-    }
-
-
     @Test
     @Order(2)
     public void registerStreamTest() throws Exception {

@@ -62,8 +62,9 @@ public class HttpServer {
     }
 
     public void init() throws Exception {
-        LOGGER.info("Trying to init web server for listening at {}:{}", "", port);
-        httpServer = com.sun.net.httpserver.HttpServer.create(new InetSocketAddress(port), 0);
+        InetSocketAddress inetSocketAddress = new InetSocketAddress(port);
+        LOGGER.info("Trying to init web server for listening at {}:{}", inetSocketAddress.getHostName(), inetSocketAddress.getPort());
+        httpServer = com.sun.net.httpserver.HttpServer.create(inetSocketAddress, 0);
 
     }
 

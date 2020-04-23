@@ -41,7 +41,7 @@ fi
 #fi
 
 if [ "$1" = "build-image" ]; then
-  mvn clean compile jib:dockerBuild -U
+  mvn clean package jib:dockerBuild -U
 fi
 
 if [ "$1" = "push-image" ]; then

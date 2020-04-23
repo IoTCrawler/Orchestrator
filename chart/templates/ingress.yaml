@@ -10,4 +10,4 @@ spec:
           - path: "/"
             backend:
               serviceName: "orchestrator"
-              servicePort: 80
+              servicePort: 3001

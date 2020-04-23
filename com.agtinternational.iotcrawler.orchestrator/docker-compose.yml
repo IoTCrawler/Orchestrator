@@ -2,7 +2,7 @@ version: '3.3'
 services:
   orchestrator:
     #image: localhost:5000/orchestrator:1.0.7
-    image: gitlab.iotcrawler.net:4567/orchestrator/orchestrator/master:799e242a63e660f110a5ae23ff3d1407ca13c112
+    image: gitlab.iotcrawler.net:4567/orchestrator/orchestrator/master:252fddbd23de1095b1538c0c4c2ea57030c488f1
     environment:
       - IOTCRAWLER_RABBIT_HOST=rabbit
       - IOTCRAWLER_REDIS_HOST=redis

@@ -17,6 +17,6 @@ spec:
 #      port: 80
 #      targetPort: 80
   selector:
-    io.kompose.service: {{ .Values.gitlab.env }}
+    io.kompose.service: orchestrator
 status:
   loadBalancer: {}

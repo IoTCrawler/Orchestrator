@@ -88,7 +88,6 @@ public class OrchestratorManualTests {
         ngsiLDClient = new NgsiLDClient(System.getenv(NGSILD_BROKER_URL));
     }
 
-    @Ignore
     @Test
     public void runOrchestrator() throws Exception {
         LOGGER.info("Running orchestrator in test mode");

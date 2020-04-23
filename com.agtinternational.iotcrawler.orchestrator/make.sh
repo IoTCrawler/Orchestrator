@@ -5,15 +5,15 @@ echo ${CI_PROJECT_DIR}
 set -e
 
 
-if [ "$1" = "install" ]; then
-	export CI_PROJECT_DIR=${CI_PROJECT_DIR:-$(pwd)}
-  echo "# Orchestrator: Installing IoTCrawler fiware dependencies"
-	(if [ ! -d ~/.m2/repository/com/agtinternational/iotcrawler/fiware ]; then cd "${CI_PROJECT_DIR}/com.agtinternational.iotcrawler.fiware-clients" && sh make.sh install; fi);
-	echo "# Orchestrator: Installing IoTCrawler core dependency"
-	(if [ ! -d ~/.m2/repository/com/agtinternational/iotcrawler/core ]; then cd "${CI_PROJECT_DIR}/com.agtinternational.iotcrawler.core" && sh make.sh install; fi);
-	echo "# Orchestrator: Packaging orchestrator"
-	cd ${CI_PROJECT_DIR}/com.agtinternational.iotcrawler.orchestrator && mvn clean install -DskipTests=true
-fi
+#if [ "$1" = "install" ]; then
+#	export CI_PROJECT_DIR=${CI_PROJECT_DIR:-$(pwd)}
+#  echo "# Orchestrator: Installing IoTCrawler fiware dependencies"
+#	(if [ ! -d ~/.m2/repository/com/agtinternational/iotcrawler/fiware ]; then cd "${CI_PROJECT_DIR}/com.agtinternational.iotcrawler.fiware-clients" && sh make.sh install; fi);
+#	echo "# Orchestrator: Installing IoTCrawler core dependency"
+#	(if [ ! -d ~/.m2/repository/com/agtinternational/iotcrawler/core ]; then cd "${CI_PROJECT_DIR}/com.agtinternational.iotcrawler.core" && sh make.sh install; fi);
+#	echo "# Orchestrator: Packaging orchestrator"
+#	cd ${CI_PROJECT_DIR}/com.agtinternational.iotcrawler.orchestrator && mvn clean install -DskipTests=true
+#fi
 
 
 if [ "$1" = "rest-client-test" ]; then

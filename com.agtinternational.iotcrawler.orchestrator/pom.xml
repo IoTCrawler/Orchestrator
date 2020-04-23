@@ -83,7 +83,8 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
-            <version>4.1.6.RELEASE</version>
+            <version>5.2.1.RELEASE</version>
+<!--            <version>4.1.6.RELEASE</version>-->
         </dependency>
 
 <!--        <dependency>-->
@@ -163,6 +164,10 @@
                 <exclusion>
                     <groupId>com.agtinternational.iotcrawler</groupId>
                     <artifactId>core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>*</artifactId>
                 </exclusion>
                 <!--<exclusion>-->
                     <!--<groupId>org.apache.httpcomponents</groupId>-->
@@ -248,11 +253,12 @@
             <!--<version>7.1-SNAPSHOT</version>-->
         <!--</dependency>-->
 
-        <dependency>
-            <groupId>eu.neclab.iotplatform</groupId>
-            <artifactId>ngsi.api</artifactId>
-            <version>7.1-SNAPSHOT</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>eu.neclab.iotplatform</groupId>-->
+<!--            <artifactId>ngsi.api</artifactId>-->
+<!--            <version>7.1-SNAPSHOT</version>-->
+
+<!--        </dependency>-->
 
         <dependency>
             <groupId>com.google.code.gson</groupId>

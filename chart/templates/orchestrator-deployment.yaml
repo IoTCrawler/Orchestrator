@@ -31,9 +31,10 @@ spec:
         image: "{{ .Values.image.repository }}:252fddbd23de1095b1538c0c4c2ea57030c488f1"
         imagePullPolicy: "{{ .Values.image.pullPolicy }}"
         ports:
-          - name: "ngsi-ld"
+          - name: "port3001"
             containerPort: 3001
-
+          - name: "port80"
+            containerPort: 80
         env:
           - name: VERSION
             value: "{{ .Values.image.tag }}"
@@ -45,6 +46,6 @@ spec:
             value: "http://155.54.95.248:9090/ngsi-ld/"
             #value: "http://metadata-repository-scorpiobroker.35.241.228.250.nip.io/ngsi-ld/"
           - name: HTTP_SERVER_HOST
-            value: "orchestrator.{{ .Release.Namespace }}"
+            value: "{{ .Values.gitlab.env }}.35.241.228.250.nip.io"
           - name: HTTP_SERVER_PORT
-            value: "80"
+            value: "3001"

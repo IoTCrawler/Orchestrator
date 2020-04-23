@@ -28,5 +28,5 @@ if [ "$1" = "install" ]; then
 	#Fiware/clients: Checking fiware-models dependency
 	(if [ ! -d ~/.m2/repository/com/agtinternational/iotcrawler/fiware-clients ]; then CURR=$(pwd) && cd ../com.agtinternational.iotcrawler.fiware-clients && sh make.sh install && cd $CURR; fi);
 	#Core models: installing
-	mvn install -DskipTests=true
+	mvn clean install -DskipTests=true
 fi

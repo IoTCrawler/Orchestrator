@@ -28,7 +28,7 @@ if [ "$1" = "install" ]; then
 	echo "#Fiware/clients: Checking fiware-models dependency"
 	(if [ ! -d ~/.m2/repository/com/agtinternational/iotcrawler/fiware-models ]; then CURR=$(pwd) && cd "${CI_PROJECT_DIR}/com.agtinternational.iotcrawler.fiware-models" && sh make.sh install && cd $CURR; fi);
 	echo "#Fiware/clients: installing"
-	mvn install -DskipTests=true
+	mvn clean install -DskipTests=true
 fi
 #
 #if [ "$1" = "compose-up" ]; then

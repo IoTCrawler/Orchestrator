@@ -14,5 +14,5 @@ if [ "$1" = "install" ]; then
   echo "# Fiware-models: checking com/agtinternational/iotcrawler"
 	(if [ ! -d ~/.m2/repository/com/agtinternational/iotcrawler ]; then CURR=$(pwd) && cd "../IoTCrawler" && mvn install && cd $CURR; fi);
 	echo "#Fiware/models: installing"
-	mvn validate && mvn install -DskipTests=true
+	mvn validate && mvn clean install -DskipTests=true
 fi

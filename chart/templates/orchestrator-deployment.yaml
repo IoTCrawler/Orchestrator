@@ -27,8 +27,8 @@ spec:
 {{ toYaml .Values.image.secrets | indent 10 }}
       containers:
       - name: {{ .Chart.Name }}
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        #image: "{{ .Values.image.repository }}:de42ed8d1cdd7dfda229b066ddc44cca4cd5de10"
+        #image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        image: "{{ .Values.image.repository }}:de7123ebd4406776a160e4da5be6c98fd9821190"
         imagePullPolicy: "{{ .Values.image.pullPolicy }}"
         ports:
           - name: "ngsi-ld"
@@ -38,9 +38,9 @@ spec:
           - name: VERSION
             value: "{{ .Values.image.tag }}"
           - name: IOTCRAWLER_RABBIT_HOST
-            value: "rabbit"  #production-auto-deploy.${repository-name}-${project-id}-production:${port}
+            value: "rabbit.orchestrator.{{ .Release.Namespace }}"
           - name: IOTCRAWLER_REDIS_HOST
-            value: "redis"
+            value: "redis.orchestrator.{{ .Release.Namespace }}"
           - name: NGSILD_BROKER_URL
             value: "http://155.54.95.248:9090/ngsi-ld/"
             #value: "http://metadata-repository-scorpiobroker.35.241.228.250.nip.io/ngsi-ld/"

@@ -61,7 +61,7 @@ public class Orchestrator extends IotCrawlerClient {
     String redisHost = "localhost";
     String notificationsEndpoint = "/notify";
     String ngsiEndpoint = "/ngsi-ld";
-    String versionEndpoint = "/version";
+    String versionEndpoint = "/";
     boolean cutURIs = true;
 
     //AbstractMetadataClient metadataClient;

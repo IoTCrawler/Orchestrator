@@ -27,8 +27,8 @@ spec:
 {{ toYaml .Values.image.secrets | indent 10 }}
       containers:
       - name: {{ .Chart.Name }}
-        #image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        image: "{{ .Values.image.repository }}:de7123ebd4406776a160e4da5be6c98fd9821190"
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        #image: "{{ .Values.image.repository }}:de7123ebd4406776a160e4da5be6c98fd9821190"
         imagePullPolicy: "{{ .Values.image.pullPolicy }}"
         ports:
           - name: "ngsi-ld"

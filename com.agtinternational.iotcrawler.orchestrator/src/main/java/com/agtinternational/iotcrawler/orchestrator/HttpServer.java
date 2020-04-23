@@ -210,7 +210,7 @@ public class HttpServer {
             @Override
             public void handle(HttpExchange he) throws IOException {
 
-                String response =  (System.getenv().containsKey("VERSION")?System.getenv().get("VERSION"):"Not set");
+                String response =  (System.getenv().containsKey("VERSION")?"Version: "+System.getenv().get("VERSION"):"Version not set");
                 he.sendResponseHeaders(200, response.length());
 
                 OutputStream os = he.getResponseBody();

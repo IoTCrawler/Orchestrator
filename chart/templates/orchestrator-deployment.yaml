@@ -38,9 +38,9 @@ spec:
           - name: VERSION
             value: "{{ .Values.image.tag }}"
           - name: IOTCRAWLER_RABBIT_HOST
-            value: "rabbit.orchestrator.{{ .Release.Namespace }}"
+            value: "rabbit.{{ .Release.Namespace }}"
           - name: IOTCRAWLER_REDIS_HOST
-            value: "redis.orchestrator.{{ .Release.Namespace }}"
+            value: "redis.{{ .Release.Namespace }}"
           - name: NGSILD_BROKER_URL
             value: "http://155.54.95.248:9090/ngsi-ld/"
             #value: "http://metadata-repository-scorpiobroker.35.241.228.250.nip.io/ngsi-ld/"

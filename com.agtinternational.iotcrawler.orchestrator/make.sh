@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-export CI_PROJECT_DIR=${CI_PROJECT_DIR:-$(pwd)}
-echo ${CI_PROJECT_DIR}
+#export CI_PROJECT_DIR=${CI_PROJECT_DIR:-$(pwd)}
+#echo ${CI_PROJECT_DIR}
 set -e
 
 

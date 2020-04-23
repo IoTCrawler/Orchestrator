@@ -26,7 +26,7 @@ if [ "$1" = "install" ]; then
 	echo "#Fiware/clients: Checking iot-broker dependency"
 	(if [ ! -d ~/.m2/repository/eu/neclab/iotplatform/iotbroker.client ]; then sh make.sh prepare-iotbroker; fi);
 	echo "#Fiware/clients: Checking fiware-models dependency"
-	(if [ ! -d ~/.m2/repository/com/agtinternational/iotcrawler/fiware-models ]; then CURR=$(pwd) && cd "${CI_PROJECT_DIR}/com.agtinternational.iotcrawler.fiware-models" && sh make.sh install && cd $CURR; fi);
+	(if [ ! -d ~/.m2/repository/com/agtinternational/iotcrawler/fiware-models ]; then CURR=$(pwd) && cd "../com.agtinternational.iotcrawler.fiware-models" && sh make.sh install || cd $CURR; fi);
 	echo "#Fiware/clients: installing"
 	mvn clean install -DskipTests=true
 fi

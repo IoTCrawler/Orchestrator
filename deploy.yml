@@ -82,8 +82,9 @@ staging:
     #    - kubectl delete --all deployment --namespace ${KUBE_NAMESPACE} || echo ""
     #    - kubectl delete --all service --namespace ${KUBE_NAMESPACE} || echo ""
 
-    #- sed -i "s#helm upgrade --install#helm upgrade --install --force#g" /usr/local/bin/auto-deploy
-    #- cat /usr/local/bin/auto-deploy
+    - sed -i "s#helm upgrade --install#helm upgrade --install --force#g" /usr/local/bin/auto-deploy
+    - export CI_ENVIRONMENT_SLUG="${CI_PROJECT_NAME}-${CI_BUILD_STAGE}"
+    - echo $CI_ENVIRONMENT_SLUG
 
     - auto-deploy check_kube_domain
     - auto-deploy download_chart
@@ -96,7 +97,7 @@ staging:
     - echo ${CI_ENVIRONMENT_URL}
   environment:
     name: ${CI_PROJECT_NAME}-${CI_BUILD_STAGE}
-    url: http://$CI_PROJECT_PATH_SLUG-staging.$KUBE_INGRESS_BASE_DOMAIN
+    url: http://${CI_PROJECT_NAME}-${CI_BUILD_STAGE}.$KUBE_INGRESS_BASE_DOMAIN
   only:
     #    refs:
     #      - master
@@ -146,13 +147,9 @@ canary:
     #    - sed -i "s#<SERVER>#${SERVER}#g" kube_config
     #    - sed -i "s#<TOKEN>#${USER_TOKEN}#g" kube_config
 
-    #- sed -i "s#helm upgrade --install#helm upgrade --install --force#g" /usr/local/bin/auto-deploy
-
-    #- cat $KUBECONFIG
-    #- export KUBECONFIG="kube_config"
-    #- cat $KUBECONFIG
-    #- echo $HELM_HOST
-
+    - sed -i "s#helm upgrade --install#helm upgrade --install --force#g" /usr/local/bin/auto-deploy
+    - export CI_ENVIRONMENT_SLUG="${CI_PROJECT_NAME}-${CI_BUILD_STAGE}"
+    - echo $CI_ENVIRONMENT_SLUG
 
     - auto-deploy check_kube_domain
     - auto-deploy download_chart
@@ -170,7 +167,7 @@ canary:
   #    CI_DEBUG_TRACE: "true"
   environment:
     name: ${CI_PROJECT_NAME}-${CI_BUILD_STAGE}
-    url: http://$CI_PROJECT_PATH_SLUG.$KUBE_INGRESS_BASE_DOMAIN
+    url: http://${CI_PROJECT_NAME}-${CI_BUILD_STAGE}.$KUBE_INGRESS_BASE_DOMAIN
   artifacts:
     paths: [environment_url.txt]
 

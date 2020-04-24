@@ -21,7 +21,7 @@ package com.agtinternational.iotcrawler.orchestrator;
  */
 
 import com.agtinternational.iotcrawler.core.Utils;
-import com.agtinternational.iotcrawler.core.interfaces.IotCrawlerClient;
+import com.agtinternational.iotcrawler.core.interfaces.IoTCrawlerClient;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import com.agtinternational.iotcrawler.fiware.models.subscription.Subscription;
 //import com.agtinternational.iotcrawler.orchestrator.clients.IotBrokerDataClient;
@@ -54,7 +54,7 @@ import static com.agtinternational.iotcrawler.fiware.clients.Constants.NGSILD_BR
 import static com.agtinternational.iotcrawler.orchestrator.Constants.RANKING_COMPONENT_URL;
 
 
-public class Orchestrator extends IotCrawlerClient {
+public class Orchestrator extends IoTCrawlerClient {
     private Logger LOGGER = LoggerFactory.getLogger(Orchestrator.class);
 
     String rabbitHost = "localhost";

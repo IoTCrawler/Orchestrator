@@ -23,7 +23,7 @@ package com.agtinternational.iotcrawler.core.clients;
 import com.agtinternational.iotcrawler.core.RabbitMQRpcClient;
 import com.agtinternational.iotcrawler.core.Utils;
 import com.agtinternational.iotcrawler.core.commands.*;
-import com.agtinternational.iotcrawler.core.interfaces.IotCrawlerClient;
+import com.agtinternational.iotcrawler.core.interfaces.IoTCrawlerClient;
 import com.agtinternational.iotcrawler.core.models.*;
 
 import com.agtinternational.iotcrawler.fiware.clients.NgsiLDClient;
@@ -51,7 +51,7 @@ import static com.agtinternational.iotcrawler.core.Constants.IOTCRAWLER_NOTIFICA
 
 //ToDo: timeout for requests
 
-public class IoTCrawlerRPCClient extends IotCrawlerClient implements AutoCloseable {
+public class IoTCrawlerRPCClient extends IoTCrawlerClient implements AutoCloseable {
     private Logger LOGGER = LoggerFactory.getLogger(IoTCrawlerRPCClient.class);
 
     //Semaphore callFinishedMutex;

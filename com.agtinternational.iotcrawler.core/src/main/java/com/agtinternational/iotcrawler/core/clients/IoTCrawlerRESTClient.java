@@ -21,30 +21,21 @@ package com.agtinternational.iotcrawler.core.clients;
 
 
 import com.agtinternational.iotcrawler.core.Utils;
-import com.agtinternational.iotcrawler.core.interfaces.IotCrawlerClient;
+import com.agtinternational.iotcrawler.core.interfaces.IoTCrawlerClient;
 import com.agtinternational.iotcrawler.core.models.*;
 
-import com.agtinternational.iotcrawler.fiware.clients.CustomSubscribeContextRequest;
 import com.agtinternational.iotcrawler.fiware.clients.NgsiLDClient;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import com.agtinternational.iotcrawler.fiware.models.subscription.Subscription;
 import com.google.gson.JsonParser;
 import com.orange.ngsi2.model.*;
-import eu.neclab.iotplatform.ngsi.api.datamodel.*;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
-import org.springframework.web.client.HttpClientErrorException;
 
-import javax.management.InstanceAlreadyExistsException;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import java.net.URI;
-import java.net.URL;
-import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 import java.util.function.Function;
@@ -55,7 +46,7 @@ import java.util.function.Function;
 
 //ToDo: timeout for requests
 //@RunWith(Parameterized.class)
-public class IoTCrawlerRESTClient extends IotCrawlerClient implements AutoCloseable {
+public class IoTCrawlerRESTClient extends IoTCrawlerClient implements AutoCloseable {
     private Logger LOGGER = LoggerFactory.getLogger(IoTCrawlerRPCClient.class);
     private boolean cutURLs = true;
 

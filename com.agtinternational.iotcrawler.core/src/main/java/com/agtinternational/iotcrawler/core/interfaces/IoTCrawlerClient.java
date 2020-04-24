@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-public abstract class IotCrawlerClient implements Component {
+public abstract class IoTCrawlerClient implements Component {
 
     /////////////////////////////////////Streams
     public List<IoTStream> getStreamById(String id) throws Exception{

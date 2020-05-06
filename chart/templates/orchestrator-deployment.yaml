@@ -40,10 +40,13 @@ spec:
             value: "{{ .Values.image.tag }}"
           - name: IOTCRAWLER_RABBIT_HOST
             value: "rabbit.{{ .Release.Namespace }}"
+          - name: RANKING_COMPONENT_URL
+            value: "http://production-auto-deploy.ranking-16-production:3003/"
           - name: IOTCRAWLER_REDIS_HOST
             value: "redis.{{ .Release.Namespace }}"
           - name: NGSILD_BROKER_URL
-            value: "http://155.54.95.248:9090/ngsi-ld/"
+            value: "http://scorpio.scorpiobroker-46-production:9090"
+            #value: "http://155.54.95.248:9090/ngsi-ld/"
             #value: "http://metadata-repository-scorpiobroker.35.241.228.250.nip.io/ngsi-ld/"
           - name: HTTP_SERVER_HOST
             value: "{{ .Values.gitlab.env }}.35.241.228.250.nip.io"

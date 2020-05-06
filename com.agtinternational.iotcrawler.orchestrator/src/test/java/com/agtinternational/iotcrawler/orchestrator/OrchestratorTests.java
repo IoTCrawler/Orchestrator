@@ -22,7 +22,7 @@ package com.agtinternational.iotcrawler.orchestrator;
 
 
 import com.agtinternational.iotcrawler.core.Utils;
-import com.agtinternational.iotcrawler.core.interfaces.IotCrawlerClient;
+import com.agtinternational.iotcrawler.core.interfaces.IoTCrawlerClient;
 import com.agtinternational.iotcrawler.fiware.clients.NgsiLDClient;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 //import com.agtinternational.iotcrawler.orchestrator.clients.TripleStoreMDRClient;
@@ -67,7 +67,7 @@ public class OrchestratorTests {
 
     protected Logger LOGGER = LoggerFactory.getLogger(OrchestratorTests.class);
 
-    protected IotCrawlerClient client;
+    protected IoTCrawlerClient client;
     Boolean cutURIs;
     NgsiLDClient ngsiLDClient;
 

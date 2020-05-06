@@ -22,23 +22,8 @@ package com.agtinternational.iotcrawler.orchestrator;
 
 
 import com.agtinternational.iotcrawler.core.Utils;
-import com.agtinternational.iotcrawler.core.interfaces.IotCrawlerClient;
+import com.agtinternational.iotcrawler.core.interfaces.IoTCrawlerClient;
 import com.agtinternational.iotcrawler.fiware.clients.NgsiLDClient;
-import com.agtinternational.iotcrawler.fiware.models.EntityLD;
-//import com.agtinternational.iotcrawler.orchestrator.clients.TripleStoreMDRClient;
-import com.agtinternational.iotcrawler.core.models.*;
-import com.agtinternational.iotcrawler.fiware.models.subscription.Endpoint;
-import com.agtinternational.iotcrawler.fiware.models.subscription.EntityInfo;
-import com.agtinternational.iotcrawler.fiware.models.subscription.NotificationParams;
-import com.agtinternational.iotcrawler.fiware.models.subscription.Subscription;
-import com.google.gson.JsonObject;
-import com.orange.ngsi2.model.Condition;
-import com.orange.ngsi2.model.SubjectEntity;
-import eu.neclab.iotplatform.ngsi.api.datamodel.NotifyCondition;
-import eu.neclab.iotplatform.ngsi.api.datamodel.NotifyConditionEnum;
-import eu.neclab.iotplatform.ngsi.api.datamodel.Restriction;
-import org.apache.http.entity.ContentType;
-import org.apache.jena.vocabulary.RDFS;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -47,16 +32,6 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.Assert;
-import org.springframework.util.concurrent.ListenableFuture;
-import org.springframework.util.concurrent.ListenableFutureCallback;
-
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.*;
-import java.util.concurrent.Semaphore;
-import java.util.function.Function;
 
 import static com.agtinternational.iotcrawler.core.Constants.CUT_TYPE_URIS;
 import static com.agtinternational.iotcrawler.fiware.clients.Constants.NGSILD_BROKER_URL;
@@ -67,7 +42,7 @@ public class OrchestratorManualTests {
 
     protected Logger LOGGER = LoggerFactory.getLogger(OrchestratorTests.class);
 
-    protected IotCrawlerClient client;
+    protected IoTCrawlerClient client;
     Boolean cutURIs;
     NgsiLDClient ngsiLDClient;
 

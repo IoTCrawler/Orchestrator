@@ -1,4 +1,4 @@
-package com.agtinternational.iotcrawler.core.ontologies;
+package com.agtinternational.iotcrawler.core.models;
 
 /*-
  * #%L
@@ -20,22 +20,12 @@ package com.agtinternational.iotcrawler.core.ontologies;
  * #L%
  */
 
+import com.agtinternational.iotcrawler.core.ontologies.IotStream;
+import org.apache.jena.vocabulary.RDFS;
 
-
-public class IotStream {
-
-    public static final String NS = "http://purl.org/iot/ontology/iot-stream#";
-    public static final String Prefix = "iot-stream";
-
-    public static String IotStream = NS+"IotStream";
-    public static String StreamObservation = NS+"StreamObservation";
-    public static String Context = NS+"Context";
-
-    public static String generatedBy = NS+"generatedBy";
-    public static String observes = NS +"observes";
-    public static String belongsTo = NS+"belongsTo";
-    public static String derivedFrom = NS+"derivedFrom";
-    public static String dependsOnContext = NS+"dependsOnContext";
-
-
+public class Context extends IoTStream {
+    public Context(String uri) {
+        super(uri);
+        addProperty(RDFS.subClassOf, IotStream.Context);
+    }
 }

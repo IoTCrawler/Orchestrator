@@ -35,11 +35,22 @@ public class Relationship extends Property {
     }
 
     public Relationship(Map<String, Object> attMap) throws Exception {
-        super(attMap);
-//        if (attributes.containsKey("object")) {
-//            setValue(attributes.get("object"));
-//            attributes.remove("object");
-//        }
+        //super(attMap);
+
+//        this.setValue(property.getValue());
+//        this.setMetadata(property.getMetadata());
+
+        if (attMap.containsKey("type")) {
+            setValue(attMap.get("type"));
+            attributes.remove("type");
+        }
+
+        if (attMap.containsKey("object")) {
+            setValue(attMap.get("object"));
+            attMap.remove("object");
+        }
+
+        attributes = attMap;
     }
 
     public Relationship(Property property){

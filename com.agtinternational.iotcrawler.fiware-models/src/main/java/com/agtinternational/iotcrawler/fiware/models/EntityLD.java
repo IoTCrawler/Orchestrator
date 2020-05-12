@@ -155,6 +155,9 @@ public class EntityLD /*extends Entity*/ {
                 JsonObject extraContext = new JsonObject();
                 int index = 1;
                 for (JsonElement jsonElement : jsonObjectAttr) {
+                    if(key.startsWith("http://"))
+                        key = Utils.getFragment(key);
+
                     String key2 = key + "#" + index;
                     jsonObject.add(key2, jsonElement);
                     extraContext.addProperty(key2, (!key.startsWith("http://")?"http://dummyurl/"+key:key));

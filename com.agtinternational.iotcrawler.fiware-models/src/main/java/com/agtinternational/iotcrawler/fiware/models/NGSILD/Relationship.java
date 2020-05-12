@@ -21,40 +21,41 @@ package com.agtinternational.iotcrawler.fiware.models.NGSILD;
  */
 
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 
 public class Relationship extends Property {
 
-//    protected Map<String, Object> attributes = new HashMap<>();
+    //protected Map<String, Object> attributes = new HashMap<>();
 
     public Relationship() {
         setType(Optional.of(getTypeUri()));
     }
 
-//    public Relationship(Map<String, Object> attMap) throws Exception {
-//        super(attMap);
-////        if (attributes.containsKey("object")) {
-////            setValue(attributes.get("object"));
-////            attributes.remove("object");
-////        }
-//    }
+    public Relationship(Map<String, Object> attMap) throws Exception {
+        super(attMap);
+//        if (attributes.containsKey("object")) {
+//            setValue(attributes.get("object"));
+//            attributes.remove("object");
+//        }
+    }
 
-//    public Relationship(Property property){
-//        this();
-//        setType(property.getType());
-//        setValue(property.getValue());
-//        setMetadata(property.getMetadata());
-//    }
+    public Relationship(Property property){
+        this();
+        setType(property.getType());
+        setValue(property.getValue());
+        setMetadata(property.getMetadata());
+    }
 
-//    public void setAttributes(Map<String, Object> attributes) {
-//        this.attributes.putAll(attributes);
-//    }
-//
-//    public Map<String, Object> getAttributes() {
-//        return attributes;
-//    }
+    public void setAttributes(Map<String, Object> attributes) {
+        this.attributes.putAll(attributes);
+    }
+
+    public Map<String, Object> getAttributes() {
+        return attributes;
+    }
 
     public Relationship(Object value) {
         this();

@@ -41,11 +41,11 @@ public class ModelsTest {
     @Parameterized.Parameters
     public static Collection parameters() throws Exception {
         return Arrays.asList(new Object[][]{
-                new Object[]{ createEntity() },
-                new Object[]{ readEntityFromFile("samples/VehicleLD.json") },
-                new Object[]{ readEntityFromFile("samples/urn-ngsi-ld-TemperatureSensor-335547902.json") },
-                new Object[]{ readEntityFromFile("samples/IoTStreamLD.json") },
-                new Object[]{ readEntityFromFile("samples/PlatformLD.json") },
+//                new Object[]{ createEntity() },
+//                new Object[]{ readEntityFromFile("samples/VehicleLD.json") },
+//                new Object[]{ readEntityFromFile("samples/urn-ngsi-ld-TemperatureSensor-335547902.json") },
+//                new Object[]{ readEntityFromFile("samples/IoTStreamLD.json") },
+//                new Object[]{ readEntityFromFile("samples/PlatformLD.json") },
                 new Object[]{ readEntityFromFile("samples/MultiplePropertyValuesEntity.json") }
 
         });

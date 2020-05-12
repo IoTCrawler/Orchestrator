@@ -135,13 +135,9 @@ public class EntityLD /*extends Entity*/ {
         jsonObject.addProperty("id", getId());
         jsonObject.addProperty("type", getType());
 
-        JsonElement contextJson = null;
-        if(context!=null){
-            contextJson = Utils.objectToJson(context);
-            jsonObject.add("@context", contextJson);
-        }
 
         Map<String, Object>  attributeMap = getAttributes();
+        JsonObject extraContext = new JsonObject();
         for(String key: attributeMap.keySet()) {
 
             Object attribute = attributeMap.get(key);
@@ -152,7 +148,6 @@ public class EntityLD /*extends Entity*/ {
                     continue;
                 }
 
-                JsonObject extraContext = new JsonObject();
                 int index = 1;
                 for (JsonElement jsonElement : jsonObjectAttr) {
                     if(key.startsWith("http://"))
@@ -164,21 +159,33 @@ public class EntityLD /*extends Entity*/ {
                     index++;
                 }
 
-                if (contextJson != null) {
-                    if (contextJson instanceof JsonArray)
-                        ((JsonArray) contextJson).add(extraContext);
-                    else if (contextJson instanceof JsonObject) {
-                        for(String key3: extraContext.keySet())
-                            ((JsonObject) contextJson).add(key3, extraContext.get(key3));
-                    }
-                }else
-                    contextJson = extraContext;
-
             }else {
                 JsonElement jsonObjectAttr = Utils.objectToJson(attribute);
                 jsonObject.add(key, jsonObjectAttr);
             }
         }
+        JsonElement contextJson = null;
+        if(context!=null){
+            contextJson = Utils.objectToJson(context);
+
+            if(extraContext.size()>0) {
+                if (contextJson instanceof Iterable) {
+                    Iterator iterator = ((Iterable)contextJson).iterator();
+                    while (iterator.hasNext()) {
+                        Object item = iterator.next();
+                        if(item instanceof JsonObject)
+                            for (String key3 : extraContext.keySet()){
+                                ((JsonObject) item).add(key3, extraContext.get(key3));
+                            }
+                    }
+                } else if (contextJson instanceof JsonObject) {
+                    for (String key3 : extraContext.keySet())
+                        ((JsonObject) contextJson).add(key3, extraContext.get(key3));
+                }
+            }
+            jsonObject.add("@context", contextJson);
+        }
+
         return jsonObject;
     }
 

@@ -42,7 +42,7 @@ public class Relationship extends Property {
 
         if (attMap.containsKey("type")) {
             setValue(attMap.get("type"));
-            attributes.remove("type");
+            attMap.remove("type");
         }
 
         if (attMap.containsKey("object")) {

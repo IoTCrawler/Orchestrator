@@ -28,6 +28,7 @@ import com.google.gson.*;
 import com.orange.ngsi2.model.Attribute;
 import com.orange.ngsi2.model.Metadata;
 import org.apache.commons.lang3.NotImplementedException;
+import org.w3c.dom.Attr;
 
 import java.net.URI;
 import java.util.*;
@@ -76,7 +77,7 @@ public class Utils {
 //            throw new NotImplementedException(value.getClass().getName());
 //    }
 
-    private static JsonArray iterableToJson(Iterable iterable){
+    public static JsonArray iterableToJson(Iterable iterable){
         JsonArray ret = new JsonArray();
         Iterator iterator = iterable.iterator();
         while (iterator.hasNext()){
@@ -153,27 +154,30 @@ public class Utils {
         String attKey = (type.toLowerCase().equals("relationship")? "object": "value");
         ret.add(attKey, (JsonElement) jsonElement);
 
-        if(attribute instanceof Relationship){
-            Map<String, Object> attributes = ((Relationship)attribute).getAttributes();
-            for(String key: attributes.keySet()){
-                Object value = attributes.get(key);
-                if(value instanceof String)
-                    ret.addProperty(key, String.valueOf(value));
-                else if(value instanceof Metadata){
-                    if(((Metadata) value).getType()!=null)
-                        ret.add(key, attributeToJson((Attribute) value));
-                    else
-                        ret.addProperty(key, ((Attribute) value).getValue().toString());
-                }else if(value instanceof Attribute) {
-                    if (((Attribute) value).getType() != null)
-                        ret.add(key, attributeToJson((Attribute) value));
-                    else
-                        ret.addProperty(key, ((Attribute) value).getValue().toString());
-                }else{
-                    throw new NotImplementedException(value.getClass().getName());
-                }
-            }
-        }
+//        if(attribute instanceof Attribute){
+//            Map<String, Object> attributes = ((Attribute)attribute).getAttributes();
+//            for(String key: attributes.keySet()){
+//                Object value = attributes.get(key);
+//                if(value instanceof Iterable)
+//                    ret.add(key, iterableToJson((Iterable) value));
+//                else if(value instanceof String)
+//                    ret.addProperty(key, String.valueOf(value));
+//                else if(value instanceof Metadata){
+//                    if(((Metadata) value).getType()!=null)
+//                        ret.add(key, attributeToJson((Attribute) value));
+//                    else
+//                        ret.addProperty(key, ((Attribute) value).getValue().toString());
+//                }else if(value instanceof Attribute) {
+//                    if (((Attribute) value).getType() != null)
+//                        ret.add(key, attributeToJson((Attribute) value));
+//                    else
+//                        ret.addProperty(key, ((Attribute) value).getValue().toString());
+//                }else{
+//                    throw new NotImplementedException(value.getClass().getName());
+//                }
+//            }
+//        }else
+//            throw new NotImplementedException(attribute.getClass().getCanonicalName());
 
         if(attribute.getMetadata()!=null)
             for(String key: attribute.getMetadata().keySet()){
@@ -210,21 +214,33 @@ public class Utils {
         return ret;
     }
 
-    public static Map<String, Object> extractAllProperties(Map<String, Object> attMap) throws Exception {
+    public static Map<String, Object> extractAttributes(Map<String, Object> attMap) throws Exception {
         Map<String, Object> ret = new HashMap<>();
         //for(Map<String, Object> attMap : attrs)
+
         Attribute attribute = null;
-        for(String attKey : attMap.keySet()){
+        for(String attKey0 : attMap.keySet()){
+            String attKey = attKey0;
             Object attValue = attMap.get(attKey);
 
+            String[] splitted = attKey.split("#");
+            if(splitted.length>1 && Integer.parseInt(splitted[splitted.length-1])>0){
+                List<String> list1 = Arrays.asList(splitted);
+                attKey = String.join("#", list1.subList(0, list1.size()-1));
+            }
+
+            //Object contextDef = (context!=null?context.get(attKey):null);
             //System.out.println(attKey+" => "+attValue);
 
             List<Object> values = new ArrayList<>();
             List<Object> attributes = new ArrayList<>();
+//            if(contextDef!=null)
+//                attKey = contextDef.toString();
 
             if(attValue instanceof Map) {
                 Attribute attribute2 = extractAttribute((Map)attValue);
-                ret.put(attKey, attribute2);
+                ret = appendAttribute(ret, attKey, attribute2);
+                //ret.put(attKey, attribute2);
             }else if(attValue instanceof Iterable){
                 Iterator iterator = ((Iterable)attValue).iterator();
                 while (iterator.hasNext()) {
@@ -241,17 +257,45 @@ public class Utils {
                     attributes.addAll(values);
                     //attributes.add(new Property(values));
                 }
-                ret.put(attKey, attributes);
+                ret = appendAttribute(ret, attKey, attributes);
+                //ret.put(attKey, attributes);
             }else if(attValue instanceof String || attValue instanceof Number){
                 //attributes.add(new Property(attValue));
-                ret.put(attKey, attValue);
+                //ret.put(attKey, attValue);
+                ret = appendAttribute(ret, attKey, attValue);
             }else
                 throw new org.apache.commons.lang3.NotImplementedException(attValue.getClass().getName()+" not implemented ");
 
-
-
         }
         return ret;
+    }
+
+    public static Map<String, Object> appendAttribute(Map<String, Object> attributes, String name, Object value){
+        Object valueToAdd = value;
+        if(attributes.get(name)!=null){
+            Object alreadyExistingAttribute = attributes.get(name);
+
+            List attributesList = null;
+            if(alreadyExistingAttribute instanceof Attribute){
+                attributesList = new ArrayList();
+                attributesList.add(((Attribute) alreadyExistingAttribute).getValue());
+            }else if(alreadyExistingAttribute instanceof List)
+                attributesList = (List)alreadyExistingAttribute;
+            else
+                throw new NotImplementedException("Already existing list has type "+alreadyExistingAttribute.getClass().getCanonicalName());
+
+            if(value instanceof Attribute)
+                attributesList.add(((Attribute) value).getValue());
+            else if(value instanceof List)
+                attributesList.addAll((List)value);
+            else
+                throw new NotImplementedException("Value has type "+value.getClass().getCanonicalName());
+
+            valueToAdd = attributesList;
+        }
+
+        attributes.put(name, valueToAdd);
+        return attributes;
     }
 
     public static Attribute extractAttribute(Map<String, Object> attMap) throws Exception {
@@ -266,13 +310,13 @@ public class Utils {
             value = attMap.get("@type");
 
         if(value!=null)
-            if (value.toString().toLowerCase().equals("property") || value.toString().equals(Property.getTypeUri())) {
+            if (value.toString().toLowerCase().endsWith("property") || value.toString().equals(Property.getTypeUri())) {
                 return new Property(attMap);
-            } else if (value.toString().toLowerCase().equals("relationship") || value.toString().equals(Relationship.getTypeUri()))
+            } else if (value.toString().toLowerCase().endsWith("relationship") || value.toString().equals(Relationship.getTypeUri()))
                 return new Relationship(attMap);
-            else if (value.toString().toLowerCase().equals("geoproperty") || value.toString().equals(GeoProperty.getTypeUri()))
+            else if (value.toString().toLowerCase().endsWith("geoproperty") || value.toString().equals(GeoProperty.getTypeUri()))
                 return new GeoProperty(attMap);
-            else if (value.toString().toLowerCase().equals("datetime") || value.toString().equals(DateTime.getTypeUri()))
+            else if (value.toString().toLowerCase().endsWith("datetime") || value.toString().equals(DateTime.getTypeUri()))
                 return new DateTime(attMap);
             else
                 throw new org.apache.commons.lang3.NotImplementedException(value.getClass().getName()+" not implemented ");

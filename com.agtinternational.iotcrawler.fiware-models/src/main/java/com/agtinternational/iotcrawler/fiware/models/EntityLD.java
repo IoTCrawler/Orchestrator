@@ -20,12 +20,10 @@ package com.agtinternational.iotcrawler.fiware.models;
  * #L%
  */
 
-import com.agtinternational.iotcrawler.fiware.models.NGSILD.Property;
 import com.google.gson.*;
 import com.orange.ngsi2.model.Attribute;
 import org.apache.commons.lang3.NotImplementedException;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.w3c.dom.Attr;
 
 import java.util.*;
 
@@ -33,9 +31,10 @@ public class EntityLD /*extends Entity*/ {
     private String id;
     private String type;
     Object context;
-    Map<String, Attribute> attributes;
+    Map<String, Object> attributes = new HashMap<>();
 
     public EntityLD() {
+
     }
 
     public EntityLD(String id, String type) {
@@ -44,7 +43,7 @@ public class EntityLD /*extends Entity*/ {
     }
 
 
-    public EntityLD(String id, String type, Map<String, Attribute> attributes) {
+    public EntityLD(String id, String type, Map<String, Object> attributes) {
         this(id, type);
         this.attributes = attributes;
     }
@@ -53,7 +52,7 @@ public class EntityLD /*extends Entity*/ {
 //        super(id, type, attributes);
 //    }
 
-    public EntityLD(String id, String type, Map<String, Attribute> attributes, Object context) {
+    public EntityLD(String id, String type, Map<String, Object> attributes, Object context) {
         this(id, type, attributes);
         this.context = context;
     }
@@ -74,39 +73,39 @@ public class EntityLD /*extends Entity*/ {
         this.type = type;
     }
 
-    public Map<String, Attribute> getAttributes() {
+    public Map<String, Object> getAttributes() {
         return attributes;
     }
 
-    public Attribute getAttribute(String name){
+    public Object getAttribute(String name){
         //List<Attribute> attrList = new ArrayList<>();
 
-        Attribute ret = null;
+        Object ret = attributes.get(name);
 
-        for(String key: attributes.keySet()) {
-            if(key.equals(name) || key.startsWith(name+"#")){
-                Attribute origAtt = attributes.get(key);
-
-                if(ret!=null){
-                   List values = null;
-                   if(!(ret.getValue() instanceof List)) {
-                       values = new ArrayList();
-                       values.add(ret.getValue());
-                   }else
-                       values = (List)ret.getValue();
-
-                   values.add(origAtt.getValue());
-                   ret.setValue(values);
-                }else {
-                    ret = new Attribute();
-                    ret.setValue(origAtt.getValue());
-                    ret.setMetadata(origAtt.getMetadata());
-                    ret.setType(origAtt.getType());
-                }
-                //Attribute attribute = attributes.get(name);
-                //attrList.add(attribute);
-            }
-        }
+//        for(String key: attributes.keySet()) {
+//            if(key.equals(name) || key.startsWith(name+"#")){
+//                Object origAtt = attributes.get(key);
+//
+//                if(ret!=null){
+//                   List values = null;
+//                   if(!(ret.getValue() instanceof List)) {
+//                       values = new ArrayList();
+//                       values.add(ret.getValue());
+//                   }else
+//                       values = (List)ret.getValue();
+//
+//                   values.add(origAtt.getValue());
+//                   ret.setValue(values);
+//                }else {
+//                    ret = new Attribute();
+//                    ret.setValue(origAtt.getValue());
+//                    ret.setMetadata(origAtt.getMetadata());
+//                    ret.setType(origAtt.getType());
+//                }
+//                //Attribute attribute = attributes.get(name);
+//                //attrList.add(attribute);
+//            }
+//        }
 
         return ret;
     }
@@ -120,24 +119,62 @@ public class EntityLD /*extends Entity*/ {
     }
 
     public void addAttribute(String name, Attribute value){
-        attributes.put(name, value);
+        addAttributeAsObject(name, value);
+    }
+
+    public void addAttribute(String name, List<Attribute> value){
+        addAttributeAsObject(name, value);
+    }
+
+    private void addAttributeAsObject(String name, Object value){
+        attributes = Utils.appendAttribute(attributes, name, value);
     }
 
     public JsonObject toJsonObject() {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("id", getId());
         jsonObject.addProperty("type", getType());
+
+        JsonElement contextJson = null;
         if(context!=null){
-            JsonElement contextJson = Utils.objectToJson(context);
+            contextJson = Utils.objectToJson(context);
             jsonObject.add("@context", contextJson);
         }
 
-        Map<String, Attribute>  attributeMap = getAttributes();
+        Map<String, Object>  attributeMap = getAttributes();
         for(String key: attributeMap.keySet()) {
 
             Object attribute = attributeMap.get(key);
-            JsonElement jsonObjectAttr = Utils.objectToJson(attribute);
-            jsonObject.add(key, jsonObjectAttr);
+            if(attribute instanceof Iterable){
+                JsonArray jsonObjectAttr = Utils.iterableToJson((Iterable)attribute);
+                if(jsonObjectAttr.size()==1) {
+                    jsonObject.add(key, jsonObjectAttr.get(0));
+                    continue;
+                }
+
+                JsonObject extraContext = new JsonObject();
+                int index = 1;
+                for (JsonElement jsonElement : jsonObjectAttr) {
+                    String key2 = key + "#" + index;
+                    jsonObject.add(key2, jsonElement);
+                    extraContext.addProperty(key2, (!key.startsWith("http://")?"http://dummyurl/"+key:key));
+                    index++;
+                }
+
+                if (contextJson != null) {
+                    if (contextJson instanceof JsonArray)
+                        ((JsonArray) contextJson).add(extraContext);
+                    else if (contextJson instanceof JsonObject) {
+                        for(String key3: extraContext.keySet())
+                            ((JsonObject) contextJson).add(key3, extraContext.get(key3));
+                    }
+                }else
+                    contextJson = extraContext;
+
+            }else {
+                JsonElement jsonObjectAttr = Utils.objectToJson(attribute);
+                jsonObject.add(key, jsonObjectAttr);
+            }
         }
         return jsonObject;
     }
@@ -180,7 +217,7 @@ public class EntityLD /*extends Entity*/ {
         objectMap.remove((objectMap.containsKey("@type")?"@type":"type"));
         objectMap.remove((objectMap.containsKey("@context")?"@context":"context"));
 
-        Map<String, Attribute> attributes = Utils.extractAllProperties(objectMap);
+        Map<String, Object> attributes = Utils.extractAttributes(objectMap);
         EntityLD entity = new EntityLD(nameStr, typeStr, attributes, context);
         return entity;
     }

@@ -20,8 +20,8 @@ package com.agtinternational.iotcrawler.fiware.models;
  * #L%
  */
 
+import com.agtinternational.iotcrawler.fiware.models.NGSILD.Relationship;
 import com.google.gson.JsonObject;
-import com.orange.ngsi2.model.Attribute;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,12 +41,12 @@ public class ModelsTest {
     @Parameterized.Parameters
     public static Collection parameters() throws Exception {
         return Arrays.asList(new Object[][]{
-                //new Object[]{ createEntity() },
-                //new Object[]{ readEntity("samples/VehicleLD.json") },
-                //new Object[]{ readEntity("samples/TemperatureSensorLD.json") },
-                //new Object[]{ readEntity("samples/IoTStreamLD.json") }
-                new Object[]{ readEntity("samples/PlatformLD.json") }
-                //new Object[]{ readEntity("samples/MultiplePropertyValuesEntity.json") }
+                new Object[]{ createEntity() },
+                new Object[]{ readEntityFromFile("samples/VehicleLD.json") },
+                new Object[]{ readEntityFromFile("samples/urn-ngsi-ld-TemperatureSensor-335547902.json") },
+                new Object[]{ readEntityFromFile("samples/IoTStreamLD.json") },
+                new Object[]{ readEntityFromFile("samples/PlatformLD.json") },
+                new Object[]{ readEntityFromFile("samples/MultiplePropertyValuesEntity.json") }
 
         });
     }
@@ -55,25 +55,52 @@ public class ModelsTest {
         this.entity = entityLD;
     }
 
-    private static EntityLD readEntity(String path) throws Exception {
+    private static EntityLD readEntityFromFile(String path) throws Exception {
 
         byte[] entityJson = Files.readAllBytes(Paths.get(path));
         EntityLD entityLD = EntityLD.fromJsonString(new String(entityJson));
         return entityLD;
     }
 
+    private static EntityLD createEntity() throws IOException {
+        EntityLD ret = new EntityLD("Entity1","sosa:Sensor");
+        ret.addAttribute("hosts", new Relationship("value1"));
+//        entityLD.addAttribute("hosts", new Relationship("value2"));
+//        entityLD.addAttribute("hosts", new Relationship("value3"));
+//        entityLD.addAttribute("hosts", new Property("value4"));
+        return ret;
+    }
+
     @Test
-    //JsonString->EntityLD->JsonString2->Entity2==Entity
     public void fromJsonStringTest() throws Exception {
-        Attribute attribute = entity.getAttribute("sosa:hosts");
-        Attribute attribute2 = entity.getAttribute("sosa:hosts");
-        Attribute attribute3 = entity.getAttribute("sosa:hosts");
+        Object attribute = entity.getAttribute("hosts");
         String JsonString2 = Utils.prettyPrint(entity.toJsonObject());
+        System.out.println(JsonString2);
         //Files.write(Paths.get("target",Utils.getFragment(entity.getId()+".json")), JsonString2.getBytes());
 
-        EntityLD entityLD2 = EntityLD.fromJsonString(JsonString2);
+//        EntityLD entityLD2 = EntityLD.fromJsonString(JsonString2);
+//        String jsonString3 = Utils.prettyPrint(entityLD2.toJsonObject());
+//        System.out.println(JsonString2);
+//        Assert.assertEquals(entityLD2.toJsonObject(), entity.toJsonObject());
+    }
 
-        Assert.assertEquals(entityLD2.toJsonObject(), entity.toJsonObject());
+
+
+    @Test
+    public void createModelFromCode() throws Exception {
+
+        JsonObject jsonObject = entity.toJsonObject();
+        String jsonString = Utils.prettyPrint(jsonObject);
+
+        if(!Files.exists(Paths.get("target")))
+            Files.createDirectory(Paths.get("target"));
+
+        if(!Files.exists(Paths.get("target","samples")))
+            Files.createDirectory(Paths.get("target","samples"));
+
+        Files.write(Paths.get("target","samples",Utils.getFragment(entity.getId().replace(":","-")+".json")), jsonString.getBytes());
+
+        System.out.println(jsonString);
     }
 
 //    @Test

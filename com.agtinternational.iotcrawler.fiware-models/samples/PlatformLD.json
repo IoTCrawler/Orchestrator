@@ -5,7 +5,10 @@
     "SmartHome" : "http://www.agtinternational.com/ontologies/SmartHome#",
     "iotc" : "http://purl.org/iot/ontology/iot-stream#",
     "rdfs" : "http://www.w3.org/2000/01/rdf-schema#",
-    "sosa" : "http://www.w3.org/ns/sosa/"
+    "sosa" : "http://www.w3.org/ns/sosa/",
+    "hosts#1" : "http://www.w3.org/ns/sosa/hosts",
+    "hosts#2" : "http://www.w3.org/ns/sosa/hosts",
+    "hosts#3" : "http://www.w3.org/ns/sosa/hosts"
   },
   "sosa:isHostedBy" : {
     "type" : "Relationship",
@@ -23,15 +26,15 @@
     "type" : "Property",
     "value" : "http://elite.polito.it/ontologies/dogont.owl#Kitchen"
   },
-  "sosa:hosts#1" : {
+  "hosts#1" : {
     "type" : "Relationship",
     "object" : "iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_SoftwareRevision"
   },
-  "sosa:hosts#2" : {
+  "hosts#2" : {
     "type" : "Relationship",
     "object" : "iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_RelativeHumidity"
   },
-  "sosa:hosts#3" : {
+  "hosts#3" : {
     "type" : "Relationship",
     "object" : "iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_MotionAlarmCancelationDelay"
   }

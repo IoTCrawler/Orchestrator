@@ -12,7 +12,17 @@
     "providedBy": {
       "@type": "Relationship",
       "object": "urn:ngsi-ld:Person:Bob"
-    }
+    },
+    "http://example.org/speed": [
+      {
+        "type": "Property",
+        "value": 55
+      },
+      {
+        "type": "Property",
+        "value": 54.5
+      }
+    ]
   },
   "@context": [
     "http://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",

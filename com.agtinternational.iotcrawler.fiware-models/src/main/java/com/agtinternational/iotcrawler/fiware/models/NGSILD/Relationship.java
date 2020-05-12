@@ -33,13 +33,13 @@ public class Relationship extends Property {
         setType(Optional.of(getTypeUri()));
     }
 
-    public Relationship(Map<String, Object> attMap) throws Exception {
-        super(attMap);
-        if (attributes.containsKey("object")) {
-            setValue(attributes.get("object"));
-            attributes.remove("object");
-        }
-    }
+//    public Relationship(Map<String, Object> attMap) throws Exception {
+//        super(attMap);
+////        if (attributes.containsKey("object")) {
+////            setValue(attributes.get("object"));
+////            attributes.remove("object");
+////        }
+//    }
 
 //    public Relationship(Property property){
 //        this();

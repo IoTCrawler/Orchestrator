@@ -33,7 +33,7 @@ import static com.agtinternational.iotcrawler.fiware.models.Constants.NGDSI_LD_N
 
 public class Property extends Attribute {
 
-    protected Map<String, Object> attributes = new HashMap<>();
+    //protected Map<String, Object> attributes = new HashMap<>();
 
     public Property() {
         setType(Optional.of(getTypeUri()));
@@ -49,48 +49,48 @@ public class Property extends Attribute {
         //return NGDSI_LD_NS+"Property";
     }
 
-    public void setAttributes(Map<String, Object> attributes) {
-        this.attributes.putAll(attributes);
-    }
+//    public void setAttributes(Map<String, Object> attributes) {
+//        this.attributes.putAll(attributes);
+//    }
+//
+//    public Map<String, Object> getAttributes() {
+//        return attributes;
+//    }
 
-    public Map<String, Object> getAttributes() {
-        return attributes;
-    }
-
-    public Property(Map<String, Object> attMap) throws Exception {
-
-        String typeKey = (attMap.containsKey("@type")?"@type":"type");
-        String valueKey = (attMap.containsKey("@value")?"@value":"value");
-
-        if(attMap.containsKey(typeKey)) {
-            setType(Optional.of(attMap.get(typeKey).toString()));
-            attMap.remove(typeKey);
-        }
-
-        if(attMap.containsKey(valueKey)) {
-            setValue(attMap.get(valueKey));
-            attMap.remove(valueKey);
-        }
-
-        Map<String, Object> props = Utils.extractAllProperties(attMap);
-        Map<String, Metadata> metadata = new HashMap<>();
-        for(String key : props.keySet()){
-            Object attObj = props.get(key);
-            if(attObj instanceof Attribute){
-                Attribute attribute = (Attribute) props.get(key);
-                //metadata.put(key, new Metadata(attribute.getType().get(), attribute.getValue()));
-                attributes.put(key, attObj);
-            }else if(key.equals("value") || key.equals(NGDSI_LD_NS+"hasValue")){
-                if(getValue()!=null)
-                    throw new Exception("Attempt to set up more than one value!");
-                setValue(attObj);
-            }else{
-               attributes.put(key, attObj);
-            }
-
-        }
-        setMetadata(metadata);
-
-        //return property;
-    }
+//    public Property(Map<String, Object> attMap) throws Exception {
+//
+//        String typeKey = (attMap.containsKey("@type")?"@type":"type");
+//        String valueKey = (attMap.containsKey("@value")?"@value":"value");
+//
+//        if(attMap.containsKey(typeKey)) {
+//            setType(Optional.of(attMap.get(typeKey).toString()));
+//            attMap.remove(typeKey);
+//        }
+//
+//        if(attMap.containsKey(valueKey)) {
+//            setValue(attMap.get(valueKey));
+//            attMap.remove(valueKey);
+//        }
+//
+//        Map<String, Object> props = Utils.extractAllProperties(attMap);
+//        Map<String, Metadata> metadata = new HashMap<>();
+//        for(String key : props.keySet()){
+//            Object attObj = props.get(key);
+//            if(attObj instanceof Attribute){
+//                Attribute attribute = (Attribute) props.get(key);
+//                //metadata.put(key, new Metadata(attribute.getType().get(), attribute.getValue()));
+//                attributes.put(key, attObj);
+//            }else if(key.equals("value") || key.equals(NGDSI_LD_NS+"hasValue")){
+//                if(getValue()!=null)
+//                    throw new Exception("Attempt to set up more than one value!");
+//                setValue(attObj);
+//            }else{
+//               attributes.put(key, attObj);
+//            }
+//
+//        }
+//        setMetadata(metadata);
+//
+//        //return property;
+//    }
 }

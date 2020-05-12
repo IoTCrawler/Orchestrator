@@ -55,13 +55,14 @@ public class GeoProperty extends Property {
     }
 
 
-    public void setAttributes(Map<String, Object> attributes) {
-        this.attributes.putAll(attributes);
-    }
-
-    public Map<String, Object> getAttributes() {
-        return attributes;
-    }
+//    public void setAttributes(Map<String, Object> attributes) {
+//        throw new NotImplementedException("setAttributes");
+//        //this.attributes.putAll(attributes);
+//    }
+//
+//    public Map<String, Object> getAttributes() {
+//        return attributes;
+//    }
 
     public static String getTypeUri(){
         return "GeoProperty";//djane broker accepts only this

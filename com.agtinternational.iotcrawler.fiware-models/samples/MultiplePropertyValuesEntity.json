@@ -1,29 +1,19 @@
 {
-  "id": "urn:ngsi-ld:Sensor:B4:E6:2D:8A:20:DD",
-  "type": "http://www.w3.org/ns/sosa/Sensor/Sensor",
-  "http://www.w3.org/ns/sosa/Sensor/madeObservation#1": {
-    "type": "Relationship",
-    "object": "urn:ngsi-ld:StreamObservation:B4:E6:2D:8A:20:DD:IAQ"
+  "id": "urn:ngsi-ld:Vehicle:A4569",
+  "type": "Vehicle",
+  "speed#1": {
+    "type": "Property",
+    "value": 55
   },
-  "http://www.w3.org/ns/sosa/Sensor/madeObservation#2": {
-    "type": "Relationship",
-    "object": "urn:ngsi-ld:StreamObservation:B4:E6:2D:8A:20:DD:Temperature"
-  },
-  "http://www.w3.org/ns/sosa/Sensor/madeObservation#3": {
-    "type": "Relationship",
-    "object": "urn:ngsi-ld:StreamObservation:B4:E6:2D:8A:20:DD:Humidity"
-  },
-  "location": {
-    "type": "GeoProperty",
-    "value": {
-      "type": "Point",
-      "coordinates": [
-        52.28267,
-        8.023755
-      ]
-    }
+  "speed#2": {
+    "type": "Property",
+    "value": 54.5
   },
   "@context": [
+    {
+      "speed#1": "http://example.org/speed",
+      "speed#2": "http://example.org/speed"
+    },
     "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"
   ]
 }

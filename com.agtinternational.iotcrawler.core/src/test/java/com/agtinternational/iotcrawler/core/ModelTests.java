@@ -192,7 +192,7 @@ public class ModelTests {
 
         System.out.println("--------------------------------------");
 
-        EntityLD entityLD = sosaPlatform.toEntityLD(true);
+        EntityLD entityLD = sosaPlatform.toEntityLD();
         JsonObject jsonObject2 = entityLD.toJsonObject();
         System.out.println(Utils.prettyPrint(jsonObject2));
 

@@ -527,9 +527,11 @@ public class RDFModel {
         if(cutURIs)
             type = Utils.cutURL(type, namespaces);
 
-        HashMap<String, Integer> propertiesCounter = new HashMap<>();
+        EntityLD ret = new EntityLD(getURI(), type);
+
+        //HashMap<String, Integer> propertiesCounter = new HashMap<>();
         StmtIterator iterator = this.model.listStatements();
-        Map<String, Attribute> attributes = new HashMap<String, Attribute>();
+        Map<String, Object> attributes = new HashMap<String, Object>();
         while (iterator.hasNext()) {
             Statement statement = iterator.nextStatement();
             if(statement.getPredicate().equals(RDF.type))
@@ -548,7 +550,6 @@ public class RDFModel {
                 attribute.setValue(statement.getObject().asLiteral().toString());
             }else{
                 throw new NotImplementedException("");
-
             }
             // else if (statement.getPredicate().hasURI(Constants.belongsTo)) {
 ////                ContextAttribute contextAttribute = new ContextAttribute(statement.getPredicate().getLocalName(), URI.create(iotStreamURI), statement.getObject().asResource().getURI(), null);
@@ -560,22 +561,23 @@ public class RDFModel {
 //                    String abc = "123";
             //}
             //attributes.put(statement.getPredicate().getLocalName(), attribute);
-            if(attributes.containsKey(attrName)){ // handling multiple values
-                 String newAttName = attrName+"#"+ (propertiesCounter.get(attrName)+1);
-                Attribute attribute2 = null;
-                if(statement.getObject().isResource()){
-                    attribute2 = new Relationship();
-                    ((Relationship) attribute2).setObject(statement.getObject().asResource().getURI());
-                }else if (statement.getObject().isLiteral()){
-                    attribute2  = new com.agtinternational.iotcrawler.fiware.models.NGSILD.Property();
-                    attribute2.setValue(statement.getObject().asLiteral().toString());
-                }else{
-                    throw new NotImplementedException("");
-
-                }
-
-                 //Attribute property =  attributes.get(attrName);
-                 //Object value = property.getValue();
+            ret.addAttribute(attrName, attribute);
+//            if(attributes.containsKey(attrName)){ // handling multiple values
+////                 String newAttName = attrName+"#"+ (propertiesCounter.get(attrName)+1);
+////                Attribute attribute2 = null;
+////                if(statement.getObject().isResource()){
+////                    attribute2 = new Relationship();
+////                    ((Relationship) attribute2).setObject(statement.getObject().asResource().getURI());
+////                }else if (statement.getObject().isLiteral()){
+////                    attribute2  = new com.agtinternational.iotcrawler.fiware.models.NGSILD.Property();
+////                    attribute2.setValue(statement.getObject().asLiteral().toString());
+////                }else{
+////                    throw new NotImplementedException("");
+////
+////                }
+//
+//                 Object property =  attributes.get(attrName);
+//                 Object value = property.getValue();
 //                 if (value instanceof List)
 //                     ((List)(value)).add(attribute.getValue());
 //                 else{
@@ -584,13 +586,13 @@ public class RDFModel {
 //                     list.add(attribute.getValue());
 //                     property.setValue(list);
 //                 }
-                attributes.put(newAttName, attribute2);
-            }else
-                attributes.put(attrName, attribute);
+//                attributes.put(newAttName, attribute2);
+//            }else
+//                attributes.put(attrName, attribute);
 
-            int count = (propertiesCounter.containsKey(attrName)?propertiesCounter.get(attrName):0);
-            count++;
-            propertiesCounter.put(attrName, count);
+//            int count = (propertiesCounter.containsKey(attrName)?propertiesCounter.get(attrName):0);
+//            count++;
+//            propertiesCounter.put(attrName, count);
             //attributes.put(attrName, attValues);
 
         }
@@ -606,7 +608,8 @@ public class RDFModel {
         }
 
 
-        EntityLD ret = new EntityLD(getURI(), type, attributes, context);
+        //EntityLD ret = new EntityLD(getURI(), type, attributes, context);
+        ret.setContext(context);
         return ret;
     }
 

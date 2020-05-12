@@ -141,7 +141,7 @@ public class NgsiLDClientTest{
 
 
     private static EntityLD createEntity() {
-        Map<String, Attribute> attributes = new HashMap<String, Attribute>(){{
+        Map<String, Object> attributes = new HashMap<String, Object>(){{
             put("brandName", new Property(){{ setType(Optional.of(NGSILD.Property)); setValue("Mercedes"); }});
             put("isParked", new Relationship("ngsi-ld:OffStreetParking:Downtown1"){{
                         setType(Optional.of(NGSILD.Relationship));
@@ -267,13 +267,15 @@ public class NgsiLDClientTest{
     public void getByAttributeValueTest() throws Exception {
         Collection<String> types = Arrays.asList(new String[]{ entity.getType() });
         String attName = entity.getAttributes().keySet().iterator().next();
-        Attribute attribute = entity.getAttributes().values().iterator().next();
-        String value = attribute.getValue().toString();
-        if(!(attribute instanceof Relationship))
-            value = "\""+value+"\"";
+        Object attribute = entity.getAttributes().values().iterator().next();
         Map query = new HashMap<String, String>();
-        query.put(attName, value);
-
+        if(attribute instanceof Attribute) {
+            String value = ((Attribute)attribute).getValue().toString();
+            if (!(attribute instanceof Relationship))
+                value = "\"" + value + "\"";
+            query.put(attName, value);
+        }else
+            throw new Exception("Unexpected attribute type");
 
         Paginated<EntityLD> entities = ngsiLdClient.getEntitiesSync(null, null, types, null, query, null, null,0, 0, false);
         Assert.assertNotNull(entities.getItems());
@@ -308,7 +310,7 @@ public class NgsiLDClientTest{
     @Test
     public void updateEntityTest() throws Exception {
 
-        Map<String, Attribute> attributes = entity.getAttributes();
+        Map<String, Object> attributes = entity.getAttributes();
         entity.addAttribute(attributes.keySet().iterator().next().toString(), (Attribute)attributes.values().iterator().next());
 
         boolean success = ngsiLdClient.updateEntitySync(entity , false);

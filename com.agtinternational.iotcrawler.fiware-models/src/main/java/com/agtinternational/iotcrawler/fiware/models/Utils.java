@@ -105,7 +105,7 @@ public class Utils {
             return Utils.attributeToJson((Attribute) object);
 
         if(object instanceof Property)
-            return Utils.attributeToJson((Attribute) object);
+            return Utils.attributeToJson((Property) object);
 
         if(object instanceof String)
             return new JsonPrimitive((String)object);
@@ -224,9 +224,18 @@ public class Utils {
             Object attValue = attMap.get(attKey);
 
             String[] splitted = attKey.split("#");
-            if(splitted.length>1 && Integer.parseInt(splitted[splitted.length-1])>0){
-                List<String> list1 = Arrays.asList(splitted);
-                attKey = String.join("#", list1.subList(0, list1.size()-1));
+
+            if(splitted.length>1){
+                int parsed = -1;
+                try{
+                     parsed = Integer.parseInt(splitted[splitted.length-1]);
+                }catch (Exception e){
+
+                }
+                if(parsed>0) {
+                    List<String> list1 = Arrays.asList(splitted);
+                    attKey = String.join("#", list1.subList(0, list1.size() - 1));
+                }
             }
 
             //Object contextDef = (context!=null?context.get(attKey):null);
@@ -278,14 +287,16 @@ public class Utils {
             List attributesList = null;
             if(alreadyExistingAttribute instanceof Attribute){
                 attributesList = new ArrayList();
-                attributesList.add(((Attribute) alreadyExistingAttribute).getValue());
+                //attributesList.add(((Attribute) alreadyExistingAttribute).getValue());
+                attributesList.add(alreadyExistingAttribute);
             }else if(alreadyExistingAttribute instanceof List)
                 attributesList = (List)alreadyExistingAttribute;
             else
                 throw new NotImplementedException("Already existing list has type "+alreadyExistingAttribute.getClass().getCanonicalName());
 
             if(value instanceof Attribute)
-                attributesList.add(((Attribute) value).getValue());
+                attributesList.add(value);
+                //attributesList.add(((Attribute) value).getValue());
             else if(value instanceof List)
                 attributesList.addAll((List)value);
             else

@@ -462,7 +462,8 @@ public class NgsiLDClient {
         builder.path("v1/entities/{entityId}");
         addParam(builder, "type", type);
         addParam(builder, "attrs", attrs);
-        return adapt(request(HttpMethod.GET, builder.buildAndExpand(entityId).toUriString(), null, EntityLD.class));
+        ListenableFuture<EntityLD> ret = adapt(request(HttpMethod.GET, builder.buildAndExpand(entityId).toUriString(), null, EntityLD.class));
+        return ret;
     }
 
 

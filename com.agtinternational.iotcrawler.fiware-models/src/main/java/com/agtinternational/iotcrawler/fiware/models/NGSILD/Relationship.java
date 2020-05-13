@@ -41,7 +41,7 @@ public class Relationship extends Property {
 //        this.setMetadata(property.getMetadata());
 
         if (attMap.containsKey("type")) {
-            setValue(attMap.get("type"));
+            setType(Optional.of(attMap.get("type").toString()));
             attMap.remove("type");
         }
 

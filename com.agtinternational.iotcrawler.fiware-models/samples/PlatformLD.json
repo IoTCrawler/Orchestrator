@@ -6,9 +6,9 @@
     "iotc" : "http://purl.org/iot/ontology/iot-stream#",
     "rdfs" : "http://www.w3.org/2000/01/rdf-schema#",
     "sosa" : "http://www.w3.org/ns/sosa/",
-    "hosts#1" : "http://www.w3.org/ns/sosa/hosts",
-    "hosts#2" : "http://www.w3.org/ns/sosa/hosts",
-    "hosts#3" : "http://www.w3.org/ns/sosa/hosts"
+    "http://www.w3.org/ns/sosa/hosts#1" : "http://www.w3.org/ns/sosa/hosts",
+    "http://www.w3.org/ns/sosa/hosts#2" : "http://www.w3.org/ns/sosa/hosts",
+    "http://www.w3.org/ns/sosa/hosts#3" : "http://www.w3.org/ns/sosa/hosts"
   },
   "sosa:isHostedBy" : {
     "type" : "Relationship",
@@ -26,15 +26,15 @@
     "type" : "Property",
     "value" : "http://elite.polito.it/ontologies/dogont.owl#Kitchen"
   },
-  "hosts#1" : {
+  "http://www.w3.org/ns/sosa/hosts#1" : {
     "type" : "Relationship",
     "object" : "iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_SoftwareRevision"
   },
-  "hosts#2" : {
+  "http://www.w3.org/ns/sosa/hosts#2" : {
     "type" : "Relationship",
     "object" : "iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_RelativeHumidity"
   },
-  "hosts#3" : {
+  "http://www.w3.org/ns/sosa/hosts#3" : {
     "type" : "Relationship",
     "object" : "iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_MotionAlarmCancelationDelay"
   }

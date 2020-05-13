@@ -220,8 +220,8 @@ public class NgsiLDClientTest{
     @Test
     public void getEntityByIdTest() throws Exception {
         Collection<String> ids = Arrays.asList(new String[]{
-                //"urn:ngsi-ld:MultiSensor_AEON_Labs_ZW100_MultiSensor_6"
-                entity.getId()
+                "urn:ngsi-ld:Stream_AEON_Labs_ZW100_MultiSensor_6_MotionAlarm"
+                //entity.getId()
         });
 
 //        Collection<String> types = Arrays.asList(new String[]{

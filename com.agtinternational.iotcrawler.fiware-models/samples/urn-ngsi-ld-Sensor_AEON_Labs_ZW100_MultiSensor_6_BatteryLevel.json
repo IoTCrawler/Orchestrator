@@ -1,0 +1,19 @@
+{
+  "id": "urn:ngsi-ld:Sensor_AEON_Labs_ZW100_MultiSensor_6_BatteryLevel",
+  "type": "http://www.w3.org/ns/sosa/Sensor",
+  "http://www.w3.org/2000/01/rdf-schema#label": {
+    "type": "Property",
+    "value": "AEON Labs ZW100 MultiSensor 6 BatteryLevel"
+  },
+  "http://www.w3.org/ns/sosa/isHostedBy": {
+    "type": "Relationship",
+    "object": "urn:ngsi-ld:Platform_homee_00055110D732"
+  },
+  "http://www.w3.org/ns/sosa/observes": {
+    "type": "Relationship",
+    "object": "urn:ngsi-ld:BatteryLevel"
+  },
+  "@context": [
+    "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"
+  ]
+}

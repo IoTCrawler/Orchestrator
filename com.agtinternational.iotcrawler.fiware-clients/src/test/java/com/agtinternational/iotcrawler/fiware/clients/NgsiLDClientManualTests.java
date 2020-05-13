@@ -51,7 +51,7 @@ public class NgsiLDClientManualTests {
     @Order(3)
     @Test
     public void getEntityByIdTest() throws Exception {
-        EntityLD entityLD = ngsiLdClient.getEntitySync("urn:ngsi-ld:Stream:ora10",null,null);
+        EntityLD entityLD = ngsiLdClient.getEntitySync("urn:ngsi-ld:Stream_AEON_Labs_ZW100_MultiSensor_6_MotionAlarm",null,null);
         String abc = "asd";
     }
 

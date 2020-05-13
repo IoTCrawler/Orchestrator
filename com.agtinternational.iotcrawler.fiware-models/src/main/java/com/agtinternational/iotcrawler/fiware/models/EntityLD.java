@@ -135,7 +135,6 @@ public class EntityLD /*extends Entity*/ {
         jsonObject.addProperty("id", getId());
         jsonObject.addProperty("type", getType());
 
-
         Map<String, Object>  attributeMap = getAttributes();
         JsonObject extraContext = new JsonObject();
         for(String key: attributeMap.keySet()) {
@@ -150,12 +149,16 @@ public class EntityLD /*extends Entity*/ {
 
                 int index = 1;
                 for (JsonElement jsonElement : jsonObjectAttr) {
-                    if(key.startsWith("http://"))
-                        key = Utils.getFragment(key);
+//                    if(key.startsWith("http://"))
+//                        key = Utils.getFragment(key);
 
                     String key2 = key + "#" + index;
                     jsonObject.add(key2, jsonElement);
-                    extraContext.addProperty(key2, (!key.startsWith("http://")?"http://dummyurl/"+key:key));
+                    String url = (key.startsWith("http://")?key:null);
+                    if(url==null)
+                        url = "http://dummyurl/"+key;
+
+                    extraContext.addProperty(key2, url);
                     index++;
                 }
 
@@ -206,7 +209,6 @@ public class EntityLD /*extends Entity*/ {
         String nameStr = objectMap.get((objectMap.containsKey("@id")?"@id":"id")).toString();
         String typeStr = objectMap.get((objectMap.containsKey("@type")?"@type":"type")).toString();
         Object contextObj = objectMap.get((objectMap.containsKey("@context")?"@context":"context"));
-
 
         Object context = null;
         if(contextObj!=null) {

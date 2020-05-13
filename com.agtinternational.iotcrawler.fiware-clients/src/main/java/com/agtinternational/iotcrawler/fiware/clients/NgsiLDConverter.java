@@ -80,6 +80,16 @@ public class NgsiLDConverter extends AbstractHttpMessageConverter<Object> implem
     }
 
     @Override
+    public boolean canRead(Type type, Class<?> aClass, MediaType mediaType) {
+        return true;
+    }
+
+    @Override
+    public Object read(Type type, Class<?> contextClass, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
+        return super.read(contextClass,inputMessage);
+    }
+
+    @Override
     protected Object readInternal(Class<?> aClass, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
         InputStream inputStream = inputMessage.getBody();
 
@@ -117,6 +127,10 @@ public class NgsiLDConverter extends AbstractHttpMessageConverter<Object> implem
     }
 
 
+    //@Override
+    public void write(Object o, Type type, MediaType mediaType, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
+        super.write(o, mediaType, outputMessage);
+    }
 
     @Override
     protected void writeInternal(Object object, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
@@ -167,27 +181,6 @@ public class NgsiLDConverter extends AbstractHttpMessageConverter<Object> implem
 
         StreamUtils.copy((byte[])str.getBytes(), outputMessage.getBody());
     }
-
-
-    @Override
-    public boolean canRead(Type type, Class<?> aClass, MediaType mediaType) {
-        return true;
-    }
-
-    @Override
-    public Object read(Type type, Class<?> contextClass, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
-        return super.read(contextClass,inputMessage);
-    }
-
-
-
-
-    //@Override
-    public void write(Object o, Type type, MediaType mediaType, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
-        super.write(o, mediaType, outputMessage);
-    }
-
-
 
 
 }

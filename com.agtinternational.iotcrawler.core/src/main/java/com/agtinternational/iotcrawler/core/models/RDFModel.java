@@ -31,6 +31,8 @@ import eu.neclab.iotplatform.ngsi.api.datamodel.ContextElement;
 import eu.neclab.iotplatform.ngsi.api.datamodel.EntityId;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.rdf.model.impl.PropertyImpl;
+import org.apache.jena.rdf.model.impl.StatementImpl;
 import org.apache.jena.vocabulary.RDFS;
 
 import com.orange.ngsi2.model.Attribute;
@@ -174,6 +176,10 @@ public class RDFModel {
 //    public void setClass(String typeURI){
 //        model.add(resource, RDF.type, model.createResource(typeURI));
 //    }
+//    public void setProperty(String uri, Object value){
+//        Property property = model.createProperty(uri);
+//        addProperty(property, value);
+//    }
 
     public void addProperty(String uri, Object value){
         //if(Utils.getFragment(uri)!=null && URI.create(uri).getFragment().toLowerCase().equals("label"))
@@ -239,6 +245,20 @@ public class RDFModel {
         }else{
             throw new NotImplementedException("Add property not implemented for "+ value.getClass().getName());
         }
+    }
+
+    public void setProperty(String uri, Object value){
+        Property property = new PropertyImpl(uri);
+        setProperty(property, value);
+    }
+
+    public void setProperty(Property property, Object value){
+        List<RDFNode> existingValues = getProperty(property.getURI());
+        for(RDFNode existingValue: existingValues) {
+            Statement statement = new StatementImpl(resource, property, existingValue);
+            model.remove(statement);
+        }
+        addProperty(property, value);
     }
 
     public List<String> getAttributeNames(){

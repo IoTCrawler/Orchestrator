@@ -22,7 +22,9 @@ package com.agtinternational.iotcrawler.core.models;
 
 import com.agtinternational.iotcrawler.core.Utils;
 import com.agtinternational.iotcrawler.core.ontologies.Geo;
+import com.agtinternational.iotcrawler.core.ontologies.IotStream;
 import com.agtinternational.iotcrawler.core.ontologies.SOSA;
+import com.agtinternational.iotcrawler.core.ontologies.SSN;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.vocabulary.RDFS;
@@ -30,10 +32,11 @@ import org.apache.jena.vocabulary.RDFS;
 
 public class Sensor extends RDFModel {
 
-
-
     public Sensor(String uri){
+
         super(uri, getTypeUri());
+        //addProperty(IotStream.alternativeType, SSN.System);
+        //namespaces.put(SSN.Prefix, SSN.NS);
     }
 
     public Sensor(String uri, Model model){

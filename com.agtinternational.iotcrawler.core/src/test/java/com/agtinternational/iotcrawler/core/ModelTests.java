@@ -66,6 +66,9 @@ public class ModelTests {
     public void iotStreamToEnitity() throws Exception {
         byte[] iotStreamJson = Files.readAllBytes(Paths.get("samples/IoTStream.json"));
         IoTStream ioTStream = IoTStream.fromJson(iotStreamJson);
+        ioTStream.addProperty("prop1","value1");
+        ioTStream.addProperty("prop1","value2");
+        ioTStream.setProperty("prop1","value3");
 
         EntityLD entityLD = ioTStream.toEntityLD();
         String iotStreamJson2 = ioTStream.toJsonLDString();

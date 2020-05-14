@@ -20,22 +20,11 @@ package com.agtinternational.iotcrawler.core.ontologies;
  * #L%
  */
 
+public class SSN {
+
+    public static final String NS = "http://www.w3.org/ns/ssn/";
+    public static final String Prefix = "ssn";
 
 
-public class IotStream {
-
-    public static final String NS = "http://purl.org/iot/ontology/iot-stream#";
-    public static final String Prefix = "iot-stream";
-
-    public static String IotStream = NS+"IotStream";
-    public static String StreamObservation = NS+"StreamObservation";
-    public static String Context = NS+"Context";
-
-    public static String generatedBy = NS+"generatedBy";
-    public static String observes = NS +"observes";
-    public static String belongsTo = NS+"belongsTo";
-    public static String derivedFrom = NS+"derivedFrom";
-    public static String dependsOnContext = NS+"dependsOnContext";
-
-    public static String alternativeType = NS+"alternativeType";
+    public static String System = NS +"System";
 }

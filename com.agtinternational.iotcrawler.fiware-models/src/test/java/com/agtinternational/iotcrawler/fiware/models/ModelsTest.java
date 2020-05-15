@@ -47,7 +47,8 @@ public class ModelsTest {
                 new Object[]{ readEntityFromFile("samples/urn-ngsi-ld-Sensor_AEON_Labs_ZW100_MultiSensor_6_BatteryLevel.json") },
                 new Object[]{ readEntityFromFile("samples/IoTStreamLD.json") },
                 new Object[]{ readEntityFromFile("samples/PlatformLD.json") },
-                new Object[]{ readEntityFromFile("samples/MultiplePropertyValuesEntity.json") }
+                new Object[]{ readEntityFromFile("samples/MultiplePropertyValuesEntity.json") },
+                 new Object[]{ readEntityFromFile("samples/IndoorTemperatureSensor.json") }
 
         });
     }

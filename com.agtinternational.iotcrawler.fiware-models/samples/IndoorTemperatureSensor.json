@@ -1,0 +1,15 @@
+{
+  "id": "urn:ngsi-ld:IndoorTemperatureSensor_1",
+  "type": "http://www.w3.org/ns/sosa/Sensor",
+  "http://purl.org/iot/ontology/iot-stream#alternativeType": {
+    "type": "Relationship",
+    "object": "http://Agt/IndoorTemperatureSensor"
+  },
+  "http://www.w3.org/ns/sosa/isHostedBy": {
+    "type": "Relationship",
+    "object": "urn:ngsi-ld:Platform_homee_1"
+  },
+  "@context": [
+    "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"
+  ]
+}

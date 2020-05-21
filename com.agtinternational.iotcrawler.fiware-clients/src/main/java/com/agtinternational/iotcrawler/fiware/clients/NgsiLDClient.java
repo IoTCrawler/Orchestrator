@@ -347,8 +347,8 @@ public class NgsiLDClient {
             Iterator<String> iterator = types.iterator();
             while (iterator.hasNext()) {
                 String type = iterator.next();
-                if (type.startsWith("http://"))
-                    type = type.replace("#", "%23");
+                //if (type.startsWith("http://"))
+                    //type = type.replace("#", "%23");
                 //type = URLEncoder.encode(type);
                 encodedTypes.add(type);
             }
@@ -366,11 +366,27 @@ public class NgsiLDClient {
                 StringBuilder q = new StringBuilder();
                 for (String key: query.keySet()){
                     Object value = query.get(key);
-                    if(value instanceof String)
-                        q.append(key+"=="+query.get(key)+"");
+                    if(value instanceof String) {
+                        String value1 = (String)value;
+                        //value1 = value1.replace("#", "%23");
+//                        value1 = URLEncoder.encode(value1);
+//                        value1 = URLEncoder.encode(value1);
+//                        value1 = value1.replace("%25","%");
+//                        value1 = value1.replace("%3D","=");
+//                        value1 = value1.replace("%22","\"");
+
+                        String key1 = key;
+                        //key1 = key1.replace("#", "%23");
+//                        key1 = key1.replace("%25","%");
+//                        key1 = key1.replace("%3D","=");
+//                        key1 = key1.replace("%22","\"");
+
+
+
+                        q.append(key1 + "==" + value1 + "");
                         //String query = "q=brandName==\"Mercedes\"";  //Scorpio
                         //String query = "brandName.value=Mercedes";   //djane
-                    else
+                    }else
                         throw new Exception("Query map allows only string values for now!");
                 }
 
@@ -401,7 +417,7 @@ public class NgsiLDClient {
         url = url.replace("%25","%");
         url = url.replace("%3D","=");
         url = url.replace("%22","\"");
-//        url = url.replace("%2522","%22");
+
 //        url = url.replace("%255B","%5B");
 //        url = url.replace("%255D","%5D");
 

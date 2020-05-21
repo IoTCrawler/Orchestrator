@@ -20,6 +20,8 @@ package com.agtinternational.iotcrawler.fiware.clients;
  * #L%
  */
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.client.AsyncClientHttpRequestFactory;
 import org.springframework.util.Assert;
@@ -32,6 +34,7 @@ import java.net.URISyntaxException;
 import java.util.Map;
 
 public class CustomAsyncRestTemplate extends AsyncRestTemplate {
+    private Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
     public CustomAsyncRestTemplate(AsyncClientHttpRequestFactory requestFactory, RestTemplate restTemplate) {
         super(requestFactory, restTemplate);
@@ -43,6 +46,8 @@ public class CustomAsyncRestTemplate extends AsyncRestTemplate {
             expanded = URI.create(url.replace("#","%23"));
         }
         catch (Exception e){
+            LOGGER.warn("Failed to create URI from {}: {}", url, e.getLocalizedMessage());
+            LOGGER.warn("Trying to recreated it via fragemnts");
             URI aaaurl = new UriTemplate(url).expand(urlVariables);
             String query = aaaurl.getQuery()+(aaaurl.getFragment()!=null?"#"+aaaurl.getFragment():"");
             query = query.replace("%25","%");

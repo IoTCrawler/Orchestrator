@@ -38,7 +38,8 @@ public class EnvVariablesSetter {
             //environmentVariables.set(NGSILD_BROKER_URL, "http://10.67.1.107:9090/ngsi-ld/");
             //environmentVariables.set(NGSILD_BROKER_URL, "http://localhost:3000/ngsi-ld/");
             //environmentVariables.set(NGSILD_BROKER_URL, "http://155.54.95.248:9090/ngsi-ld/");
-            environmentVariables.set(NGSILD_BROKER_URL, "http://i5-nuc:9091/ngsi-ld/");
+            //environmentVariables.set(NGSILD_BROKER_URL, "http://i5-nuc:9091/ngsi-ld/");
+            environmentVariables.set(NGSILD_BROKER_URL, "http://192.168.178.26:9090/ngsi-ld/");
             //environmentVariables.set(NGSILD_BROKER_URL, "http://155.54.95.171:9090/ngsi-ld/");
 
 

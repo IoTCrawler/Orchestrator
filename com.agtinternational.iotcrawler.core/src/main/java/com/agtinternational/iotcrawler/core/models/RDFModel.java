@@ -31,6 +31,7 @@ import eu.neclab.iotplatform.ngsi.api.datamodel.ContextElement;
 import eu.neclab.iotplatform.ngsi.api.datamodel.EntityId;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.rdf.model.impl.LiteralImpl;
 import org.apache.jena.rdf.model.impl.PropertyImpl;
 import org.apache.jena.rdf.model.impl.StatementImpl;
 import org.apache.jena.vocabulary.RDFS;
@@ -118,6 +119,10 @@ public class RDFModel {
 
     public String label() {
         return (String)getAttribute(RDFS.label.getURI());
+    }
+
+    public void label(String value) {
+        setProperty(RDFS.label, value);
     }
 
     public String getTypeURI(){
@@ -252,12 +257,40 @@ public class RDFModel {
         setProperty(property, value);
     }
 
-    public void setProperty(Property property, Object value){
+    public void removeProperty(String uri){
+        Property property = new PropertyImpl(uri);
+        removeProperty(property, null);
+    }
+
+    public void removeProperty(String uri, String value){
+        Property property = new PropertyImpl(uri);
+        removeProperty(property, value);
+    }
+
+    private void removeProperty(Property property, String value){
+
         List<RDFNode> existingValues = getProperty(property.getURI());
         for(RDFNode existingValue: existingValues) {
             Statement statement = new StatementImpl(resource, property, existingValue);
-            model.remove(statement);
+            Boolean remove = false;
+            if(value!=null) {
+                if (existingValue.isLiteral()) {
+                    if(existingValue.asLiteral().toString().equals(value))
+                        remove = true;
+                } else if (existingValue.isResource()) {
+                    if(existingValue.asResource().getURI().equals(value))
+                        remove = true;
+                } else throw new NotImplementedException(existingValue.getClass().getCanonicalName());
+            }else
+                remove = true;
+
+            if(remove)
+                model.remove(statement);
         }
+    }
+
+    public void setProperty(Property property, Object value){
+        removeProperty(property, null);
         addProperty(property, value);
     }
 

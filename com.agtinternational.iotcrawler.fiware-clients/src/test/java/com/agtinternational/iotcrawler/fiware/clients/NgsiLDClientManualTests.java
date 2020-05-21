@@ -51,7 +51,7 @@ public class NgsiLDClientManualTests {
     @Order(3)
     @Test
     public void getEntityByIdTest() throws Exception {
-        EntityLD entityLD = ngsiLdClient.getEntitySync("urn:ngsi-ld:Stream_AEON_Labs_ZW100_MultiSensor_6_MotionAlarm",null,null);
+        EntityLD entityLD = ngsiLdClient.getEntitySync("urn:ngsi-ld:IndoorTemperatureSensor_1",null,null);
         String abc = "asd";
     }
 
@@ -77,9 +77,13 @@ public class NgsiLDClientManualTests {
     @Test
     public void getEntitiesByParameterTest() throws Exception {
         Map query = new HashMap<String, String>();
-        query.put("http://www.w3.org/2000/01/rdf-schema#label", "\"homee_00055110D732\"");
+        //query.put("http://www.w3.org/2000/01/rdf-schema#label", "\"homee_00055110D732\"");
+        query.put("http://www.agtinternational.com/ontologies/ngsi-ld#alternativeType","\"http://agtinternational/smartHomeApp#HouseholdStateStream\"");
 
-        Collection<String> types = Arrays.asList(new String[]{ "http://www.w3.org/ns/sosa/Platform" });
+        Collection<String> types = Arrays.asList(new String[]{
+                "http://purl.org/iot/ontology/iot-stream#IotStream"
+                //"http://www.w3.org/ns/sosa/Platform"
+        });
 
         Paginated<EntityLD> ret = ngsiLdClient.getEntitiesSync(null,null,types,null,query,null,null, 0,0, false);
         List<EntityLD> entities = ret.getItems();

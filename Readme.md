@@ -4,7 +4,7 @@ The orchestrator component is responsible for interactions with client IoT appli
 
 ## Dependencies
 
-See docker-compose.yml:
+Find them in [docker-compose.yml](orchestrator/docker-compose.yml):
 * RabbitMQ - to communicate with remote apps behind firewalls
 * Redis - for persistently storing state information (active subscriptions)
 * NGSI-LD broker - emulation of MDR
@@ -23,7 +23,7 @@ sh make.sh push-image
 
 ## Configuration
 
-Open docker-compose.yml and check/change the following:
+Open [docker-compose.yml](orchestrator/docker-compose.yml) and check/change the following:
 
 1) Orchestrator image URI - adjust the image name according to the latest one (outout)  
 

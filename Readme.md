@@ -1,7 +1,10 @@
 # Orchestrator
 
-IoTCrawler Orchestrator component. Uses the following services:
+The orchestrator component is responsible for interactions with client IoT applications. It allows applications to subscribe to streams without having a public endpoint as well as tracks subscription requests. In case of stream failure, orchestrator is able to notify application and provide a list of alternative streams for subscription. 
 
+## Dependencies
+
+See docker-compose.yml:
 * RabbitMQ - to communicate with remote apps behind firewalls
 * Redis - for persistently storing state information (active subscriptions)
 * NGSI-LD broker - emulation of MDR

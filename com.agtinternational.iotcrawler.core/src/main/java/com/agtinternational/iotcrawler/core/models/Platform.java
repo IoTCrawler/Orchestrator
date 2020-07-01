@@ -39,7 +39,7 @@ public class Platform extends RDFModel {
 
     public Platform(String uri, String label){
         this(uri);
-        addProperty(RDFS.label, label);
+        setProperty(RDFS.label, label);
     }
 
 //    public Platform(String uri, String classURI, String label){
@@ -67,7 +67,7 @@ public class Platform extends RDFModel {
     }
 
     public void location(Object value){
-        addProperty(Geo.Point, value);
+        setProperty(Geo.Point, value);
     }
 
     public static String getTypeUri(){

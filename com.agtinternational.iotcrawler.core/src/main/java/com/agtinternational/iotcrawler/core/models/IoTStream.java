@@ -41,7 +41,7 @@ public class IoTStream extends RDFModel {
     public IoTStream(String uri, String label){
 
         this(uri);
-        addProperty(RDFS.label, label);
+        setProperty(RDFS.label, label);
 
     }
 
@@ -87,7 +87,7 @@ public class IoTStream extends RDFModel {
     }
 
     public void generatedBy(Object value){
-         addProperty(IotStream.generatedBy, value);
+         setProperty(IotStream.generatedBy, value);
     }
 
     public Object isDerivedFrom(){
@@ -95,11 +95,11 @@ public class IoTStream extends RDFModel {
     }
 
     public void isDerivedFrom(Object value){
-        addProperty(IotStream.derivedFrom, value);
+        setProperty(IotStream.derivedFrom, value);
     }
 
     public void observes(Object value){
-        addProperty(IotStream.observes, value);
+        setProperty(IotStream.observes, value);
     }
 
     public Object observes(){
@@ -108,7 +108,7 @@ public class IoTStream extends RDFModel {
     }
 
 //    public void observes(Object value){
-//        addProperty(SOSA.observes, value);
+//        setProperty(SOSA.observes, value);
 //    }
 //
 //    public Object observes(){

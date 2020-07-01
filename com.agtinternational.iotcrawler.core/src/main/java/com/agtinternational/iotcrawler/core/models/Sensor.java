@@ -35,7 +35,7 @@ public class Sensor extends RDFModel {
     public Sensor(String uri){
 
         super(uri, getTypeUri());
-        //addProperty(IotStream.alternativeType, SSN.System);
+        //setProperty(IotStream.alternativeType, SSN.System);
         //namespaces.put(SSN.Prefix, SSN.NS);
     }
 
@@ -46,11 +46,11 @@ public class Sensor extends RDFModel {
 
     public Sensor(String uri, String label){
         this(uri);
-        addProperty(RDFS.label, label);
+        setProperty(RDFS.label, label);
     }
 
 //    public void madeObservation(Object value){
-//        addProperty(SOSA.madeObservation, value);
+//        setProperty(SOSA.madeObservation, value);
 //    }
 //
 //    public Object madeObservation(){
@@ -59,7 +59,7 @@ public class Sensor extends RDFModel {
 //    }
 
     public void observes(Object value){
-        addProperty(SOSA.observes, value);
+        setProperty(SOSA.observes, value);
     }
 
     public Object observes(){
@@ -73,11 +73,11 @@ public class Sensor extends RDFModel {
     }
 
     public void location(Object value){
-        addProperty(Geo.Point, value);
+        setProperty(Geo.Point, value);
     }
 
     public void isHostedBy(Object value){
-        addProperty(SOSA.isHostedBy, value);
+        setProperty(SOSA.isHostedBy, value);
     }
 
     public Object isHostedBy(){

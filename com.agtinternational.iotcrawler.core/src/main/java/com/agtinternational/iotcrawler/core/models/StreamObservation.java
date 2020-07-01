@@ -60,7 +60,7 @@ public class StreamObservation extends RDFModel {
     }
 
     public void madeBySensor(Object value){
-        addProperty(SOSA.madeBySensor, value);
+        setProperty(SOSA.madeBySensor, value);
     }
 
     public Object hasResult(){
@@ -69,7 +69,7 @@ public class StreamObservation extends RDFModel {
     }
 
     public void resultTime(Object value){
-        addProperty(SOSA.resultTime, value);
+        setProperty(SOSA.resultTime, value);
     }
 
     public Object resultTime(){
@@ -78,7 +78,7 @@ public class StreamObservation extends RDFModel {
     }
 
     public void hasResult(Object value){
-        addProperty(SOSA.hasResult, value);
+        setProperty(SOSA.hasResult, value);
     }
 
     public Object belongsTo(){
@@ -87,7 +87,7 @@ public class StreamObservation extends RDFModel {
     }
 
     public void belongsTo(Object value){
-        addProperty(IotStream.belongsTo, value);
+        setProperty(IotStream.belongsTo, value);
     }
 
     public static StreamObservation fromEntity(EntityLD entity) throws Exception {

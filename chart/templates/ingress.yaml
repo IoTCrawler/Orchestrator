@@ -5,10 +5,10 @@ metadata:
 spec:
   rules:
     #- host: {{ .Values.gitlab.env }}.35.241.228.250.nip.io
-    {{ if eq .Values.gitlab.env "staging" }}
-    - host: staging.orchestrator.iotcrawler.eu
-      {{ else }}
+    {{ if eq .Values.gitlab.env "orchestrator-production" }}
     - host: orchestrator.iotcrawler.eu
+      {{ else }}
+    - host: staging.orchestrator.iotcrawler.eu
     {{ end }}
       http:
         paths:

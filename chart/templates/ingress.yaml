@@ -1,24 +1,24 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: orchestartor-ingress
+  name: orchestrator-ingress
   annotations:
     kubernetes.io/ingress.class: nginx
     kubernetes.io/tls-acme: "true"
 spec:
   tls:
   - hosts:
-    {{ if eq .Values.gitlab.env "orchestartor-production" }}
-    - orchestartor.iotcrawler.eu
+    {{ if eq .Values.gitlab.env "orchestrator-production" }}
+    - orchestrator.iotcrawler.eu
     {{ else }}
-    - staging.orchestartor.iotcrawler.eu
+    - staging.orchestrator.iotcrawler.eu
     {{ end }}
-    secretName: orchestartor-{{ .Values.gitlab.env }}-tls22
+    secretName: orchestrator-{{ .Values.gitlab.env }}-tls22
   rules:
-  {{ if eq .Values.gitlab.env "orchestartor-production" }}
-  - host: orchestartor.iotcrawler.eu
+  {{ if eq .Values.gitlab.env "orchestrator-production" }}
+  - host: orchestrator.iotcrawler.eu
   {{ else }}
-  - host: staging.orchestartor.iotcrawler.eu
+  - host: staging.orchestrator.iotcrawler.eu
   {{ end }}
     http:
       paths:

@@ -28,5 +28,5 @@ Open [docker-compose.yml](com.agtinternational.iotcrawler.orchestrator/docker-co
 1) Orchestrator image URI - adjust the image name according to the latest one (outout)  
 
 ## Deployment   
-* Deployed online: http://orchestrator-production.35.241.228.250.nip.io/ngsi-ld/v1/
+* Deployed online: http://orchestrator.iotcrawler.eu/ngsi-ld/v1/
 * Works on top of broker: http://155.54.95.248:9090/ngsi-ld/v1

@@ -40,8 +40,8 @@ spec:
             value: "{{ .Values.image.tag }}"
           - name: IOTCRAWLER_RABBIT_HOST
             value: "rabbit.{{ .Release.Namespace }}"
-          - name: RANKING_COMPONENT_URL
-            value: "http://production-auto-deploy.ranking-16-production:3003/"
+          #- name: RANKING_COMPONENT_URL
+          #  value: "http://production-auto-deploy.ranking-16-production:3003/"
           - name: IOTCRAWLER_REDIS_HOST
             value: "redis.{{ .Release.Namespace }}"
           - name: NGSILD_BROKER_URL

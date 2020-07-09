@@ -45,10 +45,10 @@ spec:
           - name: IOTCRAWLER_REDIS_HOST
             value: "redis.{{ .Release.Namespace }}"
           - name: NGSILD_BROKER_URL
-            value: "http://scorpio.scorpiobroker-46-production:9090"
-            #value: "http://155.54.95.248:9090/ngsi-ld/"
+            value: "http://155.54.95.248:9090/ngsi-ld/"
+            #value: "http://scorpio.scorpiobroker-46-production:9090"
             #value: "http://metadata-repository-scorpiobroker.35.241.228.250.nip.io/ngsi-ld/"
           - name: HTTP_SERVER_HOST
-            value: "{{ .Values.gitlab.env }}.35.241.228.250.nip.io"
+            value: {{ if eq .Values.gitlab.env "staging" }} staging.orchestrator.iotcrawler.eu {{ else }} orchestrator.iotcrawler.eu {{ end }}
           - name: HTTP_SERVER_PORT
             value: "3001"

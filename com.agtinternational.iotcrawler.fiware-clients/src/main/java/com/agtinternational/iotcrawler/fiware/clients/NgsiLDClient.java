@@ -191,7 +191,6 @@ public class NgsiLDClient {
         req.addCallback(new ListenableFutureCallback<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                System.out.println("Entity updated");
                 success[0] = true;
                 reqFinished.release();
             }

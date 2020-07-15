@@ -68,25 +68,12 @@
             <!--<scope>provided</scope>-->
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>org.hobbit</groupId>-->
-<!--            <artifactId>core</artifactId>-->
-<!--            <version>1.0.18</version>-->
-<!--            <exclusions>-->
-<!--                <exclusion>-->
-<!--                    <groupId>org.apache.jena</groupId>-->
-<!--                    <artifactId>jena-core</artifactId>-->
-<!--                </exclusion>-->
-<!--                <exclusion>-->
-<!--                    <groupId>org.apache.jena</groupId>-->
-<!--                    <artifactId>jena-shaded-guava</artifactId>-->
-<!--                </exclusion>-->
-<!--                <exclusion>-->
-<!--                    <groupId>org.apache.jena</groupId>-->
-<!--                    <artifactId>jena-arq</artifactId>-->
-<!--                </exclusion>-->
-<!--            </exclusions>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>com.agtinternational.iotcrawler</groupId>
+            <artifactId>fiware-models</artifactId>
+            <version>${fiware.models.version}</version>
+<!--            <scope>provided</scope>-->
+        </dependency>
 
         <dependency>
             <groupId>org.aksw.jena-sparql-api</groupId>
@@ -162,13 +149,6 @@
             <groupId>com.rabbitmq</groupId>
             <artifactId>amqp-client</artifactId>
             <version>5.7.3</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.agtinternational.iotcrawler</groupId>
-            <artifactId>fiware-models</artifactId>
-            <version>${fiware.models.version}</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>

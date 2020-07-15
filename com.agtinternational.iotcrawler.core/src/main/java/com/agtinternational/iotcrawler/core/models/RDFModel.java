@@ -614,7 +614,7 @@ public class RDFModel {
 //                    String abc = "123";
             //}
             //attributes.put(statement.getPredicate().getLocalName(), attribute);
-            ret.addAttribute(attrName, attribute);
+            ret.addAttribute(attrName, (Object)attribute);
 //            if(attributes.containsKey(attrName)){ // handling multiple values
 ////                 String newAttName = attrName+"#"+ (propertiesCounter.get(attrName)+1);
 ////                Attribute attribute2 = null;

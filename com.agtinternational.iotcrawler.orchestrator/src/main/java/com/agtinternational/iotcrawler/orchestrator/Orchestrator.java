@@ -164,7 +164,7 @@ public class Orchestrator extends IoTCrawlerClient {
             }
         }).start();
 
-                initHttpServer();
+        initHttpServer();
         startHttpServer();
     }
 

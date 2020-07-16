@@ -30,6 +30,7 @@ import eu.neclab.iotplatform.ngsi.api.datamodel.ContextMetadata;
 import eu.neclab.iotplatform.ngsi.api.datamodel.EntityId;
 import org.apache.jena.atlas.lib.DateTimeUtils;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.vocabulary.RDFS;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -92,7 +93,8 @@ public class ModelTests {
         String abc = IoTStream.getTypeUri(true);
         byte[] entityModelJson = Files.readAllBytes(Paths.get("samples/IoTStream.json"));
         EntityLD entityLD = EntityLD.fromJsonString(new String(entityModelJson));
-
+        entityLD.addAttribute(RDFS.label.getURI(), "Label1");
+        RDFModel rdfModel1 = RDFModel.fromEntity(entityLD);
         IoTStream ioTStream = IoTStream.fromEntity(entityLD);
 
         JsonObject entityLDJson = entityLD.toJsonObject();

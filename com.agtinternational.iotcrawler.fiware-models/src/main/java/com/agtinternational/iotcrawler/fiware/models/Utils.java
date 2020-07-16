@@ -248,7 +248,7 @@ public class Utils {
 
             if(attValue instanceof Map) {
                 Attribute attribute2 = extractAttribute((Map)attValue);
-                ret = appendAttribute(ret, attKey, attribute2);
+                ret = appendAttributeToMap(ret, attKey, attribute2);
                 //ret.put(attKey, attribute2);
             }else if(attValue instanceof Iterable){
                 Iterator iterator = ((Iterable)attValue).iterator();
@@ -266,12 +266,12 @@ public class Utils {
                     attributes.addAll(values);
                     //attributes.add(new Property(values));
                 }
-                ret = appendAttribute(ret, attKey, attributes);
+                ret = appendAttributeToMap(ret, attKey, attributes);
                 //ret.put(attKey, attributes);
             }else if(attValue instanceof String || attValue instanceof Number){
                 //attributes.add(new Property(attValue));
                 //ret.put(attKey, attValue);
-                ret = appendAttribute(ret, attKey, attValue);
+                ret = appendAttributeToMap(ret, attKey, new Property(attValue));
             }else
                 throw new org.apache.commons.lang3.NotImplementedException(attValue.getClass().getName()+" not implemented ");
 
@@ -279,30 +279,37 @@ public class Utils {
         return ret;
     }
 
-    public static Map<String, Object> appendAttribute(Map<String, Object> attributes, String name, Object value){
+    public static Map<String, Object> appendAttributeToMap(Map<String, Object> attributes, String name, Object value){
         Object valueToAdd = value;
         if(attributes.get(name)!=null){
             Object alreadyExistingAttribute = attributes.get(name);
 
-            List attributesList = null;
+            List<Attribute> returnList = new ArrayList();
             if(alreadyExistingAttribute instanceof Attribute){
-                attributesList = new ArrayList();
                 //attributesList.add(((Attribute) alreadyExistingAttribute).getValue());
-                attributesList.add(alreadyExistingAttribute);
-            }else if(alreadyExistingAttribute instanceof List)
-                attributesList = (List)alreadyExistingAttribute;
-            else
+                returnList.add((Attribute) alreadyExistingAttribute);
+            }else if(alreadyExistingAttribute instanceof Iterable) {
+                Iterator<Attribute> iterator = ((Iterable)alreadyExistingAttribute).iterator();
+                while (iterator.hasNext())
+                    returnList.add(iterator.next());
+            }else
                 throw new NotImplementedException("Already existing list has type "+alreadyExistingAttribute.getClass().getCanonicalName());
 
             if(value instanceof Attribute)
-                attributesList.add(value);
+                returnList.add((Attribute) value);
                 //attributesList.add(((Attribute) value).getValue());
-            else if(value instanceof List)
-                attributesList.addAll((List)value);
-            else
+            else if(value instanceof Iterable) {
+                Iterator iterator = ((Iterable)value).iterator();
+                while (iterator.hasNext()) {
+                    Object listItem = iterator.next();
+                    if(!(listItem instanceof Attribute))
+                        throw new NotImplementedException("Only Attribute or Iterable<Attribute> are allowed");
+                        returnList.add((Attribute) listItem);
+                }
+            }else
                 throw new NotImplementedException("Value has type "+value.getClass().getCanonicalName());
 
-            valueToAdd = attributesList;
+            valueToAdd = returnList;
         }
 
         attributes.put(name, valueToAdd);

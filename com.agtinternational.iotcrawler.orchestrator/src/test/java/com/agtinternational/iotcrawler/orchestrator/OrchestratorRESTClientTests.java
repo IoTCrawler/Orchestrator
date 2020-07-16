@@ -21,7 +21,6 @@ package com.agtinternational.iotcrawler.orchestrator;
  */
 
 import com.agtinternational.iotcrawler.core.clients.IoTCrawlerRESTClient;
-import com.agtinternational.iotcrawler.core.interfaces.IotCrawlerClient;
 import com.agtinternational.iotcrawler.core.models.IoTStream;
 import org.junit.Before;
 import org.junit.Test;

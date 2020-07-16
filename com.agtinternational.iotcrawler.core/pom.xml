@@ -21,7 +21,7 @@
         <slf4j.version>1.7.15</slf4j.version>
         <junit.version>4.11</junit.version>
 
-        <ngsi2.client.version>0.1.2-SNAPSHOT</ngsi2.client.version>
+<!--        <ngsi2.client.version>0.1.2-SNAPSHOT</ngsi2.client.version>-->
 
         <fiware.models.version>1.0.1</fiware.models.version>
         <fiware.clients.version>1.0.1</fiware.clients.version>
@@ -48,14 +48,6 @@
             <artifactId>fiware-clients</artifactId>
             <version>${fiware.clients.version}</version>
             <exclusions>
-                <exclusion>
-                    <groupId>com.agtinternational.iotcrawler</groupId>
-                    <artifactId>fiware-models</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.agtinternational.iotcrawler</groupId>
-                    <artifactId>core</artifactId>
-                </exclusion>
                 <!--<exclusion>-->
                 <!--<groupId>org.apache.httpcomponents</groupId>-->
                 <!--<artifactId>httpclient-osgi</artifactId>-->
@@ -68,12 +60,12 @@
             <!--<scope>provided</scope>-->
         </dependency>
 
-        <dependency>
-            <groupId>com.agtinternational.iotcrawler</groupId>
-            <artifactId>fiware-models</artifactId>
-            <version>${fiware.models.version}</version>
-<!--            <scope>provided</scope>-->
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.agtinternational.iotcrawler</groupId>-->
+<!--            <artifactId>fiware-models</artifactId>-->
+<!--            <version>${fiware.models.version}</version>-->
+<!--&lt;!&ndash;            <scope>provided</scope>&ndash;&gt;-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>org.aksw.jena-sparql-api</groupId>

@@ -41,13 +41,13 @@ public class ModelsTest {
     @Parameterized.Parameters
     public static Collection parameters() throws Exception {
         return Arrays.asList(new Object[][]{
-                new Object[]{ createEntity() },
-                new Object[]{ readEntityFromFile("samples/VehicleLD.json") },
-                new Object[]{ readEntityFromFile("samples/urn-ngsi-ld-TemperatureSensor-335547902.json") },
-                new Object[]{ readEntityFromFile("samples/urn-ngsi-ld-Sensor_AEON_Labs_ZW100_MultiSensor_6_BatteryLevel.json") },
-                new Object[]{ readEntityFromFile("samples/IoTStreamLD.json") },
-                new Object[]{ readEntityFromFile("samples/PlatformLD.json") },
-                new Object[]{ readEntityFromFile("samples/MultiplePropertyValuesEntity.json") },
+//                new Object[]{ createEntity() },
+//                new Object[]{ readEntityFromFile("samples/VehicleLD.json") },
+//                new Object[]{ readEntityFromFile("samples/urn-ngsi-ld-TemperatureSensor-335547902.json") },
+//                new Object[]{ readEntityFromFile("samples/urn-ngsi-ld-Sensor_AEON_Labs_ZW100_MultiSensor_6_BatteryLevel.json") },
+//                new Object[]{ readEntityFromFile("samples/IoTStreamLD.json") },
+//                new Object[]{ readEntityFromFile("samples/PlatformLD.json") },
+//                new Object[]{ readEntityFromFile("samples/MultiplePropertyValuesEntity.json") },
                  new Object[]{ readEntityFromFile("samples/IndoorTemperatureSensor.json") }
 
         });
@@ -74,13 +74,23 @@ public class ModelsTest {
     }
 
     @Test
-    public void fromJsonStringTest() throws Exception {
+    public void toJsonObjectTest() throws Exception {
         Object attribute = entity.getAttribute("hosts");
         String JsonString2 = Utils.prettyPrint(entity.toJsonObject());
         System.out.println(JsonString2);
         //Files.write(Paths.get("target",Utils.getFragment(entity.getId()+".json")), JsonString2.getBytes());
 
-//        EntityLD entityLD2 = EntityLD.fromJsonString(JsonString2);
+        EntityLD entityLD2 = EntityLD.fromJsonString(JsonString2);
+        String jsonString3 = Utils.prettyPrint(entityLD2.toJsonObject());
+        System.out.println(JsonString2);
+        Assert.assertEquals(entityLD2.toJsonObject(), entity.toJsonObject());
+    }
+
+    @Test
+    public void fromJsonStringTest() throws Exception {
+        String jsonString = new String(Files.readAllBytes(Paths.get("samples","EntityLD-test.json")));
+        EntityLD entityLD2 = EntityLD.fromJsonString(jsonString);
+        String test = "123";
 //        String jsonString3 = Utils.prettyPrint(entityLD2.toJsonObject());
 //        System.out.println(JsonString2);
 //        Assert.assertEquals(entityLD2.toJsonObject(), entity.toJsonObject());

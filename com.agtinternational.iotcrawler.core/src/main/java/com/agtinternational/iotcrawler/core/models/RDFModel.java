@@ -125,10 +125,14 @@ public class RDFModel {
         setProperty(RDFS.label, value);
     }
 
-    public String getTypeURI(){
+    public String getTypeURI() throws Exception {
         //String ret = model.getResource(RDF.type.getURI()).toString();
         //return ret;
-        RDFNode attributeNode = getProperty(RDF.type.toString()).get(0);
+        List<RDFNode> res = getProperty(RDF.type.toString());
+        if(res.size()==0)
+            throw new Exception("RDF Type not found");
+
+        RDFNode attributeNode = res.get(0);
         return attributeNode.asResource().getURI();
     }
 

@@ -25,7 +25,7 @@
             <groupId>com.orange.fiware</groupId>
             <artifactId>ngsi2-client</artifactId>
             <version>${ngsi2.client.version}</version>
-            <!--<scope>compile</scope>-->
+<!--            <scope>provided</scope>-->
         </dependency>
 
         <dependency>

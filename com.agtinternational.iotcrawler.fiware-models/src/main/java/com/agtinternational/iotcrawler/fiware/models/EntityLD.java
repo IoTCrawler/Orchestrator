@@ -20,6 +20,8 @@ package com.agtinternational.iotcrawler.fiware.models;
  * #L%
  */
 
+import com.agtinternational.iotcrawler.fiware.models.NGSILD.Property;
+import com.agtinternational.iotcrawler.fiware.models.NGSILD.Relationship;
 import com.google.gson.*;
 import com.orange.ngsi2.model.Attribute;
 import org.apache.commons.lang3.NotImplementedException;
@@ -27,7 +29,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import java.util.*;
 
-public class EntityLD /*extends Entity*/ {
+public class EntityLD /*extends Entity*/ { //not extending because of custom attributes list
     private String id;
     private String type;
     Object context;
@@ -45,7 +47,8 @@ public class EntityLD /*extends Entity*/ {
 
     public EntityLD(String id, String type, Map<String, Object> attributes) {
         this(id, type);
-        this.attributes = attributes;
+        for(String key: attributes.keySet())
+            this.addAttribute(key, attributes.get(key));
     }
 
 //    public EntityLD(String id, String type, Map<String, Attribute> attributes) {
@@ -56,6 +59,8 @@ public class EntityLD /*extends Entity*/ {
         this(id, type, attributes);
         this.context = context;
     }
+
+
 
     public String getId() {
         return id;
@@ -118,17 +123,26 @@ public class EntityLD /*extends Entity*/ {
         return context;
     }
 
+    public void addAttribute(String name, Object value){
+        if(value instanceof Attribute || value instanceof Iterable)
+            Utils.appendAttributeToMap(attributes, name, value);
+        else {
+            Attribute attribute = (value instanceof EntityLD?new Relationship(){{ setValue(value); }}:new Property(value));
+            addAttribute(name, attribute);
+        }
+    }
+
     public void addAttribute(String name, Attribute value){
-        addAttributeAsObject(name, value);
+        Utils.appendAttributeToMap(attributes, name, value);
     }
 
-    public void addAttribute(String name, List<Attribute> value){
-        addAttributeAsObject(name, value);
+    public void addAttribute(String name, Iterable<Attribute> value){
+        Utils.appendAttributeToMap(attributes, name, value);
     }
 
-    private void addAttributeAsObject(String name, Object value){
-        attributes = Utils.appendAttribute(attributes, name, value);
-    }
+//    private void addAttributeAsObject(String name, Object value){
+//        attributes = Utils.appendAttribute(attributes, name, value);
+//    }
 
     public JsonObject toJsonObject() {
         JsonObject jsonObject = new JsonObject();
@@ -230,7 +244,16 @@ public class EntityLD /*extends Entity*/ {
         objectMap.remove((objectMap.containsKey("@context")?"@context":"context"));
 
         Map<String, Object> attributes = Utils.extractAttributes(objectMap);
-        EntityLD entity = new EntityLD(nameStr, typeStr, attributes, context);
+        EntityLD entity = new EntityLD(nameStr, typeStr, new HashMap(), context);
+        for(String key: attributes.keySet()) {
+            Object attribute = attributes.get(key);
+            if(attribute instanceof Attribute)
+                entity.addAttribute(key, (Attribute)attribute);
+            else if(attribute instanceof Iterable)
+                entity.addAttribute(key, (Iterable<Attribute>) attribute);
+            else
+                 throw new Exception(attribute.getClass().getCanonicalName()+" is not allowed for EntityLD");
+        }
         return entity;
     }
 

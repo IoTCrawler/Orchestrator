@@ -63,6 +63,8 @@ public class EnvVariablesSetter {
                 //environmentVariables.set(NGSILD_BROKER_URL, "http://155.54.95.248:9090/ngsi-ld/");
             //environmentVariables.set(NGSILD_BROKER_URL, "http://155.54.95.171:9090/ngsi-ld/");
 
+        //if(!System.getenv().containsKey(RANKING_COMPONENT_URL))
+        //    environmentVariables.set(RANKING_COMPONENT_URL, "https://ranking.iotcrawler.eu/ngsi-ld/");
 
 
 //        if(!System.getenv().containsKey(IOT_BROKER_URL))

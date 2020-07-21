@@ -40,7 +40,7 @@ public class ObservableProperty extends RDFModel {
 
     public ObservableProperty(String uri, Model model){
         this(uri);
-        this.model = model;
+        setModel(model);
     }
 
 //    public ObservableProperty(String uri, String classURI, String label){

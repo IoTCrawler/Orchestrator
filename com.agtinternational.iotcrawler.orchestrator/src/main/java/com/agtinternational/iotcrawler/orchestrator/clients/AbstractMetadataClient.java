@@ -23,12 +23,10 @@ package com.agtinternational.iotcrawler.orchestrator.clients;
 import com.agtinternational.iotcrawler.core.models.RDFModel;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import com.agtinternational.iotcrawler.fiware.models.subscription.Subscription;
-import com.google.gson.JsonObject;
 import org.apache.jena.rdf.model.Model;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 public abstract class AbstractMetadataClient {
 

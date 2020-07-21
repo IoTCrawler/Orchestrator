@@ -1,10 +1,10 @@
-package com.agtinternational.iotcrawler.orchestrator;
+package com.agtinternational.iotcrawler.core;
 
 /*-
  * #%L
  * orchestrator
  * %%
- * Copyright (C) 2019 - 2020 AGT International. Author Pavel Smirnov (psmirnov@agtinternational.com)
+ * Copyright (C) 2019 AGT International. Author Pavel Smirnov (psmirnov@agtinternational.com)
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,27 +20,31 @@ package com.agtinternational.iotcrawler.orchestrator;
  * #L%
  */
 
-import com.agtinternational.iotcrawler.core.clients.IoTCrawlerRESTClient;
-import com.agtinternational.iotcrawler.core.models.IoTStream;
+import com.agtinternational.iotcrawler.core.clients.IoTCrawlerRPCClient;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
-import org.slf4j.Logger;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.Assert;
 
-import java.util.List;
+import static com.agtinternational.iotcrawler.core.Constants.*;
 
-import static com.agtinternational.iotcrawler.core.Constants.IOTCRAWLER_ORCHESTRATOR_URL;
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class IoTCrawlerRPCClientTests extends CommonClientsTests {
 
-
-public class OrchestratorRESTClientTests extends OrchestratorTests {
+    //private Logger LOGGER = LoggerFactory.getLogger(OrchestratorRPCClientTests.class);
 
     @Before
     public void init(){
         EnvVariablesSetter.init();
-        client = new IoTCrawlerRESTClient(System.getenv().get(IOTCRAWLER_ORCHESTRATOR_URL));
-        LOGGER = LoggerFactory.getLogger(OrchestratorRESTClientTests.class);
+
+        String ngsiLDEndpoint = System.getenv().get(IOTCRAWLER_ORCHESTRATOR_URL);
+        String graphQLEndpoint = System.getenv(IOTCRAWLER_GRAPHQL_ENDPOINT);
+        String rabbitHost = System.getenv(IOTCRAWLER_RABBIT_HOST);
+
+        client = new IoTCrawlerRPCClient(ngsiLDEndpoint, graphQLEndpoint, rabbitHost);
+        LOGGER = LoggerFactory.getLogger(IoTCrawlerRPCClientTests.class);
         try {
             client.init();
         } catch (Exception e) {
@@ -68,14 +72,6 @@ public class OrchestratorRESTClientTests extends OrchestratorTests {
         super.getEntitiesTest();
     }
 
-    @Test
-    @Order(6)
-    public void getEntitiesWithConversionTest() throws Exception {
-        LOGGER.info("getEntitiesTest()");
-        List<IoTStream> entities = client.getEntities(IoTStream.class, null, null, 0,0);
-        Assert.notNull(entities);
-        LOGGER.info(entities.size()+" entities returned");
-    }
 
     //@Ignore
     @Test
@@ -87,7 +83,7 @@ public class OrchestratorRESTClientTests extends OrchestratorTests {
     @Test
     @Order(8)
     public void getEntityByIdTest() throws Exception {
-       super.getEntityByIdTest();
+        super.getEntityByIdTest();
     }
 
     //@Ignore
@@ -96,6 +92,20 @@ public class OrchestratorRESTClientTests extends OrchestratorTests {
     public void getAllSensorsTest() throws Exception {
         super.getAllSensorsTest();
     }
+
+
+    @Order(10)
+    @Test
+    public void getObservationsTest() throws Exception {
+        super.getObservationsTest();
+    }
+
+    @Order(11)
+    @Test
+    public void subscribeTest() throws Exception {
+        super.subscribeTest();
+    }
+
 
 
 }

@@ -23,6 +23,7 @@ package com.agtinternational.iotcrawler.orchestrator;
 import org.junit.contrib.java.lang.system.EnvironmentVariables;
 
 import static com.agtinternational.iotcrawler.core.Constants.*;
+import static com.agtinternational.iotcrawler.core.Constants.HTTP_REFERENCE_URL;
 import static com.agtinternational.iotcrawler.fiware.clients.Constants.NGSILD_BROKER_URL;
 import static com.agtinternational.iotcrawler.orchestrator.Constants.*;
 
@@ -37,10 +38,10 @@ public class EnvVariablesSetter {
 
 
 
-        if(!System.getenv().containsKey(IOTCRAWLER_ORCHESTRATOR_URL))
-            //environmentVariables.set(IOTCRAWLER_ORCHESTRATOR_URL, "http://localhost:3001/ngsi-ld/");
-            environmentVariables.set(IOTCRAWLER_ORCHESTRATOR_URL, "http://10.67.1.107:9090/ngsi-ld/");
-
+//        if(!System.getenv().containsKey(IOTCRAWLER_ORCHESTRATOR_URL))
+//            //environmentVariables.set(IOTCRAWLER_ORCHESTRATOR_URL, "http://localhost:3001/ngsi-ld/");
+//            environmentVariables.set(IOTCRAWLER_ORCHESTRATOR_URL, "http://10.67.1.107:9090/ngsi-ld/");
+//
 
 
         if(!System.getenv().containsKey(IOTCRAWLER_RABBIT_HOST))
@@ -58,10 +59,11 @@ public class EnvVariablesSetter {
 
         //environmentVariables.set(CUT_TYPE_URIS, "false");
         if(!System.getenv().containsKey(NGSILD_BROKER_URL))
-            environmentVariables.set(NGSILD_BROKER_URL, "http://10.67.1.107:9090/ngsi-ld/");
-            //environmentVariables.set(NGSILD_BROKER_URL, "http://localhost:3000/ngsi-ld/");
-                //environmentVariables.set(NGSILD_BROKER_URL, "http://155.54.95.248:9090/ngsi-ld/");
+            //environmentVariables.set(NGSILD_BROKER_URL, "http://10.67.1.107:9090/ngsi-ld/");
+            environmentVariables.set(NGSILD_BROKER_URL, "http://localhost:3000/ngsi-ld/");
+            //environmentVariables.set(NGSILD_BROKER_URL, "http://155.54.95.248:9090/ngsi-ld/");
             //environmentVariables.set(NGSILD_BROKER_URL, "http://155.54.95.171:9090/ngsi-ld/");
+
 
         //if(!System.getenv().containsKey(RANKING_COMPONENT_URL))
         //    environmentVariables.set(RANKING_COMPONENT_URL, "https://ranking.iotcrawler.eu/ngsi-ld/");
@@ -73,7 +75,7 @@ public class EnvVariablesSetter {
 
 
         if(!System.getenv().containsKey(HTTP_SERVER_HOST))
-            environmentVariables.set(HTTP_SERVER_HOST, "10.67.1.107");
+            environmentVariables.set(HTTP_SERVER_HOST, "localhost");
 
         if(!System.getenv().containsKey(HTTP_SERVER_PORT))
             environmentVariables.set(HTTP_SERVER_PORT, "3001");

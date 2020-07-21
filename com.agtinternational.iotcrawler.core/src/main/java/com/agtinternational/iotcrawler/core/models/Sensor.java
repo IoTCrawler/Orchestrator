@@ -85,6 +85,15 @@ public class Sensor extends RDFModel {
         return ret;
     }
 
+    public void madeObservation(Object value){
+        setProperty(SOSA.madeObservation, value);
+    }
+
+    public Object madeObservation(){
+        Object ret = getAttribute(SOSA.madeObservation);
+        return ret;
+    }
+
     public static String getTypeUri(){
         return SOSA.sensor;
         //return sosaPrefix+":"+"Sensor";

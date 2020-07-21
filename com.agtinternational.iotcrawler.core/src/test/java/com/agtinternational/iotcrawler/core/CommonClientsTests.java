@@ -1,4 +1,4 @@
-package com.agtinternational.iotcrawler.orchestrator;
+package com.agtinternational.iotcrawler.core;
 
 /*-
  * #%L
@@ -21,23 +21,10 @@ package com.agtinternational.iotcrawler.orchestrator;
  */
 
 
-import com.agtinternational.iotcrawler.core.Utils;
 import com.agtinternational.iotcrawler.core.interfaces.IoTCrawlerClient;
+import com.agtinternational.iotcrawler.core.models.*;
 import com.agtinternational.iotcrawler.fiware.clients.NgsiLDClient;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
-//import com.agtinternational.iotcrawler.orchestrator.clients.TripleStoreMDRClient;
-import com.agtinternational.iotcrawler.core.models.*;
-import com.agtinternational.iotcrawler.fiware.models.subscription.Endpoint;
-import com.agtinternational.iotcrawler.fiware.models.subscription.EntityInfo;
-import com.agtinternational.iotcrawler.fiware.models.subscription.NotificationParams;
-import com.agtinternational.iotcrawler.fiware.models.subscription.Subscription;
-import com.google.gson.JsonObject;
-import com.orange.ngsi2.model.Condition;
-import com.orange.ngsi2.model.SubjectEntity;
-import eu.neclab.iotplatform.ngsi.api.datamodel.NotifyCondition;
-import eu.neclab.iotplatform.ngsi.api.datamodel.NotifyConditionEnum;
-import eu.neclab.iotplatform.ngsi.api.datamodel.Restriction;
-import org.apache.http.entity.ContentType;
 import org.apache.jena.vocabulary.RDFS;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -48,24 +35,24 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
-import org.springframework.util.concurrent.ListenableFuture;
-import org.springframework.util.concurrent.ListenableFutureCallback;
 
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
-import java.util.concurrent.Semaphore;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 import static com.agtinternational.iotcrawler.core.Constants.CUT_TYPE_URIS;
+import static com.agtinternational.iotcrawler.core.Constants.HTTP_REFERENCE_URL;
 import static com.agtinternational.iotcrawler.fiware.clients.Constants.NGSILD_BROKER_URL;
-import static com.agtinternational.iotcrawler.orchestrator.Constants.HTTP_REFERENCE_URL;
+
+//import com.agtinternational.iotcrawler.orchestrator.clients.TripleStoreMDRClient;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class OrchestratorTests {
+public class CommonClientsTests {
 
-    protected Logger LOGGER = LoggerFactory.getLogger(OrchestratorTests.class);
+    protected Logger LOGGER = LoggerFactory.getLogger(CommonClientsTests.class);
 
     protected IoTCrawlerClient client;
     Boolean cutURIs;
@@ -75,9 +62,7 @@ public class OrchestratorTests {
     public void init(){
         EnvVariablesSetter.init();
 
-        cutURIs = (System.getenv().containsKey(CUT_TYPE_URIS)?Boolean.parseBoolean(System.getenv(CUT_TYPE_URIS)):false);
-        if(client==null)
-            client = new Orchestrator(cutURIs);
+        cutURIs = (System.getenv().containsKey(CUT_TYPE_URIS)? Boolean.parseBoolean(System.getenv(CUT_TYPE_URIS)):false);
 
         try {
             client.init();
@@ -88,8 +73,7 @@ public class OrchestratorTests {
         ngsiLDClient = new NgsiLDClient(System.getenv(NGSILD_BROKER_URL));
     }
 
-    @Test
-    @Order(2)
+
     public void registerStreamTest() throws Exception {
         LOGGER.info("registerStreamTest()");
         //byte[] iotStreamModelJson = Files.readAllBytes(Paths.get("samples/IoTStream.json"));
@@ -103,7 +87,7 @@ public class OrchestratorTests {
 
         //ioTStream.addProperty(RDFS.label, "label1");
 
-        String label = "TestStream_"+System.currentTimeMillis();
+        String label = "TestStream_"+ System.currentTimeMillis();
         IoTStream stream1 = new IoTStream("http://purl.org/iot/ontology/iot-stream#"+label, label);
 
 
@@ -115,8 +99,7 @@ public class OrchestratorTests {
         LOGGER.info("Stream was registered");
     }
 
-    @Ignore
-    @Test
+
     public void deleteStream() throws Exception {
         boolean success = ngsiLDClient.deleteEntitySync("test:testUri2");
         if(success)
@@ -127,8 +110,7 @@ public class OrchestratorTests {
         LOGGER.info("Entity deleted");
     }
 
-    @Test
-    @Order(3)
+
     public void getStreamsTest() throws Exception {
         LOGGER.info("getAllStreamsTest()");
 
@@ -139,8 +121,7 @@ public class OrchestratorTests {
     }
 
 
-    @Test
-    @Order(4)
+
     public void getRankedStreamsTest() throws Exception {
         LOGGER.info("getAllStreamsTest()");
         //List<IoTStream> streams = orchestrator.getStreams(null,0,0);
@@ -159,11 +140,9 @@ public class OrchestratorTests {
 
 
     //@Ignore
-    @Test
-    @Order(6)
-    public void getEntitiesTest() throws Exception {
+     public void getEntitiesTest() throws Exception {
         LOGGER.info("getEntitiesTest()");
-        List<EntityLD>  entities = client.getEntities(IoTStream.getTypeUri(), null, null, 0,0);
+        List<EntityLD> entities = client.getEntities(IoTStream.getTypeUri(), null, null, 0,0);
         Assert.notNull(entities);
         LOGGER.info(entities.size()+" entities returned");
     }
@@ -171,8 +150,6 @@ public class OrchestratorTests {
 
 
     //@Ignore
-    @Test
-    @Order(7)
     public void getStreamByIdTest() throws Exception {
         LOGGER.info("getStreamByIdTest()");
 //        FilteringSelector selector=new FilteringSelector.Builder()
@@ -190,9 +167,7 @@ public class OrchestratorTests {
         LOGGER.info(streams.size()+" streams returned");
     }
 
-    @Ignore
-    @Test
-    @Order(8)
+
     public void getEntityByIdTest() throws Exception {
         LOGGER.info("getEntityByIdTest()");
 //        FilteringSelector selector=new FilteringSelector.Builder()
@@ -211,8 +186,6 @@ public class OrchestratorTests {
     }
 
 
-    @Test
-    @Order(9)
     public void getAllSensorsTest() throws Exception {
         LOGGER.info("getAllSensorsTest()");
         List<Sensor> sensors = client.getSensors(null,0,0);
@@ -221,8 +194,6 @@ public class OrchestratorTests {
     }
 
 
-    @Test
-    @Order(10)
     public void getAllPlatformsTest() throws Exception {
         LOGGER.info("getAllPlatformsTest()");
         List<Platform> platforms = client.getPlatforms(null,0,0);
@@ -231,11 +202,9 @@ public class OrchestratorTests {
     }
 
 
-    @Test
-    @Order(11)
     public void getAllObservablePropertiesTest() throws Exception {
         LOGGER.info("getAllObservablePropertiesTest()");
-        Map<String,Object> query = new HashMap<>();
+        Map<String, Object> query = new HashMap<>();
         query.put(RDFS.label.getURI(), "Motion");
 
         List<ObservableProperty> items = client.getObservableProperties(query,0,0);
@@ -243,13 +212,11 @@ public class OrchestratorTests {
         LOGGER.info(items.size()+" ObservableProperties returned");
     }
 
-    @Ignore
-    @Test
-    @Order(12)
+
     public void getByQueryTest() throws Exception {
         LOGGER.info("getByQueryTest()");
         //List<EntityLD> streams = orchestrator.getEntities("Vehicle", "brandName.value=Mercedes");
-        Map<String,Object> query = new HashMap<>();
+        Map<String, Object> query = new HashMap<>();
         query.put("sosa:madeBySensor", "iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_MotionAlarmCancelationDelay");
         query.put("http://www.w3.org/2000/01/rdf-schema#label","iotc:Stream_AEON+Labs+ZW100+MultiSensor+6_Brightness");
 
@@ -257,9 +224,6 @@ public class OrchestratorTests {
         String abc="213";
     }
 
-    @Test
-    @Order(13)
-    @Ignore
     public void getCustomEntityTest() throws Exception {
         LOGGER.info("getCustomEntityTest()");
         //String query = "{'sosa:madeBySensor' : ['iotc:Sensor_AEON+Labs+ZW100+MultiSensor+6_Temperature']}";
@@ -273,13 +237,11 @@ public class OrchestratorTests {
 
 
 
-    @Order(14)
-    @Test
-    @Ignore
+
     public void subscribeTest() throws Exception {
         LOGGER.info("subscribeTest()");
 
-        String streamId = "urn:household1:stateObservation";
+        String streamId = "urn:household1:stateStream";
         String referenceURL = System.getenv(HTTP_REFERENCE_URL);
         String subscriptionId = client.subscribeTo(streamId, referenceURL, new Function<StreamObservation, Void>() {
             @Override

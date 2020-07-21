@@ -78,7 +78,8 @@ public class NgsiLDClientManualTests {
     public void getEntitiesByParameterTest() throws Exception {
         Map query = new HashMap<String, String>();
         //query.put("http://www.w3.org/2000/01/rdf-schema#label", "\"homee_00055110D732\"");
-        query.put("http://www.agtinternational.com/ontologies/ngsi-ld#alternativeType","\"http://agtinternational/smartHomeApp#HouseholdStateStream\"");
+        //query.put("http://www.agtinternational.com/ontologies/ngsi-ld#alternativeType","\"http://agtinternational/smartHomeApp#HouseholdStateStream\"");
+        query.put("http://dummyurl/speed","\"55\"");
 
         Collection<String> types = Arrays.asList(new String[]{
                 "http://purl.org/iot/ontology/iot-stream#IotStream"

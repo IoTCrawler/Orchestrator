@@ -220,8 +220,7 @@ public class NgsiLDClientTest{
     @Test
     public void getEntityByIdTest() throws Exception {
         Collection<String> ids = Arrays.asList(new String[]{
-                "urn:ngsi-ld:Stream_AEON_Labs_ZW100_MultiSensor_6_MotionAlarm"
-                //entity.getId()
+                entity.getId()
         });
 
 //        Collection<String> types = Arrays.asList(new String[]{
@@ -346,9 +345,9 @@ public class NgsiLDClientTest{
         NotificationParams notification = new NotificationParams();
         notification.setAttributes(Arrays.asList(new String[]{ "location" }));
         notification.setEndpoint(new Endpoint(new URL(HttpTestServer.getRefenceURL()), ContentType.APPLICATION_JSON));
-
+        String subscriptionId = UUID.randomUUID().toString();
         Subscription subscription = new Subscription(
-                UUID.randomUUID().toString(),
+                subscriptionId,
                 Arrays.asList(new EntityInfo[]{ entityInfo }),
                 Arrays.asList(new String[]{ "temperature" }),
                 notification,
@@ -356,7 +355,7 @@ public class NgsiLDClientTest{
                 null);
 
 
-        String subscriptionId = ngsiLdClient.addSubscriptionSync(subscription);
+        ngsiLdClient.addSubscriptionSync(subscription);
         Assert.assertNotNull(subscriptionId);
         LOGGER.info("Subscription created");
     }

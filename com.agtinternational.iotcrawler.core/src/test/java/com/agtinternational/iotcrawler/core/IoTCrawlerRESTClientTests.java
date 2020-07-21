@@ -1,10 +1,10 @@
-package com.agtinternational.iotcrawler.orchestrator;
+package com.agtinternational.iotcrawler.core;
 
 /*-
  * #%L
  * orchestrator
  * %%
- * Copyright (C) 2019 AGT International. Author Pavel Smirnov (psmirnov@agtinternational.com)
+ * Copyright (C) 2019 - 2020 AGT International. Author Pavel Smirnov (psmirnov@agtinternational.com)
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,35 +20,29 @@ package com.agtinternational.iotcrawler.orchestrator;
  * #L%
  */
 
-import com.agtinternational.iotcrawler.core.Utils;
 import com.agtinternational.iotcrawler.core.clients.IoTCrawlerRESTClient;
-import com.agtinternational.iotcrawler.core.clients.IoTCrawlerRPCClient;
-import com.agtinternational.iotcrawler.core.models.*;
-import eu.neclab.iotplatform.ngsi.api.datamodel.NotifyCondition;
-import eu.neclab.iotplatform.ngsi.api.datamodel.NotifyConditionEnum;
-import eu.neclab.iotplatform.ngsi.api.datamodel.Restriction;
-import org.junit.After;
+import com.agtinternational.iotcrawler.core.models.IoTStream;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.TestMethodOrder;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.Assert;
+
+import java.util.List;
+
+import static com.agtinternational.iotcrawler.core.Constants.IOTCRAWLER_GRAPHQL_ENDPOINT;
+import static com.agtinternational.iotcrawler.core.Constants.IOTCRAWLER_ORCHESTRATOR_URL;
 
 
-import static com.agtinternational.iotcrawler.core.Constants.IOTCRAWLER_RABBIT_HOST;
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class OrchestratorRPCClientTests extends OrchestratorTests {
-
-    //private Logger LOGGER = LoggerFactory.getLogger(OrchestratorRPCClientTests.class);
+public class IoTCrawlerRESTClientTests extends CommonClientsTests {
 
     @Before
     public void init(){
         EnvVariablesSetter.init();
-        client = new IoTCrawlerRPCClient(System.getenv(IOTCRAWLER_RABBIT_HOST));
-        LOGGER = LoggerFactory.getLogger(OrchestratorRPCClientTests.class);
+        String ngsiLDEndpoint = System.getenv().get(IOTCRAWLER_ORCHESTRATOR_URL);
+        String graphQLEndpoint = System.getenv().get(IOTCRAWLER_GRAPHQL_ENDPOINT);
+        client = new IoTCrawlerRESTClient(ngsiLDEndpoint, graphQLEndpoint);
+        LOGGER = LoggerFactory.getLogger(IoTCrawlerRESTClientTests.class);
         try {
             client.init();
         } catch (Exception e) {
@@ -76,6 +70,14 @@ public class OrchestratorRPCClientTests extends OrchestratorTests {
         super.getEntitiesTest();
     }
 
+    @Test
+    @Order(6)
+    public void getEntitiesWithConversionTest() throws Exception {
+        LOGGER.info("getEntitiesTest()");
+        List<IoTStream> entities = client.getEntities(IoTStream.class, null, null, 0,0);
+        Assert.notNull(entities);
+        LOGGER.info(entities.size()+" entities returned");
+    }
 
     //@Ignore
     @Test
@@ -87,7 +89,7 @@ public class OrchestratorRPCClientTests extends OrchestratorTests {
     @Test
     @Order(8)
     public void getEntityByIdTest() throws Exception {
-        super.getEntityByIdTest();
+       super.getEntityByIdTest();
     }
 
     //@Ignore
@@ -97,14 +99,10 @@ public class OrchestratorRPCClientTests extends OrchestratorTests {
         super.getAllSensorsTest();
     }
 
-
-    @Order(10)
+    @Order(11)
     @Test
-    public void getObservationsTest() throws Exception {
-        super.getObservationsTest();
+    public void subscribeTest() throws Exception {
+        super.subscribeTest();
     }
-
-
-
 
 }

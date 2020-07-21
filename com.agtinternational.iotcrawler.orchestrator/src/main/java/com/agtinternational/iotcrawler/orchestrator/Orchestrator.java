@@ -51,10 +51,12 @@ import java.util.function.Function;
 
 import static com.agtinternational.iotcrawler.core.Constants.*;
 import static com.agtinternational.iotcrawler.fiware.clients.Constants.NGSILD_BROKER_URL;
+import static com.agtinternational.iotcrawler.orchestrator.Constants.IOTCRAWLER_COMMANDS_EXCHANGE;
 import static com.agtinternational.iotcrawler.orchestrator.Constants.RANKING_COMPONENT_URL;
 
 
 public class Orchestrator extends IoTCrawlerClient {
+
     private Logger LOGGER = LoggerFactory.getLogger(Orchestrator.class);
 
     String rabbitHost = "localhost";
@@ -190,34 +192,34 @@ public class Orchestrator extends IoTCrawlerClient {
             }
         }
 
-//        if(connection!=null) {
-//
-//            String queueName = null;
-//            try {
-//                channel = connection.createChannel();
-//                channel.exchangeDeclare(IOTCRAWLER_COMMANDS_EXCHANGE, "fanout");
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//                LOGGER.warn("Failed to declare command exchange");
-//            }
-//
-//            try{
-//                queueName = channel.queueDeclare().getQueue();
-//                channel.queueBind(queueName, IOTCRAWLER_COMMANDS_EXCHANGE, "");
-//
-//                Consumer consumer = new DefaultConsumer(channel) {
-//                    @Override
-//                    public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) {
-//                        receiveCommand(body, properties);
-//                    }
-//                };
-//                channel.basicConsume(queueName, true, consumer);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//                LOGGER.error("Failed to create rabbit channel/consumer");
-//            }
-//            LOGGER.info(" [*] Waiting for RPC messages via from Rabbit");
-//        }
+        if(connection!=null) {
+
+            String queueName = null;
+            try {
+                channel = connection.createChannel();
+                channel.exchangeDeclare(IOTCRAWLER_COMMANDS_EXCHANGE, "fanout");
+            } catch (Exception e) {
+                e.printStackTrace();
+                LOGGER.warn("Failed to declare command exchange");
+            }
+
+            try{
+                queueName = channel.queueDeclare().getQueue();
+                channel.queueBind(queueName, IOTCRAWLER_COMMANDS_EXCHANGE, "");
+
+                Consumer consumer = new DefaultConsumer(channel) {
+                    @Override
+                    public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) {
+                        receiveCommand(body, properties);
+                    }
+                };
+                channel.basicConsume(queueName, true, consumer);
+            } catch (Exception e) {
+                e.printStackTrace();
+                LOGGER.error("Failed to create rabbit channel/consumer");
+            }
+            LOGGER.info(" [*] Waiting for RPC messages via from Rabbit");
+        }
     }
 
     private void initHttpServer(){
@@ -658,8 +660,13 @@ public class Orchestrator extends IoTCrawlerClient {
     }
 
     @Override
-    public String subscribeTo(Subscription subscription, Function<StreamObservation, Void> function) throws Exception {
+    public String subscribeTo(String streamId, String endpointUrl, Function<StreamObservation, Void> onChange) throws Exception {
+        //implemetation not needed (implemented in core)
+        throw new NotImplementedException();
+    }
 
+    @Override
+    public String subscribeTo(Subscription subscription, Function<StreamObservation, Void> function) throws Exception {
         return metadataClient.subscribeTo(subscription);
     }
 

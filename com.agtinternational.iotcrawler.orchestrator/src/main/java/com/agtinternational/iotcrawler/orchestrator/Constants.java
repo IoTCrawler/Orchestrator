@@ -22,7 +22,7 @@ package com.agtinternational.iotcrawler.orchestrator;
 
 public class Constants {
 
-//    public static final String COMMANDS_EXCHANGE_NAME = "IOTCRAWLER_COMMANDS_EXCHANGE";
+    public static final String IOTCRAWLER_COMMANDS_EXCHANGE = "IOTCRAWLER_COMMANDS_EXCHANGE";
 //    public static final String ORCHESTRATOR_RABBIT_HOST = "ORCHESTRATOR_RABBIT_HOST";
 //    public static final String ORCHESTRATOR_REDIS_HOST = "ORCHESTRATOR_REDIS_HOST";
 

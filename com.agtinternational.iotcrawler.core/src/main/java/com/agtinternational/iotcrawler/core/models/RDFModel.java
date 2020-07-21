@@ -29,6 +29,7 @@ import com.google.gson.*;
 import eu.neclab.iotplatform.ngsi.api.datamodel.ContextAttribute;
 import eu.neclab.iotplatform.ngsi.api.datamodel.ContextElement;
 import eu.neclab.iotplatform.ngsi.api.datamodel.EntityId;
+
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.rdf.model.impl.LiteralImpl;
@@ -52,11 +53,15 @@ import static com.agtinternational.iotcrawler.core.Constants.*;
 public class RDFModel {
 
     protected static Logger LOGGER = LoggerFactory.getLogger(RDFModel.class);
-    protected URI uri;
+
+
     protected Model model;
+
     protected Resource resource;
+
     protected static Map<String, String> namespaces = new HashMap<>();
 
+    protected URI uri;
 
     static
     {

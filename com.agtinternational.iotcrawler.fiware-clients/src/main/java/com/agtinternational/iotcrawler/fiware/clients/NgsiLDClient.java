@@ -31,11 +31,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.orange.ngsi2.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.task.AsyncListenableTaskExecutor;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.http.*;
-import org.springframework.http.client.AsyncClientHttpRequestFactory;
-import org.springframework.http.client.HttpComponentsAsyncClientHttpRequestFactory;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -719,25 +716,27 @@ public class NgsiLDClient {
      * @param subscription the Subscription to add
      * @return subscription Id
      */
-    public ListenableFuture<String> addSubscription(Subscription subscription) {
+    public ListenableFuture<Void> addSubscription(Subscription subscription) {
         ListenableFuture<ResponseEntity<Void>> s = request(HttpMethod.POST, UriComponentsBuilder.fromHttpUrl(baseURL).path("v1/subscriptions").toUriString(), subscription, Void.class);
-        return new ListenableFutureAdapter<String, ResponseEntity<Void>>(s) {
+        return new ListenableFutureAdapter<Void, ResponseEntity<Void>>(s) {
             @Override
-            protected String adapt(ResponseEntity<Void> result) throws ExecutionException {
-                return extractId(result);
+            protected Void adapt(ResponseEntity<Void> result) throws ExecutionException {
+                if(result.getStatusCode().isError())
+                    throw new ExecutionException("Error "+result.getStatusCode().value(), new Throwable(result.getStatusCode().getReasonPhrase()));
+                return null;
             }
         };
     }
 
-    public String addSubscriptionSync(Subscription subscription) throws Exception {
+    public void addSubscriptionSync(Subscription subscription) throws Exception {
         Semaphore reqFinished = new Semaphore(0);
-        ListenableFuture<String> req = addSubscription(subscription);
-        final String[] result = { null };
+        ListenableFuture<Void> req = addSubscription(subscription);
+        //final ResponseEntity<Void>[] ret = new ResponseEntity[]{ null };
         List<Exception> errors = new ArrayList<>();
-        req.addCallback(new ListenableFutureCallback<String>() {
+        req.addCallback(new ListenableFutureCallback<Void>() {
             @Override
-            public void onSuccess(String id) {
-                result[0] = id;
+            public void onSuccess(Void result) {
+                //ret[0] = result;
                 reqFinished.release();
             }
 
@@ -754,7 +753,7 @@ public class NgsiLDClient {
         if (errors.size()>0)
             throw errors.get(0);
 
-        return result[0];
+        //return ret[0];
     }
 
 

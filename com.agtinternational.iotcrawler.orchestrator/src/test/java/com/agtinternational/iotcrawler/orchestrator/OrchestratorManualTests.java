@@ -21,28 +21,24 @@ package com.agtinternational.iotcrawler.orchestrator;
  */
 
 
-import com.agtinternational.iotcrawler.core.Utils;
 import com.agtinternational.iotcrawler.core.interfaces.IoTCrawlerClient;
 import com.agtinternational.iotcrawler.fiware.clients.NgsiLDClient;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.agtinternational.iotcrawler.core.Constants.CUT_TYPE_URIS;
 import static com.agtinternational.iotcrawler.fiware.clients.Constants.NGSILD_BROKER_URL;
-import static com.agtinternational.iotcrawler.orchestrator.Constants.HTTP_REFERENCE_URL;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class OrchestratorManualTests {
 
     protected Logger LOGGER = LoggerFactory.getLogger(OrchestratorTests.class);
 
-    protected IoTCrawlerClient client;
+    protected IoTCrawlerClient ioTCrawlerClient;
     Boolean cutURIs;
     NgsiLDClient ngsiLDClient;
 
@@ -51,11 +47,11 @@ public class OrchestratorManualTests {
         EnvVariablesSetter.init();
 
         cutURIs = (System.getenv().containsKey(CUT_TYPE_URIS)?Boolean.parseBoolean(System.getenv(CUT_TYPE_URIS)):false);
-        if(client==null)
-            client = new Orchestrator(cutURIs);
+        if(ioTCrawlerClient ==null)
+            ioTCrawlerClient = new Orchestrator(cutURIs);
 
         try {
-            client.init();
+            ioTCrawlerClient.init();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -66,7 +62,7 @@ public class OrchestratorManualTests {
     @Test
     public void runOrchestrator() throws Exception {
         LOGGER.info("Running orchestrator in test mode");
-        client.run();
+        ioTCrawlerClient.run();
         String test = "123";
     }
 

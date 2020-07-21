@@ -24,18 +24,26 @@ import com.agtinternational.iotcrawler.core.Utils;
 import com.agtinternational.iotcrawler.core.interfaces.IoTCrawlerClient;
 import com.agtinternational.iotcrawler.core.models.*;
 
+import com.agtinternational.iotcrawler.core.ontologies.SOSA;
 import com.agtinternational.iotcrawler.fiware.clients.NgsiLDClient;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
+import com.agtinternational.iotcrawler.fiware.models.subscription.Endpoint;
+import com.agtinternational.iotcrawler.fiware.models.subscription.EntityInfo;
+import com.agtinternational.iotcrawler.fiware.models.subscription.NotificationParams;
 import com.agtinternational.iotcrawler.fiware.models.subscription.Subscription;
 import com.google.gson.JsonParser;
 import com.orange.ngsi2.model.*;
 
 import org.apache.commons.lang3.NotImplementedException;
+import org.apache.http.entity.ContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
+import java.net.URL;
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 import java.util.function.Function;
@@ -53,26 +61,27 @@ public class IoTCrawlerRESTClient extends IoTCrawlerClient implements AutoClosea
     //Semaphore callFinishedMutex;
 
     JsonParser parser;
-    String orchestratorUrl = "http://localhost:3001/ngsi-ld/";
+    String orchestratorUrl;// = "http://localhost:3001/ngsi-ld/";
     NgsiLDClient client;
+    GraphQLClient graphQLClient;
     //RabbitRpcClient rabbitRpcClient;
     //Consumer consumer;
 
-    public IoTCrawlerRESTClient(String url){
-        this(url, false);
+    public IoTCrawlerRESTClient(String ngsildEndpoint, String graphQLEndpoint){
+
+        this(ngsildEndpoint, graphQLEndpoint, false);
     }
 
-    public IoTCrawlerRESTClient(String url, Boolean cutURLs){
-        LOGGER.info("Initializing IoTCrawlerRESTClient client to {}", url);
-        orchestratorUrl = url;
+    public IoTCrawlerRESTClient(String ngsildEndpointUrl, String graphQLEndpoint, Boolean cutURLs){
+        LOGGER.info("Initializing IoTCrawlerRESTClient client to {}", ngsildEndpointUrl);
+        orchestratorUrl = ngsildEndpointUrl;
         this.cutURLs = cutURLs;
         client = new NgsiLDClient(orchestratorUrl);
+        graphQLClient = new GraphQLClient(graphQLEndpoint);
     }
 
     @Override
-    public void init(){
-
-
+    public void init() throws Exception {
 
     }
 
@@ -179,6 +188,73 @@ public class IoTCrawlerRESTClient extends IoTCrawlerClient implements AutoClosea
         return entities;
     }
 
+
+    @Override
+    public String subscribeTo(String streamId, String endpointUrl, Function<StreamObservation, Void> onChange) throws Exception {
+        String propertyId = graphQLClient.getStreamObservationsByStreamId(streamId);
+        if(propertyId==null)
+            throw new Exception("Observable property for stream "+streamId+" not found");
+
+        EntityInfo entityInfo = new EntityInfo(propertyId, ObservableProperty.getTypeUri());
+
+        Endpoint endpoint = new Endpoint(new URL(endpointUrl), ContentType.APPLICATION_JSON);
+
+        NotificationParams notification = new NotificationParams();
+        notification.setAttributes(Arrays.asList(new String[]{ SOSA.hasResult }));
+        notification.setEndpoint(endpoint);
+
+        String subscriptionId = UUID.randomUUID().toString();
+        Subscription subscription = new Subscription(
+                subscriptionId,
+                Arrays.asList(new EntityInfo[]{ entityInfo }),
+                Arrays.asList(new String[]{ SOSA.hasResult }),
+                notification,
+                null,
+                null);
+
+        return subscribeTo(subscription, onChange);
+
+    }
+
+    @Override
+    public String subscribeTo(Subscription subscription, Function<StreamObservation, Void> onChange) throws Exception {
+
+        Semaphore reqFinished = new Semaphore(0);
+//        Semaphore deleteFinished = new Semaphore(0);
+
+        List<Exception> exception = new ArrayList<>();
+//        boolean updating = false;
+        try {
+
+            ListenableFuture<Void> req = client.addSubscription(subscription);
+            req.addCallback(new ListenableFutureCallback<Void>() {
+                @Override
+                public void onSuccess(Void result) {
+                    LOGGER.debug("Subscription {} registered", subscription.getId());
+                    reqFinished.release();
+                }
+
+                @Override
+                public void onFailure(Throwable throwable) {
+                    Exception e = new Exception("Failed to register subscription "+ subscription.getId()+": "+ throwable.getLocalizedMessage(), throwable);
+                    exception.add(e);
+                    reqFinished.release();
+                }
+
+            });
+            reqFinished.acquire();
+            if(exception.size()>0)
+                throw exception.get(0);
+        }
+        catch (Exception e){
+            LOGGER.error("Failed to register subscription: {}", e.getLocalizedMessage());
+            e.printStackTrace();
+        }
+        return subscription.getId();
+
+    }
+
+
 //    @Override
 //    public Boolean registerEntity(RDFModel rdfModel) throws Exception {
 //        ListenableFuture<Void> ret = ngsiLDClient.addEntity(rdfModel.toEntityLD(true));
@@ -199,82 +275,6 @@ public class IoTCrawlerRESTClient extends IoTCrawlerClient implements AutoClosea
 //        LOGGER.info("Measuments pushed");
 //        throw new NotImplementedException("");
 //    }
-
-    @Override
-    public String subscribeTo(Subscription subscription, Function<StreamObservation, Void> onChange) throws Exception {
-
-
-        Semaphore reqFinished = new Semaphore(0);
-//        Semaphore deleteFinished = new Semaphore(0);
-        List<String> ret = new ArrayList<>();
-        List<Exception> exception = new ArrayList<>();
-//        boolean updating = false;
-        try {
-
-            ListenableFuture<String> req;
-
-            req = client.addSubscription(subscription);
-            req.addCallback(new ListenableFutureCallback<String>() {
-                @Override
-                public void onSuccess(String subcriptionId) {
-                    LOGGER.debug("Subscription registered {}");
-                    ret.add(subcriptionId);
-                    reqFinished.release();
-                }
-
-                @Override
-                public void onFailure(Throwable throwable) {
-                    Exception e = new Exception("Failed to register subscription "+ subscription.getId()+": "+ throwable.getLocalizedMessage());
-                    exception.add(e);
-                    reqFinished.release();
-                }
-
-            });
-            reqFinished.acquire();
-        }
-        catch (Exception e){
-            LOGGER.error("Failed to register subscription: {}", e.getLocalizedMessage());
-            e.printStackTrace();
-            throw e;
-        }
-        return (ret.size()>0?ret.get(0):null);
-
-//        client.addSubscription();
-//        CustomSubscribeContextRequest request = new CustomSubscribeContextRequest();
-//        request.setReference(referenceUrl);
-//        //request.setEntityIdList(Arrays.asList(contextElement.getEntityId()));
-//        request.setEntityIdList(Arrays.asList(new EntityId(entityId, URI.create(StreamObservation.getTypeUri()), false)));
-//        //request.setAttributeList(Arrays.asList(new String[]{ "noiseLevel" }));
-//        //request.setEntityIdList(new EntityId(){{  setId(id); setIsPattern(true); }} );
-//        request.setAttributeList(Arrays.asList(attributes));
-//
-//        if(restriction==null)
-//            restriction = new Restriction();
-//        //restriction.setAttributeExpression();
-//        request.setRestriction(restriction);
-//
-//        //NotifyCondition notifyCondition = new NotifyCondition(NotifyConditionEnum.ONCHANGE, Arrays.asList(attributes), null);
-//        //NotifyCondition notifyCondition = new NotifyCondition(NotifyConditionEnum.ONTIMEINTERVAL, Arrays.asList(new String[]{ "noiseLevel" }), null);
-//
-//        javax.xml.datatype.Duration duration = null;
-//        try {
-//            duration = DatatypeFactory.newInstance().newDuration("P30DT15H45M0S");
-//            request.setDuration(duration);
-//        } catch (DatatypeConfigurationException e) {
-//            e.printStackTrace();
-//        }
-//        request.setNotifyCondition(notifyConditions);
-//
-//        SubscribeContextResponse response = client.addSubscription().subscribeContext(request, URI.create(ioTBrokerEndpoint));
-//        if(response.getSubscribeError()!=null && response.getSubscribeError().getStatusCode()!=null && response.getSubscribeError().getStatusCode().getCode()!=200) {
-//            LOGGER.error(response.getSubscribeError().getStatusCode().toJsonString());
-//            throw new Exception(response.getSubscribeError().getStatusCode().toJsonString());
-//        }
-//
-//        String subscriptionId = response.getSubscribeResponse().getSubscriptionId();
-//        return subscriptionId;
-    }
-
 
 
     @Override

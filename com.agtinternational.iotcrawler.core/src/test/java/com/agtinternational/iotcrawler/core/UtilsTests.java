@@ -29,6 +29,5 @@ public class UtilsTests {
     public void cutURLTest(){
         String key = Utils.cutURL("http://purl.org/iot/ontology/iot-stream#IoTStream", RDFModel.getNamespaces());
         String abc = "";
-
     }
 }

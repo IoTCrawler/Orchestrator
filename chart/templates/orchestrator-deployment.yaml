@@ -28,7 +28,7 @@ spec:
       containers:
       - name: {{ .Chart.Name }}
         #image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        image: "{{ .Values.image.repository }}:0dd55333f902368ab5f9aee4e50ae519da31caae"
+        image: "{{ .Values.image.repository }}:822fa56aa123b742639132b3b055d164adbe7aed"
         imagePullPolicy: "{{ .Values.image.pullPolicy }}"
         ports:
           - name: "port3001"

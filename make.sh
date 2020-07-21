@@ -20,9 +20,11 @@ if [ "$1" = "install" ]; then
 fi
 
 if [ "$1" = "build-image" ]; then
-  cd "com.agtinternational.iotcrawler.orchestrator" && sh make.sh build-image || cd ..
+  cd "com.agtinternational.iotcrawler.orchestrator" && sh make.sh build-image 
+  cd ..
 fi
 
 if [ "$1" = "push-image" ]; then
-  cd "com.agtinternational.iotcrawler.orchestrator" && sh make.sh push-image || cd ..
+  cd "com.agtinternational.iotcrawler.orchestrator" && sh make.sh push-image
+  cd ..
 fi

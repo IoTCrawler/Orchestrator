@@ -99,8 +99,11 @@ public class NgsiLDConverter extends AbstractHttpMessageConverter<Object> implem
 
         List<EntityLD> ret = new ArrayList<>();
         Object parsedObject = JsonUtils.fromInputStream(inputStream);
-        if(parsedObject instanceof Map) {
+        if(parsedObject instanceof Map){
             Map objectMap = (Map)parsedObject;
+            if(objectMap.containsKey("error"))
+                throw new HttpMessageNotReadableException("Failed to read json-response:"+ objectMap.get("error"));
+
             try {
                 EntityLD entity = EntityLD.fromMapObject(objectMap);
                 ret.add(entity);

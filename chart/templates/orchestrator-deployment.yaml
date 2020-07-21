@@ -27,8 +27,8 @@ spec:
 {{ toYaml .Values.image.secrets | indent 10 }}
       containers:
       - name: {{ .Chart.Name }}
-        #image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        image: "{{ .Values.image.repository }}:822fa56aa123b742639132b3b055d164adbe7aed"
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        #image: "{{ .Values.image.repository }}:822fa56aa123b742639132b3b055d164adbe7aed"
         imagePullPolicy: "{{ .Values.image.pullPolicy }}"
         ports:
           - name: "port3001"
@@ -52,3 +52,6 @@ spec:
             value: {{ if eq .Values.gitlab.env "staging" }} staging.orchestrator.iotcrawler.eu {{ else }} orchestrator.iotcrawler.eu {{ end }}
           - name: HTTP_SERVER_PORT
             value: "3001"
+          - name: HTTP_REFERENCE_URL
+            value: "http://orchestrator.{{ .Release.Namespace }}:3001/notify"
+            

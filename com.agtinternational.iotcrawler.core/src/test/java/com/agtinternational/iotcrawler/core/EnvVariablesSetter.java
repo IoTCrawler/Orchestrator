@@ -39,7 +39,7 @@ public class EnvVariablesSetter {
         //environmentVariables.set(IOTCRAWLER_RABBIT_HOST, "rabbit");
 
         if(!System.getenv().containsKey(HTTP_REFERENCE_URL))
-            environmentVariables.set(HTTP_REFERENCE_URL, "http://localhost:3001/notify");
+            environmentVariables.set(HTTP_REFERENCE_URL, "http://10.0.75.1:3001/notify");
 
         if(!System.getenv().containsKey(IOTCRAWLER_GRAPHQL_ENDPOINT))
             environmentVariables.set(IOTCRAWLER_GRAPHQL_ENDPOINT, "http://localhost:8080/graphql");

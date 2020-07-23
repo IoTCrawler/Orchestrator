@@ -53,5 +53,5 @@ spec:
           - name: HTTP_SERVER_PORT
             value: "3001"
           - name: HTTP_REFERENCE_URL
-            value: "http://orchestrator.{{ .Release.Namespace }}:3001/notify"
+            value: "http://orchestrator.{{ .Release.Namespace }}/notify"
             

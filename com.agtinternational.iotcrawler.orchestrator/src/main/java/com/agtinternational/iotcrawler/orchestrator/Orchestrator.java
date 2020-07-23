@@ -262,6 +262,7 @@ public class Orchestrator extends IoTCrawlerClient {
     private Function<String, Void> notificationsHandlerFunction = new Function<String, Void>() {
         @Override
         public Void apply(String body) {
+            LOGGER.debug("notificationsHandler triggered");
             if(body.length()==0)
                 return null;
 
@@ -278,7 +279,7 @@ public class Orchestrator extends IoTCrawlerClient {
                     return null;
                 }
             }
-
+            LOGGER.debug("Publishing to Rabbit");
             rabbitClient.publish(subscriptionId, body);
             return null;
         }

@@ -75,6 +75,7 @@ public class RabbitClient {
     }
 
     public void declareExchange(String exchangeName) throws Exception {
+        LOGGER.debug("Declaring exchange {}", exchangeName);
         Channel channel = getChannel();
         channel.exchangeDeclare(exchangeName, "fanout");
 

@@ -31,6 +31,8 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,6 +41,8 @@ import java.util.Scanner;
 import static com.agtinternational.iotcrawler.core.Constants.IOTCRAWLER_GRAPHQL_ENDPOINT;
 
 public class GraphQLClient {
+
+    private Logger LOGGER = LoggerFactory.getLogger(GraphQLClient.class);
 
     String endpoint;
     CloseableHttpClient httpclient;
@@ -56,7 +60,7 @@ public class GraphQLClient {
         httppost.setHeader("Content-Type", "application/json");
 
         httppost.setEntity(new StringEntity("{\"query\": \""+query+"\"}", ContentType.APPLICATION_JSON));
-
+        LOGGER.debug("Performing query to {}", endpoint);
         HttpResponse response = httpclient.execute(httppost);
         HttpEntity entity = response.getEntity();
         if (entity != null) {

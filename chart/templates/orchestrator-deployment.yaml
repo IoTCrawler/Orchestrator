@@ -53,5 +53,6 @@ spec:
           - name: HTTP_SERVER_PORT
             value: "3001"
           - name: HTTP_REFERENCE_URL
-            value: "http://orchestrator.{{ .Release.Namespace }}/notify"
+            value: {{ if eq .Values.gitlab.env "staging" }} "http://staging.orchestrator.iotcrawler.eu/notify" {{ else }} "http://orchestrator.iotcrawler.eu/notify" {{ end }}
+            #value: "http://orchestrator.{{ .Release.Namespace }}/notify"
             

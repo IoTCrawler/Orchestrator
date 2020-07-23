@@ -20,6 +20,14 @@ package com.agtinternational.iotcrawler.orchestrator;
  * #L%
  */
 
+import com.agtinternational.iotcrawler.core.clients.RabbitClient;
+import com.agtinternational.iotcrawler.core.models.StreamObservation;
+import com.agtinternational.iotcrawler.fiware.models.subscription.Endpoint;
+import com.agtinternational.iotcrawler.fiware.models.subscription.Subscription;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import org.apache.commons.io.IOUtils;
@@ -29,16 +37,20 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.EntityBuilder;
 import org.apache.http.client.methods.*;
+import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.InetSocketAddress;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+
+import static com.agtinternational.iotcrawler.core.Constants.HTTP_REFERENCE_URL;
 
 public class HttpServer {
     private Logger LOGGER = LoggerFactory.getLogger(HttpServer.class);
@@ -121,15 +133,15 @@ public class HttpServer {
         });
     }
 
-    public HttpHandler proxyingHandler(String brokerHost) {
+    public HttpHandler proxyingHandler(String brokerHost, Function<String, String> onSubsciptionRegistered) {
         return new HttpHandler() {
             @Override
             public void handle(HttpExchange he) throws IOException {
 
                 String response = "";
-
                 String combinedUri = brokerHost + he.getRequestURI().toString();
 
+                String subscriptionId = null;
                 HttpRequestBase httpRequest = null;
                 if (he.getRequestMethod().equals("GET")) {
                     httpRequest = new HttpGet(combinedUri);
@@ -144,10 +156,31 @@ public class HttpServer {
                     IOUtils.copy(is, writer, Charset.defaultCharset());
                     String body = writer.toString();
 
+                    if(combinedUri.endsWith("subscriptions")){
+                        try {
+                            Gson g = new Gson();
+                            Subscription subscription = g.fromJson(body, Subscription.class);
+                            subscriptionId = subscription.getId();
+                            if(subscription.getNotification().getEndpoint()==null){
+                                String httpReferenceUrl = System.getenv(HTTP_REFERENCE_URL);
+                                if(httpReferenceUrl==null)
+                                    LOGGER.error("No HTTP_REFERENCE_URL for setting up for an endpoint");
+                                else {
+                                    Endpoint endpoint = new Endpoint(new URL(httpReferenceUrl), ContentType.APPLICATION_JSON);
+                                    subscription.getNotification().setEndpoint(endpoint);
+                                    body = new ObjectMapper().writeValueAsString(subscription);
+
+                                }
+                            }
+                        }
+                        catch (Exception e){
+                            LOGGER.error("Failed to exctract subscriptionId: {}", e.getLocalizedMessage());
+                        }
+                    }
+
                     HttpEntity entity = EntityBuilder.create()
                             .setBinary(body.getBytes())
                             .build();
-
                     ((HttpPost) httpRequest).setEntity(entity);
                     //httpRequest.setHeader("Content-length", String.valueOf(entity.getContentLength()));
                 } else if (he.getRequestMethod().equals("DELETE")) {
@@ -173,32 +206,35 @@ public class HttpServer {
                         result.append(line);
                     }
                     response = result.toString();
-                    he.sendResponseHeaders(200, response.length());
-                }
-                catch (Exception e){
+                }catch (Exception e){
                     response = "{ error: \"Failed to send request to broker\"}";
                     he.sendResponseHeaders(500, response.length());
                     LOGGER.error(e.getLocalizedMessage());
-                    //e.printStackTrace();
+                    return;
+                }
+                if(subscriptionId!=null)
+                try{
+                    String queueName =  onSubsciptionRegistered.apply(subscriptionId);
+                    response = queueName;
+                    //response = "{ \"result\":\""+queueName+"\"}";
+                }
+                catch (Exception e){
+                    LOGGER.error("Failed to apply onSubsciptionRegistered hook");
+                    response = "{ error: \"Failed to apply onSubsciptionRegistered hook\"}";
+                    he.sendResponseHeaders(500, response.length());
+                    LOGGER.error(e.getLocalizedMessage());
+                    return;
                 }
 
+                he.sendResponseHeaders(200, response.length());
 
-//                if(theString!=null) {
-//                    try {
-//                        handlingFunction.apply(theString);
-//                    } catch (Exception e) {
-//                        LOGGER.error("Failed to apply handler on message: {}", e.getLocalizedMessage());
-//                        e.printStackTrace();
-//                    }
-//                }
-
-                Map<String, Object> parameters = new HashMap<String, Object>();
-                for (String key : parameters.keySet())
-                    response += key + " = " + parameters.get(key) + "\n";
+//                Map<String, Object> parameters = new HashMap<String, Object>();
+//                for (String key : parameters.keySet())
+//                    response += key + " = " + parameters.get(key) + "\n";
                 //he.sendResponseHeaders(200, response.length());
 
                 OutputStream os = he.getResponseBody();
-                os.write(response.toString().getBytes());
+                os.write(response.getBytes());
                 os.close();
 
 

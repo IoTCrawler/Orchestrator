@@ -21,6 +21,7 @@ package com.agtinternational.iotcrawler.orchestrator;
  */
 
 import com.agtinternational.iotcrawler.core.Utils;
+import com.agtinternational.iotcrawler.core.clients.RabbitClient;
 import com.agtinternational.iotcrawler.core.interfaces.IoTCrawlerClient;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import com.agtinternational.iotcrawler.fiware.models.subscription.Subscription;
@@ -33,8 +34,6 @@ import com.lambdaworks.redis.api.StatefulRedisConnection;
 import com.lambdaworks.redis.api.sync.RedisCommands;
 import com.rabbitmq.client.*;
 
-import eu.neclab.iotplatform.ngsi.api.datamodel.ContextElement;
-import eu.neclab.iotplatform.ngsi.api.datamodel.ContextElementResponse;
 import eu.neclab.iotplatform.ngsi.api.datamodel.NotifyContextRequest;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang3.tuple.Pair;
@@ -44,14 +43,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 import java.util.function.Function;
 
 import static com.agtinternational.iotcrawler.core.Constants.*;
 import static com.agtinternational.iotcrawler.fiware.clients.Constants.NGSILD_BROKER_URL;
-import static com.agtinternational.iotcrawler.orchestrator.Constants.IOTCRAWLER_COMMANDS_EXCHANGE;
 import static com.agtinternational.iotcrawler.orchestrator.Constants.RANKING_COMPONENT_URL;
 
 
@@ -74,13 +71,14 @@ public class Orchestrator extends IoTCrawlerClient {
     Semaphore httpServiceFinishedMutex = new Semaphore(0);
     JsonParser jsonParser = new JsonParser();
 
-    Channel channel;
+
     Map<String, String> rpcSubscriptionRequests = new HashMap<>();
-    Map<String, Function<StreamObservation, Void>> streamObservationHandlers = new HashMap<>();
+    Map<String, String> declaredExchanges = new HashMap<>();
     //Map<String, Function<String, Void>> rpcSubscriptions = new HashMap<>();
     //List<String> rpcSubscriptions = new ArrayList<>();
     Map<Pair<String, String[]>, Function<StreamObservation, Void>> knownSubscriptions = new HashMap<>();
 
+    RabbitClient rabbitClient;
     RedisClient redisClient;
     StatefulRedisConnection<String, String> redisConnection;
     RedisCommands<String, String> redisSyncCommands;
@@ -123,6 +121,8 @@ public class Orchestrator extends IoTCrawlerClient {
         if (System.getenv().containsKey(IOTCRAWLER_REDIS_HOST))
             redisHost = System.getenv(IOTCRAWLER_REDIS_HOST);
 
+        rabbitClient = new RabbitClient(rabbitHost);
+
     }
 
 //    Function<String, Void> createNotifyCallback(String subscriptionId) {
@@ -162,7 +162,12 @@ public class Orchestrator extends IoTCrawlerClient {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                initRabbitMQ();
+                try {
+                    rabbitClient.init();
+                } catch (Exception e) {
+                    LOGGER.error("Failed to init rabbit client");
+                    //e.printStackTrace();
+                }
             }
         }).start();
 
@@ -170,57 +175,57 @@ public class Orchestrator extends IoTCrawlerClient {
         startHttpServer();
     }
 
-    private void initRabbitMQ(){
-        LOGGER.info("Connecting to RabbitMQ at {}", rabbitHost);
-        ConnectionFactory factory = new ConnectionFactory();
-        String[] splitted = rabbitHost.split(":");
-        factory.setHost(splitted[0]);
-        if(splitted.length>1)
-            factory.setPort(Integer.parseInt(splitted[1]));
-
-        int attempt = 0;
-        while(connection==null) {
-            attempt++;
-            try {
-                if(attempt>0)
-                    Thread.sleep(5000);
-                LOGGER.debug("Trying to connect to rabbit (Attempt {} of {})", attempt, 12);
-                connection = factory.newConnection();
-            } catch (Exception e) {
-                LOGGER.warn("Failed to connect to RABBIT:", e.getLocalizedMessage());
-                //e.printStackTrace();
-            }
-        }
-
-        if(connection!=null) {
-
-            String queueName = null;
-            try {
-                channel = connection.createChannel();
-                channel.exchangeDeclare(IOTCRAWLER_COMMANDS_EXCHANGE, "fanout");
-            } catch (Exception e) {
-                e.printStackTrace();
-                LOGGER.warn("Failed to declare command exchange");
-            }
-
-            try{
-                queueName = channel.queueDeclare().getQueue();
-                channel.queueBind(queueName, IOTCRAWLER_COMMANDS_EXCHANGE, "");
-
-                Consumer consumer = new DefaultConsumer(channel) {
-                    @Override
-                    public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) {
-                        receiveCommand(body, properties);
-                    }
-                };
-                channel.basicConsume(queueName, true, consumer);
-            } catch (Exception e) {
-                e.printStackTrace();
-                LOGGER.error("Failed to create rabbit channel/consumer");
-            }
-            LOGGER.info(" [*] Waiting for RPC messages via from Rabbit");
-        }
-    }
+//    private void initRabbitMQ(){
+//        ConnectionFactory factory = new ConnectionFactory();
+//        String[] splitted = rabbitHost.split(":");
+//        factory.setHost(splitted[0]);
+//        if(splitted.length>1)
+//            factory.setPort(Integer.parseInt(splitted[1]));
+//
+//        int attempt = 0;
+//        while(connection==null) {
+//            attempt++;
+//            try {
+//                if(attempt>0)
+//                    Thread.sleep(5000);
+//                LOGGER.debug("Trying to connect to rabbit (Attempt {} of {})", attempt, 12);
+//                connection = factory.newConnection();
+//                LOGGER.debug("Connection established");
+//            } catch (Exception e) {
+//                LOGGER.warn("Failed to connect to RABBIT:", e.getLocalizedMessage());
+//                //e.printStackTrace();
+//            }
+//        }
+//
+//        if(connection!=null) {
+//
+////            String queueName = null;
+////            try {
+////                channel = connection.createChannel();
+////                channel.exchangeDeclare(IOTCRAWLER_COMMANDS_EXCHANGE, "fanout");
+////            } catch (Exception e) {
+////                e.printStackTrace();
+////                LOGGER.warn("Failed to declare command exchange");
+////            }
+////
+////            try{
+////                queueName = channel.queueDeclare().getQueue();
+////                channel.queueBind(queueName, IOTCRAWLER_COMMANDS_EXCHANGE, "");
+////
+////                Consumer consumer = new DefaultConsumer(channel) {
+////                    @Override
+////                    public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) {
+////                        receiveCommand(body, properties);
+////                    }
+////                };
+////                channel.basicConsume(queueName, true, consumer);
+////            } catch (Exception e) {
+////                e.printStackTrace();
+////                LOGGER.error("Failed to create rabbit channel/consumer");
+////            }
+//            //LOGGER.info(" [*] Waiting for RPC messages via from Rabbit");
+//        }
+//    }
 
     private void initHttpServer(){
         LOGGER.info("Initializing web server");
@@ -235,7 +240,20 @@ public class Orchestrator extends IoTCrawlerClient {
         }
 
         httpServer.addContext(notificationsEndpoint, notificationsHandlerFunction);
-        httpServer.addContext(ngsiEndpoint, httpServer.proxyingHandler(metadataClient.getBrokerHost()));
+        httpServer.addContext(ngsiEndpoint, httpServer.proxyingHandler(metadataClient.getBrokerHost(), new Function<String, String>() {
+            @Override
+            public String apply(String subscriptionId) {
+                try {
+                    rabbitClient.declareExchange(subscriptionId);
+                    //String queueName = rabbitClient.declareBoundQueue(subscriptionId);
+                    return subscriptionId;
+                } catch (Exception e) {
+                    LOGGER.error("Failed to declare exchange or bound a queue: {}", e.getCause().getLocalizedMessage());
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        }));
         httpServer.addContext(versionEndpoint,  httpServer.versionsHandler());
     }
 
@@ -243,73 +261,29 @@ public class Orchestrator extends IoTCrawlerClient {
 
     private Function<String, Void> notificationsHandlerFunction = new Function<String, Void>() {
         @Override
-        public Void apply(String theString) {
-            if(theString.length()==0)
+        public Void apply(String body) {
+            if(body.length()==0)
                 return null;
 
 
-            NotifyContextRequest notification = (NotifyContextRequest)NotifyContextRequest.parseStringToJson(theString, NotifyContextRequest.class);
+            NotifyContextRequest notification = (NotifyContextRequest)NotifyContextRequest.parseStringToJson(body, NotifyContextRequest.class);
             String subscriptionId = notification.getSubscriptionId();
 
-            if(streamObservationHandlers.containsKey(subscriptionId)) {
-                List<ContextElementResponse> contextElementResponses = notification.getContextElementResponseList();
-                ContextElementResponse contextElementResponse = contextElementResponses.get(0);
-                ContextElement contextElement = contextElementResponse.getContextElement();
-                StreamObservation streamObservation = StreamObservation.fromContextElement(contextElement);
-                streamObservationHandlers.get(subscriptionId).apply(streamObservation);
-            }else{
-                //if(redisSyncCommands.hget("rpcSubscriptionIds", subscriptionId)!=null)
-                AMQP.BasicProperties props = new AMQP.BasicProperties
-                        .Builder()
-                        .correlationId(subscriptionId)
-                        .build();
-//					try {
-//							channel.basicPublish(subscriptionId, "", props, theString.getBytes("UTF-8"));
-//							//published = true;
-//						} catch (IOException e) {
-//							LOGGER.error("Failed to publish to channel: {}", e.getLocalizedMessage());
-//							e.printStackTrace();
-//						}
-//
-                Boolean published = false;
-                while(!published){
-                    try {
-                        channel.basicPublish(subscriptionId, "", props, theString.getBytes("UTF-8"));
-                        published = true;
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        LOGGER.error("Failed to publish notification {} to a rabbitMQ channel: {}", subscriptionId, e.getLocalizedMessage());
-                    }
-
-                    if(!published)
-                        try{
-                            LOGGER.debug("Reopening channel");
-                            channel = connection.createChannel();
-                            LOGGER.debug("Redeclaring exchange {}", subscriptionId);
-                            channel.exchangeDeclare(subscriptionId, "fanout");
-                            LOGGER.debug("Trying to publish into exchange {}", subscriptionId);
-                            channel.basicPublish(subscriptionId, "", props, theString.getBytes("UTF-8"));
-                            published = true;
-                        }
-                        catch (IOException e) {
-                            e.printStackTrace();
-                            LOGGER.error("Failed to publish to channel: {}", e.getLocalizedMessage());
-                        }
+            if(!declaredExchanges.containsKey(subscriptionId)) {
+                try {
+                    rabbitClient.declareExchange(subscriptionId);
+                    declaredExchanges.put(subscriptionId, null);
+                }catch (Exception e){
+                    LOGGER.error("Failed to declare exchange {}", subscriptionId);
+                    return null;
                 }
             }
-//                else {
-//                    LOGGER.warn("Failed to find handler for subscription id: {}. Deleting subscription", subscriptionId);
-//                    try {
-//                        dataBrokerClient.deleteSubscription(subscriptionId);
-//                    }catch (Exception e){
-//                        LOGGER.error(e.getLocalizedMessage());
-//                        e.printStackTrace();
-//                    }
-//                }
 
+            rabbitClient.publish(subscriptionId, body);
             return null;
         }
     };
+
 
 
     private void startHttpServer(){
@@ -330,6 +304,18 @@ public class Orchestrator extends IoTCrawlerClient {
 
 
     }
+
+//    private void declareExchange(String subcriptionId){
+//                //String subcriptionId = redisSyncCommands.hget("rpcSubscriptionRequests", arguments);
+//                LOGGER.debug("Subscription with requested arguments was found in redis ({}). Skipping new subscription", subcriptionId);
+//                try {
+//                    channel.exchangeDeclare(subcriptionId, "fanout");
+//                }
+//                catch (Exception e){
+//                    exception = new Exception("Failed to register exchange for "+subcriptionId+":"+e.getLocalizedMessage(), e);
+//                }
+//    }
+
 
     public void receiveCommand(byte[] data, AMQP.BasicProperties properties){
 
@@ -660,14 +646,16 @@ public class Orchestrator extends IoTCrawlerClient {
     }
 
     @Override
-    public String subscribeTo(String streamId, String endpointUrl, Function<StreamObservation, Void> onChange) throws Exception {
+    public String subscribeTo(String streamId, Function<StreamObservation, Void> onChange) throws Exception {
         //implemetation not needed (implemented in core)
         throw new NotImplementedException();
     }
 
     @Override
-    public String subscribeTo(Subscription subscription, Function<StreamObservation, Void> function) throws Exception {
-        return metadataClient.subscribeTo(subscription);
+    public void subscribeTo(Subscription subscription, Function<StreamObservation, Void> function) throws Exception {
+        //implemetation not needed (implemented in core)
+        throw new NotImplementedException();
+        //return metadataClient.subscribeTo(subscription);
     }
 
 

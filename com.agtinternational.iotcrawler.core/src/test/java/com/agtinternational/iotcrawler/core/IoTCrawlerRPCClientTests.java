@@ -21,7 +21,9 @@ package com.agtinternational.iotcrawler.core;
  */
 
 import com.agtinternational.iotcrawler.core.clients.IoTCrawlerRPCClient;
+import com.agtinternational.iotcrawler.fiware.clients.NgsiLDClient;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -29,15 +31,16 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.slf4j.LoggerFactory;
 
 import static com.agtinternational.iotcrawler.core.Constants.*;
+import static com.agtinternational.iotcrawler.fiware.clients.Constants.NGSILD_BROKER_URL;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class IoTCrawlerRPCClientTests extends CommonClientsTests {
+public class IoTCrawlerRPCClientTests extends ClientsTests {
 
     //private Logger LOGGER = LoggerFactory.getLogger(OrchestratorRPCClientTests.class);
 
     @Before
     public void init(){
-        EnvVariablesSetter.init();
+        super.init();
 
         String ngsiLDEndpoint = System.getenv().get(IOTCRAWLER_ORCHESTRATOR_URL);
         String graphQLEndpoint = System.getenv(IOTCRAWLER_GRAPHQL_ENDPOINT);
@@ -50,6 +53,20 @@ public class IoTCrawlerRPCClientTests extends CommonClientsTests {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+
+    }
+
+    @Test
+    @Ignore
+    public void registerTestEntities() throws Exception {
+        super.registerTestEntities();
+    }
+
+    @Test
+    @Ignore
+    public void updateTestEntities() throws Exception {
+        super.updateTestEntities();
     }
 
     @Test

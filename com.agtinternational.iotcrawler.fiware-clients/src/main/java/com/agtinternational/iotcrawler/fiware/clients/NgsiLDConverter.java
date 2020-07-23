@@ -26,6 +26,7 @@ import com.agtinternational.iotcrawler.fiware.models.Utils;
 import com.github.jsonldjava.utils.JsonUtils;
 import com.google.gson.*;
 import com.orange.ngsi2.model.Attribute;
+import com.orange.ngsi2.model.Entity;
 import com.orange.ngsi2.model.Subscription;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.NotImplementedException;
@@ -51,20 +52,24 @@ public class NgsiLDConverter extends AbstractHttpMessageConverter<Object> implem
     //private String jsonPrefix;
     //protected ObjectMapper objectMapper;
 
-//    public NgsiLDConverter() {
-//       // this(Jackson2ObjectMapperBuilder.json().build());
-//    }
+    public NgsiLDConverter() {
+       // this(Jackson2ObjectMapperBuilder.json().build());
+        this.setSupportedMediaTypes(Arrays.asList(new MediaType[]{ MediaType.parseMediaType("application/ld+json") }));
+    }
 
     //@Override
     //public boolean  canRead(Type type, Class<?> contextClass, MediaType mediaType) {
     public boolean  canRead(Class<?> clazz, MediaType mediaType){
-        return clazz.getCanonicalName().contains(EntityLD.class.getCanonicalName());// this.canRead(type.getClass(), mediaType);
+        boolean ret = clazz.getCanonicalName().contains(EntityLD.class.getCanonicalName());
+        //boolean ret = (clazz ==EntityLD.class);
+        return ret;// this.canRead(type.getClass(), mediaType);
     }
 
     //@Override
     //public boolean canWrite(Type type, Class<?> contextClass, MediaType mediaType) {
     public boolean canWrite(Class<?> clazz, MediaType mediaType){
-        if(clazz.getCanonicalName().contains(EntityLD.class.getCanonicalName()) || clazz.getCanonicalName().contains(HashMap.class.getCanonicalName()))
+        if(clazz==HashMap.class || EntityLD.class == clazz)
+        //if(clazz.getCanonicalName().contains(EntityLD.class.getCanonicalName()) || clazz.getCanonicalName().contains(HashMap.class.getCanonicalName()))
             return true; // this.canWrite(type.getClass(), mediaType);
         return false;
     }
@@ -76,12 +81,16 @@ public class NgsiLDConverter extends AbstractHttpMessageConverter<Object> implem
 
     @Override
     protected boolean supports(Class<?> clazz) {
-        return true;// Entity.class == clazz;
+        if(EntityLD.class == clazz)
+            return true;
+        return false;
     }
 
     @Override
     public boolean canRead(Type type, Class<?> aClass, MediaType mediaType) {
-        return true;
+        //if(clazz.getCanonicalName().contains(EntityLD.class.getCanonicalName()) || clazz.getCanonicalName().contains(HashMap.class.getCanonicalName()))
+        boolean ret = this.supports(((Class)type).getComponentType()) && this.canRead(mediaType);
+        return ret;
     }
 
     @Override
@@ -98,7 +107,14 @@ public class NgsiLDConverter extends AbstractHttpMessageConverter<Object> implem
 //        String theString = writer.toString();
 
         List<EntityLD> ret = new ArrayList<>();
-        Object parsedObject = JsonUtils.fromInputStream(inputStream);
+        Object parsedObject = null;
+        try {
+            parsedObject = JsonUtils.fromInputStream(inputStream);
+        }
+        catch (Exception e){
+            LOGGER.error("Failed to parse response into a json: {}", e.getLocalizedMessage());
+            return null;
+        }
         if(parsedObject instanceof Map){
             Map objectMap = (Map)parsedObject;
             if(objectMap.containsKey("error")) {

@@ -716,26 +716,26 @@ public class NgsiLDClient {
      * @param subscription the Subscription to add
      * @return subscription Id
      */
-    public ListenableFuture<Void> addSubscription(Subscription subscription) {
-        ListenableFuture<ResponseEntity<Void>> s = request(HttpMethod.POST, UriComponentsBuilder.fromHttpUrl(baseURL).path("v1/subscriptions").toUriString(), subscription, Void.class);
-        return new ListenableFutureAdapter<Void, ResponseEntity<Void>>(s) {
+    public ListenableFuture<String> addSubscription(Subscription subscription) {
+        ListenableFuture<ResponseEntity<String>> s = request(HttpMethod.POST, UriComponentsBuilder.fromHttpUrl(baseURL).path("v1/subscriptions").toUriString(), subscription, String.class);
+        return new ListenableFutureAdapter<String, ResponseEntity<String>>(s) {
             @Override
-            protected Void adapt(ResponseEntity<Void> result) throws ExecutionException {
+            protected String adapt(ResponseEntity<String> result) throws ExecutionException {
                 if(result.getStatusCode().isError())
                     throw new ExecutionException("Error "+result.getStatusCode().value(), new Throwable(result.getStatusCode().getReasonPhrase()));
-                return null;
+                return result.getBody();
             }
         };
     }
 
-    public void addSubscriptionSync(Subscription subscription) throws Exception {
+    public String addSubscriptionSync(Subscription subscription) throws Exception {
         Semaphore reqFinished = new Semaphore(0);
-        ListenableFuture<Void> req = addSubscription(subscription);
+        ListenableFuture<String> req = addSubscription(subscription);
         //final ResponseEntity<Void>[] ret = new ResponseEntity[]{ null };
         List<Exception> errors = new ArrayList<>();
-        req.addCallback(new ListenableFutureCallback<Void>() {
+        req.addCallback(new ListenableFutureCallback<String>() {
             @Override
-            public void onSuccess(Void result) {
+            public void onSuccess(String result) {
                 //ret[0] = result;
                 reqFinished.release();
             }
@@ -753,7 +753,7 @@ public class NgsiLDClient {
         if (errors.size()>0)
             throw errors.get(0);
 
-        //return ret[0];
+        return subscription.getId();
     }
 
 

@@ -281,7 +281,7 @@ public class OrchestratorTests {
 
         String streamId = "urn:household1:stateObservation";
         String referenceURL = System.getenv(HTTP_REFERENCE_URL);
-        String subscriptionId = client.subscribeTo(streamId, referenceURL, new Function<StreamObservation, Void>() {
+        String subscriptionId = client.subscribeTo(streamId,  new Function<StreamObservation, Void>() {
             @Override
             public Void apply(StreamObservation streamObservation) {
                 return null;

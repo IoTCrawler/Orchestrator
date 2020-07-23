@@ -41,6 +41,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Semaphore;
 import java.util.function.Function;
 
 import static com.agtinternational.iotcrawler.core.Constants.CUT_TYPE_URIS;
@@ -50,13 +51,15 @@ import static com.agtinternational.iotcrawler.fiware.clients.Constants.NGSILD_BR
 //import com.agtinternational.iotcrawler.orchestrator.clients.TripleStoreMDRClient;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class CommonClientsTests {
+public class ClientsTests {
 
-    protected Logger LOGGER = LoggerFactory.getLogger(CommonClientsTests.class);
+    protected Logger LOGGER = LoggerFactory.getLogger(ClientsTests.class);
 
     protected IoTCrawlerClient client;
     Boolean cutURIs;
     NgsiLDClient ngsiLDClient;
+    private IoTStream stream;
+    private StreamObservation streamObservation;
 
     @Before
     public void init(){
@@ -64,43 +67,73 @@ public class CommonClientsTests {
 
         cutURIs = (System.getenv().containsKey(CUT_TYPE_URIS)? Boolean.parseBoolean(System.getenv(CUT_TYPE_URIS)):false);
 
-        try {
-            client.init();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         ngsiLDClient = new NgsiLDClient(System.getenv(NGSILD_BROKER_URL));
+
+        String label = "Client_Tests";//+ System.currentTimeMillis();
+        stream = new IoTStream("urn:ngsi-ld:Stream_"+label, label);
+
+        streamObservation = new StreamObservation("urn:ngsi-ld:StreamObservation_"+label);
+        streamObservation.belongsTo(stream);
     }
 
 
-    public void registerStreamTest() throws Exception {
+    public void registerTestEntities() throws Exception {
         LOGGER.info("registerStreamTest()");
-        //byte[] iotStreamModelJson = Files.readAllBytes(Paths.get("samples/IoTStream.json"));
-
-//        IoTStream ioTStream = IoTStream.fromJson(iotStreamModelJson);
-//        ioTStream.setType(IoTStream.getTypeUri());
-
-        //byte[] iotStreamModelJson = Files.readAllBytes(Paths.get("samples/EntityFromBroker.json"));
-        //EntityLD entityLD = EntityLD.fromJsonString(new String(iotStreamModelJson));
-        //IoTStream ioTStream = IoTStream.fromEntity(entityLD);
-
-        //ioTStream.addProperty(RDFS.label, "label1");
-
-        String label = "TestStream_"+ System.currentTimeMillis();
-        IoTStream stream1 = new IoTStream("http://purl.org/iot/ontology/iot-stream#"+label, label);
 
 
-        EntityLD entityLD = stream1.toEntityLD(cutURIs);
-        entityLD.setContext(null);
-        boolean result = ngsiLDClient.addEntitySync(entityLD);
-
+        boolean result = ngsiLDClient.addEntitySync(stream.toEntityLD(cutURIs));
         Assert.isTrue(result);
-        LOGGER.info("Stream was registered");
+
+        result = ngsiLDClient.addEntitySync(streamObservation.toEntityLD(cutURIs));
+        Assert.isTrue(result);
+
+        LOGGER.info("Entities have been registered");
     }
 
 
-    public void deleteStream() throws Exception {
+    public void updateTestEntities() throws Exception {
+
+        String streamId = stream.getURI();
+        String subscriptionId = client.subscribeTo(streamId, new Function<StreamObservation, Void>() {
+            @Override
+            public Void apply(StreamObservation streamObservation) {
+
+                return null;
+            }
+        });
+
+        Semaphore finished = new Semaphore(0);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                try {
+                    int count = 0;
+                    while (count < 600) {
+                        streamObservation.hasResult(System.currentTimeMillis());
+                        ngsiLDClient.updateEntity(streamObservation.toEntityLD(cutURIs), false);
+                        Thread.sleep(5000);
+                        count++;
+                    }
+                }
+                catch (Exception e){
+                    LOGGER.error(e.getLocalizedMessage());
+                    e.printStackTrace();
+                }
+                try {
+                    finished.release();
+                }
+                catch (Exception e){
+                    LOGGER.error(e.getLocalizedMessage());
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+        finished.acquire();
+
+    }
+
+    public void deleteEntities() throws Exception {
         boolean success = ngsiLDClient.deleteEntitySync("test:testUri2");
         if(success)
             org.junit.Assert.assertTrue("Entity deleted", true);
@@ -243,9 +276,10 @@ public class CommonClientsTests {
 
         String streamId = "urn:household1:stateStream";
         String referenceURL = System.getenv(HTTP_REFERENCE_URL);
-        String subscriptionId = client.subscribeTo(streamId, referenceURL, new Function<StreamObservation, Void>() {
+        String subscriptionId = client.subscribeTo(streamId, new Function<StreamObservation, Void>() {
             @Override
             public Void apply(StreamObservation streamObservation) {
+
                 return null;
             }
         });

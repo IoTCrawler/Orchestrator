@@ -22,6 +22,7 @@ import org.junit.contrib.java.lang.system.EnvironmentVariables;
 
 import static com.agtinternational.iotcrawler.core.Constants.*;
 import static com.agtinternational.iotcrawler.core.Constants.IOTCRAWLER_ORCHESTRATOR_URL;
+import static com.agtinternational.iotcrawler.fiware.clients.Constants.NGSILD_BROKER_URL;
 
 
 public class EnvVariablesSetter {
@@ -30,17 +31,26 @@ public class EnvVariablesSetter {
 
     public static void init(){
 
+        //for inserting test entities
+        if(!System.getenv().containsKey(NGSILD_BROKER_URL))
+            environmentVariables.set(NGSILD_BROKER_URL, "http://i5-nuc:9090/ngsi-ld/");
+
+        //for all get requests
         if(!System.getenv().containsKey(IOTCRAWLER_ORCHESTRATOR_URL))
-            environmentVariables.set(IOTCRAWLER_ORCHESTRATOR_URL, "http://localhost:3001/ngsi-ld/");
+            environmentVariables.set(IOTCRAWLER_ORCHESTRATOR_URL, "http://192.168.0.85:3001/ngsi-ld/");
+            //environmentVariables.set(IOTCRAWLER_ORCHESTRATOR_URL, "http://localhost:3001/ngsi-ld/");
             //environmentVariables.set(IOTCRAWLER_ORCHESTRATOR_URL, "http://10.67.1.107:9090/ngsi-ld/");
 
+        //for getting notifications
         if(!System.getenv().containsKey(IOTCRAWLER_RABBIT_HOST))
             environmentVariables.set(IOTCRAWLER_RABBIT_HOST, "localhost:5672");
         //environmentVariables.set(IOTCRAWLER_RABBIT_HOST, "rabbit");
 
+        //for putting into reference
         if(!System.getenv().containsKey(HTTP_REFERENCE_URL))
-            environmentVariables.set(HTTP_REFERENCE_URL, "http://10.0.75.1:3001/notify");
+            environmentVariables.set(HTTP_REFERENCE_URL, "http://192.168.0.1:3001/notify");
 
+        //for getting streamObservation of targeted streams
         if(!System.getenv().containsKey(IOTCRAWLER_GRAPHQL_ENDPOINT))
             environmentVariables.set(IOTCRAWLER_GRAPHQL_ENDPOINT, "http://localhost:8080/graphql");
 

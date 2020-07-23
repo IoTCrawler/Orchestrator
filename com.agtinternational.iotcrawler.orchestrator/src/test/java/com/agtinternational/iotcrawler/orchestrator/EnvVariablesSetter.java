@@ -59,7 +59,7 @@ public class EnvVariablesSetter {
 
         //environmentVariables.set(CUT_TYPE_URIS, "false");
         if(!System.getenv().containsKey(NGSILD_BROKER_URL))
-            environmentVariables.set(NGSILD_BROKER_URL, "http://localhost:9090/ngsi-ld/");
+            environmentVariables.set(NGSILD_BROKER_URL, "http://i5-nuc:9090/ngsi-ld/");
             //environmentVariables.set(NGSILD_BROKER_URL, "http://localhost:3000/ngsi-ld/");
             //environmentVariables.set(NGSILD_BROKER_URL, "http://155.54.95.248:9090/ngsi-ld/");
             //environmentVariables.set(NGSILD_BROKER_URL, "http://155.54.95.171:9090/ngsi-ld/");
@@ -75,7 +75,7 @@ public class EnvVariablesSetter {
 
 
         if(!System.getenv().containsKey(HTTP_SERVER_HOST))
-            environmentVariables.set(HTTP_SERVER_HOST, "localhost");
+            environmentVariables.set(HTTP_SERVER_HOST, "192.168.0.85");
 
         if(!System.getenv().containsKey(HTTP_SERVER_PORT))
             environmentVariables.set(HTTP_SERVER_PORT, "3001");

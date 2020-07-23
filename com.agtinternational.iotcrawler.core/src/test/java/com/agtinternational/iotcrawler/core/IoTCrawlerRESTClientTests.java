@@ -23,6 +23,7 @@ package com.agtinternational.iotcrawler.core;
 import com.agtinternational.iotcrawler.core.clients.IoTCrawlerRESTClient;
 import com.agtinternational.iotcrawler.core.models.IoTStream;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.jupiter.api.Order;
 import org.slf4j.LoggerFactory;
@@ -34,11 +35,12 @@ import static com.agtinternational.iotcrawler.core.Constants.IOTCRAWLER_GRAPHQL_
 import static com.agtinternational.iotcrawler.core.Constants.IOTCRAWLER_ORCHESTRATOR_URL;
 
 
-public class IoTCrawlerRESTClientTests extends CommonClientsTests {
+public class IoTCrawlerRESTClientTests extends ClientsTests {
 
     @Before
     public void init(){
-        EnvVariablesSetter.init();
+        super.init();
+
         String ngsiLDEndpoint = System.getenv().get(IOTCRAWLER_ORCHESTRATOR_URL);
         String graphQLEndpoint = System.getenv().get(IOTCRAWLER_GRAPHQL_ENDPOINT);
         client = new IoTCrawlerRESTClient(ngsiLDEndpoint, graphQLEndpoint);
@@ -48,6 +50,18 @@ public class IoTCrawlerRESTClientTests extends CommonClientsTests {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    @Ignore
+    public void registerTestEntities() throws Exception {
+        super.registerTestEntities();
+    }
+
+    @Test
+    @Ignore
+    public void updateTestEntities() throws Exception {
+        super.updateTestEntities();
     }
 
     @Test

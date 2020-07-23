@@ -70,12 +70,12 @@ public class NgsiLD_MdrClient extends AbstractMetadataClient {
 
     @Override
     public String subscribeTo(Subscription subscription) {
-        ListenableFuture<Void> req = ngsiLDClient.addSubscription(subscription);
+        ListenableFuture<String> req = ngsiLDClient.addSubscription(subscription);
 
         Semaphore reqFinished = new Semaphore(0);
-        req.addCallback(new ListenableFutureCallback<Void>() {
+        req.addCallback(new ListenableFutureCallback<String>() {
             @Override
-            public void onSuccess(Void result) {
+            public void onSuccess(String result) {
                 reqFinished.release();
             }
 

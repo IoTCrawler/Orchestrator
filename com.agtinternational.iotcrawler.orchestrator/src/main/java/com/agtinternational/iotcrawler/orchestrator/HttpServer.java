@@ -60,14 +60,14 @@ public class HttpServer {
     HttpClient httpClient;
     private com.sun.net.httpserver.HttpServer httpServer;
     private String url;
-    private String host;
+    //private String host;
     private int port;
 
     public HttpServer(){
 
-        host = (System.getenv().containsKey(Constants.HTTP_SERVER_HOST)? System.getenv(Constants.HTTP_SERVER_HOST): "localhost");
+        //host = (System.getenv().containsKey(Constants.HTTP_SERVER_HOST)? System.getenv(Constants.HTTP_SERVER_HOST): "localhost");
         port = (System.getenv().containsKey(Constants.HTTP_SERVER_PORT)? Integer.parseInt(System.getenv(Constants.HTTP_SERVER_PORT)): 3001);
-        url = "http://"+host+":"+port;
+        url = "http://0.0.0.0:"+port;
 
         httpClient = HttpClients.createDefault();
 

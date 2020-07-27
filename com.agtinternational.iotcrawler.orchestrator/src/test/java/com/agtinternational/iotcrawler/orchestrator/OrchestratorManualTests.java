@@ -44,8 +44,8 @@ public class OrchestratorManualTests {
 
     @Before
     public void init(){
-        //EnvVariablesSetter.init();
-        EnvVariablesSetterRemote.init();
+        EnvVariablesSetter.init();
+        //EnvVariablesSetterRemote.init();
 
         cutURIs = (System.getenv().containsKey(CUT_TYPE_URIS)?Boolean.parseBoolean(System.getenv(CUT_TYPE_URIS)):false);
         if(ioTCrawlerClient ==null)

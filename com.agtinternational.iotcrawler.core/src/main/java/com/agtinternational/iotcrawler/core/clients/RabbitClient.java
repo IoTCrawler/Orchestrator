@@ -98,7 +98,7 @@ public class RabbitClient {
         return channel;
     }
 
-    public void initRabbitMQListener(String exchangeName, Function<StreamObservation, Void> onChange){
+    public void initRabbitMQListener(String exchangeName, Function<byte[], Void> onChange){
         try {
             LOGGER.debug("Initing {} queue listener", exchangeName);
             channel = getChannel();
@@ -107,7 +107,7 @@ public class RabbitClient {
                 public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                     try {
                         LOGGER.debug("Notification received");
-                        onChange.apply(null);
+                        onChange.apply(body);
                         //handleCmd(body, properties.getReplyTo());
                     } catch (Exception e) {
                         LOGGER.error("Exception while trying to handle incoming command.", e);

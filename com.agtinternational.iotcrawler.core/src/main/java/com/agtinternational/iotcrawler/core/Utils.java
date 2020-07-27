@@ -171,34 +171,41 @@ public class Utils {
         List<T> ret = new ArrayList<>();
 
         if(entities!=null)
-            for(EntityLD entity: entities){
-                T toAdd=null;
+            for(EntityLD entity: entities) {
                 try {
-                    if(targetClass.equals(IoTStream.class))
-                        toAdd = (T)IoTStream.fromEntity(entity);
-
-                    if(targetClass.equals(Sensor.class))
-                        toAdd = (T)Sensor.fromEntity(entity);
-
-                    if(targetClass.equals(Platform.class))
-                        toAdd = (T) Platform.fromEntity(entity);
-
-                    if(targetClass.equals(ObservableProperty.class))
-                        toAdd = (T)ObservableProperty.fromEntity(entity);
-
-                    if(toAdd!=null)
-                        ret.add(toAdd);
-                    else
-                        throw new Exception("No suitable type for entity " + targetClass.getSimpleName());
-
-                } catch (Exception e) {
-                    LOGGER.error("Failed to create "+targetClass.getSimpleName()+" from {}: {}", entity.getId(), e.getLocalizedMessage());
-                    e.printStackTrace();
+                    T targetEnt = (T) convertEntityToTargetClass(entity, targetClass);
+                    ret.add(targetEnt);
+                } catch (Exception e){
+                    LOGGER.error("Failed to convert to target class {}", e.getLocalizedMessage());
                 }
-
             }
-
         return ret;
+    }
+
+    public static <T> Object convertEntityToTargetClass(EntityLD entity, Class<T> targetClass){
+
+            T toAdd=null;
+            try {
+                if(targetClass.equals(IoTStream.class))
+                    toAdd = (T)IoTStream.fromEntity(entity);
+
+                else if(targetClass.equals(Sensor.class))
+                    toAdd = (T)Sensor.fromEntity(entity);
+
+                else if(targetClass.equals(Platform.class))
+                    toAdd = (T) Platform.fromEntity(entity);
+
+                else if(targetClass.equals(ObservableProperty.class))
+                    toAdd = (T)ObservableProperty.fromEntity(entity);
+                else
+                    throw new Exception("No suitable type for entity " + targetClass.getSimpleName());
+
+            } catch (Exception e) {
+                LOGGER.error("Failed to create "+targetClass.getSimpleName()+" from {}: {}", entity.getId(), e.getLocalizedMessage());
+                e.printStackTrace();
+            }
+        return toAdd;
+
     }
 
     public static String cutURL(String inputURL, Map<String, String> namespaces){

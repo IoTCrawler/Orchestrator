@@ -50,6 +50,10 @@ public class IoTStream extends RDFModel {
         super(uri, getTypeUri(), model);
     }
 
+    protected IoTStream(String uri, String typeURI, Model model){
+        super(uri, typeURI, model);
+    }
+
 
     public static String getTypeUri(){
         return IotStream.IotStream;

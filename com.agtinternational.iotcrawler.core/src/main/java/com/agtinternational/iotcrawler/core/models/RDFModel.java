@@ -203,7 +203,7 @@ public class RDFModel {
         if(value.getClass().isArray())
             value = Arrays.asList((Object[])value);
 
-        if(value instanceof Iterable) {
+        if(value instanceof Iterable){
           Iterator iterator = ((Iterable) value).iterator();
           while (iterator.hasNext())
               addProperty(property, iterator.next());
@@ -212,6 +212,10 @@ public class RDFModel {
     }
 
     public void addProperty(Property property, Object value){
+        Statement statement = model.getProperty(resource, property);
+        if(statement!=null && statement.getObject().equals(value))
+            return;
+
         if (value instanceof RDFModel){
             //resource.addProperty(property, ((RDFModel) value).resource);
             //model.add(((RDFModel) value).getModel());

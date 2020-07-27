@@ -221,6 +221,7 @@ public class NgsiLDClientTest{
     public void getEntityByIdTest() throws Exception {
         Collection<String> ids = Arrays.asList(new String[]{
                 entity.getId()
+
         });
 
 //        Collection<String> types = Arrays.asList(new String[]{

@@ -25,6 +25,8 @@ import com.agtinternational.iotcrawler.core.interfaces.IoTCrawlerClient;
 import com.agtinternational.iotcrawler.core.models.*;
 import com.agtinternational.iotcrawler.fiware.clients.NgsiLDClient;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
+import com.agtinternational.iotcrawler.fiware.models.subscription.Subscription;
+import com.orange.ngsi2.model.Paginated;
 import org.apache.jena.vocabulary.RDFS;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -35,9 +37,13 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
+import org.springframework.util.concurrent.FailureCallback;
+import org.springframework.util.concurrent.ListenableFuture;
+import org.springframework.util.concurrent.SuccessCallback;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,8 +69,8 @@ public class ClientsTests {
 
     @Before
     public void init(){
-        //EnvVariablesSetter.init();
-        EnvVariablesSetterRemote.init();
+        EnvVariablesSetter.init();
+        //EnvVariablesSetterRemote.init();
 
         cutURIs = (System.getenv().containsKey(CUT_TYPE_URIS)? Boolean.parseBoolean(System.getenv(CUT_TYPE_URIS)):false);
 
@@ -134,6 +140,15 @@ public class ClientsTests {
 
     }
 
+    public void deleteSubsciptions() throws Exception {
+        Paginated<Subscription> req = ngsiLDClient.getSubscriptionsSync(0,0,false);
+        for(Subscription subscription: req.getItems()) {
+            ngsiLDClient.deleteSubscriptionSync(subscription.getId());
+            LOGGER.info("Subscription {} deleted", subscription.getId());
+        }
+    }
+
+
     public void deleteEntities() throws Exception {
         boolean success = ngsiLDClient.deleteEntitySync("test:testUri2");
         if(success)
@@ -195,10 +210,10 @@ public class ClientsTests {
         byte[] iotStreamModelJson = Files.readAllBytes(Paths.get("samples/IoTStream.json"));
         IoTStream ioTStream = IoTStream.fromJson(iotStreamModelJson);
 
-        List<IoTStream> streams = client.getStreamById(ioTStream.getURI());
+        IoTStream stream = client.getStreamById(ioTStream.getURI());
         //List<IoTStream> streams = orchestrator.getStreams("SELECT ?s ?p ?o WHERE { ?s ?p ?o . FILTER (?s=<"+ioTStream.getURI()+">) . } ");
-        Assert.notNull(streams);
-        LOGGER.info(streams.size()+" streams returned");
+        Assert.notNull(stream);
+        LOGGER.info(stream+" streams returned");
     }
 
 
@@ -212,11 +227,11 @@ public class ClientsTests {
 
         String id = "urn:ngsi-ld:MultiSensor_AEON_Labs_ZW100_MultiSensor_6";
 
-        List<EntityLD> entities = client.getEntityById(id);
+        EntityLD entity = client.getEntityById(id);
         //List<Sensor> sensors = client.getEntitiesById(ids, Sensor.class);
 
-        Assert.notNull(entities );
-        LOGGER.info(entities.size()+" entities returned");
+        Assert.notNull(entity );
+        LOGGER.info("{} entity returned", entity.getId());
     }
 
 

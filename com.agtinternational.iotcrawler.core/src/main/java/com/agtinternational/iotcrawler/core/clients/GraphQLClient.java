@@ -58,8 +58,9 @@ public class GraphQLClient {
         HttpPost httppost = new HttpPost(endpoint);
         httppost.setHeader("Accept", "application/json");
         httppost.setHeader("Content-Type", "application/json");
-
-        httppost.setEntity(new StringEntity("{\"query\": \""+query+"\"}", ContentType.APPLICATION_JSON));
+        JsonObject queryObject = new JsonObject();
+        queryObject.addProperty("query", query);
+        httppost.setEntity(new StringEntity(queryObject.toString(), ContentType.APPLICATION_JSON));
         LOGGER.debug("Performing query to {}", endpoint);
         HttpResponse response = httpclient.execute(httppost);
         HttpEntity entity = response.getEntity();
@@ -89,7 +90,7 @@ public class GraphQLClient {
     }
 
     public String getStreamObservationsByStreamId(String streamId) throws Exception {
-        String query = "{\\n  streamObservations(belongsTo: {\\n    id: \\\""+streamId+"\\\"\\n  }){\\n    id,\\n    belongsTo{\\n      id\\n    }\\n  }\\n  \\n}";
+        String query = "{  streamObservations(belongsTo: {    id: \""+streamId+"\"  }){  id  }}";
         JsonElement result = query(query);
         String ret = null;
         if(((JsonObject)result).has("streamObservations")){

@@ -30,6 +30,10 @@ public class Endpoint {
     URL uri;
     String accept;
 
+    public Endpoint(){
+
+    }
+
     public Endpoint(URL uri, ContentType accept) {
         this.uri = uri;
         this.accept = accept.getMimeType();

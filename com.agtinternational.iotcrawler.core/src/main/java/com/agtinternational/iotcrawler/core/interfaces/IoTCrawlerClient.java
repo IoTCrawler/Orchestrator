@@ -24,11 +24,7 @@ package com.agtinternational.iotcrawler.core.interfaces;
 import com.agtinternational.iotcrawler.core.Utils;
 import com.agtinternational.iotcrawler.core.models.*;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
-import com.agtinternational.iotcrawler.fiware.models.subscription.NotificationParams;
 import com.agtinternational.iotcrawler.fiware.models.subscription.Subscription;
-
-import eu.neclab.iotplatform.ngsi.api.datamodel.NotifyCondition;
-import eu.neclab.iotplatform.ngsi.api.datamodel.Restriction;
 
 import java.util.List;
 import java.util.Map;
@@ -37,8 +33,8 @@ import java.util.function.Function;
 public abstract class IoTCrawlerClient implements Component {
 
     /////////////////////////////////////Streams
-    public List<IoTStream> getStreamById(String id) throws Exception{
-        return getEntityById(id, IoTStream.class);
+    public IoTStream getStreamById(String id) throws Exception{
+        return (IoTStream) getEntityById(id, IoTStream.class);
     }
 
     public List<IoTStream> getStreams(Map<String, Object> query, Map<String, Number> ranking, int offset, int limit) throws Exception{
@@ -70,9 +66,10 @@ public abstract class IoTCrawlerClient implements Component {
 
     public abstract List<String> getEntityURIs(Map<String, Object> query, int offset, int limit) throws Exception;
 
-    public <T> List<T> getEntityById(String id, Class<T> targetClass) throws Exception{
-        List<EntityLD> entities = getEntityById(id);
-        return Utils.convertEntitiesToTargetClass(entities, targetClass);
+    public <T> Object getEntityById(String id, Class<T> targetClass) throws Exception{
+        EntityLD entity = getEntityById(id);
+        T targetEnt = (T) Utils.convertEntityToTargetClass(entity, targetClass);
+        return targetEnt;
     }
 
 
@@ -81,7 +78,7 @@ public abstract class IoTCrawlerClient implements Component {
 //    }
 
     //public abstract List<EntityLD> getEntitiesById(String[] ids, String entityType) throws Exception;
-    public abstract List<EntityLD> getEntityById(String id) throws Exception;
+    public abstract EntityLD getEntityById(String id) throws Exception;
     public abstract List<EntityLD> getEntities(String entityType, Map<String, Object> query, Map<String, Number> ranking, int offset, int limit) throws Exception;
     public abstract  <T> List<T> getEntities(Class<T> targetClass, Map<String, Object> query,  Map<String, Number> ranking, int offset, int limit) throws Exception;
 
@@ -91,5 +88,5 @@ public abstract class IoTCrawlerClient implements Component {
 //    public abstract Boolean registerEntity(RDFModel model) throws Exception;
     //public abstract Boolean pushObservationsToBroker(List<StreamObservation> observations) throws Exception;
     public abstract String subscribeTo(String streamId, Function<StreamObservation, Void> onChange) throws Exception;
-    public abstract void subscribeTo(Subscription subscription, Function<StreamObservation, Void> onChange) throws Exception;
+    public abstract void subscribeTo(Subscription subscription, Function<byte[], Void> onChange) throws Exception;
 }

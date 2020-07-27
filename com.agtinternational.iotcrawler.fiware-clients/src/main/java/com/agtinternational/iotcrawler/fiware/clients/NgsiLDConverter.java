@@ -28,6 +28,7 @@ import com.google.gson.*;
 import com.orange.ngsi2.model.Attribute;
 import com.orange.ngsi2.model.Entity;
 import com.orange.ngsi2.model.Subscription;
+import eu.neclab.iotplatform.ngsi.api.datamodel.StatusCode;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
@@ -46,6 +47,10 @@ import java.util.*;
 
 //import com.orange.ngsi2.model.Entity;
 import org.springframework.util.StreamUtils;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
+
+import javax.management.InstanceNotFoundException;
 
 public class NgsiLDConverter extends AbstractHttpMessageConverter<Object> implements GenericHttpMessageConverter<Object> {
     private Logger LOGGER = LoggerFactory.getLogger(this.getClass());
@@ -117,17 +122,23 @@ public class NgsiLDConverter extends AbstractHttpMessageConverter<Object> implem
         }
         if(parsedObject instanceof Map){
             Map objectMap = (Map)parsedObject;
+
             if(objectMap.containsKey("error")) {
-                LOGGER.error("Json-response contains an error: {}", objectMap.get("error"));
-                return null;
+                throw new IOException("Json-response contains an error: "+ objectMap.get("error"));
+            }
+
+            if(objectMap.get("type").toString().endsWith("ResourceNotFound")){
+                throw new IOException(new HttpClientErrorException(HttpStatus.valueOf(404)));
+                //return ret;
             }
             try {
                 EntityLD entity = EntityLD.fromMapObject(objectMap);
                 ret.add(entity);
             }
             catch (Exception e){
-                LOGGER.error("Failed to convert object to EntityLD: {}", ((JsonElement)parsedObject).toString());
-                e.printStackTrace();
+                throw new IOException("Failed to convert object to EntityLD: "+((JsonElement)parsedObject).toString());
+                //LOGGER.error("Failed to convert object to EntityLD: {}", ((JsonElement)parsedObject).toString());
+               // e.printStackTrace();
             }
         }else if(parsedObject instanceof List){
             for(Object object: (List)parsedObject)
@@ -137,8 +148,9 @@ public class NgsiLDConverter extends AbstractHttpMessageConverter<Object> implem
                         ret.add(entity);
                     }
                     catch (Exception e){
-                        LOGGER.error("Failed to convert object to EntityLD: {}", ((JsonElement)object).toString());
-                        e.printStackTrace();
+                        throw new IOException("Failed to convert object to EntityLD: "+((JsonElement)parsedObject).toString());
+                        //LOGGER.error("Failed to convert object to EntityLD: {}", ((JsonElement)object).toString());
+                       // e.printStackTrace();
                     }
         }else
             throw new NotImplementedException("Not implemented");

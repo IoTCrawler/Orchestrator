@@ -27,8 +27,8 @@ spec:
 {{ toYaml .Values.image.secrets | indent 10 }}
       containers:
       - name: {{ .Chart.Name }}
-        #image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        image: "{{ .Values.image.repository }}:80d86647e4799b153d864683f73f656d48a364ca"
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        #image: "{{ .Values.image.repository }}:80d86647e4799b153d864683f73f656d48a364ca"
         imagePullPolicy: "{{ .Values.image.pullPolicy }}"
         ports:
           - name: "port3001"

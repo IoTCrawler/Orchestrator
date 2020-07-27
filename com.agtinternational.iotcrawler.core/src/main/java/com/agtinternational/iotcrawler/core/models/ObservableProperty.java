@@ -39,8 +39,11 @@ public class ObservableProperty extends RDFModel {
     }
 
     public ObservableProperty(String uri, Model model){
-        this(uri);
-        setModel(model);
+        super(uri, getTypeUri(), model);
+    }
+
+    protected ObservableProperty(String uri, String typeURI, Model model){
+        super(uri, typeURI, model);
     }
 
 //    public ObservableProperty(String uri, String classURI, String label){

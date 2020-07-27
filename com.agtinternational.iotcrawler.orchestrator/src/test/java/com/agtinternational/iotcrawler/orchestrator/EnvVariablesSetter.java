@@ -81,8 +81,9 @@ public class EnvVariablesSetter {
             environmentVariables.set(HTTP_SERVER_PORT, "3001");
 
         if(!System.getenv().containsKey(HTTP_REFERENCE_URL))
-            environmentVariables.set(HTTP_REFERENCE_URL, "http://staging.orchestrator.iotcrawler.eu/notify");
-            //environmentVariables.set(HTTP_REFERENCE_URL, "http://"+System.getenv(HTTP_SERVER_HOST)+":"+System.getenv(HTTP_SERVER_PORT)+"/notify");
+            environmentVariables.set(HTTP_REFERENCE_URL, "http://192.168.0.85:"+System.getenv(HTTP_SERVER_PORT)+"/notify");
+            //environmentVariables.set(HTTP_REFERENCE_URL, "http://staging.orchestrator.iotcrawler.eu/notify");
+
 
 
         //public static final String ContextBrokerEndpoint = "http://localhost:1026/";

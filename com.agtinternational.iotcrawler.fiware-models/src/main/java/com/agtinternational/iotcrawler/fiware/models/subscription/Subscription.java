@@ -34,6 +34,9 @@ public class Subscription {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     String id;
 
+//    @JsonInclude(JsonInclude.Include.NON_NULL)
+//    String type;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     List<EntityInfo> entities;
 
@@ -50,13 +53,16 @@ public class Subscription {
     com.orange.ngsi2.model.Subscription.Status status;
 
 
-
     @JsonInclude(JsonInclude.Include.NON_NULL)
     Number throttling;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("q")
     Map<String, String> query;
+
+    public Subscription(){
+
+    }
 
     public Subscription(String id, List<EntityInfo> entities, List<String> watchedAttributes, NotificationParams notification, Instant expires, Number throttling){
         this.id = id;

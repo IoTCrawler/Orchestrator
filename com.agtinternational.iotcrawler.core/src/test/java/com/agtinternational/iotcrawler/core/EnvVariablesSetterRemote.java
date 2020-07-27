@@ -36,8 +36,8 @@ public class EnvVariablesSetterRemote {
             environmentVariables.set(NGSILD_BROKER_URL, "http://155.54.95.248:9090/ngsi-ld/");
 
          if(!System.getenv().containsKey(IOTCRAWLER_ORCHESTRATOR_URL))
-             environmentVariables.set(IOTCRAWLER_ORCHESTRATOR_URL, "http://192.168.0.85:3001/ngsi-ld/");
-            //environmentVariables.set(IOTCRAWLER_ORCHESTRATOR_URL, "https://staging.orchestrator.iotcrawler.eu/ngsi-ld/");
+             //environmentVariables.set(IOTCRAWLER_ORCHESTRATOR_URL, "http://192.168.0.85:3001/ngsi-ld/");
+            environmentVariables.set(IOTCRAWLER_ORCHESTRATOR_URL, "https://staging.orchestrator.iotcrawler.eu/ngsi-ld/");
 
 
         //for getting notifications

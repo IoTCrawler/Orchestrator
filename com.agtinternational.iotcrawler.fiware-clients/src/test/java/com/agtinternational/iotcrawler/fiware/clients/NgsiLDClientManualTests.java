@@ -21,6 +21,7 @@ package com.agtinternational.iotcrawler.fiware.clients;
  */
 
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
+import com.agtinternational.iotcrawler.fiware.models.subscription.Subscription;
 import com.orange.ngsi2.model.Paginated;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -67,7 +68,10 @@ public class NgsiLDClientManualTests {
     @Order(3)
     @Test
     public void getEntitiesByIdTest() throws Exception {
-        List<String> ids = Arrays.asList(new String[]{"urn:ngsi-ld:Stream:ora10"});
+        List<String> ids = Arrays.asList(new String[]{
+                //"urn:ngsi-ld:Stream:ora10"
+                "urn:ngsi-ld:HouseholdStateObservation_Household1"
+        });
         Paginated<EntityLD> ret = ngsiLdClient.getEntitiesSync(ids,null,null,null,null,null,null, 0,0, false);
         List<EntityLD> entities = ret.getItems();
         String abc = "asd";
@@ -91,6 +95,21 @@ public class NgsiLDClientManualTests {
         String abc = "asd";
     }
 
+    @Order(3)
+    @Test
+    public void getSubsciptionsTest() throws Exception {
+        Paginated<Subscription> ret = ngsiLdClient.getSubscriptionsSync(0,5 ,true);
+        List<Subscription> entities = ret.getItems();
+        String abc = "asd";
+    }
 
+    @Order(3)
+    @Test
+    public void deleteSubsciptions() throws Exception {
+        Paginated<Subscription> req = ngsiLdClient.getSubscriptionsSync(0,0,false);
+        for(Subscription subscription: req.getItems()) {
+            ngsiLdClient.deleteSubscriptionSync(subscription.getId());
+        }
+    }
 
 }

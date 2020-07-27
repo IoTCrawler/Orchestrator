@@ -142,14 +142,15 @@ public class IoTCrawlerRESTClient extends IoTCrawlerClient implements AutoClosea
 
 
     @Override
-    public List<EntityLD> getEntityById(String id) throws Exception {
+    public EntityLD getEntityById(String id) throws Exception {
         //String type = entityType;
 //        if(cutURLs && type.startsWith("http://"))
 //            type = Utils.cutURL(type, RDFModel.getNamespaces());
         Paginated<EntityLD> entities = client.getEntitiesSync(Arrays.asList(new String[]{ id }) , null, null, null, null,null, null,0,0,false);
         //List<EntityLD> entities = Arrays.asList(new EntityLD[]{ entityLD });
-
-        return entities.getItems();
+        if(entities.getItems().size()==0)
+            return null;
+        return entities.getItems().get(0);
     }
 
 
@@ -218,16 +219,31 @@ public class IoTCrawlerRESTClient extends IoTCrawlerClient implements AutoClosea
                 null);
 
 
-        subscribe(subscription, onChange);
+        subscribe(subscription, new Function<byte[], Void>() {
+            @Override
+            public Void apply(byte[] bytes) {
+                StreamObservation streamObservation = null;
+                try {
+                    String jsonString = new String(bytes);
+                    streamObservation = StreamObservation.fromJson(jsonString);
+                }
+                catch (Exception e){
+                    LOGGER.error("Failed to create StreamObservation from Json");
+                    return null;
+                }
+                onChange.apply(streamObservation);
+                return null;
+            }
+        });
         return subscriptionId;
     }
 
     @Override
-    public void subscribeTo(Subscription subscription, Function<StreamObservation, Void> onChange) throws Exception {
+    public void subscribeTo(Subscription subscription, Function<byte[], Void> onChange) throws Exception {
         subscribe(subscription, onChange);
     }
 
-    private String subscribe(Subscription subscription, Function<StreamObservation, Void> onChange) throws Exception {
+    private String subscribe(Subscription subscription, Function<byte[], Void> onChange) throws Exception {
 
         Semaphore reqFinished = new Semaphore(0);
 //        Semaphore deleteFinished = new Semaphore(0);

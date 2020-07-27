@@ -47,6 +47,10 @@ public class StreamObservation extends RDFModel {
         super(uri, getTypeUri(), model);
     }
 
+    protected StreamObservation(String uri, String typeURI, Model model){
+        super(uri, typeURI, model);
+    }
+
     public static String getTypeUri(){
         //return StreamObservation.class.getSimpleName();
         //return "iotc:StreamObservation";

@@ -36,12 +36,12 @@ import org.springframework.http.*;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.util.concurrent.ListenableFuture;
-import org.springframework.util.concurrent.ListenableFutureAdapter;
-import org.springframework.util.concurrent.ListenableFutureCallback;
+import org.springframework.util.concurrent.*;
 import org.springframework.web.client.AsyncRestTemplate;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.management.InstanceNotFoundException;
 import java.net.URLEncoder;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -274,6 +274,7 @@ public class NgsiLDClient {
         ListenableFuture<Paginated<EntityLD>> req = getEntities(ids, idPattern, types, attrs, query, geoQuery, orderBy, offset, limit, count);
         Semaphore reqFinished = new Semaphore(0);
         final List<Paginated<EntityLD>> ret = new ArrayList<>();
+
         List<Exception> errors = new ArrayList<>();
         req.addCallback(new ListenableFutureCallback<Paginated<EntityLD>>() {
 
@@ -286,8 +287,14 @@ public class NgsiLDClient {
 
             @Override
             public void onFailure(Throwable throwable) {
-                LOGGER.error("Failed to get entities: {}", throwable.getLocalizedMessage());
-                errors.add(new Exception(throwable));
+                Throwable cause = throwable.getCause().getCause();
+                if(cause instanceof HttpClientErrorException && ((HttpClientErrorException)cause).getStatusCode().value()==404){
+                    LOGGER.debug("Resource not found");
+
+                }else{
+                    LOGGER.error("Failed to get entities: {}", throwable.getLocalizedMessage());
+                    errors.add(new Exception(throwable));
+                }
                 reqFinished.release();
             }
         });
@@ -302,7 +309,8 @@ public class NgsiLDClient {
 
         if (ret.size()>0)
             return ret.get(0);
-        return null;
+
+        return new Paginated<>(new ArrayList<EntityLD>(), 0,0,0);
     }
 
     /**
@@ -702,13 +710,40 @@ public class NgsiLDClient {
      */
     public ListenableFuture<Paginated<Subscription>> getSubscriptions(int offset, int limit, boolean count) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseURL);
-        builder.path("v1/subscriptions");
+        builder.path("v1/subscriptions/");
         addPaginationParams(builder, offset, limit);
         if (count) {
             addParam(builder, "options", "count");
         }
 
         return adaptPaginated(request(HttpMethod.GET, builder.toUriString(), null, Subscription[].class), offset, limit);
+    }
+
+    public Paginated<Subscription> getSubscriptionsSync(int offset, int limit, boolean count) throws Exception {
+        ListenableFuture<Paginated<Subscription>> req = getSubscriptions(offset,limit,count);
+        List<Subscription> ret = new ArrayList<>();
+        Semaphore reqFinished = new Semaphore(0);
+        List<Exception> errors = new ArrayList<>();
+
+        req.addCallback(new SuccessCallback<Paginated<Subscription>>() {
+                            @Override
+                            public void onSuccess(Paginated<Subscription> subscriptionPaginated) {
+                                ret.addAll(subscriptionPaginated.getItems());
+                                reqFinished.release();
+                            }
+                        },
+                new FailureCallback() {
+                    @Override
+                    public void onFailure(Throwable throwable) {
+                        errors.add(new Exception(throwable));
+                        reqFinished.release();
+                    }
+                });
+        reqFinished.acquire();
+
+        if(!errors.isEmpty())
+            throw errors.get(0);
+        return new Paginated<>(ret, offset, limit, ret.size());
     }
 
     /**
@@ -765,7 +800,7 @@ public class NgsiLDClient {
      */
     public ListenableFuture<Subscription> getSubscription(String subscriptionId) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseURL);
-        builder.path("v1/subscriptions/{subscriptionId}");
+        builder.path("v1/subscriptions/{subscriptionId}/");
         return adapt(request(HttpMethod.GET, builder.buildAndExpand(subscriptionId).toUriString(), null, Subscription.class));
     }
 
@@ -787,8 +822,30 @@ public class NgsiLDClient {
      */
     public ListenableFuture<Void> deleteSubscription(String subscriptionId) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseURL);
-        builder.path("v1/subscriptions/{subscriptionId}");
+        builder.path("v1/subscriptions/{subscriptionId}/");
         return adapt(request(HttpMethod.DELETE, builder.buildAndExpand(subscriptionId).toUriString(), null, Void.class));
+    }
+
+    public void deleteSubscriptionSync(String subscriptionId) throws Exception {
+        ListenableFuture<Void> req = deleteSubscription(subscriptionId);
+        Semaphore reqFinished = new Semaphore(0);
+        List<Exception> errors = new ArrayList<>();
+        req.addCallback(new SuccessCallback<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                reqFinished.release();
+            }
+        }, new FailureCallback() {
+            @Override
+            public void onFailure(Throwable throwable) {
+                errors.add(new Exception(throwable));
+                reqFinished.release();
+            }
+        });
+        reqFinished.acquire();
+
+        if(!errors.isEmpty())
+            throw errors.get(0);
     }
 
     /*

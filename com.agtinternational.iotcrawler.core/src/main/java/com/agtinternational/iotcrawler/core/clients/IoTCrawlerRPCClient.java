@@ -22,10 +22,11 @@ package com.agtinternational.iotcrawler.core.clients;
 
 import com.agtinternational.iotcrawler.core.models.*;
 
+import com.agtinternational.iotcrawler.core.ontologies.SOSA;
 import com.agtinternational.iotcrawler.fiware.models.subscription.Subscription;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 
+import com.orange.ngsi2.model.Notification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -128,12 +129,40 @@ public class IoTCrawlerRPCClient extends IoTCrawlerRESTClient implements AutoClo
         String subscriptionId = super.subscribeTo(streamId, onChange);
 
         //String queueName = rabbitClient.declareBoundQueue(subscriptionId);
-        rabbitClient.initRabbitMQListener(subscriptionId, onChange);
+        rabbitClient.initRabbitMQListener(subscriptionId, new Function<byte[], Void>() {
+            @Override
+            public Void apply(byte[] bytes) {
+                StreamObservation streamObservation = null;
+                try {
+                    String jsonString = new String(bytes);
+                    JsonObject jsonObject = (JsonObject) new JsonParser().parse(jsonString);
+                    JsonArray data = (JsonArray) jsonObject.get("data");
+                    for(JsonElement item : data) {
+                        JsonObject jsonObject1 = (JsonObject)item;
+                        streamObservation = new StreamObservation(jsonObject1.get("id").getAsString());
+                        if(jsonObject1.has(SOSA.hasResult)) {
+                            JsonObject result = (JsonObject) jsonObject1.get(SOSA.hasResult);
+                            streamObservation.hasResult(result.get("value"));
+                        }
+                        if(jsonObject1.has(SOSA.resultTime))
+                            streamObservation.resultTime(jsonObject1.get(SOSA.resultTime));
+                    }
+                }
+                catch (Exception e){
+                    LOGGER.error("Failed to create StreamObservation from Json: {}", e.getLocalizedMessage());
+                    return null;
+                }
+                onChange.apply(streamObservation);
+                return null;
+            }
+        });
         return subscriptionId;
     }
 
+
+
     @Override
-    public void subscribeTo(Subscription subscription, Function<StreamObservation, Void> onChange) throws Exception {
+    public void subscribeTo(Subscription subscription, Function<byte[], Void> onChange) throws Exception {
         super.subscribeTo(subscription, onChange);
         String abc = "";
     }

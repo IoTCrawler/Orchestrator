@@ -37,7 +37,7 @@ public class EnvVariablesSetterRemote {
 
         //environmentVariables.set(CUT_TYPE_URIS, "false");
         if(!System.getenv().containsKey(NGSILD_BROKER_URL))
-            environmentVariables.set(NGSILD_BROKER_URL, "http://i5-nuc:9090/ngsi-ld/");
+            //environmentVariables.set(NGSILD_BROKER_URL, "http://i5-nuc:9090/ngsi-ld/");
             //environmentVariables.set(NGSILD_BROKER_URL, "http://155.54.95.248:9090/ngsi-ld/");
 
 

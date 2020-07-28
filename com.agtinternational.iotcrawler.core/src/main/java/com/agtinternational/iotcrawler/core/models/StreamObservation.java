@@ -67,6 +67,11 @@ public class StreamObservation extends RDFModel {
         setProperty(SOSA.madeBySensor, value);
     }
 
+    public Object madeBySensor(){
+        Object ret = getAttribute(SOSA.madeBySensor);
+        return ret;
+    }
+
     public Object hasResult(){
         Object ret = getAttribute(SOSA.hasResult);
         return ret;

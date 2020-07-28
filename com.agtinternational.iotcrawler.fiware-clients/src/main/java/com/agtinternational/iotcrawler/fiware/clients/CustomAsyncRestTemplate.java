@@ -46,7 +46,7 @@ public class CustomAsyncRestTemplate extends AsyncRestTemplate {
             expanded = URI.create(url.replace("#","%23"));
         }
         catch (Exception e){
-            LOGGER.warn("Failed to create URI from {}: {}", url, e.getLocalizedMessage());
+            //LOGGER.warn("Failed to create URI from {}: {}", url, e.getLocalizedMessage());
             URI aaaurl = new UriTemplate(url).expand(urlVariables);
             String query = aaaurl.getQuery()+(aaaurl.getFragment()!=null?"#"+aaaurl.getFragment():"");
             query = query.replace("%25","%");
@@ -65,7 +65,7 @@ public class CustomAsyncRestTemplate extends AsyncRestTemplate {
                 e2.printStackTrace();
             }
 
-            LOGGER.warn("Using (re)created URI {}",expanded);
+            LOGGER.debug("Using (re)created URI {}",expanded);
         }
         return this.doExecute(expanded, method, requestCallback, responseExtractor);
     }

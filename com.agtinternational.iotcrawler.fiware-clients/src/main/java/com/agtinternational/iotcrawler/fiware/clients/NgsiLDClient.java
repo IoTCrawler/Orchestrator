@@ -148,26 +148,27 @@ public class NgsiLDClient {
         return success[0];
     }
 
+    //public EntityLD getEntitySync(String entityId, String type, Collection<String> attrs) throws Exception {
     public EntityLD getEntitySync(String entityId, String type, Collection<String> attrs) throws Exception {
 
         ListenableFuture<EntityLD> req = getEntity(entityId, type, attrs);
         Semaphore reqFinished = new Semaphore(0);
         final List<EntityLD> ret = new ArrayList<>();
         List<Exception> errors = new ArrayList<>();
-        req.addCallback(new ListenableFutureCallback<EntityLD>() {
+        req.addCallback(new SuccessCallback<EntityLD>() {
             @Override
-            public void onSuccess(EntityLD entity) {
-                ret.add(entity);
+            public void onSuccess(EntityLD entityLD) {
+                ret.add(entityLD);
                 reqFinished.release();
             }
-
+        }, new FailureCallback() {
             @Override
             public void onFailure(Throwable throwable) {
                 errors.add(new Exception(throwable));
                 reqFinished.release();
             }
-
         });
+
         try {
             reqFinished.acquire();
         } catch (InterruptedException e) {

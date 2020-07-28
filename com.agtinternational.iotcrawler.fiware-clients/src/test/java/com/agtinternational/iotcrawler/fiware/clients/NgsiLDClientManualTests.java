@@ -27,9 +27,12 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.core.annotation.Order;
+import org.springframework.util.concurrent.ListenableFuture;
+import org.springframework.util.concurrent.ListenableFutureCallback;
 
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.Semaphore;
 
 import static com.agtinternational.iotcrawler.fiware.clients.Constants.NGSILD_BROKER_URL;
 
@@ -55,6 +58,7 @@ public class NgsiLDClientManualTests {
         EntityLD entityLD = ngsiLdClient.getEntitySync("urn:ngsi-ld:IndoorTemperatureSensor_1",null,null);
         String abc = "asd";
     }
+
 
     @Order(3)
     @Test

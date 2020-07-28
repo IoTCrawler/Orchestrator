@@ -123,42 +123,42 @@
     <build>
         <plugins>
 
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>license-maven-plugin</artifactId>
-                <version>2.0.0</version>
-                <configuration>
-                    <licenseName>apache_v2</licenseName>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>download-licenses</id>
-                        <phase>process-sources</phase>
-                        <goals>
-<!--                            <goal>aggregate-download-licenses</goal>-->
-                            <goal>download-licenses</goal>
-                        </goals>
-                        <configuration>
-                            <organizeLicensesByDependencies>true</organizeLicensesByDependencies>
+<!--            <plugin>-->
+<!--                <groupId>org.codehaus.mojo</groupId>-->
+<!--                <artifactId>license-maven-plugin</artifactId>-->
+<!--                <version>2.0.0</version>-->
+<!--                <configuration>-->
+<!--                    <licenseName>apache_v2</licenseName>-->
+<!--                </configuration>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>download-licenses</id>-->
+<!--                        <phase>process-sources</phase>-->
+<!--                        <goals>-->
+<!--&lt;!&ndash;                            <goal>aggregate-download-licenses</goal>&ndash;&gt;-->
+<!--                            <goal>download-licenses</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <organizeLicensesByDependencies>true</organizeLicensesByDependencies>-->
 
-                        </configuration>
-                    </execution>
+<!--                        </configuration>-->
+<!--                    </execution>-->
 
-                    <execution>
-                        <goals>
-                            <goal>update-file-header</goal>
-                        </goals>
-                        <phase>process-sources</phase>
-                        <configuration>
-                            <licenseName>apache_v2</licenseName>
-                            <roots>
-                                <root>src/main/java</root>
-                                <root>src/test</root>
-                            </roots>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+<!--                    <execution>-->
+<!--                        <goals>-->
+<!--                            <goal>update-file-header</goal>-->
+<!--                        </goals>-->
+<!--                        <phase>process-sources</phase>-->
+<!--                        <configuration>-->
+<!--                            <licenseName>apache_v2</licenseName>-->
+<!--                            <roots>-->
+<!--                                <root>src/main/java</root>-->
+<!--                                <root>src/test</root>-->
+<!--                            </roots>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

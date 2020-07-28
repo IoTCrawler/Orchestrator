@@ -154,7 +154,8 @@ public class NgsiLDConverter extends AbstractHttpMessageConverter<Object> implem
                     }
         }else
             throw new NotImplementedException("Not implemented");
-
+        if(aClass==EntityLD.class)
+            return ret.get(0);
         return ret.toArray(new EntityLD[0]);
     }
 

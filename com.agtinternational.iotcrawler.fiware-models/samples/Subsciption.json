@@ -1,0 +1,20 @@
+{
+  "id" : "ed62b5a0-dece-42c8-8b75-599069bebbae",
+  "type" : "Subscription",
+  "entities" : [ {
+    "id" : "urn:ngsi-ld:StreamObservation_Homee_00055110D732_Device_19_Property_109",
+    "type" : "http://purl.org/iot/ontology/iot-stream#StreamObservation"
+  } ],
+  "notification" : {
+    "attributes" : [ "http://www.w3.org/ns/sosa/hasResult" ],
+    "endpoint" : {
+      "accept" : "application/json",
+      "uri" : "http://192.168.0.85:3001/notify"
+    },
+    "format" : "normalized",
+    "lastNotification" : "2020-07-27T15:07:35.471000Z",
+    "lastSuccess" : "2020-07-27T15:07:35.471000Z",
+    "timesSent" : 106
+  },
+  "@context" : [ "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld" ]
+}

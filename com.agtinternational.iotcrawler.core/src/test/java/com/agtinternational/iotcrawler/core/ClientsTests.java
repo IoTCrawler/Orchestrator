@@ -225,7 +225,8 @@ public class ClientsTests {
 //        .subject("urn:ngsi-ld:Vehicle:A188")
 //        .build();
 
-        String id = "urn:ngsi-ld:MultiSensor_AEON_Labs_ZW100_MultiSensor_6";
+        //String id = "urn:ngsi-ld:MultiSensor_AEON_Labs_ZW100_MultiSensor_6";
+        String id = "urn:ngsi-ld:HouseholdStateObservation_Household1";
 
         EntityLD entity = client.getEntityById(id);
         //List<Sensor> sensors = client.getEntitiesById(ids, Sensor.class);

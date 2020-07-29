@@ -1,0 +1,18 @@
+{
+  "@id" : "urn:ngsi-ld:HouseholdStateObservation_Household1",
+  "@type" : "http://purl.org/iot/ontology/iot-stream#StreamObservation",
+  "activities" : "urn:ngsi-ld:Activity_Homee_00055110D732_Device_19_Property_109",
+  "belongsTo" : "urn:ngsi-ld:Household1",
+  "alternativeType" : "http://agtinternational/smartHomeApp#HouseholdStateObservation",
+  "@context" : {
+    "activities" : {
+      "@id" : "http://agtinternational/smartHomeApp#activities"
+    },
+    "belongsTo" : {
+      "@id" : "http://purl.org/iot/ontology/iot-stream#belongsTo"
+    },
+    "alternativeType" : {
+      "@id" : "http://www.agtinternational.com/ontologies/ngsi-ld#alternativeType"
+    }
+  }
+}

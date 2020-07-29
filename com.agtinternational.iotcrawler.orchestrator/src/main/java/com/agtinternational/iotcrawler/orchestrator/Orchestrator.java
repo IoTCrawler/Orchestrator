@@ -580,7 +580,7 @@ public class Orchestrator extends IoTCrawlerClient {
     }
 
     @Override
-    public List<EntityLD> getEntityById(String id) throws Exception {
+    public EntityLD getEntityById(String id) throws Exception {
         return metadataClient.getEntityById(id);
     }
 
@@ -652,8 +652,9 @@ public class Orchestrator extends IoTCrawlerClient {
         throw new NotImplementedException();
     }
 
+
     @Override
-    public void subscribeTo(Subscription subscription, Function<StreamObservation, Void> function) throws Exception {
+    public void subscribeTo(Subscription subscription, Function<byte[], Void> function) throws Exception {
         //implemetation not needed (implemented in core)
         throw new NotImplementedException();
         //return metadataClient.subscribeTo(subscription);

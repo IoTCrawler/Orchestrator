@@ -41,7 +41,6 @@ import org.springframework.web.client.AsyncRestTemplate;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.management.InstanceNotFoundException;
 import java.net.URLEncoder;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -164,7 +163,19 @@ public class NgsiLDClient {
         }, new FailureCallback() {
             @Override
             public void onFailure(Throwable throwable) {
-                errors.add(new Exception(throwable));
+                if(throwable instanceof HttpClientErrorException.NotFound ||
+                        (throwable.getCause()!=null
+                                && throwable.getCause().getCause() instanceof HttpClientErrorException
+                                && ((HttpClientErrorException)throwable.getCause().getCause()).getStatusCode()==HttpStatus.NOT_FOUND
+                        )
+                )
+                    LOGGER.debug("Entity {} not found", entityId);
+                else {
+                    if (throwable instanceof Exception)
+                        errors.add((Exception) throwable);
+                    else
+                        errors.add(new Exception(throwable));
+                }
                 reqFinished.release();
             }
         });
@@ -178,7 +189,9 @@ public class NgsiLDClient {
         if(!errors.isEmpty())
             throw errors.get(0);
 
-        return ret.get(0);
+        if(ret.size()>0)
+            return ret.get(0);
+        return null;
     }
 
     public boolean updateEntitySync(EntityLD entityLD, boolean append) throws Exception {
@@ -290,8 +303,7 @@ public class NgsiLDClient {
             public void onFailure(Throwable throwable) {
                 Throwable cause = throwable.getCause().getCause();
                 if(cause instanceof HttpClientErrorException && ((HttpClientErrorException)cause).getStatusCode().value()==404){
-                    LOGGER.debug("Resource not found");
-
+                    LOGGER.debug("Entity not found");
                 }else{
                     LOGGER.error("Failed to get entities: {}", throwable.getLocalizedMessage());
                     errors.add(new Exception(throwable));
@@ -437,7 +449,10 @@ public class NgsiLDClient {
      */
     public ListenableFuture<Void> addEntity(EntityLD entity) throws Exception {
 
-        ListenableFuture<Void> ret = adapt(request(HttpMethod.POST, UriComponentsBuilder.fromHttpUrl(baseURL).path("v1/entities/").toUriString(), entity, Void.class));
+        HttpHeaders httpHeaders = cloneHttpHeaders();
+        httpHeaders.setContentType(MediaType.valueOf("application/ld+json"));
+
+        ListenableFuture<Void> ret = adapt(request(HttpMethod.POST, UriComponentsBuilder.fromHttpUrl(baseURL).path("v1/entities/").toUriString(), httpHeaders, entity,  Void.class));
         //Additional logic getting added entity back
         List<Exception> exceptions = new ArrayList<>();
         ret.addCallback(new ListenableFutureCallback<Void>() {
@@ -479,16 +494,22 @@ public class NgsiLDClient {
      * @return the entity
      */
     public ListenableFuture<EntityLD> getEntity(String entityId, String type, Collection<String> attrs) {
+        HttpHeaders httpHeaders = cloneHttpHeaders();
+        httpHeaders.setContentType(MediaType.valueOf("application/ld+json"));
+
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseURL);
         builder.path("v1/entities/{entityId}");
         addParam(builder, "type", type);
         addParam(builder, "attrs", attrs);
-        ListenableFuture<EntityLD> ret = adapt(request(HttpMethod.GET, builder.buildAndExpand(entityId).toUriString(), null, EntityLD.class));
+        ListenableFuture<EntityLD> ret = adapt(request(HttpMethod.GET, builder.buildAndExpand(entityId).toUriString(), httpHeaders, null, EntityLD.class));
         return ret;
     }
 
 
     public ListenableFuture<Void> updateEntity(EntityLD entity, boolean append) {
+        HttpHeaders httpHeaders = cloneHttpHeaders();
+        httpHeaders.setContentType(MediaType.valueOf("application/ld+json"));
+
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseURL);
         builder.path("v1/entities/{entityId}/attrs");
         //addParam(builder, "type", type);
@@ -497,7 +518,7 @@ public class NgsiLDClient {
         }
         Map attributes = entity.getAttributes();
         attributes.put("@context", entity.getContext());
-        return adapt(request(HttpMethod.POST, builder.buildAndExpand(entity.getId()).toUriString(), attributes, Void.class));
+        return adapt(request(HttpMethod.POST, builder.buildAndExpand(entity.getId()).toUriString(), httpHeaders, attributes, Void.class));
     }
 
     /**
@@ -508,10 +529,14 @@ public class NgsiLDClient {
      * @return the listener to notify of completion
      */
     public ListenableFuture<Void> replaceEntity(String entityId, String type, Map<String, Attribute> attributes) {
+
+        HttpHeaders httpHeaders = cloneHttpHeaders();
+        httpHeaders.setContentType(MediaType.valueOf("application/ld+json"));
+
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseURL);
         builder.path("v1/entities/{entityId}");
         addParam(builder, "type", type);
-        return adapt(request(HttpMethod.PUT, builder.buildAndExpand(entityId).toUriString(), attributes, Void.class));
+        return adapt(request(HttpMethod.PUT, builder.buildAndExpand(entityId).toUriString(), httpHeaders, attributes, Void.class));
     }
 
 
@@ -566,6 +591,35 @@ public class NgsiLDClient {
         builder.path("v1/entities/{entityId}/attrs/{attributeName}");
         addParam(builder, "type", type);
         return adapt(request(HttpMethod.DELETE, builder.buildAndExpand(entityId, attributeName).toUriString(), null, Attribute.class));
+    }
+
+    public Attribute deleteAttributeSync(String entityId, String type, String attributeName) throws Exception {
+        ListenableFuture<Attribute> req = deleteAttribute(entityId, type, attributeName);
+        List<Attribute> ret = new ArrayList<>();
+        Semaphore reqFinished = new Semaphore(0);
+        List<Exception> errors = new ArrayList<>();
+
+        req.addCallback(new SuccessCallback<Attribute>() {
+            @Override
+            public void onSuccess(Attribute attribute) {
+                ret.add(attribute);
+                reqFinished.release();
+            }
+        }, new FailureCallback() {
+            @Override
+            public void onFailure(Throwable throwable) {
+                errors.add(new Exception(throwable));
+                reqFinished.release();
+            }
+        });
+
+        reqFinished.acquire();
+
+        if(!errors.isEmpty())
+            throw errors.get(0);
+        if(ret.size()>0)
+            return ret.get(0);
+        return null;
     }
 
     /*
@@ -710,6 +764,10 @@ public class NgsiLDClient {
      * @return a pagined list of Subscriptions
      */
     public ListenableFuture<Paginated<Subscription>> getSubscriptions(int offset, int limit, boolean count) {
+
+//        HttpHeaders httpHeaders = cloneHttpHeaders();
+//        httpHeaders.setContentType(MediaType.valueOf("application/ld+json"));
+
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseURL);
         builder.path("v1/subscriptions/");
         addPaginationParams(builder, offset, limit);
@@ -717,7 +775,7 @@ public class NgsiLDClient {
             addParam(builder, "options", "count");
         }
 
-        return adaptPaginated(request(HttpMethod.GET, builder.toUriString(), null, Subscription[].class), offset, limit);
+        return adaptPaginated(request(HttpMethod.GET, builder.toUriString(), httpHeaders, null, Subscription[].class), offset, limit);
     }
 
     public Paginated<Subscription> getSubscriptionsSync(int offset, int limit, boolean count) throws Exception {

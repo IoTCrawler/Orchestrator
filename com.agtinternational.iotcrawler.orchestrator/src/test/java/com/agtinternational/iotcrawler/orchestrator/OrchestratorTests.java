@@ -184,10 +184,10 @@ public class OrchestratorTests {
         byte[] iotStreamModelJson = Files.readAllBytes(Paths.get("samples/IoTStream.json"));
         IoTStream ioTStream = IoTStream.fromJson(iotStreamModelJson);
 
-        List<IoTStream> streams = client.getStreamById(ioTStream.getURI());
+        IoTStream stream = client.getStreamById(ioTStream.getURI());
         //List<IoTStream> streams = orchestrator.getStreams("SELECT ?s ?p ?o WHERE { ?s ?p ?o . FILTER (?s=<"+ioTStream.getURI()+">) . } ");
-        Assert.notNull(streams);
-        LOGGER.info(streams.size()+" streams returned");
+        Assert.notNull(stream);
+        LOGGER.info(stream.getURI()+" stream returned");
     }
 
     @Ignore
@@ -203,11 +203,11 @@ public class OrchestratorTests {
 
         String id = "urn:ngsi-ld:MultiSensor_AEON_Labs_ZW100_MultiSensor_6";
 
-        List<EntityLD> entities = client.getEntityById(id);
+        EntityLD entity = client.getEntityById(id);
         //List<Sensor> sensors = client.getEntitiesById(ids, Sensor.class);
 
-        Assert.notNull(entities );
-        LOGGER.info(entities.size()+" entities returned");
+        Assert.notNull(entity );
+        LOGGER.info(entity.getId()+" entities returned");
     }
 
 

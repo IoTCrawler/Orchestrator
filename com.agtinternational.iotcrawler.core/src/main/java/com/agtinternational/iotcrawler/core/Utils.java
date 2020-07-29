@@ -101,7 +101,6 @@ public class Utils {
         RDFDataMgr.read(model, reader, "", Lang.JSONLD);
         //InputStream inputStream = new ByteArrayInputStream(string.getBytes());
         //RDFDataMgr.read(model, inputStream, Lang.JSONLD);
-        String ret = Utils.writeModel2JsonLDString(model);
         return model;
     }
 

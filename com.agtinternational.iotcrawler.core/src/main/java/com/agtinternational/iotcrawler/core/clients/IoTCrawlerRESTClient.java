@@ -146,11 +146,8 @@ public class IoTCrawlerRESTClient extends IoTCrawlerClient implements AutoClosea
         //String type = entityType;
 //        if(cutURLs && type.startsWith("http://"))
 //            type = Utils.cutURL(type, RDFModel.getNamespaces());
-        Paginated<EntityLD> entities = client.getEntitiesSync(Arrays.asList(new String[]{ id }) , null, null, null, null,null, null,0,0,false);
-        //List<EntityLD> entities = Arrays.asList(new EntityLD[]{ entityLD });
-        if(entities.getItems().size()==0)
-            return null;
-        return entities.getItems().get(0);
+        EntityLD entity = client.getEntitySync( id  , null, null);
+        return entity;
     }
 
 

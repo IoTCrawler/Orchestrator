@@ -74,14 +74,14 @@ public class EnvVariablesSetter {
 //            environmentVariables.set(IOT_BROKER_URL, "http://iotbroker:8060/ngsi10");
 
 
-        if(!System.getenv().containsKey(HTTP_SERVER_HOST))
-            environmentVariables.set(HTTP_SERVER_HOST, "192.168.0.85");
+//        if(!System.getenv().containsKey(HTTP_SERVER_HOST))
+//            environmentVariables.set(HTTP_SERVER_HOST, "192.168.0.85");
 
         if(!System.getenv().containsKey(HTTP_SERVER_PORT))
             environmentVariables.set(HTTP_SERVER_PORT, "3001");
 
         if(!System.getenv().containsKey(HTTP_REFERENCE_URL))
-            environmentVariables.set(HTTP_REFERENCE_URL, "http://192.168.0.85:"+System.getenv(HTTP_SERVER_PORT)+"/notify");
+            environmentVariables.set(HTTP_REFERENCE_URL, "http://de-l-psmirnov:"+System.getenv(HTTP_SERVER_PORT)+"/notify");
             //environmentVariables.set(HTTP_REFERENCE_URL, "http://staging.orchestrator.iotcrawler.eu/notify");
 
 

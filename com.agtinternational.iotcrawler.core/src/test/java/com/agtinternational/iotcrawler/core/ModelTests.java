@@ -22,6 +22,7 @@ package com.agtinternational.iotcrawler.core;
 
 import com.agtinternational.iotcrawler.core.models.*;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
+import com.agtinternational.iotcrawler.fiware.models.NGSILD.Relationship;
 import com.agtinternational.iotcrawler.fiware.models.Utils;
 import com.google.gson.JsonObject;
 import eu.neclab.iotplatform.ngsi.api.datamodel.ContextAttribute;
@@ -188,7 +189,7 @@ public class ModelTests {
 
         byte[] json = Files.readAllBytes(Paths.get("samples/Platform.json"));
         Platform sosaPlatform = Platform.fromJson(json);
-
+        sosaPlatform.hosts("v2");
         //RDFModel[] array = new RDFModel[]{ new RDFModel("http://sensor1"), new RDFModel("http://sensor2") } ;
         //sosaPlatform.hosts(array);
 
@@ -230,5 +231,19 @@ public class ModelTests {
         String abc = "abc";
     }
 
+    @Test
+    @Ignore
+    public void test4() throws Exception {
 
+        EntityLD stateObservation = new EntityLD("urn:ngsi-ld:HouseholdStateObservation_Household1", "http://purl.org/iot/ontology/iot-stream#StreamObservation");
+        stateObservation.addAttribute("http://agtinternational/smartHomeApp#activities", new Relationship("Stream1"));
+
+        //byte[] json = Files.readAllBytes(Paths.get("samples/HouseholdStateObservation.json"));
+        RDFModel rdfModel = RDFModel.fromEntity(stateObservation);
+        IoTStream stream2 = new IoTStream("Stream2");
+        rdfModel.addProperty("http://agtinternational/smartHomeApp#activities", stream2);
+        //rdfModel.addProperty("http://agtinternational/smartHomeApp#activities", new IoTStream("Stream1"));
+        String test1 = rdfModel.toJsonLDString();
+
+    }
 }

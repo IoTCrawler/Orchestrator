@@ -198,8 +198,9 @@ public class RDFModel {
     public void addProperty(String uri, Object value){
         //if(Utils.getFragment(uri)!=null && URI.create(uri).getFragment().toLowerCase().equals("label"))
           //  uri = RDFS.label.getURI();
-
-        Property property = model.createProperty(uri);
+        Property property = model.getProperty(uri);
+        if(property==null)
+            property =  model.createProperty(uri);
         if(value.getClass().isArray())
             value = Arrays.asList((Object[])value);
 
@@ -213,12 +214,23 @@ public class RDFModel {
 
     public void addProperty(Property property, Object value){
         Statement statement = model.getProperty(resource, property);
-        if(statement!=null && statement.getObject().equals(value))
+        RDFNode alreadyExistingValue = (statement!=null? statement.getObject(): null);
+
+        if(value.equals(alreadyExistingValue))
             return;
 
+//        if(alreadyExistingValue!=null) {
+//            List valueAsList = new ArrayList<>();
+//            if(alreadyExistingValue instanceof Iterable)
+//                valueAsList.addAll(Arrays.asList(alreadyExistingValue));
+//            else
+//                valueAsList.add(alreadyExistingValue);
+//            value = valueAsList;
+//        }
         if (value instanceof RDFModel){
             //resource.addProperty(property, ((RDFModel) value).resource);
             //model.add(((RDFModel) value).getModel());
+            //Literal urlAsLiteral = model.createTypedLiteral(((RDFModel)value).getURI(), XSDDatatype.XSDstring);
             model.add(resource, property, ((RDFModel)value).getResource());
         }else if (value instanceof Resource) {
             model.add(resource, property, (Resource)value);
@@ -478,12 +490,12 @@ public class RDFModel {
                     Iterator iterator = ((Iterable) attribute).iterator();
                     while (iterator.hasNext()) {
                         Object attribute2 = iterator.next();
-                        Object value2 = getValueFromAttribute(attribute2);
+                        Object value2 = getValueFromAttribute(attribute2, ret.getModel());
                         ret.addProperty(attrTypeUri, value2);
                     }
                     String test = "123";
                 } else {
-                    Object value = getValueFromAttribute(attribute);
+                    Object value = getValueFromAttribute(attribute, ret.getModel());
                     ret.addProperty(attrTypeUri, value);
                 }
             }
@@ -507,9 +519,12 @@ public class RDFModel {
         return ret;
     }
 
-    private static Object getValueFromAttribute(Object attribute){
-        if(attribute instanceof Relationship)
-            return ((Relationship) attribute).getObject();
+    private static Object getValueFromAttribute(Object attribute, Model model){
+        if(attribute instanceof Relationship){
+            String value = ((Relationship) attribute).getObject().toString();
+            Resource ret = model.createResource(value);
+            return ret;
+        }
 
         if(attribute instanceof Attribute)
             return ((Attribute) attribute).getValue();

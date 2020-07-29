@@ -102,15 +102,9 @@ public class NgsiLD_MdrClient extends AbstractMetadataClient {
     }
 
     @Override
-    public List<EntityLD> getEntityById(String id) throws Exception {
-//        if(cutURIs)
-//            type = Utils.cutURL(type, RDFModel.getNamespaces());
-//
-//        String[] types = new String[]{type};
-        String[] types = null;
-        Paginated<EntityLD> paginated = null;
-        paginated = ngsiLDClient.getEntitiesSync(Arrays.asList(new String[]{ id }), null, null, null, null,null, null,0, 0, false);
-        return (List<EntityLD>)paginated.getItems();
+    public EntityLD getEntityById(String id) throws Exception {
+        EntityLD ret = ngsiLDClient.getEntitySync(id, null, null);
+        return ret;
     }
 
     @Override

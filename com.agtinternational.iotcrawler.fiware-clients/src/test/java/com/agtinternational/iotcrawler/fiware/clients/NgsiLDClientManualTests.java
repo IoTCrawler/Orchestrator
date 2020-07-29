@@ -22,6 +22,7 @@ package com.agtinternational.iotcrawler.fiware.clients;
 
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import com.agtinternational.iotcrawler.fiware.models.subscription.Subscription;
+import com.orange.ngsi2.model.Attribute;
 import com.orange.ngsi2.model.Paginated;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -55,7 +56,7 @@ public class NgsiLDClientManualTests {
     @Order(3)
     @Test
     public void getEntityByIdTest() throws Exception {
-        EntityLD entityLD = ngsiLdClient.getEntitySync("urn:ngsi-ld:IndoorTemperatureSensor_1",null,null);
+        EntityLD entityLD = ngsiLdClient.getEntitySync("urn:ngsi-ld:HouseholdStateObservation_Household1",null,null);
         String abc = "asd";
     }
 
@@ -68,6 +69,15 @@ public class NgsiLDClientManualTests {
         List<EntityLD> entities = ret.getItems();
         String abc = "asd";
     }
+
+    @Order(3)
+    @Test
+    public void deleteAttributeTest() throws Exception {
+
+        Attribute ret = ngsiLdClient.deleteAttributeSync("urn:ngsi-ld:HouseholdStateObservation_Household1","http://purl.org/iot/ontology/iot-stream#StreamObservation", "http://agtinternational/smartHomeApp#activities");
+        String abc = "asd";
+    }
+
 
     @Order(3)
     @Test

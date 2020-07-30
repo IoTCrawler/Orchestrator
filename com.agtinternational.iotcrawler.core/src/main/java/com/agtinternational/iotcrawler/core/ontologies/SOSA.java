@@ -40,7 +40,7 @@ public class SOSA {
     public static String sensor = NS +"Sensor";
     public static String observableProperty = NS +"ObservableProperty";
 
-    public static String hasResult = NS +"hasResult";
+    public static String hasSimpleResult = NS +"hasSimpleResult";
     public static String resultTime = NS +"resultTime";
 
 

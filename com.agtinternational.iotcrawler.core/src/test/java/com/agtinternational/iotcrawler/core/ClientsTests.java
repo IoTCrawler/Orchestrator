@@ -37,13 +37,9 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
-import org.springframework.util.concurrent.FailureCallback;
-import org.springframework.util.concurrent.ListenableFuture;
-import org.springframework.util.concurrent.SuccessCallback;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -117,7 +113,7 @@ public class ClientsTests {
                 try {
                     int count = 0;
                     while (count < 600) {
-                        streamObservation.hasResult(System.currentTimeMillis());
+                        streamObservation.hasSimpleResult(System.currentTimeMillis());
                         ngsiLDClient.updateEntity(streamObservation.toEntityLD(cutURIs), false);
                         Thread.sleep(5000);
                         count++;

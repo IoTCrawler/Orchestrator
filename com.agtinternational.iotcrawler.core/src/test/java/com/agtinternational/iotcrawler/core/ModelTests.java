@@ -32,11 +32,9 @@ import eu.neclab.iotplatform.ngsi.api.datamodel.EntityId;
 import org.apache.jena.atlas.lib.DateTimeUtils;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.vocabulary.RDFS;
-import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import javax.swing.text.html.parser.Entity;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -123,7 +121,7 @@ public class ModelTests {
 
         StreamObservation streamObservation = new StreamObservation("iotc:Stream_Z-Wave+Node+003%3A+FGWP102+Meter+Living+Space_Electric+meter+%28watts%29");
         streamObservation.madeBySensor("iotc:Sensor_Z-Wave+Node+003%3A+FGWP102+Meter+Living+Space_Sensor+%28power%29");
-        streamObservation.hasResult(45);
+        streamObservation.hasSimpleResult(45);
         streamObservation.resultTime(DateTimeUtils.nowAsString());
 
         String jsonLDString = streamObservation.toJsonLDString();

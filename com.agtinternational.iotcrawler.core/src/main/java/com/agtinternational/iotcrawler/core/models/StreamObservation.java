@@ -72,8 +72,8 @@ public class StreamObservation extends RDFModel {
         return ret;
     }
 
-    public Object hasResult(){
-        Object ret = getAttribute(SOSA.hasResult);
+    public Object hasSimpleResult(){
+        Object ret = getAttribute(SOSA.hasSimpleResult);
         return ret;
     }
 
@@ -86,8 +86,8 @@ public class StreamObservation extends RDFModel {
         return ret;
     }
 
-    public void hasResult(Object value){
-        setProperty(SOSA.hasResult, value);
+    public void hasSimpleResult(Object value){
+        setProperty(SOSA.hasSimpleResult, value);
     }
 
     public Object belongsTo(){

@@ -26,7 +26,6 @@ import com.agtinternational.iotcrawler.core.ontologies.SOSA;
 import com.agtinternational.iotcrawler.fiware.models.subscription.Subscription;
 import com.google.gson.*;
 
-import com.orange.ngsi2.model.Notification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -140,9 +139,9 @@ public class IoTCrawlerRPCClient extends IoTCrawlerRESTClient implements AutoClo
                     for(JsonElement item : data) {
                         JsonObject jsonObject1 = (JsonObject)item;
                         streamObservation = new StreamObservation(jsonObject1.get("id").getAsString());
-                        if(jsonObject1.has(SOSA.hasResult)) {
-                            JsonObject result = (JsonObject) jsonObject1.get(SOSA.hasResult);
-                            streamObservation.hasResult(result.get("value"));
+                        if(jsonObject1.has(SOSA.hasSimpleResult)) {
+                            JsonObject result = (JsonObject) jsonObject1.get(SOSA.hasSimpleResult);
+                            streamObservation.hasSimpleResult(result.get("value"));
                         }
                         if(jsonObject1.has(SOSA.resultTime))
                             streamObservation.resultTime(jsonObject1.get(SOSA.resultTime));

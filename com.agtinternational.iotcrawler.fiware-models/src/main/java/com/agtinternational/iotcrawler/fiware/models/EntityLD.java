@@ -247,6 +247,8 @@ public class EntityLD /*extends Entity*/ { //not extending because of custom att
         EntityLD entity = new EntityLD(nameStr, typeStr, new HashMap(), context);
         for(String key: attributes.keySet()) {
             Object attribute = attributes.get(key);
+            if(attribute==null)
+                continue;
             if(attribute instanceof Attribute)
                 entity.addAttribute(key, (Attribute)attribute);
             else if(attribute instanceof Iterable)

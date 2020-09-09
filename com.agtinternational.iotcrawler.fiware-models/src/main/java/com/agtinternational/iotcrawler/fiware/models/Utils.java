@@ -101,6 +101,9 @@ public class Utils {
         if(object.getClass().isArray())
             object = Arrays.asList((Object[])object);
 
+        if(object instanceof JsonObject)
+            return (JsonElement) object;
+
         if(object instanceof Attribute)
             return Utils.attributeToJson((Attribute) object);
 

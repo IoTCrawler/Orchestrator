@@ -681,11 +681,17 @@ public class RDFModel {
 
         Map<String, Object> context = new HashMap<>();
         String jsonStr = toJsonLDString();
+
+        for(String key: namespaces.keySet())
+            context.put(key, namespaces.get(key));
+
         JsonObject parsed = (JsonObject)new JsonParser().parse(jsonStr);
         if(parsed.get("@context") instanceof JsonObject){
+            JsonObject contextObject = (JsonObject)parsed.get("@context");
+            for(String key: contextObject.keySet())
+                context.put(key, contextObject.get(key));
             //context = new Gson().fromJson(parsed.get("@context").toString(), HashMap.class);
-            for(String NsKey: namespaces.keySet())
-                context.put(NsKey, namespaces.get(NsKey));
+
         }
 
 

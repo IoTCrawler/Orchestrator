@@ -10,6 +10,13 @@ Find them in [docker-compose.yml](com.agtinternational.iotcrawler.orchestrator/d
 * NGSI-LD broker - emulation of MDR
 
 
+## Requirements
+
+* OpenJDK 1.8
+* Maven
+* Docker
+
+
 ## Build
 
 Build orchestrator and all supplementatry libraries

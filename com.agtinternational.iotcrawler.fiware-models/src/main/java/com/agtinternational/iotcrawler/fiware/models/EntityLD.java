@@ -169,8 +169,12 @@ public class EntityLD /*extends Entity*/ { //not extending because of custom att
                     String key2 = key + "#" + index;
                     jsonObject.add(key2, jsonElement);
                     String url = (key.startsWith("http://")?key:null);
-                    if(url==null)
-                        url = "http://dummyurl/"+key;
+                    if(url==null) {
+                        if(context instanceof Map && ((Map) context).containsKey(key))
+                            url = ((Map) context).get(key).toString();
+                        else
+                            url = "http://dummyurl/" + key;
+                    }
 
                     extraContext.addProperty(key2, url);
                     index++;

@@ -69,13 +69,13 @@ public class ModelsTest {
 
     private static EntityLD createEntity() throws IOException {
         EntityLD entityLD = new EntityLD("Entity1","sosa:Sensor");
-        entityLD.addAttribute("hosts", new Relationship("value1"));
-        entityLD.addAttribute("hosts", new Relationship("value2"));
-        entityLD.addAttribute("hosts", new Relationship("value3"));
-        entityLD.addAttribute("hosts", new Property("value4"));
+        entityLD.addAttribute("sosa:hosts", new Relationship("value1"));
+        entityLD.addAttribute("sosa:hosts", new Relationship("value2"));
+        entityLD.addAttribute("sosa:hosts", new Relationship("value3"));
+        entityLD.addAttribute("sosa:hosts", new Property("value4"));
         Map<String, Object> context = new HashMap<>();
         context.put("sosa", "http://www.w3.org/ns/sosa/");
-        context.put("hosts", "http://www.w3.org/ns/sosa/hosts");
+        //context.put("hosts", "http://www.w3.org/ns/sosa/hosts");
         entityLD.setContext(context);
         return entityLD;
     }

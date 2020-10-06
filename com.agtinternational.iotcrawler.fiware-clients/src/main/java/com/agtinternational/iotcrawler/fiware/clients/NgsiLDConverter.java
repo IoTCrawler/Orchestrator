@@ -172,7 +172,12 @@ public class NgsiLDConverter extends AbstractHttpMessageConverter<Object> implem
         if(object instanceof EntityLD){
             EntityLD entity = (EntityLD)object;
 
-            jsonObject = entity.toJsonObject();
+            try {
+                jsonObject = entity.toJsonObject();
+            }
+            catch (Exception e){
+                throw new IOException("Failed to convert EntityLD to JSON object", e.getCause());
+            }
             if(!jsonObject.has("id")){
                 jsonObject.add("id", jsonObject.get("@id"));
                 jsonObject.remove("@id");

@@ -44,7 +44,7 @@ fi
 #fi
 #
 #if [ "$1" = "test-ngsi-ld-client" ]; then
-#	mvn -Dtest=com.agtinternational.iotcrawler.fiware.clients.NgsiLDClientTest test
+#	mvn -Dtest=com.agtinternational.iotcrawler.fiware.clients.NgsiLDClientTests test
 #fi
 #
 #if [ "$1" = "test-iot-broker-client" ]; then

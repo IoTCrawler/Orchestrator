@@ -38,10 +38,10 @@ install:
 # 	docker-compose -f docker-compose.yml up -d
 
 ngsi-ld-client-test:
-	mvn -Dtest=com.agtinternational.iotcrawler.fiware.clients.NgsiLDClientTest test
-	#mvn -Dtest=com.agtinternational.iotcrawler.fiware.clients.NgsiLDClientTest#addEntityTest surefire:test
-	#mvn -Dtest=com.agtinternational.iotcrawler.fiware.clients.NgsiLDClientTest#updateEntityTest surefire:test
-	#mvn -Dtest=com.agtinternational.iotcrawler.fiware.clients.NgsiLDClientTest#getEntitiesTest surefire:test
+	mvn -Dtest=com.agtinternational.iotcrawler.fiware.clients.NgsiLDClientTests test
+	#mvn -Dtest=com.agtinternational.iotcrawler.fiware.clients.NgsiLDClientTests#addEntityTest surefire:test
+	#mvn -Dtest=com.agtinternational.iotcrawler.fiware.clients.NgsiLDClientTests#updateEntityTest surefire:test
+	#mvn -Dtest=com.agtinternational.iotcrawler.fiware.clients.NgsiLDClientTests#getEntitiesTest surefire:test
 
 iot-broker-client-test:
 	mvn -Dtest=com.agtinternational.iotcrawler.fiware.clients.IoTBrokerClientTest test

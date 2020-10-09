@@ -54,7 +54,7 @@ import static org.springframework.http.MediaType.valueOf;
  */
 public class NgsiLDClient {
 
-    private Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+    protected Logger LOGGER = LoggerFactory.getLogger(this.getClass());
     private final static Map<String, ?> noParams = Collections.emptyMap();
 
     private AsyncRestTemplate asyncRestTemplate;
@@ -366,7 +366,7 @@ public class NgsiLDClient {
                 String type = iterator.next();
                 //if (type.startsWith("http://"))
                     //type = type.replace("#", "%23");
-                //type = URLEncoder.encode(type);
+                type = URLEncoder.encode(type);
                 encodedTypes.add(type);
             }
         }

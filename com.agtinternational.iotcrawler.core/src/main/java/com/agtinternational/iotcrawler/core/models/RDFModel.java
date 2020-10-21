@@ -628,7 +628,7 @@ public class RDFModel {
                 ((Relationship) attribute).setObject(statement.getObject().asResource().getURI());
             }else if (statement.getObject().isLiteral()){
                 attribute  = new com.agtinternational.iotcrawler.fiware.models.NGSILD.Property();
-                attribute.setValue(statement.getObject().asLiteral().toString());
+                attribute.setValue(statement.getObject().asLiteral().getValue());
             }else{
                 throw new NotImplementedException("");
             }

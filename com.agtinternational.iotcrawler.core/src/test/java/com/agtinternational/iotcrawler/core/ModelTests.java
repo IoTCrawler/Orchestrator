@@ -124,6 +124,7 @@ public class ModelTests {
         streamObservation.hasSimpleResult(45);
         streamObservation.resultTime(DateTimeUtils.nowAsString());
 
+        EntityLD entityLD = streamObservation.toEntityLD();
         String jsonLDString = streamObservation.toJsonLDString();
         StreamObservation streamObservation2 = StreamObservation.fromJson(jsonLDString);
         org.junit.Assert.assertEquals(jsonLDString, streamObservation2.toJsonLDString());

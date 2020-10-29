@@ -366,7 +366,9 @@ public class NgsiLDClient {
                 String type = iterator.next();
                 //if (type.startsWith("http://"))
                     //type = type.replace("#", "%23");
-                type = URLEncoder.encode(type);
+
+                //skipping types encoding because filtering would not be working
+                //type = URLEncoder.encode(type);
                 encodedTypes.add(type);
             }
         }

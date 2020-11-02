@@ -29,6 +29,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.orange.ngsi2.model.*;
+import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
@@ -43,8 +44,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URLEncoder;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.MediaType.valueOf;
@@ -214,7 +214,9 @@ public class NgsiLDClient {
             }
 
         });
+
         try {
+            req.get();
             reqFinished.acquire();
         } catch (InterruptedException e) {
             LOGGER.error(e.getLocalizedMessage());
@@ -449,7 +451,7 @@ public class NgsiLDClient {
      * @param entity the Entity to add
      * @return the listener to notify of completion
      */
-    public ListenableFuture<Void> addEntity(EntityLD entity) throws Exception {
+    public ListenableFuture<Void> addEntity(EntityLD entity){
 
         HttpHeaders httpHeaders = cloneHttpHeaders();
         httpHeaders.setContentType(MediaType.valueOf("application/ld+json"));
@@ -471,6 +473,7 @@ public class NgsiLDClient {
                     @Override
                     public void onFailure(Throwable throwable) {
                         exceptions.add(new Exception("Failed to get added back", throwable));
+                        throwable.printStackTrace();
                         ret.cancel(true);
                     }
 
@@ -481,9 +484,6 @@ public class NgsiLDClient {
                 });
             }
         });
-
-        if(!exceptions.isEmpty())
-            throw exceptions.get(0);
 
         return ret;
     }
@@ -508,20 +508,122 @@ public class NgsiLDClient {
     }
 
 
-    public ListenableFuture<Void> updateEntity(EntityLD entity, boolean append) {
-        HttpHeaders httpHeaders = cloneHttpHeaders();
-        httpHeaders.setContentType(MediaType.valueOf("application/ld+json"));
+    public ListenableFuture<Void> updateEntity(EntityLD entity, boolean append) throws ExecutionException, InterruptedException {
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseURL);
-        builder.path("v1/entities/{entityId}/attrs");
-        //addParam(builder, "type", type);
-        if (append) {
-            addParam(builder, "options", "append");
-        }
-        Map attributes = entity.getAttributes();
-        attributes.put("@context", entity.getContext());
-        return adapt(request(HttpMethod.POST, builder.buildAndExpand(entity.getId()).toUriString(), httpHeaders, attributes, Void.class));
+        return new ListenableFuture<Void>() {
+
+            List<ListenableFutureCallback<? super Void>> callbacks = new ArrayList<>();
+
+            ListenableFuture<Void> voidFuture = null;
+            ListenableFutureCallback<EntityLD> nonVoidCallBack = new ListenableFutureCallback<EntityLD>() {
+                @Override
+                public void onFailure(Throwable throwable) {
+                    LOGGER.error("Failed to get entity during update procedure: ", throwable.getLocalizedMessage());
+                    throwable.printStackTrace();
+                }
+
+                @Override
+                public void onSuccess(EntityLD oldEntityLD) {
+
+                    //List<Exception> errors = new ArrayList<>();
+                    Boolean delete=false;
+                    for(String key: oldEntityLD.getAttributes().keySet()){
+                        if(!entity.getAttributes().containsKey(key))
+                            delete=true;
+                    }
+
+                    if(delete) {
+                        ListenableFuture<Void> deleteRequest = deleteEntity(entity.getId());
+                        deleteRequest.addCallback(new ListenableFutureCallback<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                try {
+                                    voidFuture = addEntity(entity);
+                                    for(ListenableFutureCallback<? super Void> callback: callbacks)
+                                        voidFuture.addCallback(callback);
+                                    voidFuture.get();
+                                } catch (Exception e) {
+                                    LOGGER.error("Failed to add entity during updating it:", e.getLocalizedMessage());
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Throwable throwable) {
+                                LOGGER.error("Failed to delete entity during update procedure:", throwable.getLocalizedMessage());
+                                throwable.printStackTrace();
+                            }
+                        });
+                        voidFuture = deleteRequest;
+                    }else {
+
+                        HttpHeaders httpHeaders = cloneHttpHeaders();
+                        httpHeaders.setContentType(MediaType.valueOf("application/ld+json"));
+
+                        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseURL);
+                        builder.path("v1/entities/{entityId}/attrs");
+                        //addParam(builder, "type", type);
+                        if (append) {
+                            addParam(builder, "options", "append");
+                        }
+                        Map attributes = entity.getAttributes();
+                        attributes.put("@context", entity.getContext());
+                        voidFuture = adapt(request(HttpMethod.POST, builder.buildAndExpand(entity.getId()).toUriString(), httpHeaders, attributes, Void.class));
+                    }
+
+                    for(ListenableFutureCallback<? super Void> callback: callbacks)
+                        voidFuture.addCallback(callback);
+
+                    try {
+                        voidFuture.get();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+
+            @Override
+            public void addCallback(ListenableFutureCallback<? super Void> listenableFutureCallback) {
+                callbacks.add(listenableFutureCallback);
+            }
+
+            @Override
+            public void addCallback(SuccessCallback<? super Void> successCallback, FailureCallback failureCallback) {
+                throw new NotImplementedException("");
+            }
+
+            @Override
+            public boolean cancel(boolean b) {
+                return voidFuture.cancel(b);
+            }
+
+            @Override
+            public boolean isCancelled() {
+                return voidFuture.isCancelled();
+            }
+
+            @Override
+            public boolean isDone() {
+                return voidFuture.isDone();
+            }
+
+            @Override
+            public Void get() throws InterruptedException, ExecutionException {
+                ListenableFuture<EntityLD> getEntityRequest = getEntity(entity.getId(), entity.getType(), null);
+                getEntityRequest.addCallback(nonVoidCallBack);
+                getEntityRequest.get();
+                return null;
+            }
+
+            @Override
+            public Void get(long l, TimeUnit timeUnit) throws InterruptedException, ExecutionException, TimeoutException {
+                return get();
+            }
+        };
+
     }
+
+
 
     /**
      * Replace all the existing attributes of an entity with a new set of attributes

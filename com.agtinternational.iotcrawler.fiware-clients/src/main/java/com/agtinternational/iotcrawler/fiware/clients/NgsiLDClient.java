@@ -369,8 +369,9 @@ public class NgsiLDClient {
                 //if (type.startsWith("http://"))
                     //type = type.replace("#", "%23");
 
-                //skipping types encoding because filtering would not be working
+                //A skipping types encoding because faceted filtering would not work
                 //type = URLEncoder.encode(type);
+                //Not encoded types should work, e.g.: http://192.168.0.125:9090/ngsi-ld/v1/entities?type=http://www.w3.org/ns/sosa/Platform
                 encodedTypes.add(type);
             }
         }

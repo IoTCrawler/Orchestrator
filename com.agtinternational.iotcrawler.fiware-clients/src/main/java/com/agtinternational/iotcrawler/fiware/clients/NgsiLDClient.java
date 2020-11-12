@@ -29,7 +29,9 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.orange.ngsi2.model.*;
+
 import org.apache.commons.lang3.NotImplementedException;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
@@ -408,6 +410,9 @@ public class NgsiLDClient {
                         q.append(key1 + "==" + value1 + "");
                         //String query = "q=brandName==\"Mercedes\"";  //Scorpio
                         //String query = "brandName.value=Mercedes";   //djane
+                    }else if(value instanceof Pair) {
+                        Pair pair = (Pair)value;
+                        q.append(key + pair.getKey()+pair.getValue());
                     }else
                         throw new Exception("Query map allows only string values for now!");
                 }

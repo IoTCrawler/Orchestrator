@@ -146,13 +146,13 @@
         <dependency>
             <groupId>com.agtinternational.iotcrawler</groupId>
             <artifactId>fiware-models</artifactId>
-            <version>${fiware.models.version}</version>
+            <version>${parent.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.agtinternational.iotcrawler</groupId>
             <artifactId>fiware-clients</artifactId>
-            <version>${fiware.clients.version}</version>
+            <version>${parent.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.agtinternational.iotcrawler</groupId>

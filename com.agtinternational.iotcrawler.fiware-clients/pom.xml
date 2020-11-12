@@ -2,23 +2,24 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>com.agtinternational.iotcrawler</groupId>
-    <artifactId>fiware-clients</artifactId>
-    <version>1.0.1</version>
-
     <parent>
         <groupId>com.agtinternational</groupId>
         <artifactId>iotcrawler</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.3</version>
         <relativePath>../IoTCrawler</relativePath>
     </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.agtinternational.iotcrawler</groupId>
+    <artifactId>fiware-clients</artifactId>
+    <version>${parent.version}</version>
+
+
 
     <properties>
 
         <ngsi.api.version>0.1.0-SNAPSHOT</ngsi.api.version>
         <iotbroker.client.version>7.1-SNAPSHOT</iotbroker.client.version>
-        <fiware.models.version>1.0.1</fiware.models.version>
         <junit.version>5.5.2</junit.version>
     </properties>
 
@@ -56,7 +57,7 @@
         <dependency>
             <groupId>com.agtinternational.iotcrawler</groupId>
             <artifactId>fiware-models</artifactId>
-            <version>${fiware.models.version}</version>
+            <version>${parent.version}</version>
 <!--            <exclusions>-->
 <!--                <exclusion>-->
 <!--                    <groupId>eu.neclab.iotplatform</groupId>-->

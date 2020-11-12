@@ -5,13 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.agtinternational.iotcrawler</groupId>
     <artifactId>orchestrator</artifactId>
-    <version>1.0.2</version>
+    <version>${parent.version}</version>
     <packaging>jar</packaging>
 
     <parent>
         <groupId>com.agtinternational</groupId>
         <artifactId>iotcrawler</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.3</version>
         <relativePath>../IoTCrawler</relativePath>
     </parent>
 
@@ -22,9 +22,6 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <slf4j.version>1.7.15</slf4j.version>
         <junit.version>5.5.2</junit.version>
-        <fiware.clients.version>1.0.1</fiware.clients.version>
-        <fiware.models.version>1.0.1</fiware.models.version>
-        <iotcrawler.core.version>1.0.2</iotcrawler.core.version>
         <iotbroker.client.version>7.1-SNAPSHOT</iotbroker.client.version>
 <!--        <git.commit.id>git.commit.id</git.commit.id>-->
 <!--        <git.dirty>git.dirty</git.dirty>-->
@@ -71,7 +68,7 @@
         <dependency>
             <groupId>com.agtinternational.iotcrawler</groupId>
             <artifactId>core</artifactId>
-            <version>${iotcrawler.core.version}</version>
+            <version>${parent.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.agtinternational.iotcrawler</groupId>

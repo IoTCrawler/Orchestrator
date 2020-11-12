@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.agtinternational.iotcrawler</groupId>
     <artifactId>core</artifactId>
-    <version>1.0.2</version>
+    <version>${parent.version}</version>
 
     <parent>
         <groupId>com.agtinternational</groupId>
         <artifactId>iotcrawler</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.3</version>
         <relativePath>../IoTCrawler</relativePath>
     </parent>
 
@@ -22,9 +22,6 @@
         <junit.version>4.11</junit.version>
 
 <!--        <ngsi2.client.version>0.1.2-SNAPSHOT</ngsi2.client.version>-->
-
-        <fiware.models.version>1.0.1</fiware.models.version>
-        <fiware.clients.version>1.0.1</fiware.clients.version>
     </properties>
 
 
@@ -47,7 +44,7 @@
         <dependency>
             <groupId>com.agtinternational.iotcrawler</groupId>
             <artifactId>fiware-clients</artifactId>
-            <version>${fiware.clients.version}</version>
+            <version>${parent.version}</version>
             <exclusions>
                 <!--<exclusion>-->
                 <!--<groupId>org.apache.httpcomponents</groupId>-->

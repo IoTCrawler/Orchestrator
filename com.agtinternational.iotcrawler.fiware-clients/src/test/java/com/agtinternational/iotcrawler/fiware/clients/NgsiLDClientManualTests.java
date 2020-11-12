@@ -24,6 +24,8 @@ import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import com.agtinternational.iotcrawler.fiware.models.subscription.Subscription;
 import com.orange.ngsi2.model.Attribute;
 import com.orange.ngsi2.model.Paginated;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -94,10 +96,11 @@ public class NgsiLDClientManualTests {
     @Order(3)
     @Test
     public void getEntitiesByParameterTest() throws Exception {
-        Map query = new HashMap<String, String>();
+
+        Map query = new HashMap<String, Pair>();
         //query.put("http://www.w3.org/2000/01/rdf-schema#label", "\"homee_00055110D732\"");
         //query.put("http://www.agtinternational.com/ontologies/ngsi-ld#alternativeType","\"http://agtinternational/smartHomeApp#HouseholdStateStream\"");
-        query.put("http://dummyurl/speed","\"55\"");
+        query.put("http://dummyurl/speed", Pair.of(">", "\"55\""));
 
         Collection<String> types = Arrays.asList(new String[]{
                 "http://purl.org/iot/ontology/iot-stream#IotStream"

@@ -387,7 +387,8 @@ public class NgsiLDClient {
             //builder.query(query);
             if(query!=null) {
 
-                StringBuilder q = new StringBuilder();
+                //StringBuilder q = new StringBuilder();
+                List<String> conditions = new ArrayList<>();
                 for (String key: query.keySet()){
                     Object value = query.get(key);
                     if(value instanceof String) {
@@ -407,17 +408,19 @@ public class NgsiLDClient {
 
 
 
-                        q.append(key1 + "==" + value1 + "");
+                        conditions.add(key1 + "==" + value1 + "");
                         //String query = "q=brandName==\"Mercedes\"";  //Scorpio
                         //String query = "brandName.value=Mercedes";   //djane
+                    }else if(value instanceof Number) {
+                        conditions.add(key +"=="+ value);
                     }else if(value instanceof Pair) {
                         Pair pair = (Pair)value;
-                        q.append(key + pair.getKey()+pair.getValue());
+                        conditions.add(key + pair.getKey()+pair.getValue());
                     }else
                         throw new Exception("Query map allows only string values for now!");
                 }
 
-                addParam(builder, "q", q.toString());
+                addParam(builder, "q", String.join(";", conditions));
             }
 
             addParam(builder, "id", ids);

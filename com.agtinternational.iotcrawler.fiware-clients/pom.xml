@@ -5,14 +5,14 @@
     <parent>
         <groupId>com.agtinternational</groupId>
         <artifactId>iotcrawler</artifactId>
-        <version>1.0.3</version>
+        <version>1.0.0</version>
         <relativePath>../IoTCrawler</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.agtinternational.iotcrawler</groupId>
     <artifactId>fiware-clients</artifactId>
-    <version>${parent.version}</version>
+    <version>1.0.4</version>
 
 
 
@@ -57,7 +57,7 @@
         <dependency>
             <groupId>com.agtinternational.iotcrawler</groupId>
             <artifactId>fiware-models</artifactId>
-            <version>${parent.version}</version>
+            <version>1.0.4</version>
 <!--            <exclusions>-->
 <!--                <exclusion>-->
 <!--                    <groupId>eu.neclab.iotplatform</groupId>-->

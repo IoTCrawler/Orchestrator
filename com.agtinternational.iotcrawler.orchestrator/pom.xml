@@ -2,22 +2,24 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>com.agtinternational.iotcrawler</groupId>
-    <artifactId>orchestrator</artifactId>
-    <version>${parent.version}</version>
-    <packaging>jar</packaging>
-
+    
     <parent>
         <groupId>com.agtinternational</groupId>
         <artifactId>iotcrawler</artifactId>
-        <version>1.0.3</version>
+        <version>1.0.0</version>
         <relativePath>../IoTCrawler</relativePath>
     </parent>
 
+	<modelVersion>4.0.0</modelVersion>
+    <groupId>com.agtinternational.iotcrawler</groupId>
+    <artifactId>orchestrator</artifactId>
+    <version>1.0.4</version>
+    <packaging>jar</packaging>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        
+		<iotcrawler.core.version>1.0.4</iotcrawler.core.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
         <slf4j.version>1.7.15</slf4j.version>
@@ -68,7 +70,7 @@
         <dependency>
             <groupId>com.agtinternational.iotcrawler</groupId>
             <artifactId>core</artifactId>
-            <version>${parent.version}</version>
+            <version>${iotcrawler.core.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.agtinternational.iotcrawler</groupId>

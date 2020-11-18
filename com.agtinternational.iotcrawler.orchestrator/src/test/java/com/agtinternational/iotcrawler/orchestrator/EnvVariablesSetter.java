@@ -81,7 +81,7 @@ public class EnvVariablesSetter {
             environmentVariables.set(HTTP_SERVER_PORT, "3001");
 
         if(!System.getenv().containsKey(HTTP_REFERENCE_URL))
-            environmentVariables.set(HTTP_REFERENCE_URL, "http://de-l-psmirnov:"+System.getenv(HTTP_SERVER_PORT)+"/notify");
+            environmentVariables.set(HTTP_REFERENCE_URL, "http://localhost:"+System.getenv(HTTP_SERVER_PORT)+"/notify");
             //environmentVariables.set(HTTP_REFERENCE_URL, "http://staging.orchestrator.iotcrawler.eu/notify");
 
 

@@ -31,6 +31,7 @@ variables:
 
   #HELM_HOST: localhost:44134
   POSTGRES_ENABLED: "false"
+  REVIEW_DISABLED: "true"
 
 
   HELM_UPGRADE_EXTRA_ARGS: --force

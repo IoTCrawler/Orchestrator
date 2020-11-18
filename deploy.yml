@@ -78,9 +78,9 @@ staging:
     - kubectl config set-context default --cluster=k8s --user=gitlab
     - kubectl config use-context default
 
-#    - echo "kubectl delete --all deployment --namespace ${KUBE_NAMESPACE}"
-#    - kubectl delete --all deployment --namespace ${KUBE_NAMESPACE} || echo ""
-#    - kubectl delete --all service --namespace ${KUBE_NAMESPACE} || echo ""
+    - echo "kubectl delete --all deployment --namespace ${KUBE_NAMESPACE}"
+    - kubectl delete --all deployment --namespace ${KUBE_NAMESPACE} || echo ""
+    - kubectl delete --all service --namespace ${KUBE_NAMESPACE} || echo ""
 
     #- sed -i "s#helm upgrade --install#helm upgrade --install --force#g" /usr/local/bin/auto-deploy
     #- cat /usr/local/bin/auto-deploy

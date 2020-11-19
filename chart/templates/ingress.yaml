@@ -16,9 +16,9 @@ spec:
     secretName: orchestrator-{{ .Values.gitlab.env }}-tls22
   rules:
   {{ if eq .Values.gitlab.env "orchestrator-production" }}
-  - host: orchestrator.iotcrawler.eu
+  - host: orchestrator1.iotcrawler.eu
   {{ else }}
-  - host: staging.orchestrator.iotcrawler.eu
+  - host: staging2.orchestrator.iotcrawler.eu
   {{ end }}
     http:
       paths:

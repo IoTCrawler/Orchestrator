@@ -8,17 +8,17 @@ metadata:
 spec:
   tls:
   - hosts:
-    {{ if eq .Values.gitlab.env "orchestrator-production" }}
+    {{ if eq .Release.Name "production" }}
     - orchestrator.iotcrawler.eu
     {{ else }}
     - staging.orchestrator.iotcrawler.eu
     {{ end }}
     secretName: orchestrator-{{ .Values.gitlab.env }}-tls22
   rules:
-  {{ if eq .Values.gitlab.env "orchestrator-production" }}
-  - host: orchestrator1.iotcrawler.eu
+  {{ if eq .Release.Name "production" }}
+  - host: orchestrator.iotcrawler.eu
   {{ else }}
-  - host: staging2.orchestrator.iotcrawler.eu
+  - host: staging.orchestrator.iotcrawler.eu
   {{ end }}
     http:
       paths:

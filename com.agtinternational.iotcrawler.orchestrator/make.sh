@@ -59,6 +59,8 @@ if [ "$1" = "push-image" ]; then
 #    docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
 #  fi
 # gitlab.iotcrawler.net:4567/orchestrator/orchestrator is already in variables (on in a gitlab)
+  echo "# docker push ${CI_APPLICATION_REPOSITORY}"
+  docker push "${CI_APPLICATION_REPOSITORY}"
   echo "# docker tag ${CI_APPLICATION_REPOSITORY} ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}"
   docker tag ${CI_APPLICATION_REPOSITORY} ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}
   echo "# docker push ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}"

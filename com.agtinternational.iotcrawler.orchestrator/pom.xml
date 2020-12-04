@@ -13,14 +13,14 @@
 	<modelVersion>4.0.0</modelVersion>
     <groupId>com.agtinternational.iotcrawler</groupId>
     <artifactId>orchestrator</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
     <packaging>jar</packaging>
 
     <properties>
         
-		<iotcrawler.core.version>1.0.4</iotcrawler.core.version>
+		<iotcrawler.core.version>1.0.5</iotcrawler.core.version>
 		<iotcrawler.fiware-models.version>1.0.4</iotcrawler.fiware-models.version>
-		<iotcrawler.fiware-clients.version>1.0.4</iotcrawler.fiware-clients.version>
+		<iotcrawler.fiware-clients.version>1.0.5</iotcrawler.fiware-clients.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>

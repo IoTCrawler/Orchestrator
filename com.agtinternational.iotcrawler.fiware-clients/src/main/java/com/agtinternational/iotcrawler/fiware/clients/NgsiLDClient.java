@@ -36,6 +36,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.http.*;
+import org.springframework.http.client.AsyncClientHttpRequestFactory;
+import org.springframework.http.client.HttpComponentsAsyncClientHttpRequestFactory;
+import org.springframework.http.client.OkHttp3ClientHttpRequestFactory;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -133,8 +136,9 @@ public class NgsiLDClient {
 
         this.baseURL = baseURL;
         //AsyncClientHttpRequestFactory requestFactory = new HttpComponentsAsyncClientHttpRequestFactory();
-        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
-        requestFactory.setTaskExecutor(new SimpleAsyncTaskExecutor());
+        AsyncClientHttpRequestFactory requestFactory = new OkHttp3ClientHttpRequestFactory();
+        //SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
+        //requestFactory.setTaskExecutor(new SimpleAsyncTaskExecutor());
         this.asyncRestTemplate = new CustomAsyncRestTemplate(requestFactory, new NgsiLDRestTemplate());
         //this(, baseURL);
     }
@@ -614,7 +618,14 @@ public class NgsiLDClient {
                         }
                         Map attributes = entity.getAttributes();
                         attributes.put("@context", entity.getContext());
-                        voidFuture = adapt(request(HttpMethod.POST, builder.buildAndExpand(entity.getId()).toUriString(), httpHeaders, attributes, Void.class));
+
+                        try {
+                            //voidFuture = adapt(request(HttpMethod.POST, builder.buildAndExpand(entity.getId()).toUriString(), httpHeaders, attributes, Void.class));
+                            voidFuture = adapt(request(HttpMethod.PATCH, builder.buildAndExpand(entity.getId()).toUriString(), httpHeaders, attributes, Void.class));
+                        } catch (Exception e) {
+                            LOGGER.error("Failed to perform PATH request: {}", e.getLocalizedMessage());
+                            e.printStackTrace();
+                        }
                     }
 
                     for(ListenableFutureCallback<? super Void> callback: callbacks)

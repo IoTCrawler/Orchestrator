@@ -21,11 +21,14 @@ package com.agtinternational.iotcrawler.fiware.clients;
  */
 
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
+import com.agtinternational.iotcrawler.fiware.models.NGSILD.Property;
+import com.agtinternational.iotcrawler.fiware.models.NGSILD.Relationship;
 import com.agtinternational.iotcrawler.fiware.models.subscription.Subscription;
 import com.orange.ngsi2.model.Attribute;
 import com.orange.ngsi2.model.Paginated;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -33,6 +36,8 @@ import org.springframework.core.annotation.Order;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.Semaphore;
@@ -43,6 +48,7 @@ public class NgsiLDClientManualTests {
 
     private NgsiLDClient ngsiLdClient;
     String serverUrl;
+    private EntityLD entity;
 
     @Before
     public void init(){
@@ -52,6 +58,65 @@ public class NgsiLDClientManualTests {
             serverUrl = System.getenv(NGSILD_BROKER_URL);
 
         ngsiLdClient = new NgsiLDClient(serverUrl);
+
+        //entity = createEntity();
+        if(entity==null) {
+            try {
+                entity = readEntity(Paths.get("samples/Vehicle.json"));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private static EntityLD createEntity() {
+        Map<String, Object> attributes = new HashMap<String, Object>(){{
+            put("brandName", new Property(){{ setType(Optional.of(NGSILD.Property)); setValue("Mercedes"); }});
+            put("isParked", new Relationship("ngsi-ld:OffStreetParking:Downtown1"){{
+                        setType(Optional.of(NGSILD.Relationship));
+                        //setObject("ngsi-ld:OffStreetParking:Downtown1");
+
+                        Map<String, Object> attributes2 = new HashMap<>();
+                        //attributes2.put("object", "ngsi-ld:OffStreetParking:Downtown1");
+                        attributes2.put("observedAt", "2017-07-29T12:00:04");
+                        attributes2.put("providedBy", new Relationship("urn:ngsi-ld:Person:Bob"));
+                        setAttributes(attributes2);
+                    }}
+            );
+            //put("http://purl.org/iot/ontology/iot-stream#temperature", new Attribute(){{ setType(Optional.of("Number")); setObject(23.8); }});
+
+        }};
+
+        //Entity ent = new Entity("User_"+System.currentTimeMillis(), "User", attributes);
+        EntityLD ent = new EntityLD("urn:ngsi-ld:Vehicle:A4571", "urn:ngsi-ld:Vehicle", attributes);
+        return ent;
+    }
+
+    private static EntityLD readEntity(Path path) throws Exception {
+
+        byte[] entityJson = Files.readAllBytes(path);
+        EntityLD entityLD = EntityLD.fromJsonString(new String(entityJson));
+        return entityLD;
+    }
+
+    @Order(1)
+    @Test
+    public void addEntityTest() throws Exception {
+
+//        try {
+//            Paginated<EntityLD> entities = ngsiLdClient.getEntities(Arrays.asList(new String[]{entity.getId()}), null, null, null, 0, 0, false).get();
+//            if (!entities.getItems().isEmpty())
+//                deleteEntityTest();
+//        }
+//        catch (Exception e){
+//            if(e.getCause() instanceof HttpClientErrorException.NotFound)
+//                LOGGER.info("No entity existed before found");
+//            else e.printStackTrace();
+//        }
+
+        Boolean success = ngsiLdClient.addEntitySync(entity);
+        Assert.assertTrue(success);
+        getEntityByIdTest();
 
     }
 
@@ -93,6 +158,8 @@ public class NgsiLDClientManualTests {
         String abc = "asd";
     }
 
+
+
     @Order(3)
     @Test
     public void getEntitiesByParameterTest() throws Exception {
@@ -130,4 +197,19 @@ public class NgsiLDClientManualTests {
         }
     }
 
+
+    @Order(6)
+    @Test
+    public void updateEntityTest() throws Exception {
+
+        Map<String, Object> attributes = entity.getAttributes();
+        entity.addAttribute(attributes.keySet().iterator().next().toString(), (Attribute)attributes.values().iterator().next()+"_"+System.currentTimeMillis());
+
+        boolean success = ngsiLdClient.updateEntitySync(entity , false);
+        if(success)
+            Assert.assertTrue("Entity updated", true);
+        else
+            Assert.fail("Failed to update entity");
+
+    }
 }

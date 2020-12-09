@@ -174,16 +174,16 @@ public class NgsiLDClientTest{
     @Test
     public void addEntityTest() throws Exception {
 
-        try {
-            Paginated<EntityLD> entities = ngsiLdClient.getEntities(Arrays.asList(new String[]{entity.getId()}), null, null, null, 0, 0, false).get();
-            if (!entities.getItems().isEmpty())
-                deleteEntityTest();
-        }
-        catch (Exception e){
-            if(e.getCause() instanceof HttpClientErrorException.NotFound)
-                LOGGER.info("No entity existed before found");
-            else e.printStackTrace();
-        }
+//        try {
+//            Paginated<EntityLD> entities = ngsiLdClient.getEntities(Arrays.asList(new String[]{entity.getId()}), null, null, null, 0, 0, false).get();
+//            if (!entities.getItems().isEmpty())
+//                deleteEntityTest();
+//        }
+//        catch (Exception e){
+//            if(e.getCause() instanceof HttpClientErrorException.NotFound)
+//                LOGGER.info("No entity existed before found");
+//            else e.printStackTrace();
+//        }
 
         Boolean success = ngsiLdClient.addEntitySync(entity);
         Assert.assertTrue(success);

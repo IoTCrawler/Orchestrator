@@ -208,7 +208,13 @@ public class NgsiLDConverter extends AbstractHttpMessageConverter<Object> implem
 
 
         }else if(object instanceof Map){
-            jsonObject = (JsonObject) Utils.objectToJson(object);
+            try {
+                jsonObject = (JsonObject) Utils.objectToJson(object);
+            }
+            catch (Exception e){
+                e.printStackTrace();
+                throw new NotImplementedException("Faild to convert {} "+object.getClass()+" to json: {}", e.getLocalizedMessage());
+            }
         }else{
             throw new NotImplementedException("Conversion not implemented for "+object.getClass());
         }

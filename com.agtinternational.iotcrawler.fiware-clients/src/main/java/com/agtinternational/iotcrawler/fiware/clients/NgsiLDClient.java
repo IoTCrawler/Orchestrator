@@ -179,6 +179,7 @@ public class NgsiLDClient {
 
         });
         try {
+            req.get();
             reqFinished.acquire();
         } catch (InterruptedException e) {
             LOGGER.error(e.getLocalizedMessage());
@@ -558,86 +559,30 @@ public class NgsiLDClient {
     }
 
 
-    public ListenableFuture<Void> updateEntity(EntityLD entity, boolean append) throws ExecutionException, InterruptedException {
+    public ListenableFuture<Void> updateEntity(EntityLD entity, boolean append){
 
-        return new ListenableFuture<Void>() {
+        HttpHeaders httpHeaders = cloneHttpHeaders();
+        httpHeaders.setContentType(MediaType.valueOf("application/ld+json"));
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseURL);
+        builder.path("v1/entities/{entityId}/attrs");
+        //addParam(builder, "type", type);
+        if (append) {
+            addParam(builder, "options", "append");
+        }
+        Map attributes = entity.getAttributes();
+        attributes.put("@context", entity.getContext());
+
+        ListenableFuture<Void> ret = adapt(request(HttpMethod.POST, builder.buildAndExpand(entity.getId()).toUriString(), httpHeaders, attributes, Void.class));
+        return ret;
+    }
+
+    public ListenableFuture<Void> updateEntityWithDeletion(EntityLD entity, boolean append){
+            return new ListenableFuture<Void>() {
 
             List<ListenableFutureCallback<? super Void>> callbacks = new ArrayList<>();
 
             ListenableFuture<Void> voidFuture = null;
-            ListenableFutureCallback<EntityLD> nonVoidCallBack = new ListenableFutureCallback<EntityLD>() {
-                @Override
-                public void onFailure(Throwable throwable) {
-                    LOGGER.error("Failed to get entity during update procedure: ", throwable.getLocalizedMessage());
-                    throwable.printStackTrace();
-                }
-
-                @Override
-                public void onSuccess(EntityLD oldEntityLD) {
-
-                    //List<Exception> errors = new ArrayList<>();
-                    Boolean delete=false;
-                    for(String key: oldEntityLD.getAttributes().keySet()){
-                        if(!entity.getAttributes().containsKey(key))
-                            delete=true;
-                    }
-
-                    if(delete) {
-                        ListenableFuture<Void> deleteRequest = deleteEntity(entity.getId());
-                        deleteRequest.addCallback(new ListenableFutureCallback<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                try {
-                                    voidFuture = addEntity(entity);
-                                    for(ListenableFutureCallback<? super Void> callback: callbacks)
-                                        voidFuture.addCallback(callback);
-                                    voidFuture.get();
-                                } catch (Exception e) {
-                                    LOGGER.error("Failed to add entity during updating it:", e.getLocalizedMessage());
-                                    e.printStackTrace();
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(Throwable throwable) {
-                                LOGGER.error("Failed to delete entity during update procedure:", throwable.getLocalizedMessage());
-                                throwable.printStackTrace();
-                            }
-                        });
-                        voidFuture = deleteRequest;
-                    }else {
-
-                        HttpHeaders httpHeaders = cloneHttpHeaders();
-                        httpHeaders.setContentType(MediaType.valueOf("application/ld+json"));
-
-                        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseURL);
-                        builder.path("v1/entities/{entityId}/attrs");
-                        //addParam(builder, "type", type);
-                        if (append) {
-                            addParam(builder, "options", "append");
-                        }
-                        Map attributes = entity.getAttributes();
-                        attributes.put("@context", entity.getContext());
-
-                        try {
-                            //voidFuture = adapt(request(HttpMethod.POST, builder.buildAndExpand(entity.getId()).toUriString(), httpHeaders, attributes, Void.class));
-                            voidFuture = adapt(request(HttpMethod.PATCH, builder.buildAndExpand(entity.getId()).toUriString(), httpHeaders, attributes, Void.class));
-                        } catch (Exception e) {
-                            LOGGER.error("Failed to perform PATH request: {}", e.getLocalizedMessage());
-                            e.printStackTrace();
-                        }
-                    }
-
-                    for(ListenableFutureCallback<? super Void> callback: callbacks)
-                        voidFuture.addCallback(callback);
-
-                    try {
-                        voidFuture.get();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            };
 
             @Override
             public void addCallback(ListenableFutureCallback<? super Void> listenableFutureCallback) {
@@ -667,7 +612,60 @@ public class NgsiLDClient {
             @Override
             public Void get() throws InterruptedException, ExecutionException {
                 ListenableFuture<EntityLD> getEntityRequest = getEntity(entity.getId(), entity.getType(), null);
-                getEntityRequest.addCallback(nonVoidCallBack);
+                getEntityRequest.addCallback(new ListenableFutureCallback<EntityLD>() {
+                    @Override
+                    public void onFailure(Throwable throwable) {
+                        LOGGER.error("Failed to get entity during update procedure: ", throwable.getLocalizedMessage());
+                        throwable.printStackTrace();
+                    }
+
+                    @Override
+                    public void onSuccess(EntityLD oldEntityLD) {
+
+                        //List<Exception> errors = new ArrayList<>();
+                        Boolean delete=false;
+                        for(String key: oldEntityLD.getAttributes().keySet()){
+                            if(!entity.getAttributes().containsKey(key))
+                                delete=true;
+                        }
+
+                        if(delete) {
+                            ListenableFuture<Void> deleteRequest = deleteEntity(entity.getId());
+                            deleteRequest.addCallback(new ListenableFutureCallback<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    try {
+                                        voidFuture = addEntity(entity);
+                                        for(ListenableFutureCallback<? super Void> callback: callbacks)
+                                            voidFuture.addCallback(callback);
+                                        voidFuture.get();
+                                    } catch (Exception e) {
+                                        LOGGER.error("Failed to add entity during updating it:", e.getLocalizedMessage());
+                                        e.printStackTrace();
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Throwable throwable) {
+                                    LOGGER.error("Failed to delete entity during update procedure:", throwable.getLocalizedMessage());
+                                    throwable.printStackTrace();
+                                }
+                            });
+                            voidFuture = deleteRequest;
+                        }else
+                            voidFuture = updateEntity(entity, true);
+
+
+                        for(ListenableFutureCallback<? super Void> callback: callbacks)
+                            voidFuture.addCallback(callback);
+
+                        try {
+                            voidFuture.get();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
                 getEntityRequest.get();
                 return null;
             }
@@ -677,9 +675,7 @@ public class NgsiLDClient {
                 return get();
             }
         };
-
     }
-
 
 
     /**

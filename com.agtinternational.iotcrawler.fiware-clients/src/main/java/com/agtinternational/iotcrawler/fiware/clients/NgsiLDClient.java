@@ -225,6 +225,7 @@ public class NgsiLDClient {
         });
 
         try {
+            req.get();
             reqFinished.acquire();
         } catch (InterruptedException e) {
             LOGGER.error(e.getLocalizedMessage());
@@ -240,6 +241,40 @@ public class NgsiLDClient {
 
     public boolean updateEntitySync(EntityLD entityLD, boolean append) throws Exception {
         ListenableFuture<Void> req = updateEntity(entityLD, append);
+        final Boolean[] success = {false};
+        Semaphore reqFinished = new Semaphore(0);
+        List<Exception> errors = new ArrayList<>();
+        req.addCallback(new ListenableFutureCallback<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                success[0] = true;
+                reqFinished.release();
+            }
+
+            @Override
+            public void onFailure(Throwable throwable) {
+                success[0] = false;
+                errors.add(new Exception(throwable));
+                reqFinished.release();
+            }
+
+        });
+
+        try {
+            req.get();
+            reqFinished.acquire();
+        } catch (InterruptedException e) {
+            LOGGER.error(e.getLocalizedMessage());
+        }
+        if(!errors.isEmpty())
+            throw errors.get(0);
+
+        return success[0];
+
+    }
+
+    public boolean updateEntityWithDeletionSync(EntityLD entityLD, boolean append) throws Exception {
+        ListenableFuture<Void> req = updateEntityWithDeletion(entityLD, append);
         final Boolean[] success = {false};
         Semaphore reqFinished = new Semaphore(0);
         List<Exception> errors = new ArrayList<>();
@@ -293,6 +328,7 @@ public class NgsiLDClient {
 
         });
         try {
+            req.get();
             reqFinished.acquire();
         } catch (InterruptedException e) {
             LOGGER.error(e.getLocalizedMessage());
@@ -301,6 +337,8 @@ public class NgsiLDClient {
             throw errors.get(0);
         return success[0];
     }
+
+
 
     /*
      * Entities requests

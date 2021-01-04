@@ -661,37 +661,44 @@ public class NgsiLDClient {
                     public void onSuccess(EntityLD oldEntityLD) {
 
                         //List<Exception> errors = new ArrayList<>();
-                        Boolean delete=false;
-                        for(String key: oldEntityLD.getAttributes().keySet()){
-                            if(!entity.getAttributes().containsKey(key))
-                                delete=true;
+                        //Boolean delete=false;
+
+                        //delete all the attributes affected by smartConnect
+                        for(String key: entity.getAttributes().keySet()){
+                            try {
+                                //update or delete attributes does not work when Attribute is URI (normalized or not)
+                                //updateAttributeSync(entity.getId(), entity.getType(), key, (Attribute) entity.getAttributes().get(key));
+                                //deleteAttributeSync(entity.getId(), entity.getType(), key);
+                            } catch (Exception e) {
+                                LOGGER.error("Failed to update attribute during entity update:", e.getLocalizedMessage());
+                            }
                         }
 
-                        if(delete) {
-                            ListenableFuture<Void> deleteRequest = deleteEntity(entity.getId());
-                            deleteRequest.addCallback(new ListenableFutureCallback<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    try {
-                                        voidFuture = addEntity(entity);
-                                        for(ListenableFutureCallback<? super Void> callback: callbacks)
-                                            voidFuture.addCallback(callback);
-                                        voidFuture.get();
-                                    } catch (Exception e) {
-                                        LOGGER.error("Failed to add entity during updating it:", e.getLocalizedMessage());
-                                        e.printStackTrace();
-                                    }
-                                }
-
-                                @Override
-                                public void onFailure(Throwable throwable) {
-                                    LOGGER.error("Failed to delete entity during update procedure:", throwable.getLocalizedMessage());
-                                    throwable.printStackTrace();
-                                }
-                            });
-                            voidFuture = deleteRequest;
-                        }else
-                            voidFuture = updateEntity(entity, true);
+//                        if(delete) {
+//                            ListenableFuture<Void> deleteRequest = deleteEntity(entity.getId());
+//                            deleteRequest.addCallback(new ListenableFutureCallback<Void>() {
+//                                @Override
+//                                public void onSuccess(Void aVoid) {
+//                                    try {
+//                                        voidFuture = addEntity(entity);
+//                                        for(ListenableFutureCallback<? super Void> callback: callbacks)
+//                                            voidFuture.addCallback(callback);
+//                                        voidFuture.get();
+//                                    } catch (Exception e) {
+//                                        LOGGER.error("Failed to add entity during updating it:", e.getLocalizedMessage());
+//                                        e.printStackTrace();
+//                                    }
+//                                }
+//
+//                                @Override
+//                                public void onFailure(Throwable throwable) {
+//                                    LOGGER.error("Failed to delete entity during update procedure:", throwable.getLocalizedMessage());
+//                                    throwable.printStackTrace();
+//                                }
+//                            });
+//                            voidFuture = deleteRequest;
+//                        }else
+                        voidFuture = updateEntity(entity, true);
 
 
                         for(ListenableFutureCallback<? super Void> callback: callbacks)
@@ -770,8 +777,38 @@ public class NgsiLDClient {
     public ListenableFuture<Void> updateAttribute(String entityId, String type, String attributeName, Attribute attribute) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseURL);
         builder.path("v1/entities/{entityId}/attrs/{attributeName}");
-        addParam(builder, "type", type);
-        return adapt(request(HttpMethod.PUT, builder.buildAndExpand(entityId, attributeName).toUriString(), attribute, Void.class));
+        //addParam(builder, "type", type);
+        if(attributeName.startsWith("http://"))
+            attributeName = URLEncoder.encode(attributeName);
+        return adapt(request(HttpMethod.PATCH, builder.buildAndExpand(entityId, attributeName).toUriString(), attribute, Void.class));
+    }
+
+    public Attribute updateAttributeSync(String entityId, String type, String attributeName, Attribute attribute) throws Exception {
+        ListenableFuture<Void> req = updateAttribute(entityId, type, attributeName, attribute);
+        List<Attribute> ret = new ArrayList<>();
+        Semaphore reqFinished = new Semaphore(0);
+        List<Exception> errors = new ArrayList<>();
+
+        req.addCallback(new SuccessCallback<Void>() {
+            @Override
+            public void onSuccess(Void attribute) {
+                reqFinished.release();
+            }
+        }, new FailureCallback() {
+            @Override
+            public void onFailure(Throwable throwable) {
+                errors.add(new Exception(throwable));
+                reqFinished.release();
+            }
+        });
+
+        reqFinished.acquire();
+
+        if(!errors.isEmpty())
+            throw errors.get(0);
+        if(ret.size()>0)
+            return ret.get(0);
+        return null;
     }
 
     /**

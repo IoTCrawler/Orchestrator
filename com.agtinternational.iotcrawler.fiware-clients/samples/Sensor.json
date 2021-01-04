@@ -1,0 +1,23 @@
+{
+  "id": "urn:ngsi-ld:Aarhus-staging_10adb27d-123e-4ca8-8a59-7ab215a180f5_10adb27d-123e-4ca8-8a59-7ab215a180f5-sensor-ac4234cf-d2b7-4cfa-8765-9f4477e2de5f",
+  "type": "http://www.w3.org/ns/sosa/Sensor",
+  "http://schema.org/identifier": {
+    "type": "Property",
+    "value": "10adb27d-123e-4ca8-8a59-7ab215a180f5-sensor-ac4234cf-d2b7-4cfa-8765-9f4477e2de5f"
+  },
+  "http://www.w3.org/ns/sosa/isHostedBy": {
+    "type": "Property",
+    "value": "urn:ngsi-ld:Aarhus-staging_10adb27d-123e-4ca8-8a59-7ab215a180f5"
+  },
+  "http://www.w3.org/ns/sosa/madeObservation": {
+    "type": "Property",
+    "value": "urn:ngsi-ld:Aarhus-staging_10adb27d-123e-4ca8-8a59-7ab215a180f5_10adb27d-123e-4ca8-8a59-7ab215a180f5-sensor-ac4234cf-d2b7-4cfa-8765-9f4477e2de5f__Observation"
+  },
+  "http://www.w3.org/ns/sosa/observes": {
+    "type": "Relationship",
+    "object": "urn:ngsi-ld:Precipitation34"
+  },
+  "@context": [
+    "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"
+  ]
+}

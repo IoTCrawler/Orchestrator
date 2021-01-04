@@ -212,4 +212,22 @@ public class NgsiLDClientManualTests {
             Assert.fail("Failed to update entity");
 
     }
+
+    @Order(6)
+    @Test
+    public void updateEntityWithAttributeDeletionTest() throws Exception {
+
+        entity = readEntity(Paths.get("samples/Sensor.json"));
+
+        //Map<String, Object> attributes = entity.getAttributes();
+        //entity.addAttribute(attributes.keySet().iterator().next().toString(), (Attribute)attributes.values().iterator().next()+"_"+System.currentTimeMillis());
+
+        boolean success = ngsiLdClient.updateEntityWithDeletionSync(entity , false);
+        //boolean success = ngsiLdClient.updateEntitySync(entity , false);
+        if(success)
+            Assert.assertTrue("Entity updated", true);
+        else
+            Assert.fail("Failed to update entity");
+
+    }
 }

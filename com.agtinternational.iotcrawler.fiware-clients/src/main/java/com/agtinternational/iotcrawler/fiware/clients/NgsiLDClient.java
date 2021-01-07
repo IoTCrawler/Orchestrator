@@ -80,40 +80,40 @@ public class NgsiLDClient {
         //httpHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         httpHeaders.setAccept(Collections.singletonList(valueOf("*/*")));  //nec broker ignores the context
 
-        TrustManager[] trustAllCerts = new TrustManager[]{
-                new X509TrustManager() {
-                    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                        return null;
-                    }
-                    public void checkClientTrusted(
-                            java.security.cert.X509Certificate[] certs, String authType) {
-                    }
-                    public void checkServerTrusted(
-                            java.security.cert.X509Certificate[] certs, String authType) {
-                    }
-                }
-        };
-
-        SSLContext sc = null;
-        try {
-            sc = SSLContext.getInstance("SSL");
-            sc.init(null, trustAllCerts, new SecureRandom());
-        }
-        catch (Exception e){
-            LOGGER.error("Failed to init SSL Context: {}", e.getLocalizedMessage());
-        }
-        if(sc!=null) {
-            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-            HostnameVerifier hv = new HostnameVerifier() {
-                public boolean verify(String urlHostName, SSLSession session) {
-                    if (!urlHostName.equalsIgnoreCase(session.getPeerHost())) {
-                        System.out.println("Warning: URL host '" + urlHostName + "' is different to SSLSession host '" + session.getPeerHost() + "'.");
-                    }
-                    return true;
-                }
-            };
-            HttpsURLConnection.setDefaultHostnameVerifier(hv);
-        }
+//        TrustManager[] trustAllCerts = new TrustManager[]{
+//                new X509TrustManager() {
+//                    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+//                        return null;
+//                    }
+//                    public void checkClientTrusted(
+//                            java.security.cert.X509Certificate[] certs, String authType) {
+//                    }
+//                    public void checkServerTrusted(
+//                            java.security.cert.X509Certificate[] certs, String authType) {
+//                    }
+//                }
+//        };
+//
+//        SSLContext sc = null;
+//        try {
+//            sc = SSLContext.getInstance("SSL");
+//            sc.init(null, trustAllCerts, new SecureRandom());
+//        }
+//        catch (Exception e){
+//            LOGGER.error("Failed to init SSL Context: {}", e.getLocalizedMessage());
+//        }
+//        if(sc!=null) {
+//            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+//            HostnameVerifier hv = new HostnameVerifier() {
+//                public boolean verify(String urlHostName, SSLSession session) {
+//                    if (!urlHostName.equalsIgnoreCase(session.getPeerHost())) {
+//                        System.out.println("Warning: URL host '" + urlHostName + "' is different to SSLSession host '" + session.getPeerHost() + "'.");
+//                    }
+//                    return true;
+//                }
+//            };
+//            HttpsURLConnection.setDefaultHostnameVerifier(hv);
+//        }
     }
 
 //    /**
@@ -136,9 +136,10 @@ public class NgsiLDClient {
 
         this.baseURL = baseURL;
         //AsyncClientHttpRequestFactory requestFactory = new HttpComponentsAsyncClientHttpRequestFactory();
-        AsyncClientHttpRequestFactory requestFactory = new OkHttp3ClientHttpRequestFactory();
-        //SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
-        //requestFactory.setTaskExecutor(new SimpleAsyncTaskExecutor());
+        //This client allows to ignore certificate exceptions, but fails to init in ansestor code
+        //AsyncClientHttpRequestFactory requestFactory = new OkHttp3ClientHttpRequestFactory();
+        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
+        requestFactory.setTaskExecutor(new SimpleAsyncTaskExecutor());
         this.asyncRestTemplate = new CustomAsyncRestTemplate(requestFactory, new NgsiLDRestTemplate());
         //this(, baseURL);
     }

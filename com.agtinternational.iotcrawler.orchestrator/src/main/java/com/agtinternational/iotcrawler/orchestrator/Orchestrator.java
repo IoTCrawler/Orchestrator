@@ -60,7 +60,7 @@ public class Orchestrator extends IoTCrawlerClient {
     String redisHost = "localhost";
     String notificationsEndpoint = "/notify";
     String ngsiEndpoint = "/ngsi-ld";
-    String versionEndpoint = "/";
+    String versionEndpoint = "/version";
     boolean cutURIs = true;
 
     //AbstractMetadataClient metadataClient;

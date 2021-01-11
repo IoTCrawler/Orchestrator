@@ -22,8 +22,11 @@ package com.agtinternational.iotcrawler.orchestrator;
 
 import com.agtinternational.iotcrawler.core.clients.RabbitClient;
 import com.agtinternational.iotcrawler.core.models.StreamObservation;
+import com.agtinternational.iotcrawler.core.ontologies.NGSI_LD;
+import com.agtinternational.iotcrawler.fiware.clients.NgsiLDClient;
 import com.agtinternational.iotcrawler.fiware.models.subscription.Endpoint;
 import com.agtinternational.iotcrawler.fiware.models.subscription.Subscription;
+import com.agtinternational.iotcrawler.orchestrator.clients.NgsiLD_MdrClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -133,7 +136,7 @@ public class HttpServer {
         });
     }
 
-    public HttpHandler proxyingHandler(String brokerHost, Function<String, String> onSubsciptionRegistered) {
+    public HttpHandler proxyingHandler(NgsiLDClient ngsiLDClient, String brokerHost, Function<String, String> onSubsciptionRegistered) {
         return new HttpHandler() {
             @Override
             public void handle(HttpExchange he) throws IOException {
@@ -143,6 +146,7 @@ public class HttpServer {
 
                 String subscriptionId = null;
                 HttpRequestBase httpRequest = null;
+                Boolean skipRequest = false;
                 if (he.getRequestMethod().equals("GET")) {
                     httpRequest = new HttpGet(combinedUri);
 
@@ -157,10 +161,32 @@ public class HttpServer {
                     String body = writer.toString();
 
                     if(combinedUri.endsWith("subscriptions")){
+                        Subscription subscription = null;
                         try {
                             Gson g = new Gson();
-                            Subscription subscription = g.fromJson(body, Subscription.class);
-                            subscriptionId = subscription.getId();
+                            subscription = g.fromJson(body, Subscription.class);
+                        }
+                        catch (Exception e){
+                            LOGGER.error("Failed to exctract subscriptionId: {}", e.getLocalizedMessage());
+                            return;
+                        }
+
+                        subscriptionId = subscription.getId();
+
+                        try {
+                            if(ngsiLDClient.getSubscriptionSync(subscriptionId)!=null){
+                                LOGGER.info("Subscription {} already exists in broker. Skipping subscription request");
+                                skipRequest = true;
+                            }
+                        }
+                        catch (Exception e){
+                            if(!e.getLocalizedMessage().toLowerCase().contains("404 not found")) {
+                                LOGGER.error("Failed to check subscription in MDR: {}", e.getLocalizedMessage());
+                                return;
+                            }
+                        }
+
+                        if(!skipRequest){
                             if(subscription.getNotification().getEndpoint()==null){
                                 String httpReferenceUrl = System.getenv(HTTP_REFERENCE_URL);
                                 if(httpReferenceUrl==null)
@@ -172,9 +198,15 @@ public class HttpServer {
 
                                 }
                             }
-                        }
-                        catch (Exception e){
-                            LOGGER.error("Failed to exctract subscriptionId: {}", e.getLocalizedMessage());
+                            try {
+                                ngsiLDClient.addSubscriptionSync(subscription);
+                                skipRequest = true;
+                            }
+                            catch (Exception e){
+                                LOGGER.error("Failed to make subscription{} : {}", subscriptionId, e.getLocalizedMessage());
+                                return;
+
+                            }
                         }
                     }
 
@@ -191,12 +223,14 @@ public class HttpServer {
                     httpRequest = new HttpPut(combinedUri);
                 } else throw new NotImplementedException(he.getRequestMethod() + " not implemented");
 
-                LOGGER.trace("{} request received to {}", he.getRequestMethod(), he.getRequestURI().toString());
 
-                httpRequest.setHeader("Accept", "application/json");
-                httpRequest.setHeader("Content-type", "application/json");
-
+                if(!skipRequest)
                 try {
+                    LOGGER.trace("{} request received to {}", he.getRequestMethod(), he.getRequestURI().toString());
+
+                    httpRequest.setHeader("Accept", "application/json");
+                    httpRequest.setHeader("Content-type", "application/json");
+
                     HttpResponse response2 = httpClient.execute(httpRequest);
                     BufferedReader rd = new BufferedReader(new InputStreamReader(response2.getEntity().getContent()));
 
@@ -213,18 +247,18 @@ public class HttpServer {
                     return;
                 }
                 if(subscriptionId!=null)
-                try{
-                    String queueName =  onSubsciptionRegistered.apply(subscriptionId);
-                    response = queueName;
-                    //response = "{ \"result\":\""+queueName+"\"}";
-                }
-                catch (Exception e){
-                    LOGGER.error("Failed to apply onSubsciptionRegistered hook");
-                    response = "{ error: \"Failed to apply onSubsciptionRegistered hook\"}";
-                    he.sendResponseHeaders(500, response.length());
-                    LOGGER.error(e.getLocalizedMessage());
-                    return;
-                }
+                    try{
+                        String queueName =  onSubsciptionRegistered.apply(subscriptionId);
+                        response = queueName;
+                        //response = "{ \"result\":\""+queueName+"\"}";
+                    }
+                    catch (Exception e){
+                        LOGGER.error("Failed to apply onSubsciptionRegistered hook");
+                        response = "{ error: \"Failed to apply onSubsciptionRegistered hook\"}";
+                        he.sendResponseHeaders(500, response.length());
+                        LOGGER.error(e.getLocalizedMessage());
+                        return;
+                    }
 
                 he.sendResponseHeaders(200, response.length());
 

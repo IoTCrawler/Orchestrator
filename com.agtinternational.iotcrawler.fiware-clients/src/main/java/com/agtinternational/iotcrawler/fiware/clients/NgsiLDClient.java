@@ -1060,6 +1060,36 @@ public class NgsiLDClient {
         return adapt(request(HttpMethod.GET, builder.buildAndExpand(subscriptionId).toUriString(), null, Subscription.class));
     }
 
+    public Subscription getSubscriptionSync(String subscriptionId) throws Exception {
+        Semaphore reqFinished = new Semaphore(0);
+        ListenableFuture<Subscription> req = getSubscription(subscriptionId);
+        List<Subscription> ret = new ArrayList<>();
+        List<Exception> errors = new ArrayList<>();
+        req.addCallback(new ListenableFutureCallback<Subscription>() {
+            @Override
+            public void onSuccess(Subscription result) {
+                ret.add(result);
+                reqFinished.release();
+            }
+
+            @Override
+            public void onFailure(Throwable throwable) {
+                LOGGER.error("Failed to add subscription");
+                errors.add(new Exception(throwable));
+                reqFinished.release();
+            }
+
+        });
+        reqFinished.acquire();
+
+        if (errors.size()>0)
+            throw errors.get(0);
+
+        if(ret.size()==0)
+            return null;
+        return ret.get(0);
+    }
+
     /**
      * Update the subscription by subscription ID
      * @param subscriptionId the subscription ID

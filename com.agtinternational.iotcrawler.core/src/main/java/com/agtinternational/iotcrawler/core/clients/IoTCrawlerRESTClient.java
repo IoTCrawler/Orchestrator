@@ -184,18 +184,18 @@ public class IoTCrawlerRESTClient extends IoTCrawlerClient implements AutoClosea
 
     @Override
     public String subscribeTo(String streamId, Function<StreamObservation, Void> onChange) throws Exception {
-        String propertyId = null;
+        String streamObservationId = null;
         try {
-            propertyId = graphQLClient.getStreamObservationsByStreamId(streamId);
+            streamObservationId = graphQLClient.getStreamObservationsByStreamId(streamId);
         }
         catch (Exception e){
             LOGGER.error("Failed to execute GraphQL Request: {}", e.getLocalizedMessage());
             throw new Exception("Failed to execute GraphQL Request");
         }
-        if(propertyId==null)
+        if(streamObservationId==null)
             throw new Exception("Observable property for stream "+streamId+" not found");
 
-        EntityInfo entityInfo = new EntityInfo(propertyId, StreamObservation.getTypeUri());
+        EntityInfo entityInfo = new EntityInfo(streamObservationId, StreamObservation.getTypeUri());
         //URL orchestratorURL =  new URL(System.getenv(IOTCRAWLER_ORCHESTRATOR_URL));
         //String referenceURL = "http://"+orchestratorURL.getHost()+":"+orchestratorURL.getPort()+"/notify";
         //String refURL = (endpointUrl!=null? endpointUrl:);
@@ -206,7 +206,7 @@ public class IoTCrawlerRESTClient extends IoTCrawlerClient implements AutoClosea
         //notification.setAttributes(Arrays.asList(new String[]{ SOSA.hasSimpleResult}));
         //notification.setEndpoint(null);
 
-        String subscriptionId = UUID.randomUUID().toString();
+        String subscriptionId = UUID.nameUUIDFromBytes(streamObservationId.getBytes()).toString();//UUID.randomUUID().toString();
         Subscription subscription = new Subscription(
                 subscriptionId,
                 Arrays.asList(new EntityInfo[]{ entityInfo }),

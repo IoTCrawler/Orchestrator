@@ -23,9 +23,11 @@ package com.agtinternational.iotcrawler.orchestrator;
 import com.agtinternational.iotcrawler.core.Utils;
 import com.agtinternational.iotcrawler.core.clients.RabbitClient;
 import com.agtinternational.iotcrawler.core.interfaces.IoTCrawlerClient;
+import com.agtinternational.iotcrawler.fiware.clients.NgsiLDClient;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import com.agtinternational.iotcrawler.fiware.models.subscription.Subscription;
 //import com.agtinternational.iotcrawler.orchestrator.clients.IotBrokerDataClient;
+import com.agtinternational.iotcrawler.orchestrator.clients.AbstractMetadataClient;
 import com.agtinternational.iotcrawler.orchestrator.clients.NgsiLD_MdrClient;
 import com.agtinternational.iotcrawler.core.models.*;
 import com.google.gson.*;
@@ -63,8 +65,8 @@ public class Orchestrator extends IoTCrawlerClient {
     String versionEndpoint = "/version";
     boolean cutURIs = true;
 
-    //AbstractMetadataClient metadataClient;
     NgsiLD_MdrClient metadataClient;
+    //NgsiLDClient ngsiLDClient;
     //IotBrokerDataClient dataBrokerClient;
     HttpServer httpServer;
 
@@ -109,8 +111,9 @@ public class Orchestrator extends IoTCrawlerClient {
 
         String brokerURL = (System.getenv().containsKey(RANKING_COMPONENT_URL)? System.getenv(RANKING_COMPONENT_URL): System.getenv(NGSILD_BROKER_URL));
 
+        // ngsiLDClient = new NgsiLDClient(brokerURL);//
         metadataClient = new NgsiLD_MdrClient(brokerURL, this.cutURIs);
-        LOGGER.info("Initialized NGSI-LD Client to {}", metadataClient.getBrokerHost());
+        LOGGER.info("Initialized NGSI-LD Client to {}", brokerURL);
 
 //        dataBrokerClient = new IotBrokerDataClient();
 //        LOGGER.info("Initialized IoTBroker Client to {}", dataBrokerClient.getIoTBrokerEndpoint());
@@ -240,7 +243,7 @@ public class Orchestrator extends IoTCrawlerClient {
         }
 
         httpServer.addContext(notificationsEndpoint, notificationsHandlerFunction);
-        httpServer.addContext(ngsiEndpoint, httpServer.proxyingHandler(metadataClient.getBrokerHost(), new Function<String, String>() {
+        httpServer.addContext(ngsiEndpoint, httpServer.proxyingHandler(metadataClient.ngsiLDClient, metadataClient.getBrokerHost(), new Function<String, String>() {
             @Override
             public String apply(String subscriptionId) {
                 try {

@@ -282,41 +282,44 @@ public class RDFModel {
         setProperty(property, value);
     }
 
+    public void setProperty(Property property, Object value){
+        removeProperty(property);
+        addProperty(property, value);
+    }
+
     public void removeProperty(String uri){
         Property property = new PropertyImpl(uri);
-        removeProperty(property, null);
+        removeProperty(property);
     }
 
-    public void removeProperty(String uri, String value){
-        Property property = new PropertyImpl(uri);
-        removeProperty(property, value);
+    private void removeProperty(Property property){
+        List<RDFNode> values = getProperty(property.getURI());
+        if(values!=null)
+            for(RDFNode value: values)
+                removePropertyValue(property, value);
+
     }
 
-    private void removeProperty(Property property, String value){
+//    public void removeProperty(String uri, String value){
+//        removePropertyValue(property, );
+//    }
 
-        List<RDFNode> existingValues = getProperty(property.getURI());
-        for(RDFNode existingValue: existingValues) {
-            Statement statement = new StatementImpl(resource, property, existingValue);
-            Boolean remove = false;
-            if(value!=null) {
-                if (existingValue.isLiteral()) {
-                    if(existingValue.asLiteral().toString().equals(value))
-                        remove = true;
-                } else if (existingValue.isResource()) {
-                    if(existingValue.asResource().getURI().equals(value))
-                        remove = true;
-                } else throw new NotImplementedException(existingValue.getClass().getCanonicalName());
-            }else
-                remove = true;
+    private void removePropertyValue(Property property, RDFNode value){
 
-            if(remove)
-                model.remove(statement);
-        }
-    }
+        Statement statement = new StatementImpl(resource, property, value);
+//        Boolean remove = false;
+//        if(value!=null) {
+//            if (existingValue.isLiteral()) {
+//                if(existingValue.asLiteral().toString().equals(value))
+//                    remove = true;
+//            } else if (existingValue.isResource()) {
+//                if(existingValue.asResource().getURI().equals(value))
+//                    remove = true;
+//            } else throw new NotImplementedException(existingValue.getClass().getCanonicalName());
+//        }else
+//            remove = true;
 
-    public void setProperty(Property property, Object value){
-        removeProperty(property, null);
-        addProperty(property, value);
+        model.remove(statement);
     }
 
     public List<String> getAttributeNames(){
@@ -346,6 +349,8 @@ public class RDFModel {
             if (statement.getSubject().equals(resource) && statement.getPredicate().getURI().equals(uri))
                 ret.add(statement.getObject());
         }
+        if(ret.isEmpty())
+            return null;
         return ret;
     }
 

@@ -6,14 +6,14 @@
     <parent>
         <groupId>com.agtinternational</groupId>
         <artifactId>iotcrawler</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.0</version>
         <relativePath>../IoTCrawler</relativePath>
     </parent>
 
 	<modelVersion>4.0.0</modelVersion>
     <groupId>com.agtinternational.iotcrawler</groupId>
     <artifactId>orchestrator</artifactId>
-    <version>1.0.6</version>
+    <version>1.0.8</version>
     <packaging>jar</packaging>
 
     <properties>

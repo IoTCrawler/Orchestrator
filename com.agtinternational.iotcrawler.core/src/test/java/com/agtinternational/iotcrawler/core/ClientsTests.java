@@ -97,7 +97,7 @@ public class ClientsTests {
     public void updateTestEntities() throws Exception {
 
         String streamId = stream.getURI();
-        String subscriptionId = client.subscribeTo(streamId, new Function<StreamObservation, Void>() {
+        String subscriptionId = client.subscribeToStream(streamId, new Function<StreamObservation, Void>() {
             @Override
             public Void apply(StreamObservation streamObservation) {
 
@@ -289,7 +289,7 @@ public class ClientsTests {
 
         String streamId = "urn:household1:stateStream";
         String referenceURL = System.getenv(HTTP_REFERENCE_URL);
-        String subscriptionId = client.subscribeTo(streamId, new Function<StreamObservation, Void>() {
+        String subscriptionId = client.subscribeToStream(streamId, new Function<StreamObservation, Void>() {
             @Override
             public Void apply(StreamObservation streamObservation) {
 

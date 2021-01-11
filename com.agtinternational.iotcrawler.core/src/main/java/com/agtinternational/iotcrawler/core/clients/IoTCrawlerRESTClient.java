@@ -183,7 +183,7 @@ public class IoTCrawlerRESTClient extends IoTCrawlerClient implements AutoClosea
 
 
     @Override
-    public String subscribeTo(String streamId, Function<StreamObservation, Void> onChange) throws Exception {
+    public String subscribeToStream(String streamId, Function<StreamObservation, Void> onChange) throws Exception {
         String streamObservationId = null;
         try {
             streamObservationId = graphQLClient.getStreamObservationsByStreamId(streamId);
@@ -206,80 +206,72 @@ public class IoTCrawlerRESTClient extends IoTCrawlerClient implements AutoClosea
         //notification.setAttributes(Arrays.asList(new String[]{ SOSA.hasSimpleResult}));
         //notification.setEndpoint(null);
 
-        String subscriptionId = UUID.nameUUIDFromBytes(streamObservationId.getBytes()).toString();//UUID.randomUUID().toString();
+        String subscriptionId = null;
         Subscription subscription = new Subscription(
                 subscriptionId,
                 Arrays.asList(new EntityInfo[]{ entityInfo }),
-                Arrays.asList(new String[]{ SOSA.hasSimpleResult}),
+                Arrays.asList(new String[]{
+                        //SOSA.hasSimpleResult
+                }),
                 notification,
                 null,
                 null);
 
 
-        subscribe(subscription, new Function<byte[], Void>() {
-            @Override
-            public Void apply(byte[] bytes) {
-                StreamObservation streamObservation = null;
-                try {
-                    String jsonString = new String(bytes);
-                    streamObservation = StreamObservation.fromJson(jsonString);
-                }
-                catch (Exception e){
-                    LOGGER.error("Failed to create StreamObservation from Json");
-                    return null;
-                }
-                onChange.apply(streamObservation);
-                return null;
-            }
-        });
-        return subscriptionId;
+       String response = subscribe(subscription);
+        if(subscription.getId()!=null && !response.equals(subscription.getId()))
+            throw new Exception("Subscription request returned non expected response: "+response);
+
+        return response;
     }
 
     @Override
-    public void subscribeTo(Subscription subscription, Function<byte[], Void> onChange) throws Exception {
-        subscribe(subscription, onChange);
+    public String subscribe(Subscription subscription) throws Exception {
+        ///subscribe(subscription, onChange);
+        String subscriptionId = client.addSubscriptionSync(subscription);
+        return subscriptionId;
     }
 
-    private String subscribe(Subscription subscription, Function<byte[], Void> onChange) throws Exception {
-
-        Semaphore reqFinished = new Semaphore(0);
-//        Semaphore deleteFinished = new Semaphore(0);
-
-        List<Exception> exception = new ArrayList<>();
-//        boolean updating = false;
-
-        ListenableFuture<String> req = client.addSubscription(subscription);
-        String[] result = new String[]{ subscription.getId() };
-        req.addCallback(new ListenableFutureCallback<String>() {
-            @Override
-            public void onSuccess(String queueName){
-                if(!queueName.equals(subscription.getId())) {
-                    Exception e = new Exception("Subscription request returned non expected response: "+queueName);
-                    exception.add(e);
-                }else {
-                    result[0] = queueName;
-                    LOGGER.debug("Subscription {} registered", subscription.getId());
-                }
-                reqFinished.release();
-            }
-
-            @Override
-            public void onFailure(Throwable throwable) {
-                Exception e = new Exception("Failed to create subscription "+ subscription.getId()+": "+ throwable.getLocalizedMessage(), throwable);
-                exception.add(e);
-                reqFinished.release();
-            }
-
-        });
-        reqFinished.acquire();
-        if(exception.size()>0) {
-            Exception e = exception.get(0);
-            LOGGER.error("Failed to register subscription{}: {}",subscription.getId(), e.getLocalizedMessage());
-            throw e;
-        }
-
-        return result[0];
-    }
+//    private String subscribe(Subscription subscription, Function<byte[], Void> onChange) throws Exception {
+//
+//        Semaphore reqFinished = new Semaphore(0);
+////        Semaphore deleteFinished = new Semaphore(0);
+//
+//        List<Exception> exception = new ArrayList<>();
+////        boolean updating = false;
+//
+//        ListenableFuture<String> req = client.addSubscription(subscription);
+//        String[] result = new String[]{ subscription.getId() };
+//        req.addCallback(new ListenableFutureCallback<String>() {
+//            @Override
+//            public void onSuccess(String queueName){
+//                if(!queueName.equals(subscription.getId())) {
+//                    Exception e = new Exception("Subscription request returned non expected response: "+queueName);
+//                    exception.add(e);
+//                }else {
+//                    result[0] = queueName;
+//                    LOGGER.debug("Subscription {} registered", subscription.getId());
+//                }
+//                reqFinished.release();
+//            }
+//
+//            @Override
+//            public void onFailure(Throwable throwable) {
+//                Exception e = new Exception("Failed to create subscription "+ subscription.getId()+": "+ throwable.getLocalizedMessage(), throwable);
+//                exception.add(e);
+//                reqFinished.release();
+//            }
+//
+//        });
+//        reqFinished.acquire();
+//        if(exception.size()>0) {
+//            Exception e = exception.get(0);
+//            LOGGER.error("Failed to register subscription{}: {}",subscription.getId(), e.getLocalizedMessage());
+//            throw e;
+//        }
+//
+//        return result[0];
+//    }
 
 
 //    @Override

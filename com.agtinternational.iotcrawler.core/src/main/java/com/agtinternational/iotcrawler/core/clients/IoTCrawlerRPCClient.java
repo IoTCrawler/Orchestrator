@@ -22,7 +22,6 @@ package com.agtinternational.iotcrawler.core.clients;
 
 import com.agtinternational.iotcrawler.core.models.*;
 
-import com.agtinternational.iotcrawler.core.ontologies.SOSA;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import com.agtinternational.iotcrawler.fiware.models.subscription.Subscription;
 import com.google.gson.*;
@@ -67,66 +66,12 @@ public class IoTCrawlerRPCClient extends IoTCrawlerRESTClient implements AutoClo
                 }
             }
         }).start();
-
-        //parser = new JsonParser();
-//        String queueName=null;
-//
-//        attempt=0;
-//        while(rabbitRpcClient==null && attempt<2) {
-//
-//            channel = connection.createChannel();
-//            queueName = channel.queueDeclare().getQueue();
-//
-//            try {
-//                if(attempt>0) {
-//                    LOGGER.debug("Trying to create exchange {}", IOTCRAWLER_NOTIFICATIONS_EXCHANGE);
-//                    channel.exchangeDeclare(IOTCRAWLER_NOTIFICATIONS_EXCHANGE, "fanout", false, true, null);
-//                }
-//
-//                LOGGER.debug("Trying to bind the queue {} to exchange {}", queueName, IOTCRAWLER_NOTIFICATIONS_EXCHANGE);
-//                channel.queueBind(queueName, IOTCRAWLER_NOTIFICATIONS_EXCHANGE, "");
-//                LOGGER.debug("Initing RabbitRpcClient");
-//                rabbitRpcClient = RabbitMQRpcClient.create(connection, IOTCRAWLER_NOTIFICATIONS_EXCHANGE);
-//                rabbitRpcClient.setMaxWaitingTime(30000);
-//            } catch (IOException e) {
-//
-//            } catch (Exception e) {
-//                LOGGER.debug("Failed to bind to queue, will create it and try again");
-//                e.printStackTrace();
-//                break;
-//            }
-//            attempt++;
-//
-//        }
-
-//        try {
-//            LOGGER.debug("Initing queue consumer");
-//            Consumer consumer = new DefaultConsumer(channel) {
-//                @Override
-//                public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
-//                    try {
-//                        handleCmd(body, properties.getReplyTo());
-//                    } catch (Exception e) {
-//                        LOGGER.error("Exception while trying to handle incoming command.", e);
-//                    }
-//                }
-//            };
-//
-//            channel.basicConsume(queueName, true, consumer);
-//        }
-//        catch (Exception e){
-//            e.printStackTrace();
-//            LOGGER.error("Failed to init consumer");
-//        }
-
-        //callFinishedMutex = new Semaphore(0);
     }
 
 
-
     @Override
-    public String subscribeTo(String streamId, Function<StreamObservation, Void> onChange) throws Exception {
-        String subscriptionId = super.subscribeTo(streamId, onChange);
+    public String subscribeToStream(String streamId, Function<StreamObservation, Void> onChange) throws Exception {
+        String subscriptionId = super.subscribeToStream(streamId, null);
 
         //String queueName = rabbitClient.declareBoundQueue(subscriptionId);
         rabbitClient.initRabbitMQListener(subscriptionId, new Function<byte[], Void>() {
@@ -164,11 +109,11 @@ public class IoTCrawlerRPCClient extends IoTCrawlerRESTClient implements AutoClo
 
 
 
-    @Override
-    public void subscribeTo(Subscription subscription, Function<byte[], Void> onChange) throws Exception {
-        super.subscribeTo(subscription, onChange);
-        String abc = "";
-    }
+//    @Override
+//    public void subscribe(Subscription subscription, Function<byte[], Void> onChange) throws Exception {
+//        super.subscribe(subscription, onChange);
+//        String abc = "";
+//    }
 
 
 

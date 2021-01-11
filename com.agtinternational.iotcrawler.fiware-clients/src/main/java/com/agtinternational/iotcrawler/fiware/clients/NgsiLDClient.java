@@ -1023,11 +1023,12 @@ public class NgsiLDClient {
         Semaphore reqFinished = new Semaphore(0);
         ListenableFuture<String> req = addSubscription(subscription);
         //final ResponseEntity<Void>[] ret = new ResponseEntity[]{ null };
+        List<String> ret = new ArrayList<>();
         List<Exception> errors = new ArrayList<>();
         req.addCallback(new ListenableFutureCallback<String>() {
             @Override
-            public void onSuccess(String result) {
-                //ret[0] = result;
+            public void onSuccess(String subscriptionId) {
+                ret.add(subscriptionId);
                 reqFinished.release();
             }
 
@@ -1044,7 +1045,9 @@ public class NgsiLDClient {
         if (errors.size()>0)
             throw errors.get(0);
 
-        return subscription.getId();
+        if(ret.isEmpty())
+            return null;
+        return ret.get(0);
     }
 
 

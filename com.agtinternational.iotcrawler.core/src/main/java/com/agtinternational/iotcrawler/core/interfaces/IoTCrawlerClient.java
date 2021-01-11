@@ -87,6 +87,6 @@ public abstract class IoTCrawlerClient implements Component {
 //
 //    public abstract Boolean registerEntity(RDFModel model) throws Exception;
     //public abstract Boolean pushObservationsToBroker(List<StreamObservation> observations) throws Exception;
-    public abstract String subscribeTo(String streamId, Function<StreamObservation, Void> onChange) throws Exception;
-    public abstract void subscribeTo(Subscription subscription, Function<byte[], Void> onChange) throws Exception;
+    public abstract String subscribeToStream(String streamId, Function<StreamObservation, Void> onChange) throws Exception;
+    public abstract String subscribe(Subscription subscription) throws Exception;
 }

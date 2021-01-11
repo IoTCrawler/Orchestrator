@@ -51,7 +51,9 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static com.agtinternational.iotcrawler.core.Constants.HTTP_REFERENCE_URL;
 
@@ -173,6 +175,19 @@ public class HttpServer {
 
                         subscriptionId = subscription.getId();
 
+                        if(subscription.getNotification().getEndpoint()==null){
+                            String httpReferenceUrl = System.getenv(HTTP_REFERENCE_URL);
+                            Endpoint endpoint = new Endpoint(new URL(httpReferenceUrl), ContentType.APPLICATION_JSON);
+                            subscription.getNotification().setEndpoint(endpoint);
+                            body = new ObjectMapper().writeValueAsString(subscription);
+                        }
+
+                        if(subscriptionId==null) {
+                            String key = String.join("_", subscription.getEntities().stream().map(e->e.getId()).collect(Collectors.toList()))+"-"+subscription.getNotification().getEndpoint().getUri();
+                            subscriptionId = UUID.nameUUIDFromBytes(key.getBytes()).toString();//UUID.randomUUID().toString();
+                            subscription.setId(subscriptionId);
+                        }
+
                         try {
                             if(ngsiLDClient.getSubscriptionSync(subscriptionId)!=null){
                                 LOGGER.info("Subscription {} already exists in broker. Skipping subscription request");
@@ -187,17 +202,6 @@ public class HttpServer {
                         }
 
                         if(!skipRequest){
-                            if(subscription.getNotification().getEndpoint()==null){
-                                String httpReferenceUrl = System.getenv(HTTP_REFERENCE_URL);
-                                if(httpReferenceUrl==null)
-                                    LOGGER.error("No HTTP_REFERENCE_URL for setting up for an endpoint");
-                                else {
-                                    Endpoint endpoint = new Endpoint(new URL(httpReferenceUrl), ContentType.APPLICATION_JSON);
-                                    subscription.getNotification().setEndpoint(endpoint);
-                                    body = new ObjectMapper().writeValueAsString(subscription);
-
-                                }
-                            }
                             try {
                                 ngsiLDClient.addSubscriptionSync(subscription);
                                 skipRequest = true;

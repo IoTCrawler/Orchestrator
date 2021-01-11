@@ -24,6 +24,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -36,6 +37,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.Scanner;
 
 import static com.agtinternational.iotcrawler.core.Constants.IOTCRAWLER_GRAPHQL_ENDPOINT;
@@ -71,7 +74,10 @@ public class GraphQLClient {
                 String json = (s.hasNext()?s.next():"");
 
                 JsonParser jsonParser = new JsonParser();
-                JsonElement result = jsonParser.parse(json);
+
+                JsonReader reader = new JsonReader(new StringReader(json));
+                reader.setLenient(true);
+                JsonElement result = jsonParser.parse(reader);
                 if(((JsonObject)result).has("error")) {
                     String error = ((JsonObject) result).get("error")+": "+ ((JsonObject) result).get("message");
                     throw new Exception(error);

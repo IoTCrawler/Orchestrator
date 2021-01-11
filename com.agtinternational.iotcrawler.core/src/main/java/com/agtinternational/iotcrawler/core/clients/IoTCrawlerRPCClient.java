@@ -23,6 +23,7 @@ package com.agtinternational.iotcrawler.core.clients;
 import com.agtinternational.iotcrawler.core.models.*;
 
 import com.agtinternational.iotcrawler.core.ontologies.SOSA;
+import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import com.agtinternational.iotcrawler.fiware.models.subscription.Subscription;
 import com.google.gson.*;
 
@@ -137,14 +138,17 @@ public class IoTCrawlerRPCClient extends IoTCrawlerRESTClient implements AutoClo
                     JsonObject jsonObject = (JsonObject) new JsonParser().parse(jsonString);
                     JsonArray data = (JsonArray) jsonObject.get("data");
                     for(JsonElement item : data) {
-                        JsonObject jsonObject1 = (JsonObject)item;
-                        streamObservation = new StreamObservation(jsonObject1.get("id").getAsString());
-                        if(jsonObject1.has(SOSA.hasSimpleResult)) {
-                            JsonObject result = (JsonObject) jsonObject1.get(SOSA.hasSimpleResult);
-                            streamObservation.hasSimpleResult(result.get("value"));
-                        }
-                        if(jsonObject1.has(SOSA.resultTime))
-                            streamObservation.resultTime(jsonObject1.get(SOSA.resultTime));
+                        //JsonObject jsonObject1 = (JsonObject)item;
+                        EntityLD entityLD = EntityLD.fromJsonString(item.toString());
+                        streamObservation = StreamObservation.fromEntity(entityLD);
+                        //EntityLD entityLD = StreamObservation.fromJsonObject(jsonObject1.toString());
+//                        streamObservation = new StreamObservation(jsonObject1.get("id").getAsString());
+//                        if(jsonObject1.has(SOSA.hasSimpleResult)) {
+//                            JsonObject result = (JsonObject) jsonObject1.get(SOSA.hasSimpleResult);
+//                            streamObservation.hasSimpleResult(result.get("value"));
+//                        }
+//                        if(jsonObject1.has(SOSA.resultTime))
+//                            streamObservation.resultTime(jsonObject1.get(SOSA.resultTime));
                     }
                 }
                 catch (Exception e){

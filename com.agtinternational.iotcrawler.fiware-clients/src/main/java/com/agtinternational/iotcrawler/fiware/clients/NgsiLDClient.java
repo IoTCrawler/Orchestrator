@@ -612,6 +612,7 @@ public class NgsiLDClient {
         Map attributes = entity.getAttributes();
         attributes.put("@context", entity.getContext());
 
+        //Patch is not really updating. Only POST
         ListenableFuture<Void> ret = adapt(request(HttpMethod.POST, builder.buildAndExpand(entity.getId()).toUriString(), httpHeaders, attributes, Void.class));
         return ret;
     }

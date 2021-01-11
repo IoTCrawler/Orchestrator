@@ -203,7 +203,7 @@ public class IoTCrawlerRESTClient extends IoTCrawlerClient implements AutoClosea
         //Endpoint endpoint = new Endpoint(new URL(referenceURL), ContentType.APPLICATION_JSON);
 
         NotificationParams notification = new NotificationParams();
-        notification.setAttributes(Arrays.asList(new String[]{ SOSA.hasSimpleResult}));
+        //notification.setAttributes(Arrays.asList(new String[]{ SOSA.hasSimpleResult}));
         //notification.setEndpoint(null);
 
         String subscriptionId = UUID.randomUUID().toString();

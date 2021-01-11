@@ -253,8 +253,13 @@ public class IoTCrawlerRESTClient extends IoTCrawlerClient implements AutoClosea
         req.addCallback(new ListenableFutureCallback<String>() {
             @Override
             public void onSuccess(String queueName){
-                result[0]=queueName;
-                LOGGER.debug("Subscription {} registered", subscription.getId());
+                if(!queueName.equals(subscription.getId())) {
+                    Exception e = new Exception("Subscription request returned non expected response: "+queueName);
+                    exception.add(e);
+                }else {
+                    result[0] = queueName;
+                    LOGGER.debug("Subscription {} registered", subscription.getId());
+                }
                 reqFinished.release();
             }
 
@@ -269,7 +274,7 @@ public class IoTCrawlerRESTClient extends IoTCrawlerClient implements AutoClosea
         reqFinished.acquire();
         if(exception.size()>0) {
             Exception e = exception.get(0);
-            LOGGER.error("Failed to register subscription: {}", e.getLocalizedMessage());
+            LOGGER.error("Failed to register subscription{}: {}",subscription.getId(), e.getLocalizedMessage());
             throw e;
         }
 

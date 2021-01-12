@@ -183,7 +183,7 @@ public class HttpServer {
                         }
 
                         if(subscriptionId==null) {
-                            String key = String.join("_", subscription.getEntities().stream().map(e->e.getId()).collect(Collectors.toList()))+"-"+subscription.getNotification().getEndpoint().getUri();
+                            String key = String.join("_", subscription.getEntities().stream().map(e->e.getId()+"_").collect(Collectors.toList()))+"-"+String.join("_",subscription.getNotification().getAttributes())+"-"+subscription.getNotification().getEndpoint().getUri();
                             subscriptionId = UUID.nameUUIDFromBytes(key.getBytes()).toString();//UUID.randomUUID().toString();
                             subscription.setId(subscriptionId);
                         }

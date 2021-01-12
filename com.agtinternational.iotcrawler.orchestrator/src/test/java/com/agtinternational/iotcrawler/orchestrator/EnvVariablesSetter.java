@@ -45,7 +45,10 @@ public class EnvVariablesSetter {
 
 
         if(!System.getenv().containsKey(IOTCRAWLER_RABBIT_HOST))
-            environmentVariables.set(IOTCRAWLER_RABBIT_HOST, "localhost:5672");
+            //environmentVariables.set(IOTCRAWLER_RABBIT_HOST, "34.76.152.71");
+            environmentVariables.set(IOTCRAWLER_RABBIT_HOST, "35.241.162.84"); //staging
+
+            //environmentVariables.set(IOTCRAWLER_RABBIT_HOST, "localhost:5672");
             //environmentVariables.set(IOTCRAWLER_RABBIT_HOST, "rabbit");
 
 
@@ -59,7 +62,8 @@ public class EnvVariablesSetter {
 
         //environmentVariables.set(CUT_TYPE_URIS, "false");
         if(!System.getenv().containsKey(NGSILD_BROKER_URL))
-            environmentVariables.set(NGSILD_BROKER_URL, "http://i5-nuc:9090/ngsi-ld/");
+            environmentVariables.set(NGSILD_BROKER_URL, "https://mdr.iotcrawler.eu/ngsi-ld/");
+            //environmentVariables.set(NGSILD_BROKER_URL, "http://i5-nuc:9090/ngsi-ld/");
             //environmentVariables.set(NGSILD_BROKER_URL, "http://localhost:3000/ngsi-ld/");
             //environmentVariables.set(NGSILD_BROKER_URL, "http://155.54.95.248:9090/ngsi-ld/");
             //environmentVariables.set(NGSILD_BROKER_URL, "http://155.54.95.171:9090/ngsi-ld/");

@@ -211,7 +211,7 @@ public class IoTCrawlerRESTClient extends IoTCrawlerClient implements AutoClosea
                 subscriptionId,
                 Arrays.asList(new EntityInfo[]{ entityInfo }),
                 Arrays.asList(new String[]{
-                        //SOSA.hasSimpleResult
+                        SOSA.hasSimpleResult
                 }),
                 notification,
                 null,

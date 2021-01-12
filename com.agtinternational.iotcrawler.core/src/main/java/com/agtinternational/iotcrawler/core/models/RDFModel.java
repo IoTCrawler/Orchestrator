@@ -292,7 +292,7 @@ public class RDFModel {
         removeProperty(property);
     }
 
-    private void removeProperty(Property property){
+    public void removeProperty(Property property){
         List<RDFNode> values = getProperty(property.getURI());
         if(values!=null)
             for(RDFNode value: values)
@@ -304,7 +304,10 @@ public class RDFModel {
 //        removePropertyValue(property, );
 //    }
 
-    private void removePropertyValue(Property property, RDFNode value){
+    public void removePropertyValue(String propertyUri, RDFNode value){
+        removePropertyValue(model.createProperty(propertyUri), value);
+    }
+    public void removePropertyValue(Property property, RDFNode value){
 
         Statement statement = new StatementImpl(resource, property, value);
 //        Boolean remove = false;

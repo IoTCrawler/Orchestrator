@@ -86,14 +86,6 @@ public class IoTCrawlerRPCClient extends IoTCrawlerRESTClient implements AutoClo
                         //JsonObject jsonObject1 = (JsonObject)item;
                         EntityLD entityLD = EntityLD.fromJsonString(item.toString());
                         streamObservation = StreamObservation.fromEntity(entityLD);
-                        //EntityLD entityLD = StreamObservation.fromJsonObject(jsonObject1.toString());
-//                        streamObservation = new StreamObservation(jsonObject1.get("id").getAsString());
-//                        if(jsonObject1.has(SOSA.hasSimpleResult)) {
-//                            JsonObject result = (JsonObject) jsonObject1.get(SOSA.hasSimpleResult);
-//                            streamObservation.hasSimpleResult(result.get("value"));
-//                        }
-//                        if(jsonObject1.has(SOSA.resultTime))
-//                            streamObservation.resultTime(jsonObject1.get(SOSA.resultTime));
                     }
                 }
                 catch (Exception e){
@@ -109,11 +101,18 @@ public class IoTCrawlerRPCClient extends IoTCrawlerRESTClient implements AutoClo
 
 
 
-//    @Override
-//    public void subscribe(Subscription subscription, Function<byte[], Void> onChange) throws Exception {
-//        super.subscribe(subscription, onChange);
-//        String abc = "";
-//    }
+    @Override
+    public String subscribe(Subscription subscription, Function<byte[], Void> onChange) throws Exception {
+        super.subscribe(subscription, onChange);
+        rabbitClient.initRabbitMQListener(subscription.getId(), new Function<byte[], Void>() {
+            @Override
+            public Void apply(byte[] bytes) {
+                onChange.apply(bytes);
+                return null;
+            }
+        });
+        return subscription.getId();
+    }
 
 
 

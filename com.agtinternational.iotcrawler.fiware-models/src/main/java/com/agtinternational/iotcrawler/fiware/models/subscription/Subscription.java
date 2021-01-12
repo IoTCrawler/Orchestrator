@@ -109,6 +109,14 @@ public class Subscription {
         this.notification = notification;
     }
 
+    public List<String> getWatchedAttributes() {
+        return watchedAttributes;
+    }
+
+    public void setWatchedAttributes(List<String> watchedAttributes) {
+        this.watchedAttributes = watchedAttributes;
+    }
+
     public com.orange.ngsi2.model.Subscription.Status getStatus() {
         return this.status;
     }

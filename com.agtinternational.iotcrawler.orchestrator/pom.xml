@@ -20,7 +20,7 @@
         
 		<iotcrawler.core.version>1.0.8</iotcrawler.core.version>
 <!--		<iotcrawler.fiware-models.version>1.0.4</iotcrawler.fiware-models.version>-->
-		<iotcrawler.fiware-clients.version>1.0.8</iotcrawler.fiware-clients.version>
+<!--		<iotcrawler.fiware-clients.version>1.0.8</iotcrawler.fiware-clients.version>-->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -52,12 +52,16 @@
             <groupId>com.agtinternational.iotcrawler</groupId>
             <artifactId>core</artifactId>
             <version>${iotcrawler.core.version}</version>
-<!--            <exclusions>-->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
 <!--                <exclusion>-->
 <!--                    <groupId>com.agtinternational.iotcrawler</groupId>-->
 <!--                    <artifactId>fiware-models</artifactId>-->
 <!--                </exclusion>-->
-<!--            </exclusions>-->
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -132,34 +136,34 @@
 <!--            <version>${iotcrawler.fiware-models.version}</version>-->
 <!--        </dependency>-->
 
-        <dependency>
-            <groupId>com.agtinternational.iotcrawler</groupId>
-            <artifactId>fiware-clients</artifactId>
-            <version>${iotcrawler.fiware-clients.version}</version>
-            <exclusions>
+<!--        <dependency>-->
+<!--            <groupId>com.agtinternational.iotcrawler</groupId>-->
+<!--            <artifactId>fiware-clients</artifactId>-->
+<!--            <version>${iotcrawler.fiware-clients.version}</version>-->
+<!--            <exclusions>-->
+<!--&lt;!&ndash;                <exclusion>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <groupId>com.agtinternational.iotcrawler</groupId>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <artifactId>fiware-models</artifactId>&ndash;&gt;-->
+<!--&lt;!&ndash;                </exclusion>&ndash;&gt;-->
+<!--&lt;!&ndash;                <exclusion>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <groupId>com.agtinternational.iotcrawler</groupId>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <artifactId>core</artifactId>&ndash;&gt;-->
+<!--&lt;!&ndash;                </exclusion>&ndash;&gt;-->
 <!--                <exclusion>-->
-<!--                    <groupId>com.agtinternational.iotcrawler</groupId>-->
-<!--                    <artifactId>fiware-models</artifactId>-->
+<!--                    <groupId>org.springframework</groupId>-->
+<!--                    <artifactId>*</artifactId>-->
 <!--                </exclusion>-->
-<!--                <exclusion>-->
-<!--                    <groupId>com.agtinternational.iotcrawler</groupId>-->
-<!--                    <artifactId>core</artifactId>-->
-<!--                </exclusion>-->
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-                <!--<exclusion>-->
-                    <!--<groupId>org.apache.httpcomponents</groupId>-->
-                    <!--<artifactId>httpclient-osgi</artifactId>-->
-                <!--</exclusion>-->
-                <!--<exclusion>-->
-                    <!--<groupId>org.apache.httpcomponents</groupId>-->
-                    <!--<artifactId>httpasyncclient</artifactId>-->
-                <!--</exclusion>-->
-            </exclusions>
-            <!--<scope>provided</scope>-->
-        </dependency>
+<!--                &lt;!&ndash;<exclusion>&ndash;&gt;-->
+<!--                    &lt;!&ndash;<groupId>org.apache.httpcomponents</groupId>&ndash;&gt;-->
+<!--                    &lt;!&ndash;<artifactId>httpclient-osgi</artifactId>&ndash;&gt;-->
+<!--                &lt;!&ndash;</exclusion>&ndash;&gt;-->
+<!--                &lt;!&ndash;<exclusion>&ndash;&gt;-->
+<!--                    &lt;!&ndash;<groupId>org.apache.httpcomponents</groupId>&ndash;&gt;-->
+<!--                    &lt;!&ndash;<artifactId>httpasyncclient</artifactId>&ndash;&gt;-->
+<!--                &lt;!&ndash;</exclusion>&ndash;&gt;-->
+<!--            </exclusions>-->
+<!--            &lt;!&ndash;<scope>provided</scope>&ndash;&gt;-->
+<!--        </dependency>-->
 
         <!--<dependency>-->
             <!--<groupId>org.apache.httpcomponents</groupId>-->

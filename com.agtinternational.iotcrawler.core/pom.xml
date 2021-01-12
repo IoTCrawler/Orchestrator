@@ -15,7 +15,7 @@
     </parent>
 
     <properties>
-        <iotcrawler.fiware-models.version>1.0.4</iotcrawler.fiware-models.version>
+<!--        <iotcrawler.fiware-models.version>1.0.4</iotcrawler.fiware-models.version>-->
 		<iotcrawler.fiware-clients.version>1.0.8</iotcrawler.fiware-clients.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -42,11 +42,11 @@
 
     <dependencies>
 
-        <dependency>
-            <groupId>com.agtinternational.iotcrawler</groupId>
-            <artifactId>fiware-models</artifactId>
-            <version>${iotcrawler.fiware-models.version}</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.agtinternational.iotcrawler</groupId>-->
+<!--            <artifactId>fiware-models</artifactId>-->
+<!--            <version>${iotcrawler.fiware-models.version}</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>com.agtinternational.iotcrawler</groupId>

@@ -218,7 +218,7 @@ public class IoTCrawlerRESTClient extends IoTCrawlerClient implements AutoClosea
                 null);
 
 
-       String response = subscribe(subscription);
+       String response = subscribe(subscription, null);
         if(subscription.getId()!=null && !response.equals(subscription.getId()))
             throw new Exception("Subscription request returned non expected response: "+response);
 
@@ -226,7 +226,7 @@ public class IoTCrawlerRESTClient extends IoTCrawlerClient implements AutoClosea
     }
 
     @Override
-    public String subscribe(Subscription subscription) throws Exception {
+    public String subscribe(Subscription subscription,  Function<byte[], Void> onChange) throws Exception {
         ///subscribe(subscription, onChange);
         String subscriptionId = client.addSubscriptionSync(subscription);
         return subscriptionId;

@@ -184,8 +184,8 @@ public class HttpServer {
 
                         if(subscriptionId==null) {
                             String key = String.join("_", subscription.getEntities().stream().map(e->e.getId()+"_").collect(Collectors.toList()))+"-"+"-"+subscription.getNotification().getEndpoint().getUri();
-                            if(subscription.getNotification().getAttributes()!=null)
-                                key+=String.join("_",subscription.getNotification().getAttributes());
+                            if(subscription.getWatchedAttributes()!=null)
+                                key+=String.join("_",subscription.getWatchedAttributes());
                             subscriptionId = UUID.nameUUIDFromBytes(key.getBytes()).toString();//UUID.randomUUID().toString();
                             subscription.setId(subscriptionId);
                         }

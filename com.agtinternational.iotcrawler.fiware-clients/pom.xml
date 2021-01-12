@@ -63,7 +63,7 @@
         <dependency>
             <groupId>com.agtinternational.iotcrawler</groupId>
             <artifactId>fiware-models</artifactId>
-            <version>1.0.4</version>
+            <version>1.0.5</version>
 <!--            <exclusions>-->
 <!--                <exclusion>-->
 <!--                    <groupId>eu.neclab.iotplatform</groupId>-->

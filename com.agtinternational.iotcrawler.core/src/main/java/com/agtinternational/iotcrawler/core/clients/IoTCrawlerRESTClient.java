@@ -30,6 +30,9 @@ import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import com.agtinternational.iotcrawler.fiware.models.subscription.EntityInfo;
 import com.agtinternational.iotcrawler.fiware.models.subscription.NotificationParams;
 import com.agtinternational.iotcrawler.fiware.models.subscription.Subscription;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.orange.ngsi2.model.*;
 
@@ -218,7 +221,28 @@ public class IoTCrawlerRESTClient extends IoTCrawlerClient implements AutoClosea
                 null);
 
 
-       String response = subscribe(subscription, null);
+       String response = subscribe(subscription, new Function<byte[], Void>() {
+           @Override
+           public Void apply(byte[] bytes) {
+               StreamObservation streamObservation = null;
+               try {
+                   String jsonString = new String(bytes);
+                   JsonObject jsonObject = (JsonObject) new JsonParser().parse(jsonString);
+                   JsonArray data = (JsonArray) jsonObject.get("data");
+                   for(JsonElement item : data) {
+                       //JsonObject jsonObject1 = (JsonObject)item;
+                       EntityLD entityLD = EntityLD.fromJsonString(item.toString());
+                       streamObservation = StreamObservation.fromEntity(entityLD);
+                   }
+               }
+               catch (Exception e){
+                   LOGGER.error("Failed to create StreamObservation from Json: {}", e.getLocalizedMessage());
+                   return null;
+               }
+               onChange.apply(streamObservation);
+               return null;
+           }
+       });
         if(subscription.getId()!=null && !response.equals(subscription.getId()))
             throw new Exception("Subscription request returned non expected response: "+response);
 

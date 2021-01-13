@@ -71,31 +71,7 @@ public class IoTCrawlerRPCClient extends IoTCrawlerRESTClient implements AutoClo
 
     @Override
     public String subscribeToStream(String streamId, Function<StreamObservation, Void> onChange) throws Exception {
-        String subscriptionId = super.subscribeToStream(streamId, null);
-
-        //String queueName = rabbitClient.declareBoundQueue(subscriptionId);
-        rabbitClient.initRabbitMQListener(subscriptionId, new Function<byte[], Void>() {
-            @Override
-            public Void apply(byte[] bytes) {
-                StreamObservation streamObservation = null;
-                try {
-                    String jsonString = new String(bytes);
-                    JsonObject jsonObject = (JsonObject) new JsonParser().parse(jsonString);
-                    JsonArray data = (JsonArray) jsonObject.get("data");
-                    for(JsonElement item : data) {
-                        //JsonObject jsonObject1 = (JsonObject)item;
-                        EntityLD entityLD = EntityLD.fromJsonString(item.toString());
-                        streamObservation = StreamObservation.fromEntity(entityLD);
-                    }
-                }
-                catch (Exception e){
-                    LOGGER.error("Failed to create StreamObservation from Json: {}", e.getLocalizedMessage());
-                    return null;
-                }
-                onChange.apply(streamObservation);
-                return null;
-            }
-        });
+        String subscriptionId = super.subscribeToStream(streamId, onChange);
         return subscriptionId;
     }
 
@@ -103,15 +79,15 @@ public class IoTCrawlerRPCClient extends IoTCrawlerRESTClient implements AutoClo
 
     @Override
     public String subscribe(Subscription subscription, Function<byte[], Void> onChange) throws Exception {
-        super.subscribe(subscription, onChange);
-        rabbitClient.initRabbitMQListener(subscription.getId(), new Function<byte[], Void>() {
+        String subscriptionId = super.subscribe(subscription, onChange);
+        rabbitClient.initRabbitMQListener(subscriptionId, new Function<byte[], Void>() {
             @Override
             public Void apply(byte[] bytes) {
                 onChange.apply(bytes);
                 return null;
             }
         });
-        return subscription.getId();
+        return subscriptionId;
     }
 
 

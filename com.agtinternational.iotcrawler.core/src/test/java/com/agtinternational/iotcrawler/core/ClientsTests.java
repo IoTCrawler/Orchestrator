@@ -25,6 +25,7 @@ import com.agtinternational.iotcrawler.core.interfaces.IoTCrawlerClient;
 import com.agtinternational.iotcrawler.core.models.*;
 import com.agtinternational.iotcrawler.fiware.clients.NgsiLDClient;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
+import com.agtinternational.iotcrawler.fiware.models.subscription.Notification;
 import com.agtinternational.iotcrawler.fiware.models.subscription.Subscription;
 import com.orange.ngsi2.model.Paginated;
 import org.apache.jena.vocabulary.RDFS;
@@ -97,9 +98,9 @@ public class ClientsTests {
     public void updateTestEntities() throws Exception {
 
         String streamId = stream.getURI();
-        String subscriptionId = client.subscribeToStream(streamId, new Function<StreamObservation, Void>() {
+        String subscriptionId = client.subscribeToStream(streamId, new Function<Notification, Void>() {
             @Override
-            public Void apply(StreamObservation streamObservation) {
+            public Void apply(Notification streamObservation) {
 
                 return null;
             }
@@ -289,9 +290,9 @@ public class ClientsTests {
 
         String streamId = "urn:household1:stateStream";
         String referenceURL = System.getenv(HTTP_REFERENCE_URL);
-        String subscriptionId = client.subscribeToStream(streamId, new Function<StreamObservation, Void>() {
+        String subscriptionId = client.subscribeToStream(streamId, new Function<Notification, Void>() {
             @Override
-            public Void apply(StreamObservation streamObservation) {
+            public Void apply(Notification streamObservation) {
 
                 return null;
             }

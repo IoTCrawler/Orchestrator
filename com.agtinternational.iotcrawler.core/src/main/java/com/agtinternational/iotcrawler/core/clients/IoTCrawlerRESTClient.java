@@ -28,6 +28,7 @@ import com.agtinternational.iotcrawler.core.ontologies.SOSA;
 import com.agtinternational.iotcrawler.fiware.clients.NgsiLDClient;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import com.agtinternational.iotcrawler.fiware.models.subscription.EntityInfo;
+import com.agtinternational.iotcrawler.fiware.models.subscription.Notification;
 import com.agtinternational.iotcrawler.fiware.models.subscription.NotificationParams;
 import com.agtinternational.iotcrawler.fiware.models.subscription.Subscription;
 import com.google.gson.JsonArray;
@@ -186,7 +187,7 @@ public class IoTCrawlerRESTClient extends IoTCrawlerClient implements AutoClosea
 
 
     @Override
-    public String subscribeToStream(String streamId, Function<StreamObservation, Void> onChange) throws Exception {
+    public String subscribeToStream(String streamId, Function<Notification, Void> onChange) throws Exception {
         String streamObservationId = null;
         try {
             streamObservationId = graphQLClient.getStreamObservationsByStreamId(streamId);
@@ -224,22 +225,33 @@ public class IoTCrawlerRESTClient extends IoTCrawlerClient implements AutoClosea
        String response = subscribe(subscription, new Function<byte[], Void>() {
            @Override
            public Void apply(byte[] bytes) {
-               StreamObservation streamObservation = null;
+               Notification notification = null;
+               //StreamObservation streamObservation = null;
                try {
-                   String jsonString = new String(bytes);
-                   JsonObject jsonObject = (JsonObject) new JsonParser().parse(jsonString);
-                   JsonArray data = (JsonArray) jsonObject.get("data");
-                   for(JsonElement item : data) {
-                       //JsonObject jsonObject1 = (JsonObject)item;
-                       EntityLD entityLD = EntityLD.fromJsonString(item.toString());
-                       streamObservation = StreamObservation.fromEntity(entityLD);
-                   }
+                   notification = Notification.fromJsonString(new String(bytes));
                }
                catch (Exception e){
-                   LOGGER.error("Failed to create StreamObservation from Json: {}", e.getLocalizedMessage());
+                   LOGGER.error("Failed to parse notification from Json: {}", e.getLocalizedMessage());
                    return null;
                }
-               onChange.apply(streamObservation);
+
+               if(notification!=null) {
+                   List<StreamObservation> streamObservations = new ArrayList<>();
+                   for (Object dataItem : notification.getData())
+                   try{
+                       //JsonObject jsonObject1 = (JsonObject)item;
+                       EntityLD entityLD = EntityLD.fromMapObject((Map)dataItem);
+                       StreamObservation streamObservation = StreamObservation.fromEntity(entityLD);
+                       streamObservations.add(streamObservation);
+                   }
+                   catch (Exception e){
+                       LOGGER.error("Failed to stream observation from {}: {}", dataItem.toString(), e.getLocalizedMessage());
+
+                   }
+                   notification.setData(streamObservations.toArray());
+               }
+
+               onChange.apply(notification);
                return null;
            }
        });

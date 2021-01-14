@@ -22,6 +22,7 @@ package com.agtinternational.iotcrawler.fiware.models;
 
 import com.agtinternational.iotcrawler.fiware.models.NGSILD.Property;
 import com.agtinternational.iotcrawler.fiware.models.NGSILD.Relationship;
+import com.agtinternational.iotcrawler.fiware.models.subscription.Notification;
 import com.google.gson.JsonObject;
 import org.junit.Assert;
 import org.junit.Test;
@@ -127,4 +128,12 @@ public class ModelsTest {
 //        JsonObject jsonObject = Utils.mapToJson(entity.getAttributes());
 //        Assert.assertNotNull(jsonObject);
 //    }
+
+    @Test
+    public void attributesToJson() throws Exception {
+        String jsonString = new String(Files.readAllBytes(Paths.get("samples","Notification.json")));
+
+        Notification notification = Notification.fromJsonString(jsonString);
+        Assert.assertNotNull(notification);
+    }
 }

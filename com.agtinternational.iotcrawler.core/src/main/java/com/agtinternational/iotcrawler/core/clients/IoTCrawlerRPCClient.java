@@ -23,6 +23,7 @@ package com.agtinternational.iotcrawler.core.clients;
 import com.agtinternational.iotcrawler.core.models.*;
 
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
+import com.agtinternational.iotcrawler.fiware.models.subscription.Notification;
 import com.agtinternational.iotcrawler.fiware.models.subscription.Subscription;
 import com.google.gson.*;
 
@@ -70,7 +71,7 @@ public class IoTCrawlerRPCClient extends IoTCrawlerRESTClient implements AutoClo
 
 
     @Override
-    public String subscribeToStream(String streamId, Function<StreamObservation, Void> onChange) throws Exception {
+    public String subscribeToStream(String streamId, Function<Notification, Void> onChange) throws Exception {
         String subscriptionId = super.subscribeToStream(streamId, onChange);
         return subscriptionId;
     }

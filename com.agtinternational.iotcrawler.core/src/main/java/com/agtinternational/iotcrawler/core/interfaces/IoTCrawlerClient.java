@@ -24,6 +24,7 @@ package com.agtinternational.iotcrawler.core.interfaces;
 import com.agtinternational.iotcrawler.core.Utils;
 import com.agtinternational.iotcrawler.core.models.*;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
+import com.agtinternational.iotcrawler.fiware.models.subscription.Notification;
 import com.agtinternational.iotcrawler.fiware.models.subscription.Subscription;
 
 import java.util.List;
@@ -87,6 +88,6 @@ public abstract class IoTCrawlerClient implements Component {
 //
 //    public abstract Boolean registerEntity(RDFModel model) throws Exception;
     //public abstract Boolean pushObservationsToBroker(List<StreamObservation> observations) throws Exception;
-    public abstract String subscribeToStream(String streamId, Function<StreamObservation, Void> onChange) throws Exception;
+    public abstract String subscribeToStream(String streamId, Function<Notification, Void> onChange) throws Exception;
     public abstract String subscribe(Subscription subscription, Function<byte[], Void> onChange) throws Exception;
 }

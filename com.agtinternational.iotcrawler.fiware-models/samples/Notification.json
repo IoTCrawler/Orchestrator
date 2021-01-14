@@ -1,0 +1,32 @@
+{
+  "id": "ngsildbroker:notification:-5597978681911220529",
+  "type": "Notification",
+  "data": [
+    {
+      "id": "urn:ngsi-ld:Homee_00055110D732_22_129_Observation",
+      "type": "http://purl.org/iot/ontology/iot-stream#StreamObservation",
+      "http://purl.org/iot/ontology/iot-stream#belongsTo": {
+        "type": "Relationship",
+        "createdAt": "2021-01-14T16:19:37.918000Z",
+        "object": "urn:ngsi-ld:Homee_00055110D732_22_129",
+        "modifiedAt": "2021-01-14T16:19:37.918000Z"
+      },
+      "http://www.w3.org/ns/sosa/hasSimpleResult": {
+        "type": "Property",
+        "createdAt": "2021-01-14T16:19:37.918000Z",
+        "value": 0.0,
+        "modifiedAt": "2021-01-14T16:19:37.918000Z"
+      },
+      "http://www.w3.org/ns/sosa/resultTime": {
+        "type": "Property",
+        "createdAt": "2021-01-14T16:19:37.918000Z",
+        "value": "2021-01-14T16:19:06.2416951Z",
+        "modifiedAt": "2021-01-14T16:19:37.918000Z"
+      },
+      "createdAt": "2021-01-11T15:50:26.478000Z",
+      "modifiedAt": "2021-01-14T16:19:37.918000Z"
+    }
+  ],
+  "notifiedAt": "2021-01-14T16:20:50.057000Z",
+  "subscriptionId": "20cae0c2-0353-374e-befe-8dda0db27513"
+}

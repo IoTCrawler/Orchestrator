@@ -292,8 +292,8 @@
     </dependencies>
 
     <build>
-<!--        <finalName>${git.branch}:${git.commit.id}</finalName>-->
-        <finalName>${git.branch}</finalName>
+        <finalName>${git.branch}:${git.commit.id}</finalName>
+        <!-- <finalName>${git.branch}</finalName> -->
 <!--        <testSourceDirectory>orchestrator/src/test/java</testSourceDirectory>-->
         <resources>
             <resource>

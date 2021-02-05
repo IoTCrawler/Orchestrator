@@ -38,17 +38,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.Instant;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Semaphore;
 
 import static com.agtinternational.iotcrawler.fiware.clients.Constants.NGSILD_BROKER_URL;
@@ -61,9 +57,9 @@ import static org.junit.Assert.assertNotNull;
  * Tests for Ngsi2Client
  */
 @RunWith(Parameterized.class)
-public class NgsiLDClientTest{
+public class NgsiLDClientTestsAutomated {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(NgsiLDClientTest.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(NgsiLDClientTestsAutomated.class);
 
     String serverUrl;
 
@@ -106,7 +102,7 @@ public class NgsiLDClientTest{
 //        });
     }
 
-    public NgsiLDClientTest(EntityLD entityLD){
+    public NgsiLDClientTestsAutomated(EntityLD entityLD){
         this.entity = entityLD;
 
     }
@@ -346,7 +342,7 @@ public class NgsiLDClientTest{
         NotificationParams notification = new NotificationParams();
         notification.setAttributes(Arrays.asList(new String[]{ "location" }));
         notification.setEndpoint(new Endpoint(new URL(HttpTestServer.getRefenceURL()), ContentType.APPLICATION_JSON));
-        String subscriptionId = UUID.randomUUID().toString();
+        String subscriptionId = "urn:"+UUID.randomUUID().toString();
         Subscription subscription = new Subscription(
                 subscriptionId,
                 Arrays.asList(new EntityInfo[]{ entityInfo }),

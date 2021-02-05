@@ -17,14 +17,13 @@ package com.agtinternational.iotcrawler.fiware.clients;/*-
  * limitations under the License.
  * #L%
  */
-import com.agtinternational.iotcrawler.fiware.clients.NgsiLDClientTest;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import org.junit.Before;
 import org.junit.contrib.java.lang.system.EnvironmentVariables;
 
 import static com.agtinternational.iotcrawler.fiware.clients.Constants.NGSILD_BROKER_URL;
 
-public class NgsiLDClientTest_Remote extends NgsiLDClientTest {
+public class NgsiLDClientTest_Remote extends NgsiLDClientTestsAutomated {
 
     public final EnvironmentVariables environmentVariables = new EnvironmentVariables();
 

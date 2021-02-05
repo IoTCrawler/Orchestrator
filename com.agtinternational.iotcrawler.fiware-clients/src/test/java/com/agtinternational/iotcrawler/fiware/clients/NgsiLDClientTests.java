@@ -23,11 +23,15 @@ package com.agtinternational.iotcrawler.fiware.clients;
 import com.agtinternational.iotcrawler.fiware.models.EntityLD;
 import com.agtinternational.iotcrawler.fiware.models.NGSILD.Property;
 import com.agtinternational.iotcrawler.fiware.models.NGSILD.Relationship;
+import com.agtinternational.iotcrawler.fiware.models.subscription.Endpoint;
+import com.agtinternational.iotcrawler.fiware.models.subscription.EntityInfo;
+import com.agtinternational.iotcrawler.fiware.models.subscription.NotificationParams;
 import com.agtinternational.iotcrawler.fiware.models.subscription.Subscription;
 import com.orange.ngsi2.model.Attribute;
 import com.orange.ngsi2.model.Paginated;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
+import org.apache.http.entity.ContentType;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -36,6 +40,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -44,7 +49,7 @@ import java.util.concurrent.Semaphore;
 
 import static com.agtinternational.iotcrawler.fiware.clients.Constants.NGSILD_BROKER_URL;
 
-public class NgsiLDClientManualTests {
+public class NgsiLDClientTests {
 
     private NgsiLDClient ngsiLdClient;
     String serverUrl;
@@ -212,4 +217,29 @@ public class NgsiLDClientManualTests {
             Assert.fail("Failed to update entity");
 
     }
+
+    @Test
+    public void addSubscriptionTest() throws Exception {
+
+
+        EntityInfo entityInfo = new EntityInfo(entity.getId(), entity.getType());
+
+        NotificationParams notification = new NotificationParams();
+        notification.setAttributes(Arrays.asList(new String[]{ "location" }));
+        notification.setEndpoint(new Endpoint(new URL(HttpTestServer.getRefenceURL()), ContentType.APPLICATION_JSON));
+        String subscriptionId = "urn:"+UUID.randomUUID().toString();
+        Subscription subscription = new Subscription(
+                subscriptionId,
+                Arrays.asList(new EntityInfo[]{ entityInfo }),
+                Arrays.asList(new String[]{ "temperature" }),
+                notification,
+                null,
+                null);
+
+
+        ngsiLdClient.addSubscriptionSync(subscription);
+        Assert.assertNotNull(subscriptionId);
+
+    }
+
 }

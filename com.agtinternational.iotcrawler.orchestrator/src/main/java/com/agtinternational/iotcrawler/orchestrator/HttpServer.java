@@ -186,7 +186,7 @@ public class HttpServer {
                             String key = String.join("_", subscription.getEntities().stream().map(e->e.getId()+"_").collect(Collectors.toList()))+"-"+"-"+subscription.getNotification().getEndpoint().getUri();
                             if(subscription.getWatchedAttributes()!=null)
                                 key+=String.join("_",subscription.getWatchedAttributes());
-                            subscriptionId = UUID.nameUUIDFromBytes(key.getBytes()).toString();//UUID.randomUUID().toString();
+                            subscriptionId = "urn:"+UUID.nameUUIDFromBytes(key.getBytes()).toString();//UUID.randomUUID().toString();
                             subscription.setId(subscriptionId);
                         }
 
@@ -209,7 +209,10 @@ public class HttpServer {
                                 skipRequest = true;
                             }
                             catch (Exception e){
-                                LOGGER.error("Failed to make subscription{} : {}", subscriptionId, e.getLocalizedMessage());
+                                response = "{ error: \"Failed to make subscription\"}";
+                                he.sendResponseHeaders(500, response.length());
+                                LOGGER.error(e.getLocalizedMessage());
+                                LOGGER.error("Failed to make subscription {} : {}", subscriptionId, e.getLocalizedMessage());
                                 return;
 
                             }

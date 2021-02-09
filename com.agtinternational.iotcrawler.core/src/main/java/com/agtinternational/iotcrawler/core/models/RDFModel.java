@@ -378,10 +378,11 @@ public class RDFModel {
     }
 
     public Object getAttribute(String uri){
-        Object nodes = getProperty(uri);
+        Object propertyValue = getProperty(uri);
         List<String> ret = new ArrayList<>();
-        if(nodes instanceof Iterable){
-            Iterator iterable = ((Iterable)nodes).iterator();
+
+        if(propertyValue instanceof Iterable){
+            Iterator iterable = ((Iterable)propertyValue).iterator();
             while (iterable.hasNext()){
                 Object value = iterable.next();
                 if (value instanceof Resource)
@@ -391,16 +392,23 @@ public class RDFModel {
                 else
                     throw new NotImplementedException(value.getClass().getCanonicalName());
             }
+            if(ret.size()==0)
+                return null;
 
+            if(ret.size()==1)
+                return ret.get(0);
+
+            return ret;
+        }else{
+            if (propertyValue instanceof Resource)
+                return ((Resource)propertyValue).asResource().toString();
+            else if (propertyValue instanceof Literal)
+                return  ((Literal)propertyValue).asLiteral().getString();
+            else
+                throw new NotImplementedException(propertyValue.getClass().getCanonicalName());
         }
 
-        if(ret.size()==0)
-            return null;
 
-        if(ret.size()==1)
-            return ret.get(0);
-
-        return ret;
     }
 
     public Map<String, List<Object>> getProperties(String uri){

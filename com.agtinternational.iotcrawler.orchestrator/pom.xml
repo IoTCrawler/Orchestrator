@@ -18,7 +18,7 @@
 
     <properties>
         
-		<iotcrawler.core.version>1.0.9</iotcrawler.core.version>
+		<iotcrawler.core.version>1.0.10</iotcrawler.core.version>
 <!--		<iotcrawler.fiware-models.version>1.0.4</iotcrawler.fiware-models.version>-->
 <!--		<iotcrawler.fiware-clients.version>1.0.8</iotcrawler.fiware-clients.version>-->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

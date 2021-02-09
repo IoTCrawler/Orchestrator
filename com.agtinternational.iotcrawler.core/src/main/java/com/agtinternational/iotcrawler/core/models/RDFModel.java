@@ -100,11 +100,13 @@ public class RDFModel {
     }
 
     public void setType(String typeUri){
-        List<RDFNode> typeNodes = getProperty(RDF.type.getURI());
-        if(typeNodes!=null && typeNodes.size()>0)
-            this.model.remove(resource, RDF.type, typeNodes.get(0));
-
-        addProperty(RDF.type, this.model.createResource(typeUri));
+        setProperty(RDF.type, this.model.createResource(typeUri));
+//        Object typeNodes = getProperty(RDF.type.getURI());
+//
+//        if(typeNodes!=null && typeNodes.size()>0)
+//            this.model.remove(resource, RDF.type, typeNodes.get(0));
+//
+//        addProperty(RDF.type, this.model.createResource(typeUri));
     }
 
     public String getURI() {
@@ -133,11 +135,11 @@ public class RDFModel {
     public String getTypeURI() throws Exception {
         //String ret = model.getResource(RDF.type.getURI()).toString();
         //return ret;
-        List<RDFNode> res = getProperty(RDF.type.toString());
-        if(res.size()==0)
+        Object res = getProperty(RDF.type.toString());
+        if(res==null)
             throw new Exception("RDF Type not found");
 
-        RDFNode attributeNode = res.get(0);
+        RDFNode attributeNode = ((RDFNode) res);
         return attributeNode.asResource().getURI();
     }
 
@@ -293,10 +295,21 @@ public class RDFModel {
     }
 
     public void removeProperty(Property property){
-        List<RDFNode> values = getProperty(property.getURI());
-        if(values!=null)
-            for(RDFNode value: values)
-                removePropertyValue(property, value);
+        Object value = getProperty(property.getURI());
+        if(value!=null)
+            if(value instanceof Iterable) {
+                Iterator iterator = ((Iterable)value).iterator();
+                    while (iterator.hasNext()) {
+                        Object valueItem = iterator.next();
+                        if(valueItem instanceof RDFNode)
+                            removePropertyValue(property, (RDFNode) valueItem);
+                        else
+                            throw new NotImplementedException(valueItem.getClass().getCanonicalName());
+                    }
+            }else if(value instanceof RDFNode)
+                removePropertyValue(property, (RDFNode)value);
+            else
+                throw new NotImplementedException(value.getClass().getCanonicalName());
 
     }
 
@@ -335,7 +348,7 @@ public class RDFModel {
         return getProperties(null);
     }
 
-    public List<RDFNode> getProperty(String uri){
+    public Object getProperty(String uri){
         String[] keySplitted = uri.split(":");
         //if uri in in shorten format
 
@@ -354,6 +367,9 @@ public class RDFModel {
         }
         if(ret.isEmpty())
             return null;
+        if(ret.size()==1)
+            return ret.get(0);
+
         return ret;
     }
 
@@ -362,14 +378,22 @@ public class RDFModel {
     }
 
     public Object getAttribute(String uri){
-        List<RDFNode> nodes = getProperty(uri);
+        Object nodes = getProperty(uri);
         List<String> ret = new ArrayList<>();
-        for(RDFNode node: nodes) {
-            if (node instanceof Resource)
-                ret.add(node.asResource().toString());
-            if (node instanceof Literal)
-                ret.add(node.asLiteral().getString());
+        if(nodes instanceof Iterable){
+            Iterator iterable = ((Iterable)nodes).iterator();
+            while (iterable.hasNext()){
+                Object value = iterable.next();
+                if (value instanceof Resource)
+                    ret.add(((Resource)value).asResource().toString());
+                else if (value instanceof Literal)
+                    ret.add(((Literal)value).asLiteral().getString());
+                else
+                    throw new NotImplementedException(value.getClass().getCanonicalName());
+            }
+
         }
+
         if(ret.size()==0)
             return null;
 

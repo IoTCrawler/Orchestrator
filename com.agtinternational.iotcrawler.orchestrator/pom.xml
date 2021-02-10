@@ -13,7 +13,7 @@
 	<modelVersion>4.0.0</modelVersion>
     <groupId>com.agtinternational.iotcrawler</groupId>
     <artifactId>orchestrator</artifactId>
-    <version>1.0.9</version>
+    <version>1.0.10</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -26,7 +26,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <slf4j.version>1.7.15</slf4j.version>
         <junit.version>5.5.2</junit.version>
-        <iotbroker.client.version>7.1-SNAPSHOT</iotbroker.client.version>
+<!--        <iotbroker.client.version>7.1-SNAPSHOT</iotbroker.client.version>-->
 <!--        <git.commit.id>git.commit.id</git.commit.id>-->
 <!--        <git.dirty>git.dirty</git.dirty>-->
 <!--        <git.closest.tag.commit.count></git.closest.tag.commit.count>-->

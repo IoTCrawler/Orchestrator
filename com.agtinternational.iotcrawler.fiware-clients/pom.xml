@@ -15,7 +15,7 @@
     <version>1.0.9</version>
 
     <properties>
-
+        <fiware.models.version>1.0.6</fiware.models.version>
         <ngsi.api.version>0.1.0-SNAPSHOT</ngsi.api.version>
         <iotbroker.client.version>7.1-SNAPSHOT</iotbroker.client.version>
         <junit.version>5.5.2</junit.version>
@@ -63,7 +63,7 @@
         <dependency>
             <groupId>com.agtinternational.iotcrawler</groupId>
             <artifactId>fiware-models</artifactId>
-            <version>1.0.5</version>
+            <version>${fiware.models.version}</version>
 <!--            <exclusions>-->
 <!--                <exclusion>-->
 <!--                    <groupId>eu.neclab.iotplatform</groupId>-->

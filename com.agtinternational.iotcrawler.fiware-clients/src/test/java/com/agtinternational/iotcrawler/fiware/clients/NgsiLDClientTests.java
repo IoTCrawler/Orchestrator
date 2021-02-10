@@ -142,13 +142,7 @@ public class NgsiLDClientTests {
         String abc = "asd";
     }
 
-    @Order(3)
-    @Test
-    public void deleteAttributeTest() throws Exception {
 
-        Attribute ret = ngsiLdClient.deleteAttributeSync("urn:ngsi-ld:HouseholdStateObservation_Household1","http://purl.org/iot/ontology/iot-stream#StreamObservation", "http://agtinternational/smartHomeApp#activities");
-        String abc = "asd";
-    }
 
 
     @Order(3)
@@ -208,7 +202,9 @@ public class NgsiLDClientTests {
     public void updateEntityTest() throws Exception {
 
         Map<String, Object> attributes = entity.getAttributes();
-        entity.addAttribute(attributes.keySet().iterator().next().toString(), (Attribute)attributes.values().iterator().next()+"_"+System.currentTimeMillis());
+        String name = attributes.keySet().iterator().next().toString();
+        Object value = ((Attribute)attributes.values().iterator().next()).getValue()+"_"+System.currentTimeMillis();
+        entity.addAttribute(name, value);
 
         boolean success = ngsiLdClient.updateEntitySync(entity , false);
         if(success)
@@ -216,6 +212,27 @@ public class NgsiLDClientTests {
         else
             Assert.fail("Failed to update entity");
 
+    }
+
+    @Order(3)
+    @Test
+    public void updateAttributeTest() throws Exception {
+        Map<String, Object> attributes = entity.getAttributes();
+
+        String name = attributes.keySet().iterator().next().toString();
+        Attribute attribute = ((Attribute)attributes.values().iterator().next());
+        attribute.setValue(attribute.getValue().toString()+"_"+System.currentTimeMillis());
+
+        ngsiLdClient.updateAttributeSync(entity.getId(), entity.getType(), name, attribute);
+        String abc = "asd";
+    }
+
+    @Order(3)
+    @Test
+    public void deleteAttributeTest() throws Exception {
+
+        ngsiLdClient.deleteAttributeSync(entity.getId(),entity.getType(), "brandName");
+        String abc = "asd";
     }
 
     @Test

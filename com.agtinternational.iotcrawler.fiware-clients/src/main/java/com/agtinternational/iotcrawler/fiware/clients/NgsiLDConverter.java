@@ -213,7 +213,7 @@ public class NgsiLDConverter extends AbstractHttpMessageConverter<Object> implem
             }
             catch (Exception e){
                 e.printStackTrace();
-                throw new NotImplementedException("Faild to convert {} "+object.getClass()+" to json: {}", e.getLocalizedMessage());
+                throw new IOException("Failed to convert "+object.getClass()+" to json: "+ e.getLocalizedMessage());
             }
         }else{
             throw new NotImplementedException("Conversion not implemented for "+object.getClass());

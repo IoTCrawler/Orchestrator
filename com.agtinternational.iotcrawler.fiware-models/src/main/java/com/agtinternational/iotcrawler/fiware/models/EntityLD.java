@@ -47,8 +47,7 @@ public class EntityLD /*extends Entity*/ { //not extending because of custom att
 
     public EntityLD(String id, String type, Map<String, Object> attributes) {
         this(id, type);
-        for(String key: attributes.keySet())
-            this.addAttribute(key, attributes.get(key));
+        setAttributes(attributes);
     }
 
 //    public EntityLD(String id, String type, Map<String, Attribute> attributes) {
@@ -80,6 +79,12 @@ public class EntityLD /*extends Entity*/ { //not extending because of custom att
 
     public Map<String, Object> getAttributes() {
         return attributes;
+    }
+
+    public void setAttributes(Map<String, Object> attributes) {
+        this.attributes = new HashMap<>();
+        for(String key: attributes.keySet())
+            this.addAttribute(key, attributes.get(key));
     }
 
     public Object getAttribute(String name){
@@ -122,6 +127,8 @@ public class EntityLD /*extends Entity*/ { //not extending because of custom att
     public Object getContext() {
         return context;
     }
+
+
 
     public void addAttribute(String name, Object value){
         if(value instanceof Attribute || value instanceof Iterable)

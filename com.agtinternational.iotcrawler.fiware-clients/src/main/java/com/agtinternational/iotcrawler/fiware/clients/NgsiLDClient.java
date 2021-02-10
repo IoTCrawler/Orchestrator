@@ -30,15 +30,11 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.orange.ngsi2.model.*;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.http.*;
-import org.springframework.http.client.AsyncClientHttpRequestFactory;
-import org.springframework.http.client.HttpComponentsAsyncClientHttpRequestFactory;
-import org.springframework.http.client.OkHttp3ClientHttpRequestFactory;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -47,9 +43,7 @@ import org.springframework.web.client.AsyncRestTemplate;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.net.ssl.*;
 import java.net.URLEncoder;
-import java.security.SecureRandom;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
@@ -174,7 +168,10 @@ public class NgsiLDClient {
             @Override
             public void onFailure(Throwable throwable) {
                 success[0] = false;
-                errors.add(new Exception(throwable));
+                if(throwable instanceof HttpClientErrorException.BadRequest)
+                    errors.add(new Exception(((HttpClientErrorException.BadRequest) throwable).getResponseBodyAsString()));
+                else
+                    errors.add(new Exception(throwable));
                 reqFinished.release();
             }
 
@@ -255,7 +252,10 @@ public class NgsiLDClient {
             @Override
             public void onFailure(Throwable throwable) {
                 success[0] = false;
-                errors.add(new Exception(throwable));
+                if(throwable instanceof HttpClientErrorException.BadRequest)
+                    errors.add(new Exception(((HttpClientErrorException.BadRequest) throwable).getResponseBodyAsString()));
+                else
+                    errors.add(new Exception(throwable));
                 reqFinished.release();
             }
 
@@ -274,70 +274,9 @@ public class NgsiLDClient {
 
     }
 
-    public boolean updateEntityWithDeletionSync(EntityLD entityLD, boolean append) throws Exception {
-        ListenableFuture<Void> req = updateEntityWithDeletion(entityLD, append);
-        final Boolean[] success = {false};
-        Semaphore reqFinished = new Semaphore(0);
-        List<Exception> errors = new ArrayList<>();
-        req.addCallback(new ListenableFutureCallback<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                success[0] = true;
-                reqFinished.release();
-            }
 
-            @Override
-            public void onFailure(Throwable throwable) {
-                success[0] = false;
-                errors.add(new Exception(throwable));
-                reqFinished.release();
-            }
 
-        });
 
-        try {
-            req.get();
-            reqFinished.acquire();
-        } catch (InterruptedException e) {
-            LOGGER.error(e.getLocalizedMessage());
-        }
-        if(!errors.isEmpty())
-            throw errors.get(0);
-
-        return success[0];
-
-    }
-
-    public boolean deleteEntitySync(String entityId) throws Exception {
-        final Boolean[] success = {false};
-        ListenableFuture<Void> req = deleteEntity(entityId);
-        Semaphore reqFinished = new Semaphore(0);
-        List<Exception> errors = new ArrayList<>();
-        req.addCallback(new ListenableFutureCallback<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                success[0] = true;
-                reqFinished.release();
-            }
-
-            @Override
-            public void onFailure(Throwable throwable) {
-                success[0] = false;
-                errors.add(new Exception(throwable));
-                reqFinished.release();
-            }
-
-        });
-        try {
-            req.get();
-            reqFinished.acquire();
-        } catch (InterruptedException e) {
-            LOGGER.error(e.getLocalizedMessage());
-        }
-        if(!errors.isEmpty())
-            throw errors.get(0);
-        return success[0];
-    }
 
 
 
@@ -552,7 +491,11 @@ public class NgsiLDClient {
         ret.addCallback(new ListenableFutureCallback<Void>() {
             @Override
             public void onFailure(Throwable throwable) {
-                exceptions.add(new Exception(throwable));
+                if(throwable instanceof HttpClientErrorException.BadRequest)
+                    exceptions.add(new Exception(((HttpClientErrorException.BadRequest) throwable).getResponseBodyAsString()));
+                else
+                    exceptions.add(new Exception(throwable));
+
             }
 
             @Override
@@ -617,107 +560,6 @@ public class NgsiLDClient {
         return ret;
     }
 
-    public ListenableFuture<Void> updateEntityWithDeletion(EntityLD entity, boolean append){
-            return new ListenableFuture<Void>() {
-
-            List<ListenableFutureCallback<? super Void>> callbacks = new ArrayList<>();
-
-            ListenableFuture<Void> voidFuture = null;
-
-            @Override
-            public void addCallback(ListenableFutureCallback<? super Void> listenableFutureCallback) {
-                callbacks.add(listenableFutureCallback);
-            }
-
-            @Override
-            public void addCallback(SuccessCallback<? super Void> successCallback, FailureCallback failureCallback) {
-                throw new NotImplementedException("");
-            }
-
-            @Override
-            public boolean cancel(boolean b) {
-                return voidFuture.cancel(b);
-            }
-
-            @Override
-            public boolean isCancelled() {
-                return voidFuture.isCancelled();
-            }
-
-            @Override
-            public boolean isDone() {
-                return voidFuture.isDone();
-            }
-
-            @Override
-            public Void get() throws InterruptedException, ExecutionException {
-                ListenableFuture<EntityLD> getEntityRequest = getEntity(entity.getId(), entity.getType(), null);
-                getEntityRequest.addCallback(new ListenableFutureCallback<EntityLD>() {
-                    @Override
-                    public void onFailure(Throwable throwable) {
-                        LOGGER.error("Failed to get entity during update procedure: ", throwable.getLocalizedMessage());
-                        throwable.printStackTrace();
-                    }
-
-                    @Override
-                    public void onSuccess(EntityLD oldEntityLD) {
-
-                        //List<Exception> errors = new ArrayList<>();
-                        Boolean delete=false;
-                        for(String key: oldEntityLD.getAttributes().keySet()){
-                            if(!entity.getAttributes().containsKey(key))
-                                delete=true;
-                        }
-
-                        if(delete) {
-                            ListenableFuture<Void> deleteRequest = deleteEntity(entity.getId());
-                            deleteRequest.addCallback(new ListenableFutureCallback<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    try {
-                                        voidFuture = addEntity(entity);
-                                        for(ListenableFutureCallback<? super Void> callback: callbacks)
-                                            voidFuture.addCallback(callback);
-                                        voidFuture.get();
-                                    } catch (Exception e) {
-                                        LOGGER.error("Failed to add entity during updating it:", e.getLocalizedMessage());
-                                        e.printStackTrace();
-                                    }
-                                }
-
-                                @Override
-                                public void onFailure(Throwable throwable) {
-                                    LOGGER.error("Failed to delete entity during update procedure:", throwable.getLocalizedMessage());
-                                    throwable.printStackTrace();
-                                }
-                            });
-                            voidFuture = deleteRequest;
-                        }else
-                            voidFuture = updateEntity(entity, true);
-
-
-                        for(ListenableFutureCallback<? super Void> callback: callbacks)
-                            voidFuture.addCallback(callback);
-
-                        try {
-                            voidFuture.get();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-                getEntityRequest.get();
-                return null;
-            }
-
-            @Override
-            public Void get(long l, TimeUnit timeUnit) throws InterruptedException, ExecutionException, TimeoutException {
-                return get();
-            }
-        };
-    }
-
-
     /**
      * Replace all the existing attributes of an entity with a new set of attributes
      * @param entityId the entity ID
@@ -725,23 +567,56 @@ public class NgsiLDClient {
      * @param attributes the new set of attributes
      * @return the listener to notify of completion
      */
-    public ListenableFuture<Void> replaceEntity(String entityId, String type, Map<String, Attribute> attributes) {
-
-        HttpHeaders httpHeaders = cloneHttpHeaders();
-        httpHeaders.setContentType(MediaType.valueOf("application/ld+json"));
-
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseURL);
-        builder.path("v1/entities/{entityId}");
-        addParam(builder, "type", type);
-        return adapt(request(HttpMethod.PUT, builder.buildAndExpand(entityId).toUriString(), httpHeaders, attributes, Void.class));
-    }
-
+//    public ListenableFuture<Void> updateAttributes(String entityId, String type, Map<String, Object> attributes) {
+//
+//        HttpHeaders httpHeaders = cloneHttpHeaders();
+//        httpHeaders.setContentType(MediaType.valueOf("application/ld+json"));
+//
+//        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseURL);
+//        builder.path("v1/entities/{entityId}");
+//        addParam(builder, "type", type);
+//        return adapt(request(HttpMethod.PATCH, builder.buildAndExpand(entityId).toUriString(), httpHeaders, attributes, Void.class));
+//    }
 
     public ListenableFuture<Void> deleteEntity(String entityId) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseURL);
         builder.path("v1/entities/{entityId}");
         //addParam(builder, "type", type);
         return adapt(request(HttpMethod.DELETE, builder.buildAndExpand(entityId).toUriString(), null, Void.class));
+    }
+
+    public boolean deleteEntitySync(String entityId) throws Exception {
+        final Boolean[] success = {false};
+        ListenableFuture<Void> req = deleteEntity(entityId);
+        Semaphore reqFinished = new Semaphore(0);
+        List<Exception> errors = new ArrayList<>();
+        req.addCallback(new ListenableFutureCallback<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                success[0] = true;
+                reqFinished.release();
+            }
+
+            @Override
+            public void onFailure(Throwable throwable) {
+                success[0] = false;
+                if(throwable instanceof HttpClientErrorException.BadRequest)
+                    errors.add(new Exception(((HttpClientErrorException.BadRequest) throwable).getResponseBodyAsString()));
+                else
+                    errors.add(new Exception(throwable));
+                reqFinished.release();
+            }
+
+        });
+        try {
+            req.get();
+            reqFinished.acquire();
+        } catch (InterruptedException e) {
+            LOGGER.error(e.getLocalizedMessage());
+        }
+        if(!errors.isEmpty())
+            throw errors.get(0);
+        return success[0];
     }
 
     /*
@@ -762,18 +637,131 @@ public class NgsiLDClient {
         return adapt(request(HttpMethod.GET, builder.buildAndExpand(entityId, attributeName).toUriString(), null, Attribute.class));
     }
 
-    /**
-     * Update the attribute of an entity
-     * @param entityId the entity ID
-     * @param type optional entity type to avoid ambiguity when multiple entities have the same ID, null or zero-length for empty
-     * @param attributeName the attribute name
-     * @return
-     */
+//    /**
+//     * Update the attribute of an entity
+//     * @param entityId the entity ID
+//     * @param type optional entity type to avoid ambiguity when multiple entities have the same ID, null or zero-length for empty
+//     * @param attributeName the attribute name
+//     * @return
+//     */
+//    public ListenableFuture<Void> updateAttribute(String entityId, String type, String attributeName, Attribute attribute) {
+//        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseURL);
+//        builder.path("v1/entities/{entityId}/attrs/{attributeName}");
+//        addParam(builder, "type", type);
+//        //Seems PATCH/POST methods are not allowed
+//        return adapt(request(HttpMethod.PATCH, builder.buildAndExpand(entityId, attributeName).toUriString(), attribute, Void.class));
+//    }
+
     public ListenableFuture<Void> updateAttribute(String entityId, String type, String attributeName, Attribute attribute) {
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseURL);
-        builder.path("v1/entities/{entityId}/attrs/{attributeName}");
-        addParam(builder, "type", type);
-        return adapt(request(HttpMethod.PUT, builder.buildAndExpand(entityId, attributeName).toUriString(), attribute, Void.class));
+        //callback for getting attribute
+        return new ListenableFuture<Void>() {
+
+            List<ListenableFutureCallback<? super Void>> listenableFutureCallbacks = new ArrayList<>();
+            SuccessCallback<? super Void> successCallback;
+            FailureCallback failureCallback;
+
+            ListenableFuture<Void> future = null;
+
+            @Override
+            public void addCallback(ListenableFutureCallback<? super Void> listenableFutureCallback) {
+                listenableFutureCallbacks.add(listenableFutureCallback);
+            }
+
+            @Override
+            public void addCallback(SuccessCallback<? super Void> successCallback, FailureCallback failureCallback) {
+                this.successCallback = successCallback;
+                this.failureCallback = failureCallback;
+            }
+
+            @Override
+            public boolean cancel(boolean b) {
+                return future.cancel(b);
+            }
+
+            @Override
+            public boolean isCancelled() {
+                return future.isCancelled();
+            }
+
+            @Override
+            public boolean isDone() {
+                return future.isDone();
+            }
+
+            @Override
+            public Void get() throws InterruptedException, ExecutionException {
+
+                ListenableFuture<EntityLD> getEntityRequest = getEntity(entityId, type, Collections.emptyList());
+                getEntityRequest.addCallback(new ListenableFutureCallback<EntityLD>() {
+                    @Override
+                    public void onFailure(Throwable throwable) {
+                        LOGGER.error("Failed to get entity during update procedure: ", throwable.getLocalizedMessage());
+                        throwable.printStackTrace();
+                    }
+
+                    @Override
+                    public void onSuccess(EntityLD entity) {
+                        Map<String, Object> attributes = entity.getAttributes();
+                        attributes.put(attributeName, attribute);
+
+                        entity.setAttributes(attributes);
+
+//                        EntityLD entity2 = new EntityLD(entityId, type, attributes);
+//                        entity2.setContext();
+                        //set attributes to entity
+                        ListenableFuture<Void> updateAttributesRequest = updateEntity(entity, false);
+
+                        for(ListenableFutureCallback<? super Void> callback: listenableFutureCallbacks)
+                            updateAttributesRequest.addCallback(callback);
+
+                        if(successCallback!=null && failureCallback!=null)
+                            updateAttributesRequest.addCallback(successCallback, failureCallback);
+
+                        future = updateAttributesRequest;
+
+                        try {
+                            future.get();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+                getEntityRequest.get();
+                return null;
+            }
+
+            @Override
+            public Void get(long l, TimeUnit timeUnit) throws InterruptedException, ExecutionException, TimeoutException {
+                return get();
+            }
+        };
+    }
+
+    public void updateAttributeSync(String entityId, String type, String attributeName, Attribute attribute) throws Exception {
+        ListenableFuture<Void> req = updateAttribute(entityId, type, attributeName, attribute);
+        List<Attribute> ret = new ArrayList<>();
+        Semaphore reqFinished = new Semaphore(0);
+        List<Exception> errors = new ArrayList<>();
+        req.addCallback(new SuccessCallback<Void>() {
+            @Override
+            public void onSuccess(Void attribute) {
+                reqFinished.release();
+            }
+        }, new FailureCallback() {
+            @Override
+            public void onFailure(Throwable throwable) {
+                if(throwable instanceof HttpClientErrorException.BadRequest)
+                    errors.add(new Exception(((HttpClientErrorException.BadRequest) throwable).getResponseBodyAsString()));
+                else
+                    errors.add(new Exception(throwable));
+                reqFinished.release();
+            }
+        });
+        req.get();
+        reqFinished.acquire();
+
+        if(!errors.isEmpty())
+            throw errors.get(0);
     }
 
     /**
@@ -783,29 +771,31 @@ public class NgsiLDClient {
      * @param attributeName the attribute name
      * @return
      */
-    public ListenableFuture<Attribute> deleteAttribute(String entityId, String type, String attributeName) {
+    public ListenableFuture<Void> deleteAttribute(String entityId, String type, String attributeName) {
+
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseURL);
         builder.path("v1/entities/{entityId}/attrs/{attributeName}");
-        addParam(builder, "type", type);
-        return adapt(request(HttpMethod.DELETE, builder.buildAndExpand(entityId, attributeName).toUriString(), null, Attribute.class));
+        //addParam(builder, "type", type);
+        return adapt(request(HttpMethod.DELETE, builder.buildAndExpand(entityId, attributeName).toUriString(), null, Void.class));
     }
 
-    public Attribute deleteAttributeSync(String entityId, String type, String attributeName) throws Exception {
-        ListenableFuture<Attribute> req = deleteAttribute(entityId, type, attributeName);
-        List<Attribute> ret = new ArrayList<>();
+    public void deleteAttributeSync(String entityId, String type, String attributeName) throws Exception {
+        ListenableFuture<Void> req = deleteAttribute(entityId, type, attributeName);
         Semaphore reqFinished = new Semaphore(0);
         List<Exception> errors = new ArrayList<>();
 
-        req.addCallback(new SuccessCallback<Attribute>() {
+        req.addCallback(new SuccessCallback<Void>() {
             @Override
-            public void onSuccess(Attribute attribute) {
-                ret.add(attribute);
+            public void onSuccess(Void attribute) {
                 reqFinished.release();
             }
         }, new FailureCallback() {
             @Override
             public void onFailure(Throwable throwable) {
-                errors.add(new Exception(throwable));
+                if(throwable instanceof HttpClientErrorException.BadRequest)
+                    errors.add(new Exception(((HttpClientErrorException.BadRequest) throwable).getResponseBodyAsString()));
+                else
+                    errors.add(new Exception(throwable));
                 reqFinished.release();
             }
         });
@@ -814,9 +804,6 @@ public class NgsiLDClient {
 
         if(!errors.isEmpty())
             throw errors.get(0);
-        if(ret.size()>0)
-            return ret.get(0);
-        return null;
     }
 
     /*
@@ -991,7 +978,10 @@ public class NgsiLDClient {
                 new FailureCallback() {
                     @Override
                     public void onFailure(Throwable throwable) {
-                        errors.add(new Exception(throwable));
+                        if(throwable instanceof HttpClientErrorException.BadRequest)
+                            errors.add(new Exception(((HttpClientErrorException.BadRequest) throwable).getResponseBodyAsString()));
+                        else
+                            errors.add(new Exception(throwable));
                         reqFinished.release();
                     }
                 });
@@ -1035,7 +1025,10 @@ public class NgsiLDClient {
             @Override
             public void onFailure(Throwable throwable) {
                 LOGGER.error("Failed to add subscription");
-                errors.add(new Exception(throwable));
+                if(throwable instanceof HttpClientErrorException.BadRequest)
+                    errors.add(new Exception(((HttpClientErrorException.BadRequest) throwable).getResponseBodyAsString()));
+                else
+                    errors.add(new Exception(throwable));
                 reqFinished.release();
             }
 
@@ -1078,7 +1071,10 @@ public class NgsiLDClient {
             @Override
             public void onFailure(Throwable throwable) {
                 LOGGER.error("Failed to add subscription");
-                errors.add(new Exception(throwable));
+                if(throwable instanceof HttpClientErrorException.BadRequest)
+                    errors.add(new Exception(((HttpClientErrorException.BadRequest) throwable).getResponseBodyAsString()));
+                else
+                    errors.add(new Exception(throwable));
                 reqFinished.release();
             }
 
@@ -1127,7 +1123,10 @@ public class NgsiLDClient {
         }, new FailureCallback() {
             @Override
             public void onFailure(Throwable throwable) {
-                errors.add(new Exception(throwable));
+                if(throwable instanceof HttpClientErrorException.BadRequest)
+                    errors.add(new Exception(((HttpClientErrorException.BadRequest) throwable).getResponseBodyAsString()));
+                else
+                    errors.add(new Exception(throwable));
                 reqFinished.release();
             }
         });

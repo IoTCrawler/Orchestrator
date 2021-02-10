@@ -40,8 +40,10 @@ import com.orange.ngsi2.model.*;
 import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.*;
 import java.util.concurrent.Semaphore;
@@ -197,7 +199,7 @@ public class IoTCrawlerRESTClient extends IoTCrawlerClient implements AutoClosea
             throw new Exception("Failed to execute GraphQL Request");
         }
         if(streamObservationId==null)
-            throw new Exception("Observable property for stream "+streamId+" not found");
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "Observable property for stream "+streamId+" not found");
 
         EntityInfo entityInfo = new EntityInfo(streamObservationId, StreamObservation.getTypeUri());
         //URL orchestratorURL =  new URL(System.getenv(IOTCRAWLER_ORCHESTRATOR_URL));

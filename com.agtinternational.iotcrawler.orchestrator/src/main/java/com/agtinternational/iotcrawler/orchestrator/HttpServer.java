@@ -187,6 +187,7 @@ public class HttpServer {
                             if(subscription.getWatchedAttributes()!=null)
                                 key+=String.join("_",subscription.getWatchedAttributes());
                             subscriptionId = "urn:"+UUID.nameUUIDFromBytes(key.getBytes()).toString();//UUID.randomUUID().toString();
+                            LOGGER.debug("Setting subscriptionId={}", subscriptionId);
                             subscription.setId(subscriptionId);
                         }
 

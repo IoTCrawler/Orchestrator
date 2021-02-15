@@ -274,7 +274,7 @@ public class Utils {
             }else if(attValue instanceof String || attValue instanceof Number){
                 //attributes.add(new Property(attValue));
                 //ret.put(attKey, attValue);
-                ret = appendAttributeToMap(ret, attKey, new Property(attValue));
+                ret = appendAttributeToMap(ret, attKey, new Attribute(attValue));
             }else
                 throw new org.apache.commons.lang3.NotImplementedException(attValue.getClass().getName()+" not implemented ");
 

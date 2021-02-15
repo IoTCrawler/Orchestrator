@@ -214,6 +214,26 @@ public class NgsiLDClientTests {
 
     }
 
+    @Order(6)
+    @Test
+    @Ignore
+    public void updateEntityTest2() throws Exception {
+
+        EntityLD entity2 = ngsiLdClient.getEntitySync("urn:ngsi-ld:Sensor_OpenHAB_zwave:device:e010f31b:node2_zwave:device:e010f31b:node2:sensor_power", "http://www.w3.org/ns/sosa/Sensor", Collections.emptyList());
+        Map<String, Object> attributes = entity2.getAttributes();
+
+//        String name = attributes.keySet().iterator().next().toString();
+//        Object value = ((Attribute)attributes.values().iterator().next()).getValue()+"_"+System.currentTimeMillis();
+        entity2.addAttribute("https://faultdetection.org/fd#enable", new Property(1));
+
+        boolean success = ngsiLdClient.updateEntitySync(entity2 , false);
+        if(success)
+            Assert.assertTrue("Entity updated", true);
+        else
+            Assert.fail("Failed to update entity");
+
+    }
+
     @Order(3)
     @Test
     public void updateAttributeTest() throws Exception {
@@ -234,6 +254,7 @@ public class NgsiLDClientTests {
         ngsiLdClient.deleteAttributeSync(entity.getId(),entity.getType(), "brandName");
         String abc = "asd";
     }
+
 
     @Test
     public void addSubscriptionTest() throws Exception {

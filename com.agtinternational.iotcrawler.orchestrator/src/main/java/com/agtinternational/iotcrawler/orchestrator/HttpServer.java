@@ -173,8 +173,6 @@ public class HttpServer {
                             return;
                         }
 
-                        subscriptionId = subscription.getId();
-
                         if(subscription.getNotification().getEndpoint()==null){
                             String httpReferenceUrl = System.getenv(HTTP_REFERENCE_URL);
                             Endpoint endpoint = new Endpoint(new URL(httpReferenceUrl), ContentType.APPLICATION_JSON);
@@ -182,6 +180,7 @@ public class HttpServer {
                             body = new ObjectMapper().writeValueAsString(subscription);
                         }
 
+                        subscriptionId = subscription.getId();
                         if(subscriptionId==null) {
                             String key = String.join("_", subscription.getEntities().stream().map(e->e.getId()+"_").collect(Collectors.toList()))+"-"+"-"+subscription.getNotification().getEndpoint().getUri();
                             if(subscription.getWatchedAttributes()!=null)

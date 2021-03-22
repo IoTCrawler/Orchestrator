@@ -78,6 +78,9 @@ public class GraphQLClient {
                 JsonReader reader = new JsonReader(new StringReader(json));
                 reader.setLenient(true);
                 JsonElement result = jsonParser.parse(reader);
+                if(!(result instanceof JsonObject))
+                    throw new Error("Not expected result: "+result.getAsJsonObject());
+
                 if(((JsonObject)result).has("error")) {
                     String error = ((JsonObject) result).get("error")+": "+ ((JsonObject) result).get("message");
                     throw new Exception(error);

@@ -1,0 +1,19 @@
+{
+  "@id" : "urn:ngsi-ld:Sensor_Homee_00055110D732_24_137",
+  "@type" : "http://www.w3.org/ns/sosa/Sensor",
+  "isHostedBy" : "urn:ngsi-ld:Homee_00055110D732_24",
+  "madeObservation" : "urn:ngsi-ld:Stream_Homee_00055110D732_24_137_122_Observation",
+  "observes" : "urn:ngsi-ld:MassPerLength",
+  "@context" : {
+    "observes" : {
+      "@id" : "http://www.w3.org/ns/sosa/observes",
+      "@type" : "@id"
+    },
+    "madeObservation" : {
+      "@id" : "http://www.w3.org/ns/sosa/madeObservation"
+    },
+    "isHostedBy" : {
+      "@id" : "http://www.w3.org/ns/sosa/isHostedBy"
+    }
+  }
+}

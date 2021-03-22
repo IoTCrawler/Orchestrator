@@ -113,7 +113,7 @@ public class Sensor extends RDFModel {
         return new Sensor(rdfModel.getURI(), rdfModel.getModel());
     }
 
-    public static Sensor fromJsonObject(String jsonString) {
+    public static Sensor fromJson(String jsonString) {
         RDFModel rdfModel = RDFModel.fromJson(jsonString);
         return new Sensor(rdfModel.getURI(), rdfModel.getModel());
     }

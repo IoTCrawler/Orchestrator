@@ -184,7 +184,7 @@ public class ModelTests {
 
     @Test
     @Ignore
-    public void test2() throws Exception {
+    public void platformTest() throws Exception {
 
         byte[] json = Files.readAllBytes(Paths.get("samples/Platform.json"));
         Platform sosaPlatform = Platform.fromJson(json);
@@ -244,5 +244,18 @@ public class ModelTests {
         //rdfModel.addProperty("http://agtinternational/smartHomeApp#activities", new IoTStream("Stream1"));
         String test1 = rdfModel.toJsonLDString();
 
+    }
+
+    @Test
+    @Ignore
+    public void sensorTest() throws Exception {
+
+        byte[] json = Files.readAllBytes(Paths.get("samples/Sensor.json"));
+        Sensor sensor = Sensor.fromJson(new String(json));
+        EntityLD entityLD = sensor.toEntityLD();
+        System.out.println(Utils.prettyPrint(entityLD.toJsonObject()));
+
+        //Assert.assertEquals(jsonObject1, jsonObject2);
+        String abc = "abc";
     }
 }

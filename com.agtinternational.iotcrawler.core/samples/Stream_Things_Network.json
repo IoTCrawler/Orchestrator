@@ -1,0 +1,34 @@
+{
+	"@id": "urn:ngsi-ld:Stream_The_Things_Network_a81758fffe038899-2049_light_illuminance",
+	"@type": "http://purl.org/iot/ontology/iot-stream#IotStream",
+	"http://purl.org/iot/ontology/iot-stream#generatedBy": {
+		"@id": "urn:ngsi-ld:Sensor_The_Things_Network_a81758fffe038899-2049_light"
+	},
+	"DataProvider": "urn:ngsi-ld:The_Things_Network",
+	"generatedBy": "urn:ngsi-ld:The_Things_Network_a81758fffe038899-2049",
+	"latestValue": "261",
+	"nativeName": "light",
+	"provides": "urn:ngsi-ld:The_Things_Network_Illuminance",
+	"@context": {
+		"DataProvider": {
+			"@id": "http://www.agtinternational.com/ontologies/RichIoTStream#DataProvider",
+			"@type": "@id"
+		},
+		"generatedBy": {
+			"@id": "http://www.agtinternational.com/ontologies/RichIoTStream#generatedBy",
+			"@type": "@id"
+		},
+		"provides": {
+			"@id": "http://www.agtinternational.com/ontologies/RichIoTStream#provides",
+			"@type": "@id"
+		},
+		"latestValue": {
+			"@id": "http://www.agtinternational.com/ontologies/RichIoTStream#latestValue",
+			"@type": "@id"
+		},
+		"nativeName": {
+			"@id": "http://www.agtinternational.com/ontologies/RichIoTStream#nativeName",
+			"@type": "@id"
+		}
+	}
+}

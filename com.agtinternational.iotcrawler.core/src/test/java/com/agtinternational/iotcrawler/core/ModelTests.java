@@ -258,4 +258,18 @@ public class ModelTests {
         //Assert.assertEquals(jsonObject1, jsonObject2);
         String abc = "abc";
     }
+
+
+    @Test
+    @Ignore
+    public void streamThingsNetwrokTest() throws Exception {
+
+        byte[] json = Files.readAllBytes(Paths.get("samples/Stream_Things_Network.json"));
+        IoTStream sensor = IoTStream.fromJson(new String(json));
+        EntityLD entityLD = sensor.toEntityLD();
+        System.out.println(Utils.prettyPrint(entityLD.toJsonObject()));
+
+        //Assert.assertEquals(jsonObject1, jsonObject2);
+        String abc = "abc";
+    }
 }

@@ -1,0 +1,10 @@
+{
+  "@id" : "urn:ngsi-ld:Sensor_OpenHAB_zwave:device:c754a396:node2_alarm_power",
+  "@type" : "http://www.w3.org/ns/sosa/Sensor",
+  "isHostedBy" : "urn:ngsi-ld:OpenHAB_zwave:device:c754a396:node2",
+  "@context" : {
+    "isHostedBy" : {
+      "@id" : "http://www.w3.org/ns/sosa/isHostedBy"
+    }
+  }
+}

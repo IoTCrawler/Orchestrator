@@ -209,7 +209,7 @@ public class ModelTests {
 
     @Test
     @Ignore
-    public void test3() throws Exception {
+    public void platformWithMultipleSensorsTest() throws Exception {
 
         byte[] json = Files.readAllBytes(Paths.get("samples/Platform.json"));
         Platform sosaPlatform = Platform.fromJson(json);
@@ -223,6 +223,29 @@ public class ModelTests {
         System.out.println("--------------------------------------");
 
         EntityLD entityLD = sosaPlatform.toEntityLD(true);
+        JsonObject jsonObject2 = entityLD.toJsonObject();
+        System.out.println(Utils.prettyPrint(jsonObject2));
+
+        //Assert.assertEquals(jsonObject1, jsonObject2);
+        String abc = "abc";
+    }
+
+    @Test
+    @Ignore
+    public void platformWithMultipleSensorsTest2() throws Exception {
+
+        byte[] json = Files.readAllBytes(Paths.get("samples/Platform2.json"));
+        Platform sosaPlatform = Platform.fromJson(json);
+
+        RDFModel[] array = new RDFModel[]{ new RDFModel("http://sensor1"), new RDFModel("http://sensor2") } ;
+        sosaPlatform.hosts(array);
+
+        JsonObject jsonObject1 = sosaPlatform.toJsonObject();
+        System.out.println(Utils.prettyPrint(jsonObject1));
+
+        System.out.println("--------------------------------------");
+
+        EntityLD entityLD = sosaPlatform.toEntityLD(false);
         JsonObject jsonObject2 = entityLD.toJsonObject();
         System.out.println(Utils.prettyPrint(jsonObject2));
 
@@ -251,6 +274,19 @@ public class ModelTests {
     public void sensorTest() throws Exception {
 
         byte[] json = Files.readAllBytes(Paths.get("samples/Sensor.json"));
+        Sensor sensor = Sensor.fromJson(new String(json));
+        EntityLD entityLD = sensor.toEntityLD();
+        System.out.println(Utils.prettyPrint(entityLD.toJsonObject()));
+
+        //Assert.assertEquals(jsonObject1, jsonObject2);
+        String abc = "abc";
+    }
+
+    @Test
+    @Ignore
+    public void sensor2Test() throws Exception {
+
+        byte[] json = Files.readAllBytes(Paths.get("samples/Sensor2.json"));
         Sensor sensor = Sensor.fromJson(new String(json));
         EntityLD entityLD = sensor.toEntityLD();
         System.out.println(Utils.prettyPrint(entityLD.toJsonObject()));

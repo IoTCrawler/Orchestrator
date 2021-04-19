@@ -1,0 +1,43 @@
+{
+  "@id": "urn:ngsi-ld:Homee_00055110D732_24",
+  "@type": "http://www.w3.org/ns/sosa/Platform",
+  "identifier": "24",
+  "name": "FIBARO System FGMS001-ZW5 Movement Sensor",
+  "alternativeType": "http://www.w3.org/ns/sosa/Sensor",
+  "hosts": [
+    "urn:ngsi-ld:Sensor_Homee_00055110D732_24_144",
+    "urn:ngsi-ld:Sensor_Homee_00055110D732_24_146",
+    "urn:ngsi-ld:Sensor_Homee_00055110D732_24_151",
+    "urn:ngsi-ld:Sensor_Homee_00055110D732_24_141",
+    "urn:ngsi-ld:Sensor_Homee_00055110D732_24_152",
+    "urn:ngsi-ld:Sensor_Homee_00055110D732_24_142",
+    "urn:ngsi-ld:Sensor_Homee_00055110D732_24_139",
+    "urn:ngsi-ld:Sensor_Homee_00055110D732_24_150",
+    "urn:ngsi-ld:Sensor_Homee_00055110D732_24_147",
+    "urn:ngsi-ld:Sensor_Homee_00055110D732_24_149",
+    "urn:ngsi-ld:Sensor_Homee_00055110D732_24_140",
+    "urn:ngsi-ld:Sensor_Homee_00055110D732_24_148",
+    "urn:ngsi-ld:Sensor_Homee_00055110D732_24_137",
+    "urn:ngsi-ld:Sensor_Homee_00055110D732_24_153",
+    "urn:ngsi-ld:Sensor_Homee_00055110D732_24_136",
+    "urn:ngsi-ld:Sensor_Homee_00055110D732_24_138",
+    "urn:ngsi-ld:Sensor_Homee_00055110D732_24_143",
+    "urn:ngsi-ld:Sensor_Homee_00055110D732_24_145"
+  ],
+  "@context": {
+    "hosts": {
+      "@id": "http://www.w3.org/ns/sosa/hosts",
+      "@type": "@id"
+    },
+    "identifier": {
+      "@id": "http://schema.org/identifier"
+    },
+    "name": {
+      "@id": "http://schema.org/name"
+    },
+    "alternativeType": {
+      "@id": "http://www.agtinternational.com/ontologies/ngsi-ld#alternativeType",
+      "@type": "@id"
+    }
+  }
+}

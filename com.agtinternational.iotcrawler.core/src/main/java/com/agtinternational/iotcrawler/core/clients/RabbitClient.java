@@ -98,8 +98,8 @@ public class RabbitClient {
         return channel;
     }
 
-    public void initRabbitMQListener(String exchangeName, Function<byte[], Void> onChange){
-        try {
+    public void initRabbitMQListener(String exchangeName, Function<byte[], Void> onChange) throws Exception{
+//        try {
             LOGGER.debug("Initing {} queue listener", exchangeName);
             channel = getChannel();
             Consumer consumer = new DefaultConsumer(channel) {
@@ -111,17 +111,18 @@ public class RabbitClient {
                         //handleCmd(body, properties.getReplyTo());
                     } catch (Exception e) {
                         LOGGER.error("Exception while trying to handle incoming command.", e);
+                        throw e;
                     }
                 }
             };
             String queueName = channel.queueDeclare().getQueue();
             channel.queueBind(queueName, exchangeName, "");
             channel.basicConsume(queueName, true, consumer);
-        }
-        catch (Exception e){
-            LOGGER.error("Failed to init consumer");
-            e.printStackTrace();
-        }
+//        }
+//        catch (Exception e){
+//            LOGGER.error("Failed to init consumer");
+//            e.printStackTrace();
+//        }
     }
 
     public void publish(String queueName, String content){

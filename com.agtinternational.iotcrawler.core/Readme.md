@@ -1,10 +1,10 @@
 # Core
 
 The package contains:
-* Data models used in IoTStream Ontology
+* Data models used from IoTStream Ontology
 * IoTCrawlerClient interface and with two implementations 
 
-The package can be include into a IoTCrawlerApp and interact with orchestatrator.
+The package can be included into a IoT Application to make it interacting with IoTCrawler via the [Orchestatrator](https://github.com/IoTCrawler/Orchestrator/tree/master/com.agtinternational.iotcrawler.orchestrator) component. 
 
 ## Requirements
 

@@ -1,14 +1,10 @@
-# Orchestrator
+## Contents
 
-The orchestrator component is responsible for interactions with client IoT applications. It allows applications to subscribe to streams without having a public endpoint as well as tracks subscription requests. In case of stream failure, orchestrator is able to notify application and provide a list of alternative streams for subscription. 
-
-## Service Dependencies
-
-Find them in [docker-compose.yml](com.agtinternational.iotcrawler.orchestrator/docker-compose.yml):
-* RabbitMQ - to communicate with remote apps behind firewalls
-* Redis - for persistently storing state information (active subscriptions)
-* NGSI-LD broker - emulation of MDR
-
+The repo contains hierarchy of maven packages depending on each other:
+* [Fiware-Models](com.agtinternational.iotcrawler.fiware-models) - EntityLD model (lightweight)
+* [Core](com.agtinternational.iotcrawler.core) - models of core IoTCrawler ontology (lightweight)
+* [Fiware-Clients](com.agtinternational.iotcrawler.fiware-clients) - NGSI-LD client based on NGSI-Libraries
+* [Orchestrator](com.agtinternational.iotcrawler.fiware-clients) - Orchestrator component
 
 ## Requirements
 
@@ -17,23 +13,12 @@ Find them in [docker-compose.yml](com.agtinternational.iotcrawler.orchestrator/d
 * Docker
 
 
-## Build
+## Build & install (all)
 
-Build orchestrator and all supplementatry libraries
+Build all the packages and install them in local maven repo:
 
 ```
 sh make.sh install
-sh make.sh build-image
-sh make.sh push-image
 ```
 
-
-## Configuration
-
-Open [docker-compose.yml](com.agtinternational.iotcrawler.orchestrator/docker-compose.yml) and check/change the following:
-
-1) Orchestrator image URI - adjust the image name according to the latest one (outout)  
-
-## Deployment   
-* Deployed online: http://orchestrator.iotcrawler.eu/ngsi-ld/v1/
-* Works on top of broker: http://155.54.95.248:9090/ngsi-ld/v1
+Components can be built and installed individially from the corresponding folders. 

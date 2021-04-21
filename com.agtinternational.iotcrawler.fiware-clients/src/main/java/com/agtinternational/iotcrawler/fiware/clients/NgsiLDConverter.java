@@ -123,13 +123,17 @@ public class NgsiLDConverter extends AbstractHttpMessageConverter<Object> implem
         if(parsedObject instanceof Map){
             Map objectMap = (Map)parsedObject;
 
-            if(objectMap.containsKey("error")) {
+            // PS: Add check for null, otherwise NullPointerException could be thrown
+            if(objectMap!=null && objectMap.containsKey("error")) {
                 throw new IOException("Json-response contains an error: "+ objectMap.get("error"));
             }
 
-            if(objectMap.get("type").toString().endsWith("ResourceNotFound")){
-                throw new IOException(new HttpClientErrorException(HttpStatus.valueOf(404)));
-                //return ret;
+            // PS: Add check for null, otherwise NullPointerException could be thrown
+            if(objectMap!=null && objectMap.get("type")!=null) {
+                if(objectMap.get("type").toString().endsWith("ResourceNotFound")){
+                    throw new IOException(new HttpClientErrorException(HttpStatus.valueOf(404)));
+                    //return ret;
+                }
             }
             try {
                 EntityLD entity = EntityLD.fromMapObject(objectMap);

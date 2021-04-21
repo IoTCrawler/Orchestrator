@@ -4,7 +4,7 @@ The repo contains hierarchy of maven packages depending on each other:
 * [Fiware-Models](com.agtinternational.iotcrawler.fiware-models) - EntityLD model (lightweight)
 * [Core](com.agtinternational.iotcrawler.core) - models of core IoTCrawler ontology (lightweight)
 * [Fiware-Clients](com.agtinternational.iotcrawler.fiware-clients) - NGSI-LD client based on NGSI-Libraries
-* [Orchestrator](com.agtinternational.iotcrawler.fiware-clients) - Orchestrator component
+* [Orchestrator](com.agtinternational.iotcrawler.orchestrator) - Orchestrator component
 
 ## Requirements
 

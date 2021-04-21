@@ -10,7 +10,7 @@ The orchestrator component is responsible for interactions with client IoT appli
 
 ## Dependencies
 
-* [Core](https://github.com/IoTCrawler/Orchestrator/tree/master/com.agtinternational.iotcrawler.core)
+* [Core](../com.agtinternational.iotcrawler.core)
 
 ## Build
 

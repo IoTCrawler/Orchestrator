@@ -7,7 +7,7 @@ The package contains NGSI-LD client and tests for it.
 * Maven
 
 ## Dependencies
-* [Fiware-models](https://github.com/IoTCrawler/Orchestrator/tree/master/com.agtinternational.iotcrawler.fiware-models)
+* [Fiware-models](../com.agtinternational.iotcrawler.fiware-models)
 * [Ngsi2 Api](https://github.com/Orange-OpenSource/fiware-ngsi2-api)
 * [IotBroker Client](https://github.com/Aeronbroker/Aeron/tree/master/eu.neclab.iotplatform.iotbroker.client)
 

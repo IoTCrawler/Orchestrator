@@ -12,8 +12,8 @@ The package can be included into a IoT Application to make it interacting with I
 * Maven
 
 ## Dependencies
-* [Fiware-models](https://github.com/IoTCrawler/Orchestrator/tree/master/com.agtinternational.iotcrawler.fiware-models)
-* [Fiware-clients](https://github.com/IoTCrawler/Orchestrator/tree/master/com.agtinternational.iotcrawler.fiware-clients)
+* [Fiware-models](../com.agtinternational.iotcrawler.fiware-models)
+* [Fiware-clients](../com.agtinternational.iotcrawler.fiware-clients)
 
 ## Build
 ```
